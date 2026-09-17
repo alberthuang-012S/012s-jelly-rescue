@@ -8,8 +8,8 @@ import { ItemSystem } from './ItemSystem.js';
 import { Player } from './Player.js';
 import { ResultScreen } from './ResultScreen.js';
 import { ScoreManager } from './ScoreManager.js';
-import { StageManager } from './StageManager.js?v=park-layout-2';
-import { WorldRenderer } from './WorldRenderer.js?v=park-layout-2';
+import { StageManager } from './StageManager.js?v=park-art-1';
+import { WorldRenderer } from './WorldRenderer.js?v=park-art-1';
 import { clamp, drawText, formatClock } from './utils.js';
 
 function loadImage(source) {
@@ -153,6 +153,8 @@ export class Game {
       npc.spriteImage = this.npcSpriteImage;
       npc.spriteSheet = this.npcSpriteSheet;
     });
+    const parkMap = await loadImage('./reference/generated-park-open-portrait-hq.png');
+    if (parkMap.naturalWidth) this.worldRenderer.setParkImage(parkMap);
     const mountainMap = await loadImage('./reference/generated-mountain-open-portrait-hq.png');
     if (mountainMap.naturalWidth) this.worldRenderer.setMountainImage(mountainMap);
     const worldFront = await loadImage('./reference/world-jelly-front-hq.png');

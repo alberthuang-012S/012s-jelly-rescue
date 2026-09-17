@@ -1,5 +1,8 @@
 import { drawText } from './utils.js';
 
+const PARK_DESIGN_WIDTH = 1024;
+const PARK_DESIGN_HEIGHT = 1536;
+
 const MAP = Object.freeze({
   ink: '#24324a',
   grass: '#78b874',
@@ -25,7 +28,12 @@ const MAP = Object.freeze({
 
 export class WorldRenderer {
   constructor() {
+    this.parkImage = null;
     this.mountainImage = null;
+  }
+
+  setParkImage(image) {
+    this.parkImage = image;
   }
 
   setMountainImage(image) {
@@ -40,26 +48,38 @@ export class WorldRenderer {
 
   drawPark(ctx, stage, now) {
     const { width, height } = stage.world;
+    if (this.parkImage?.complete && this.parkImage.naturalWidth) {
+      ctx.save();
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(this.parkImage, 0, 0, this.parkImage.naturalWidth, this.parkImage.naturalHeight, 0, 0, width, height);
+      ctx.restore();
+      return;
+    }
+
+    // Keep the hand-drawn fallback aligned with the portrait artwork while
+    // the approved map asset is loading or unavailable.
+    ctx.save();
+    ctx.scale(width / PARK_DESIGN_WIDTH, height / PARK_DESIGN_HEIGHT);
     ctx.fillStyle = MAP.grass;
-    ctx.fillRect(0, 0, width, height);
-    this.drawGrassTexture(ctx, width, height, MAP.grassDeep);
-    this.drawParkBorder(ctx, width, height);
+    ctx.fillRect(0, 0, PARK_DESIGN_WIDTH, PARK_DESIGN_HEIGHT);
+    this.drawGrassTexture(ctx, PARK_DESIGN_WIDTH, PARK_DESIGN_HEIGHT, MAP.grassDeep);
+    this.drawParkBorder(ctx, PARK_DESIGN_WIDTH, PARK_DESIGN_HEIGHT);
 
     // The park uses one broad central route and two relaxed side loops. The
     // layout is intentionally open so the full portrait map stays readable on
     // phones and the player can always route around a landmark.
     this.drawCobblePath(ctx, [
       [512, 1435], [512, 1240], [512, 1060], [512, 900],
-      [360, 850], [250, 760], [250, 620], [350, 520],
+      [330, 900], [250, 760], [250, 620], [350, 520],
       [512, 520], [512, 340], [512, 130]
     ], 150);
     this.drawCobblePath(ctx, [
       [512, 1050], [420, 1040], [310, 980], [215, 875],
-      [185, 745], [240, 610], [350, 530], [450, 570], [512, 650]
+      [185, 745], [240, 610], [350, 530], [450, 570], [512, 620]
     ], 116);
     this.drawCobblePath(ctx, [
       [512, 1050], [604, 1040], [714, 980], [809, 875],
-      [839, 745], [784, 610], [674, 530], [574, 570], [512, 650]
+      [839, 745], [784, 610], [674, 530], [574, 570], [512, 620]
     ], 116);
     this.drawCobblePath(ctx, [
       [512, 520], [415, 470], [345, 385], [375, 285],
@@ -95,6 +115,7 @@ export class WorldRenderer {
     this.drawMapLabel(ctx, '中央噴水池', 512, 610);
     this.drawMapLabel(ctx, '野餐區', 790, 300);
     this.drawMapLabel(ctx, '遊戲區', 765, 1035);
+    ctx.restore();
   }
 
   drawMountain(ctx, stage, now) {

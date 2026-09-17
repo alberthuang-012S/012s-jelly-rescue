@@ -1,24 +1,46 @@
 import { clamp } from './utils.js';
 
-const parkRoutes = {
+const PARK_DESIGN_WIDTH = 1024;
+const PARK_DESIGN_HEIGHT = 1536;
+const PARK_SCALE = 0.75;
+
+const scaleParkPoint = (point) => ({
+  ...point,
+  x: Math.round(point.x * PARK_SCALE),
+  y: Math.round(point.y * PARK_SCALE)
+});
+
+const scaleParkRect = (rect) => ({
+  ...rect,
+  x: Math.round(rect.x * PARK_SCALE),
+  y: Math.round(rect.y * PARK_SCALE),
+  width: Math.round(rect.width * PARK_SCALE),
+  height: Math.round(rect.height * PARK_SCALE)
+});
+
+const parkRouteDesign = {
   mainTrail: [
     { x: 512, y: 1420 }, { x: 512, y: 1240 }, { x: 512, y: 1060 }, { x: 512, y: 900 },
-    { x: 360, y: 850 }, { x: 250, y: 760 }, { x: 250, y: 620 }, { x: 350, y: 520 },
+    { x: 330, y: 900 }, { x: 250, y: 760 }, { x: 250, y: 620 }, { x: 350, y: 520 },
     { x: 512, y: 520 }, { x: 512, y: 340 }, { x: 512, y: 130 }
   ],
   leftLoop: [
     { x: 512, y: 1050 }, { x: 420, y: 1040 }, { x: 310, y: 980 }, { x: 215, y: 875 },
-    { x: 185, y: 745 }, { x: 240, y: 610 }, { x: 350, y: 530 }, { x: 450, y: 570 }, { x: 512, y: 650 }
+    { x: 185, y: 745 }, { x: 240, y: 610 }, { x: 350, y: 530 }, { x: 450, y: 570 }, { x: 512, y: 620 }
   ],
   rightLoop: [
     { x: 512, y: 1050 }, { x: 604, y: 1040 }, { x: 714, y: 980 }, { x: 809, y: 875 },
-    { x: 839, y: 745 }, { x: 784, y: 610 }, { x: 674, y: 530 }, { x: 574, y: 570 }, { x: 512, y: 650 }
+    { x: 839, y: 745 }, { x: 784, y: 610 }, { x: 674, y: 530 }, { x: 574, y: 570 }, { x: 512, y: 620 }
   ],
   upperLoop: [
     { x: 512, y: 520 }, { x: 415, y: 470 }, { x: 345, y: 385 }, { x: 375, y: 285 },
     { x: 512, y: 250 }, { x: 649, y: 285 }, { x: 679, y: 385 }, { x: 609, y: 470 }
   ]
 };
+
+const parkRoutes = Object.fromEntries(
+  Object.entries(parkRouteDesign).map(([routeName, points]) => [routeName, points.map(scaleParkPoint)])
+);
 
 const mountainRoutes = {
   mainTrail: [
@@ -46,9 +68,11 @@ export const STAGE_DEFS = Object.freeze({
     displayName: '城市公園',
     subtitle: '開放公園 · 寬路巡邏',
     duration: 180,
-    world: { width: 1024, height: 1536 },
+    // Keep the same 2:3 portrait ratio as the artwork, but reduce the logical
+    // world so the full map reads larger on a phone screen.
+    world: { width: Math.round(PARK_DESIGN_WIDTH * PARK_SCALE), height: Math.round(PARK_DESIGN_HEIGHT * PARK_SCALE) },
     fitToScreen: true,
-    start: { x: 512, y: 1390 },
+    start: scaleParkPoint({ x: 512, y: 1390 }),
     maxNpcs: 8,
     event: { initialDelay: 2.4, spawnCooldown: 7.2, initialTolerance: 10.5, warningDuration: 3.4 },
     routes: parkRoutes,
@@ -60,7 +84,7 @@ export const STAGE_DEFS = Object.freeze({
       { id: 'picnic', label: '野餐區', x: 650, y: 300, width: 300, height: 300, preference: 'itch' },
       { id: 'playground', label: '遊戲區', x: 620, y: 1040, width: 330, height: 280, preference: 'itch' },
       { id: 'track', label: '慢跑步道', x: 180, y: 720, width: 660, height: 470, preference: 'sore' }
-    ],
+    ].map(scaleParkRect),
     spawnPoints: [
       { x: 512, y: 1390, zone: 'entrance', route: 'mainTrail' },
       { x: 270, y: 830, zone: 'grove', route: 'leftLoop' },
@@ -70,12 +94,12 @@ export const STAGE_DEFS = Object.freeze({
       { x: 644, y: 360, zone: 'picnic', route: 'upperLoop' },
       { x: 760, y: 1290, zone: 'playground', route: 'rightLoop' },
       { x: 280, y: 1210, zone: 'track', route: 'leftLoop' }
-    ],
+    ].map(scaleParkPoint),
     obstacles: [
       { x: 390, y: 675, width: 244, height: 155, kind: 'fountain' },
       { x: 700, y: 1110, width: 230, height: 120, kind: 'playground' },
       { x: 70, y: 220, width: 240, height: 160, kind: 'pond' }
-    ]
+    ].map(scaleParkRect)
   },
   mountain: {
     id: 'mountain',

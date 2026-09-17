@@ -35,12 +35,13 @@ The core loop is split into focused modules:
 
 ## Phase 1 status
 
-- `Jelly Park`: complete portrait-friendly loop with a wide central route, open side loops, entrance, fountain, benches, picnic area, trees, flower beds and playground.
+- `Jelly Park`: complete portrait-friendly loop with a compact full-map view, wide central route, open side loops, generous grass areas, a small pond, fountain, picnic area and playground.
 - `Jelly Mountain`: terraced alpine route with a trailhead, wide stepped paths, a central rest deck, two readable mid-route branches and a summit lookout.
 - `reference/generated-mountain-open-portrait-hq.png` is the approved portrait mountain concept rendered as the in-game background, with a spacious central meadow and sparse edge obstacles.
 - `reference/world-jelly-player-hq.png` is the polished four-frame player sprite sheet; `reference/generated-npcs-hiker-elder-child-hq.png` contains the updated hiker, elder and child sprites with transparent alpha.
 - `reference/world-jelly-front-hq.png` is the high-resolution front-facing jelly used by the home hero.
-- Park rendering remains code-native; mountain gameplay entities and HUD are composited over the generated map background.
+- `reference/generated-park-open-portrait-hq.png` is the approved clean portrait park artwork, composited under gameplay entities and HUD.
+- Park gameplay uses a 768×1152 logical world mapped to the 1024×1536 portrait artwork, so the full map reads larger on phones while keeping the collision geometry aligned.
 - Portrait layout keeps a tall camera viewport and uses the `012s-jelly-world` front-facing jelly artwork for the home character reference.
 - Map NPCs use the polished generated sprite sheet `reference/generated-npcs-hiker-elder-child-hq.png`: hiker, elder and child only; no robot or rescue-worker character.
 - Debug tools include forced ITCH/SORENESS events, 3-second tolerance, clear events, infinite life, interaction-radius display and stage switching.
