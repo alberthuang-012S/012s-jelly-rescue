@@ -8,13 +8,23 @@ import { ItemSystem } from './ItemSystem.js';
 import { Player } from './Player.js';
 import { ResultScreen } from './ResultScreen.js';
 import { ScoreManager } from './ScoreManager.js';
-import { StageManager } from './StageManager.js?v=camera-polish-1';
-import { WorldRenderer } from './WorldRenderer.js?v=camera-polish-1';
+import { StageManager } from './StageManager.js?v=load-polish-1';
+import { WorldRenderer } from './WorldRenderer.js?v=load-polish-1';
 import { clamp, drawText, formatClock, lerp } from './utils.js';
 
-function loadImage(source) {
+const ASSET_PATHS = Object.freeze({
+  player: './reference/world-jelly-player-hq.png',
+  playerFallback: './reference/player-jelly-preferred.png',
+  npc: './reference/generated-npcs-hiker-elder-child-hq.png',
+  park: './reference/generated-park-open-portrait-hq.png',
+  mountain: './reference/generated-mountain-open-portrait-hq.png'
+});
+
+function loadImage(source, { fetchPriority = 'auto' } = {}) {
   return new Promise((resolve) => {
     const image = new Image();
+    image.decoding = 'async';
+    if ('fetchPriority' in image) image.fetchPriority = fetchPriority;
     image.onload = () => resolve(image);
     image.onerror = () => resolve(image);
     image.src = source;
@@ -94,6 +104,8 @@ export class Game {
     this.cameraMode = 'fit';
     this.layoutMode = 'desktop';
     this.cameraState = null;
+    this.sharedAssetsPromise = null;
+    this.stageMapPromises = new Map();
 
     this.stageManager = new StageManager();
     this.itemSystem = new ItemSystem();
@@ -116,60 +128,80 @@ export class Game {
     this.bindHome();
     this.bindDebug();
     this.bindResponsiveLayout();
-    this.preloadAssets();
     this.loop = this.loop.bind(this);
     requestAnimationFrame(this.loop);
   }
 
-  async preloadAssets() {
-    const worldJelly = await loadImage('./reference/world-jelly-player-hq.png');
-    if (worldJelly.naturalWidth) {
-      this.spriteImage = worldJelly;
-      this.playerSpriteSheet = {
-        frameWidth: worldJelly.naturalWidth / 4,
-        frameHeight: worldJelly.naturalHeight,
-        frameCount: 4,
-        directionFrames: { down: 0, left: 1, right: 2, up: 3 },
-        sourceY: Math.round(worldJelly.naturalHeight * 0.06),
-        sourceHeight: Math.round(worldJelly.naturalHeight * 0.88),
-        destinationWidth: 84,
-        destinationHeight: 92,
-        anchorOffset: 58
-      };
-      this.player.spriteSheet = this.playerSpriteSheet;
-    } else {
-      const rawSprite = await loadImage('./reference/player-jelly-preferred.png');
-      this.spriteImage = await removeSpriteBackground(rawSprite);
-      this.playerSpriteSheet = null;
-      this.player.spriteSheet = null;
-    }
-    this.player.spriteImage = this.spriteImage;
-    this.npcSpriteImage = await loadImage('./reference/generated-npcs-hiker-elder-child-hq.png');
-    if (!this.npcSpriteImage.naturalWidth) this.npcSpriteImage = null;
-    if (this.npcSpriteImage) {
-      this.npcSpriteSheet = {
+  prepareStageAssets(stageId) {
+    this.ensureSharedAssets();
+    this.ensureStageMap(stageId);
+  }
+
+  ensureSharedAssets() {
+    if (this.sharedAssetsPromise) return this.sharedAssetsPromise;
+    this.sharedAssetsPromise = Promise.all([
+      loadImage(ASSET_PATHS.player, { fetchPriority: 'high' }),
+      loadImage(ASSET_PATHS.npc, { fetchPriority: 'high' })
+    ]).then(async ([worldJelly, npcSprite]) => {
+      if (worldJelly.naturalWidth) {
+        this.spriteImage = worldJelly;
+        this.playerSpriteSheet = {
+          frameWidth: worldJelly.naturalWidth / 4,
+          frameHeight: worldJelly.naturalHeight,
+          frameCount: 4,
+          directionFrames: { down: 0, left: 1, right: 2, up: 3 },
+          sourceY: Math.round(worldJelly.naturalHeight * 0.06),
+          sourceHeight: Math.round(worldJelly.naturalHeight * 0.88),
+          destinationWidth: 84,
+          destinationHeight: 92,
+          anchorOffset: 58
+        };
+        this.player.spriteSheet = this.playerSpriteSheet;
+      } else {
+        const rawSprite = await loadImage(ASSET_PATHS.playerFallback, { fetchPriority: 'high' });
+        this.spriteImage = await removeSpriteBackground(rawSprite);
+        this.playerSpriteSheet = null;
+        this.player.spriteSheet = null;
+      }
+      this.player.spriteImage = this.spriteImage;
+      this.npcSpriteImage = npcSprite.naturalWidth ? npcSprite : null;
+      this.npcSpriteSheet = this.npcSpriteImage ? {
         frameWidth: this.npcSpriteImage.naturalWidth / 3,
         frameHeight: this.npcSpriteImage.naturalHeight,
         frameCount: 3
-      };
-    }
-    this.npcs.forEach((npc) => {
-      npc.spriteImage = this.npcSpriteImage;
-      npc.spriteSheet = this.npcSpriteSheet;
+      } : null;
+      this.npcs.forEach((npc) => {
+        npc.spriteImage = this.npcSpriteImage;
+        npc.spriteSheet = this.npcSpriteSheet;
+      });
+      return { player: this.spriteImage, npc: this.npcSpriteImage };
     });
-    const parkMap = await loadImage('./reference/generated-park-open-portrait-hq.png');
-    if (parkMap.naturalWidth) this.worldRenderer.setParkImage(parkMap);
-    const mountainMap = await loadImage('./reference/generated-mountain-open-portrait-hq.png');
-    if (mountainMap.naturalWidth) this.worldRenderer.setMountainImage(mountainMap);
-    const worldFront = await loadImage('./reference/world-jelly-front-hq.png');
-    const homeCharacter = document.querySelector('.home-character-crop');
-    if (homeCharacter && worldFront.src) homeCharacter.style.backgroundImage = `url("${worldFront.src}")`;
+    return this.sharedAssetsPromise;
+  }
+
+  ensureStageMap(stageId) {
+    const mapId = stageId === 'mountain' ? 'mountain' : 'park';
+    if (this.stageMapPromises.has(mapId)) return this.stageMapPromises.get(mapId);
+    const mapPromise = loadImage(ASSET_PATHS[mapId], { fetchPriority: 'high' }).then((mapImage) => {
+      if (!mapImage.naturalWidth) return mapImage;
+      if (mapId === 'mountain') {
+        this.worldRenderer.setMountainImage(mapImage);
+        const mountainPreview = document.querySelector('[data-stage-select="mountain"] .mountain-art');
+        if (mountainPreview) mountainPreview.style.backgroundImage = `url("${mapImage.src}")`;
+      } else {
+        this.worldRenderer.setParkImage(mapImage);
+      }
+      return mapImage;
+    });
+    this.stageMapPromises.set(mapId, mapPromise);
+    return mapPromise;
   }
 
   bindHome() {
     this.homeStageCards.forEach((card) => {
       card.addEventListener('click', () => {
         this.selectedStage = card.dataset.stageSelect;
+        if (this.selectedStage === 'mountain') this.ensureStageMap('mountain');
         this.homeStageCards.forEach((item) => {
           const selected = item === card;
           item.classList.toggle('is-selected', selected);
@@ -244,6 +276,7 @@ export class Game {
 
   startStage(stageId) {
     this.selectedStage = stageId;
+    this.prepareStageAssets(stageId);
     const stage = this.stageManager.start(stageId);
     this.state = 'playing';
     this.lives = 3;

@@ -37,8 +37,13 @@ const server = http.createServer(async (request, response) => {
     }
 
     const file = await fs.readFile(filePath);
-    const type = mimeTypes[path.extname(filePath).toLowerCase()] || 'application/octet-stream';
-    response.writeHead(200, { 'Content-Type': type, 'Cache-Control': 'no-cache' });
+    const extension = path.extname(filePath).toLowerCase();
+    const type = mimeTypes[extension] || 'application/octet-stream';
+    const isImage = ['.png', '.jpg', '.jpeg', '.svg', '.ico'].includes(extension);
+    const cacheControl = isImage
+      ? 'public, max-age=86400, stale-while-revalidate=604800'
+      : 'no-cache';
+    response.writeHead(200, { 'Content-Type': type, 'Cache-Control': cacheControl });
     response.end(file);
   } catch (error) {
     response.writeHead(error.code === 'ENOENT' ? 404 : 500, { 'Content-Type': 'text/plain; charset=utf-8' });

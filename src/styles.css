@@ -232,11 +232,11 @@ body { background: #deeff5; }
   .rotate-overlay { display: none !important; }
 }
 
-/* Use the approved mountain concept as the stage-card art so the menu and
-   in-game world share the same illustrated alpine language. */
+/* The mountain preview starts as a lightweight placeholder. The approved HQ
+   image is attached only after the player selects the mountain stage. */
 .mountain-art {
   overflow: hidden;
-  background: #78b874 url('../reference/generated-mountain-open-portrait-hq.png') center 58% / cover no-repeat;
+  background: linear-gradient(145deg, #8fd9ed, #5aa06d);
 }
 .mountain-art::before,
 .mountain-art::after,

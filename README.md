@@ -44,7 +44,9 @@ The core loop is split into focused modules:
 - Park gameplay uses a 768×1152 logical world mapped to the 1024×1536 portrait artwork, so the full map reads larger on phones while keeping the collision geometry aligned.
 - Camera strategy: portrait mobile uses a full-map fit; desktop and landscape use a clamped, smoothly-following RPG camera.
 - The canvas backing buffer follows its CSS display box × devicePixelRatio (capped at 2.5), and HQ map/sprite images use high-quality smoothing.
+- Loading is staged: the home screen does not fetch the mountain map; player/NPC assets load in parallel when a stage starts, and image responses are cached by the local server for faster reloads.
 - NPC status bubbles are screen-size compensated for camera zoom, with larger readable dialogue and tolerance bars; the transient location-name stamp is intentionally omitted.
+- Touch controls use visual pressed states only; no mobile haptic or vibration API is used.
 - Portrait layout keeps a tall camera viewport and uses the `012s-jelly-world` front-facing jelly artwork for the home character reference.
 - Map NPCs use the polished generated sprite sheet `reference/generated-npcs-hiker-elder-child-hq.png`: hiker, elder and child only; no robot or rescue-worker character.
 - Debug tools include forced ITCH/SORENESS events, 3-second tolerance, clear events, infinite life, interaction-radius display and stage switching.
