@@ -16,8 +16,14 @@ const ASSET_PATHS = Object.freeze({
   player: './reference/world-jelly-player-hq.png',
   playerFallback: './reference/player-jelly-preferred.png',
   npc: './reference/generated-npcs-hiker-elder-child-hq.png',
-  park: './reference/generated-park-open-portrait-hq.png',
-  mountain: './reference/generated-mountain-open-portrait-hq.png'
+  park: [
+    './reference/generated-park-open-portrait-hq.webp',
+    './reference/generated-park-open-portrait-hq.png'
+  ],
+  mountain: [
+    './reference/generated-mountain-open-portrait-hq.webp',
+    './reference/generated-mountain-open-portrait-hq.png'
+  ]
 });
 
 function loadImage(source, { fetchPriority = 'auto' } = {}) {
@@ -29,6 +35,16 @@ function loadImage(source, { fetchPriority = 'auto' } = {}) {
     image.onerror = () => resolve(image);
     image.src = source;
   });
+}
+
+async function loadImageWithFallback(sources, options) {
+  let lastImage = null;
+  for (const source of sources) {
+    const image = await loadImage(source, options);
+    lastImage = image;
+    if (image.naturalWidth) return image;
+  }
+  return lastImage;
 }
 
 async function removeSpriteBackground(image) {
@@ -182,12 +198,15 @@ export class Game {
   ensureStageMap(stageId) {
     const mapId = stageId === 'mountain' ? 'mountain' : 'park';
     if (this.stageMapPromises.has(mapId)) return this.stageMapPromises.get(mapId);
-    const mapPromise = loadImage(ASSET_PATHS[mapId], { fetchPriority: 'high' }).then((mapImage) => {
+    const mapPromise = loadImageWithFallback(ASSET_PATHS[mapId], { fetchPriority: 'high' }).then((mapImage) => {
       if (!mapImage.naturalWidth) return mapImage;
       if (mapId === 'mountain') {
         this.worldRenderer.setMountainImage(mapImage);
         const mountainPreview = document.querySelector('[data-stage-select="mountain"] .mountain-art');
-        if (mountainPreview) mountainPreview.style.backgroundImage = `url("${mapImage.src}")`;
+        if (mountainPreview) {
+          mountainPreview.style.backgroundImage = `url("${mapImage.src}")`;
+          mountainPreview.classList.add('is-loaded');
+        }
       } else {
         this.worldRenderer.setParkImage(mapImage);
       }

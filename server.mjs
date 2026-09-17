@@ -11,6 +11,7 @@ const mimeTypes = {
   '.css': 'text/css; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
   '.png': 'image/png',
+  '.webp': 'image/webp',
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
   '.svg': 'image/svg+xml',
@@ -39,7 +40,7 @@ const server = http.createServer(async (request, response) => {
     const file = await fs.readFile(filePath);
     const extension = path.extname(filePath).toLowerCase();
     const type = mimeTypes[extension] || 'application/octet-stream';
-    const isImage = ['.png', '.jpg', '.jpeg', '.svg', '.ico'].includes(extension);
+    const isImage = ['.png', '.webp', '.jpg', '.jpeg', '.svg', '.ico'].includes(extension);
     const cacheControl = isImage
       ? 'public, max-age=86400, stale-while-revalidate=604800'
       : 'no-cache';

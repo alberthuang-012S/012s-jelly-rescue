@@ -238,6 +238,11 @@ body { background: #deeff5; }
   overflow: hidden;
   background: linear-gradient(145deg, #8fd9ed, #5aa06d);
 }
+.mountain-art.is-loaded {
+  background-position: center 58%;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
 .mountain-art::before,
 .mountain-art::after,
 .mountain-art .art-mountain,
