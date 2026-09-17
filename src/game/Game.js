@@ -118,7 +118,7 @@ export class Game {
   }
 
   async preloadAssets() {
-    const worldJelly = await loadImage('/reference/world-jelly-player-hq.png');
+    const worldJelly = await loadImage('./reference/world-jelly-player-hq.png');
     if (worldJelly.naturalWidth) {
       this.spriteImage = worldJelly;
       this.playerSpriteSheet = {
@@ -134,13 +134,13 @@ export class Game {
       };
       this.player.spriteSheet = this.playerSpriteSheet;
     } else {
-      const rawSprite = await loadImage('/reference/player-jelly-preferred.png');
+      const rawSprite = await loadImage('./reference/player-jelly-preferred.png');
       this.spriteImage = await removeSpriteBackground(rawSprite);
       this.playerSpriteSheet = null;
       this.player.spriteSheet = null;
     }
     this.player.spriteImage = this.spriteImage;
-    this.npcSpriteImage = await loadImage('/reference/generated-npcs-hiker-elder-child-hq.png');
+    this.npcSpriteImage = await loadImage('./reference/generated-npcs-hiker-elder-child-hq.png');
     if (!this.npcSpriteImage.naturalWidth) this.npcSpriteImage = null;
     if (this.npcSpriteImage) {
       this.npcSpriteSheet = {
@@ -153,9 +153,9 @@ export class Game {
       npc.spriteImage = this.npcSpriteImage;
       npc.spriteSheet = this.npcSpriteSheet;
     });
-    const mountainMap = await loadImage('/reference/generated-mountain-open-portrait-hq.png');
+    const mountainMap = await loadImage('./reference/generated-mountain-open-portrait-hq.png');
     if (mountainMap.naturalWidth) this.worldRenderer.setMountainImage(mountainMap);
-    const worldFront = await loadImage('/reference/world-jelly-front-hq.png');
+    const worldFront = await loadImage('./reference/world-jelly-front-hq.png');
     const homeCharacter = document.querySelector('.home-character-crop');
     if (homeCharacter && worldFront.src) homeCharacter.style.backgroundImage = `url("${worldFront.src}")`;
   }

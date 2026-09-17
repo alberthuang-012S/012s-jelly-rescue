@@ -177,7 +177,7 @@ body { background: #deeff5; }
 .stage-card-content b { color: #173e80; }.stage-card-content small { color: #526d91; }.stage-card-content em { color: #5e9980; }.stage-card-check { border-radius: 0; background: #228ce8; }
 .primary-button { border: 3px solid #285aa3; border-radius: 0; color: #fff; background: #228ce8; box-shadow: 0 4px 0 #285aa3, inset 0 2px 0 rgba(255,255,255,.6); text-shadow: 0 1px #145aa1; }.primary-button:hover { background: #2aa6f0; box-shadow: 0 5px 0 #285aa3, inset 0 2px 0 rgba(255,255,255,.7); }.button-arrow { border-radius: 0; color: #173a76; background: #d4f3ff; }
 .control-hint { color: #6486a6; }.keycap { border: 2px solid #8aace0; border-bottom-width: 3px; border-radius: 0; color: #315b8e; background: #f7fcff; }
-.home-character-wrap { z-index: 2; }.character-glow { background: radial-gradient(circle, rgba(82, 190, 240, .4), transparent 67%); }.home-character-crop { background-image: url('/reference/world-jelly-front-hq.png'); background-size: contain; background-position: center; filter: drop-shadow(6px 8px 0 rgba(25, 59, 106, .2)); }
+.home-character-wrap { z-index: 2; }.character-glow { background: radial-gradient(circle, rgba(82, 190, 240, .4), transparent 67%); }.home-character-crop { background-image: url('../reference/world-jelly-front-hq.png'); background-size: contain; background-position: center; filter: drop-shadow(6px 8px 0 rgba(25, 59, 106, .2)); }
 .home-footer { color: rgba(39, 93, 142, .66); }
 
 .game-shell { padding: 12px; background: #deeff5; }
@@ -221,7 +221,7 @@ body { background: #deeff5; }
    in-game world share the same illustrated alpine language. */
 .mountain-art {
   overflow: hidden;
-  background: #78b874 url('/reference/generated-mountain-open-portrait-hq.png') center 58% / cover no-repeat;
+  background: #78b874 url('../reference/generated-mountain-open-portrait-hq.png') center 58% / cover no-repeat;
 }
 .mountain-art::before,
 .mountain-art::after,
