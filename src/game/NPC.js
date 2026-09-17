@@ -1,17 +1,17 @@
 import { CONDITION_LABELS, CONDITIONS, ROLE_LABELS, STATES } from './constants.js';
-import { choose, clamp, drawShadow, drawText, distance, roundedRect } from './utils.js';
+import { choose, clamp, circleHitsRect, drawShadow, drawText, distance, moveWithCollision, roundedRect } from './utils.js';
 import { NPCStateMachine } from './NPCStateMachine.js';
 
 const ROLE_STYLE = {
-  jogger: { shirt: '#f47c8d', hair: '#24324a', accent: '#ffd687', speed: 78, movement: 'runner' },
-  picnic: { shirt: '#f47ca4', hair: '#5d3e70', accent: '#ffd687', speed: 14, movement: 'sit' },
-  elder: { shirt: '#8272db', hair: '#e8e5d7', accent: '#f3c997', speed: 8, movement: 'sit' },
-  visitor: { shirt: '#ffd687', hair: '#503e4a', accent: '#96c981', speed: 32, movement: 'wander' },
-  dogWalker: { shirt: '#72d6ff', hair: '#24324a', accent: '#f3c997', speed: 58, movement: 'patrol' },
-  hiker: { shirt: '#f3a66b', hair: '#24324a', accent: '#75d2dc', speed: 35, movement: 'patrol' },
-  trailRunner: { shirt: '#f47c8d', hair: '#24324a', accent: '#ffd687', speed: 82, movement: 'runner' },
-  photographer: { shirt: '#bca9f4', hair: '#24324a', accent: '#75d2dc', speed: 24, movement: 'wander' },
-  family: { shirt: '#78c98a', hair: '#754b4d', accent: '#ffd687', speed: 25, movement: 'wander' }
+  jogger: { shirt: '#f47c8d', hair: '#24324a', accent: '#ffd687', speed: 78, radius: 20, movement: 'runner' },
+  picnic: { shirt: '#f47ca4', hair: '#5d3e70', accent: '#ffd687', speed: 14, radius: 20, movement: 'sit' },
+  elder: { shirt: '#8272db', hair: '#e8e5d7', accent: '#f3c997', speed: 8, radius: 19, movement: 'sit' },
+  visitor: { shirt: '#ffd687', hair: '#503e4a', accent: '#96c981', speed: 32, radius: 19, movement: 'wander' },
+  dogWalker: { shirt: '#72d6ff', hair: '#24324a', accent: '#f3c997', speed: 58, radius: 21, movement: 'patrol' },
+  hiker: { shirt: '#f3a66b', hair: '#24324a', accent: '#75d2dc', speed: 35, radius: 20, movement: 'patrol' },
+  trailRunner: { shirt: '#f47c8d', hair: '#24324a', accent: '#ffd687', speed: 82, radius: 20, movement: 'runner' },
+  photographer: { shirt: '#bca9f4', hair: '#24324a', accent: '#75d2dc', speed: 24, radius: 19, movement: 'wander' },
+  family: { shirt: '#78c98a', hair: '#754b4d', accent: '#ffd687', speed: 25, radius: 20, movement: 'wander' }
 };
 
 const NPC_SPRITE_VARIANTS = Object.freeze({
@@ -40,11 +40,13 @@ export class NPC {
     this.name = name || ROLE_LABELS[role] || '遊客';
     this.x = x;
     this.y = y;
+    this.radius = ROLE_STYLE[role]?.radius || 20;
     this.zone = zone || 'park';
     this.path = path;
     this.pathIndex = 0;
     this.wanderTarget = null;
     this.wanderWait = Math.random() * 2;
+    this.blockedTime = 0;
     this.state = STATES.NORMAL;
     this.condition = null;
     this.tolerance = 0;
@@ -125,8 +127,7 @@ export class NPC {
     this.phase += dt * 2;
     if (this.state === STATES.FAILED) {
       this.removeTimer -= dt;
-      this.x += 15 * dt;
-      this.y -= 7 * dt;
+      this.moveByVector({ x: 15, y: -7 }, Math.hypot(15, 7), dt, stage);
       if (this.removeTimer <= 0) this.active = false;
       return;
     }
@@ -144,23 +145,23 @@ export class NPC {
     this.wanderWait -= dt;
     if (!this.wanderTarget || distance(this, this.wanderTarget) < 8) {
       if (this.wanderWait > 0) return;
-      const zone = stage.zones?.find((item) => item.id === this.zone) || stage.zones?.[0];
-      if (zone) {
-        this.wanderTarget = {
-          x: zone.x + 24 + Math.random() * Math.max(1, zone.width - 48),
-          y: zone.y + 24 + Math.random() * Math.max(1, zone.height - 48)
-        };
-      }
+      this.wanderTarget = this.findWanderTarget(stage);
+      this.blockedTime = 0;
       this.wanderWait = 0.4;
     }
+    if (!this.wanderTarget) return;
     const dx = this.wanderTarget.x - this.x;
     const dy = this.wanderTarget.y - this.y;
     const length = Math.hypot(dx, dy) || 1;
     const speed = style.speed * (this.state === STATES.CRITICAL ? 1.15 : 1);
-    this.x += (dx / length) * speed * dt;
-    this.y += (dy / length) * speed * dt;
-    this.x = clamp(this.x, 30, stage.world.width - 30);
-    this.y = clamp(this.y, 50, stage.world.height - 30);
+    const moved = this.moveByVector({ x: dx, y: dy }, speed, dt, stage);
+    if (moved < 0.05) this.blockedTime += dt;
+    else this.blockedTime = 0;
+    if (this.blockedTime >= 0.75) {
+      this.wanderTarget = null;
+      this.wanderWait = 0.12;
+      this.blockedTime = 0;
+    }
   }
 
   moveAlongPath(dt, speed, stage) {
@@ -174,8 +175,78 @@ export class NPC {
       return;
     }
     const velocity = speed * (this.state === STATES.CRITICAL ? 1.2 : 1);
-    this.x += (dx / length) * velocity * dt;
-    this.y += (dy / length) * velocity * dt;
+    const moved = this.moveByVector({ x: dx, y: dy }, velocity, dt, stage);
+    if (moved < 0.05) this.blockedTime += dt;
+    else this.blockedTime = 0;
+    if (this.blockedTime >= 0.85) {
+      this.pathIndex = (this.pathIndex + 1) % this.path.length;
+      this.blockedTime = 0;
+    }
+  }
+
+  findWanderTarget(stage) {
+    const zone = stage.zones?.find((item) => item.id === this.zone) || stage.zones?.[0];
+    if (!zone) return null;
+    const padding = this.radius + 12;
+    const minX = Math.max(this.radius, zone.x + padding);
+    const maxX = Math.min(stage.world.width - this.radius, zone.x + zone.width - padding);
+    const minY = Math.max(this.radius, zone.y + padding);
+    const maxY = Math.min(stage.world.height - this.radius, zone.y + zone.height - padding);
+    for (let attempt = 0; attempt < 16; attempt += 1) {
+      const candidate = {
+        x: minX + Math.random() * Math.max(1, maxX - minX),
+        y: minY + Math.random() * Math.max(1, maxY - minY)
+      };
+      if (this.canOccupy(candidate, stage)) return candidate;
+    }
+    return this.canOccupy({ x: this.x, y: this.y }, stage) ? { x: this.x, y: this.y } : null;
+  }
+
+  canOccupy(position, stage) {
+    if (
+      position.x < this.radius ||
+      position.x > stage.world.width - this.radius ||
+      position.y < this.radius ||
+      position.y > stage.world.height - this.radius
+    ) return false;
+    return !(stage.obstacles || []).some((obstacle) => circleHitsRect({ ...position, radius: this.radius }, obstacle));
+  }
+
+  placeAt(position, stage) {
+    const offsets = [
+      { x: 58, y: 0 }, { x: -58, y: 0 }, { x: 0, y: 58 }, { x: 0, y: -58 },
+      { x: 42, y: 42 }, { x: -42, y: 42 }, { x: 42, y: -42 }, { x: -42, y: -42 }
+    ];
+    for (const offset of offsets) {
+      const candidate = {
+        x: clamp(position.x + offset.x, this.radius, stage.world.width - this.radius),
+        y: clamp(position.y + offset.y, this.radius, stage.world.height - this.radius)
+      };
+      if (this.canOccupy(candidate, stage)) {
+        this.x = candidate.x;
+        this.y = candidate.y;
+        this.blockedTime = 0;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  moveByVector(vector, speed, dt, stage) {
+    const length = Math.hypot(vector.x, vector.y);
+    if (!length) return 0;
+    const before = { x: this.x, y: this.y };
+    const next = moveWithCollision(
+      { x: this.x, y: this.y },
+      this.radius,
+      { x: vector.x / length, y: vector.y / length },
+      speed * dt,
+      stage.world,
+      stage.obstacles || []
+    );
+    this.x = next.x;
+    this.y = next.y;
+    return Math.hypot(this.x - before.x, this.y - before.y);
   }
 
   draw(ctx, now, { debugRadius = false, cameraScale = 1, compactStatusBubble = false } = {}) {

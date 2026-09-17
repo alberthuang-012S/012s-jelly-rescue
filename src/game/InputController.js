@@ -12,11 +12,12 @@ const KEY_VECTORS = {
 };
 
 export class InputController {
-  constructor({ onAction, onItemSelect }) {
+  constructor({ onAction, onItemSelect, onItemToggle }) {
     this.keys = new Set();
     this.touchDirections = new Set();
     this.onAction = onAction;
     this.onItemSelect = onItemSelect;
+    this.onItemToggle = onItemToggle;
     this.enabled = true;
     this.boundKeyDown = (event) => this.handleKeyDown(event);
     this.boundKeyUp = (event) => this.handleKeyUp(event);
@@ -45,6 +46,10 @@ export class InputController {
     }
     if (event.code === 'Digit1') this.onItemSelect?.('PPA');
     if (event.code === 'Digit2') this.onItemSelect?.('NAP');
+    if (event.code === 'KeyQ') {
+      event.preventDefault();
+      if (!event.repeat) this.onItemToggle?.();
+    }
   }
 
   handleKeyUp(event) {
@@ -115,4 +120,3 @@ export class InputController {
     window.removeEventListener('keyup', this.boundKeyUp);
   }
 }
-

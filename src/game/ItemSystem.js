@@ -14,6 +14,11 @@ export class ItemSystem {
     return this.getSelected();
   }
 
+  toggle() {
+    this.selectedId = this.selectedId === 'PPA' ? 'NAP' : 'PPA';
+    return this.getSelected();
+  }
+
   getSelected() {
     return ITEMS[this.selectedId];
   }
@@ -22,4 +27,3 @@ export class ItemSystem {
     return this.getSelected().condition === condition;
   }
 }
-

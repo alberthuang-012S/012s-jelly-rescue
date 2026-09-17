@@ -18,6 +18,9 @@ export class HUD {
     this.lastObjective = '';
     this.lastLives = -1;
     this.lastSelectedItem = '';
+    this.activeToast = null;
+    this.activeToastTimer = null;
+    this.activeToastRemovalTimer = null;
   }
 
   update(game) {
@@ -67,14 +70,31 @@ export class HUD {
 
   showToast(message, type = 'info', detail = '') {
     const region = document.querySelector('#toast-region');
+    if (!region) return;
+    window.clearTimeout(this.activeToastTimer);
+    window.clearTimeout(this.activeToastRemovalTimer);
+    if (this.activeToast) {
+      this.activeToast.remove();
+      this.activeToast = null;
+    }
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
     toast.innerHTML = `<span class="toast-mark">${type === 'success' ? '✦' : type === 'danger' ? '!' : '·'}</span><span><b>${message}</b>${detail ? `<small>${detail}</small>` : ''}</span>`;
     region.appendChild(toast);
-    requestAnimationFrame(() => toast.classList.add('is-visible'));
-    setTimeout(() => {
+    this.activeToast = toast;
+    requestAnimationFrame(() => {
+      if (this.activeToast === toast) toast.classList.add('is-visible');
+    });
+    this.activeToastTimer = window.setTimeout(() => {
+      if (this.activeToast !== toast) return;
       toast.classList.remove('is-visible');
-      setTimeout(() => toast.remove(), 260);
+      this.activeToastRemovalTimer = window.setTimeout(() => {
+        if (this.activeToast !== toast) return;
+        toast.remove();
+        this.activeToast = null;
+        this.activeToastRemovalTimer = null;
+      }, 260);
+      this.activeToastTimer = null;
     }, 2300);
   }
 }

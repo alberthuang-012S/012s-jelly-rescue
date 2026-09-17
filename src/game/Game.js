@@ -212,7 +212,8 @@ export class Game {
     this.hud = new HUD();
     this.input = new InputController({
       onAction: () => this.tryAction(),
-      onItemSelect: (itemId) => this.selectItem(itemId)
+      onItemSelect: (itemId) => this.selectItem(itemId),
+      onItemToggle: () => this.toggleItem()
     });
     this.player = new Player(null);
     this.resultScreen = new ResultScreen({
@@ -461,7 +462,9 @@ export class Game {
     this.scoreManager.reset();
     this.combo.reset();
     this.itemSystem.reset();
+    this.interactionSystem.currentTarget = null;
     this.player.reset(stage.start);
+    this.hud.update(this);
     this.cameraState = null;
     this.lastDistanceSample = 0;
     this.eventDirector = new EventDirector(stage, {
@@ -520,10 +523,12 @@ export class Game {
   selectItem(itemId) {
     this.itemSystem.select(itemId);
     this.hud.updateItems(this.itemSystem.selectedId);
-    if (this.state === 'playing') {
-      const item = this.itemSystem.getSelected();
-      this.hud.showToast(`${item.label} 已選取`, 'info', `${item.short} · 靠近求救居民後按 E 使用`);
-    }
+  }
+
+  toggleItem() {
+    if (this.state !== 'playing') return;
+    this.itemSystem.toggle();
+    this.hud.updateItems(this.itemSystem.selectedId);
   }
 
   update(dt) {
@@ -627,10 +632,10 @@ export class Game {
       const stage = this.stageManager.getStage();
       const npc = this.npcs.find((candidate) => candidate.canReceiveEvent(this.stageManager.elapsed)) || this.eventDirector.spawn(this.npcs);
       npc.role = 'elder';
+      npc.radius = 19;
       npc.path = [];
       npc.wanderTarget = null;
-      npc.x = clamp(this.player.x + 58, 35, stage.world.width - 35);
-      npc.y = clamp(this.player.y, 45, stage.world.height - 35);
+      npc.placeAt({ x: this.player.x, y: this.player.y }, stage);
       npc.zone = stage.zones.find((zone) => this.player.x >= zone.x && this.player.x <= zone.x + zone.width && this.player.y >= zone.y && this.player.y <= zone.y + zone.height)?.id || stage.zones[0].id;
       const triggered = npc.startEvent(condition, this.eventDirector.getTolerance(this.stageManager.elapsed), this.eventDirector.getWarningDuration(this.stageManager.elapsed));
       this.eventDirector.callbacks.onEvent?.(npc, condition);

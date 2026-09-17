@@ -43,7 +43,7 @@ export class EventDirector {
 
   update(dt, stageTime, npcs) {
     const activeCount = npcs.filter((npc) => npc.active).length;
-    if (stageTime >= this.nextSpawnAt && activeCount < this.stage.maxNpcs) {
+    if (stageTime < this.stage.duration && stageTime >= this.nextSpawnAt && activeCount < this.stage.maxNpcs) {
       this.spawn(npcs);
       this.nextSpawnAt = stageTime + this.getSpawnCooldown(stageTime);
     }
@@ -67,7 +67,7 @@ export class EventDirector {
   }
 
   selectCandidate(candidates, stageTime) {
-    const urgent = this.stage.id === 'mountain' && stageTime > 90;
+    const urgent = this.stage.id === 'mountain' && stageTime >= 40;
     if (urgent) {
       const farthest = [...candidates].sort((a, b) => b.x - a.x)[0];
       if (farthest && Math.random() < 0.45) return farthest;
@@ -77,44 +77,72 @@ export class EventDirector {
 
   pickCondition(npc, stageTime) {
     if (this.stage.id === 'park') {
-      if (stageTime < 30) return CONDITIONS.ITCH;
-      if (stageTime < 60) return CONDITIONS.SORENESS;
+      if (stageTime < 12) return CONDITIONS.ITCH;
+      if (stageTime < 24) return Math.random() < 0.68 ? CONDITIONS.SORENESS : CONDITIONS.ITCH;
+      if (stageTime < 45) return Math.random() < 0.5 ? CONDITIONS.ITCH : CONDITIONS.SORENESS;
     }
     const zone = this.stage.zones.find((item) => item.id === npc.zone);
-    if (zone?.preference === 'itch' && Math.random() < 0.74) return CONDITIONS.ITCH;
-    if (zone?.preference === 'sore' && Math.random() < 0.74) return CONDITIONS.SORENESS;
+    if (zone?.preference === 'itch' && Math.random() < (stageTime >= 45 ? 0.62 : 0.74)) return CONDITIONS.ITCH;
+    if (zone?.preference === 'sore' && Math.random() < (stageTime >= 45 ? 0.62 : 0.74)) return CONDITIONS.SORENESS;
     return Math.random() < 0.5 ? CONDITIONS.ITCH : CONDITIONS.SORENESS;
   }
 
   getTolerance(stageTime) {
     if (this.stage.id === 'park') {
-      if (stageTime < 60) return 11.5;
-      if (stageTime < 120) return 10;
-      return 8.5;
+      if (stageTime < 12) return 11;
+      if (stageTime < 24) return 10.2;
+      if (stageTime < 45) return 8.9;
+      return 7.6;
     }
-    if (stageTime < 60) return 9.5;
-    if (stageTime < 120) return 8.4;
-    return 7.2;
+    if (stageTime < 15) return 9.8;
+    if (stageTime < 40) return 8.8;
+    return 7.5;
   }
 
   getWarningDuration(stageTime) {
-    if (this.stage.id === 'park') return stageTime < 60 ? 3.4 : 3;
-    return stageTime < 60 ? 3.1 : 2.6;
+    if (this.stage.id === 'park') {
+      if (stageTime < 12) return 3.8;
+      if (stageTime < 24) return 3.4;
+      if (stageTime < 45) return 3;
+      return 2.6;
+    }
+    if (stageTime < 15) return 3.6;
+    if (stageTime < 40) return 3.1;
+    return 2.6;
   }
 
   getMaxSimultaneous(stageTime) {
-    if (this.stage.id === 'park') return stageTime < 120 ? 1 : 2;
-    return stageTime < 45 ? 1 : stageTime < 105 ? 2 : 3;
+    if (this.stage.id === 'park') {
+      if (stageTime < 24) return 1;
+      if (stageTime < 45) return 2;
+      return 3;
+    }
+    if (stageTime < 15) return 1;
+    if (stageTime < 40) return 2;
+    return 3;
   }
 
   getSpawnCooldown(stageTime) {
-    const base = this.stage.event.spawnCooldown;
-    return Math.max(3.2, base - Math.min(3.2, stageTime / 70));
+    if (this.stage.id === 'park') {
+      if (stageTime < 12) return 6.2;
+      if (stageTime < 24) return 5.5;
+      if (stageTime < 45) return 4.8;
+      return 4.1;
+    }
+    if (stageTime < 15) return 6;
+    if (stageTime < 40) return 5;
+    return 4.2;
   }
 
   getEventCooldown(stageTime) {
-    const base = this.stage.id === 'mountain' ? 5.2 : 6.2;
-    return Math.max(2.9, base - Math.min(3, stageTime / 70));
+    if (this.stage.id === 'park') {
+      if (stageTime < 12) return 5.6;
+      if (stageTime < 24) return 4.9;
+      if (stageTime < 45) return 4.1;
+      return 3.3;
+    }
+    if (stageTime < 15) return 5.8;
+    if (stageTime < 40) return 4.5;
+    return 3.4;
   }
 }
-

@@ -28,12 +28,12 @@
           <div class="stage-cards" role="listbox" aria-label="選擇關卡">
             <button class="stage-card is-selected" data-stage-select="park" role="option" aria-selected="true">
               <span class="stage-card-art park-art"><span class="art-sun">☼</span><span class="art-tree">♣</span><span class="art-bench"></span></span>
-              <span class="stage-card-content"><b>Jelly Park</b><small>城市公園 · 寬路巡邏</small><em>建議 3 分鐘</em></span>
+              <span class="stage-card-content"><b>Jelly Park</b><small>城市公園 · 寬路巡邏</small><em>建議 1 分鐘</em></span>
               <span class="stage-card-check">✓</span>
             </button>
             <button class="stage-card" data-stage-select="mountain" role="option" aria-selected="false">
               <span class="stage-card-art mountain-art"><span class="art-mountain">⌃</span><span class="art-path"></span><span class="art-flag">⚑</span></span>
-              <span class="stage-card-content"><b>Jelly Mountain</b><small>山谷全景 · 開放草地</small><em>全景巡邏</em></span>
+              <span class="stage-card-content"><b>Jelly Mountain</b><small>山谷全景 · 開放草地</small><em>1 分鐘全景巡邏</em></span>
               <span class="stage-card-check">✓</span>
             </button>
           </div>
@@ -73,7 +73,7 @@
               <div class="metric-box combo-metric"><small>COMBO</small><strong id="hud-combo">—</strong></div>
             </div>
             <div class="hud-right">
-              <div class="timer-box"><small>巡邏剩餘</small><strong id="hud-timer">03:00</strong></div>
+              <div class="timer-box"><small>巡邏剩餘</small><strong id="hud-timer">01:00</strong></div>
               <div class="lives-box" id="hud-lives" aria-label="生命值"></div>
             </div>
           </header>
@@ -88,6 +88,7 @@
           <div id="action-button" class="action-button is-hidden" role="button" tabindex="0" data-action="use"><span class="action-icon">✦</span><span><b>使用</b><small>E / SPACE</small></span></div>
 
           <div class="item-dock" aria-label="固定道具">
+            <span class="item-toggle-hint" aria-hidden="true">Q 切換</span>
             <button class="item-card is-selected" data-item="PPA" type="button">
               <span class="item-hotkey">1</span><span class="item-img-wrap"><picture><source srcset="./reference/runtime/ppa-plus-one.webp" type="image/webp" /><img src="./reference/ppa-plus-one.png" alt="PPA+1" loading="lazy" decoding="async" /></picture></span>
               <span class="item-info"><b>PPA+1</b><small>癢 · ITCH</small></span><span class="item-status">SELECTED</span>

@@ -22,15 +22,19 @@ const parkRouteDesign = {
   mainTrail: [
     { x: 512, y: 1420 }, { x: 512, y: 1240 }, { x: 512, y: 1060 }, { x: 512, y: 900 },
     { x: 330, y: 900 }, { x: 250, y: 760 }, { x: 250, y: 620 }, { x: 350, y: 520 },
-    { x: 512, y: 520 }, { x: 512, y: 340 }, { x: 512, y: 130 }
+    { x: 512, y: 520 }, { x: 512, y: 340 }, { x: 512, y: 130 },
+    // Close the patrol loop around the fountain instead of through it.
+    { x: 250, y: 520 }, { x: 250, y: 900 }, { x: 512, y: 900 }
   ],
   leftLoop: [
     { x: 512, y: 1050 }, { x: 420, y: 1040 }, { x: 310, y: 980 }, { x: 215, y: 875 },
-    { x: 185, y: 745 }, { x: 240, y: 610 }, { x: 350, y: 530 }, { x: 450, y: 570 }, { x: 512, y: 620 }
+    { x: 185, y: 745 }, { x: 240, y: 610 }, { x: 350, y: 530 }, { x: 450, y: 570 }, { x: 512, y: 620 },
+    { x: 250, y: 620 }, { x: 250, y: 900 }, { x: 512, y: 900 }
   ],
   rightLoop: [
     { x: 512, y: 1050 }, { x: 604, y: 1040 }, { x: 714, y: 980 }, { x: 809, y: 875 },
-    { x: 839, y: 745 }, { x: 784, y: 610 }, { x: 674, y: 530 }, { x: 574, y: 570 }, { x: 512, y: 620 }
+    { x: 839, y: 745 }, { x: 784, y: 610 }, { x: 674, y: 530 }, { x: 574, y: 570 }, { x: 512, y: 620 },
+    { x: 780, y: 620 }, { x: 780, y: 900 }, { x: 512, y: 900 }
   ],
   upperLoop: [
     { x: 512, y: 520 }, { x: 415, y: 470 }, { x: 345, y: 385 }, { x: 375, y: 285 },
@@ -67,14 +71,14 @@ export const STAGE_DEFS = Object.freeze({
     name: 'Jelly Park',
     displayName: '城市公園',
     subtitle: '開放公園 · 寬路巡邏',
-    duration: 180,
+    duration: 60,
     // Keep the same 2:3 portrait ratio as the artwork, but reduce the logical
     // world so the full map reads larger on a phone screen.
     world: { width: Math.round(PARK_DESIGN_WIDTH * PARK_SCALE), height: Math.round(PARK_DESIGN_HEIGHT * PARK_SCALE) },
     fitToScreen: true,
     start: scaleParkPoint({ x: 512, y: 1390 }),
     maxNpcs: 8,
-    event: { initialDelay: 2.4, spawnCooldown: 7.2, initialTolerance: 10.5, warningDuration: 3.4 },
+    event: { initialDelay: 2.4, spawnCooldown: 5.6, initialTolerance: 10.5, warningDuration: 3.6 },
     routes: parkRoutes,
     npcTypes: ['jogger', 'picnic', 'elder', 'visitor', 'dogWalker'],
     zones: [
@@ -106,12 +110,12 @@ export const STAGE_DEFS = Object.freeze({
     name: 'Jelly Mountain',
     displayName: '山谷全景',
     subtitle: '開放草地 · 全景巡邏',
-    duration: 180,
+    duration: 60,
     world: { width: 1024, height: 1536 },
     fitToScreen: true,
     start: { x: 512, y: 1390 },
     maxNpcs: 8,
-    event: { initialDelay: 2.1, spawnCooldown: 6.3, initialTolerance: 8.2, warningDuration: 2.8 },
+    event: { initialDelay: 2.1, spawnCooldown: 5.2, initialTolerance: 9.2, warningDuration: 3.2 },
     routes: mountainRoutes,
     npcTypes: ['hiker', 'trailRunner', 'photographer', 'elder', 'family'],
     zones: [
@@ -175,9 +179,14 @@ export class StageManager {
   }
 
   getPhase() {
-    if (this.elapsed < 30) return 'intro';
-    if (this.elapsed < 60) return 'nap';
-    if (this.elapsed < 120) return 'mixed';
+    if (this.currentStageId === 'mountain') {
+      if (this.elapsed < 15) return 'intro';
+      if (this.elapsed < 40) return 'normal';
+      return 'pressure';
+    }
+    if (this.elapsed < 12) return 'intro';
+    if (this.elapsed < 24) return 'nap';
+    if (this.elapsed < 45) return 'mixed';
     return 'pressure';
   }
 }
