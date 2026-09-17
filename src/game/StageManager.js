@@ -2,19 +2,29 @@ import { clamp } from './utils.js';
 
 const parkRoutes = {
   loop: [
-    { x: 120, y: 455 }, { x: 1420, y: 455 }, { x: 1420, y: 640 }, { x: 120, y: 640 }
+    { x: 120, y: 455 }, { x: 1480, y: 455 }, { x: 1480, y: 820 }, { x: 120, y: 820 }
   ],
   shortLoop: [
-    { x: 450, y: 280 }, { x: 1120, y: 280 }, { x: 1120, y: 720 }, { x: 450, y: 720 }
+    { x: 460, y: 278 }, { x: 1120, y: 278 }, { x: 1120, y: 730 }, { x: 460, y: 730 }
   ]
 };
 
 const mountainRoutes = {
-  ridge: [
-    { x: 160, y: 820 }, { x: 430, y: 610 }, { x: 760, y: 520 }, { x: 1140, y: 420 }, { x: 1510, y: 190 }
+  mainTrail: [
+    { x: 512, y: 1390 }, { x: 512, y: 1190 }, { x: 512, y: 1010 }, { x: 512, y: 820 },
+    { x: 512, y: 650 }, { x: 512, y: 470 }, { x: 512, y: 290 }, { x: 512, y: 130 }
   ],
-  lowerTrail: [
-    { x: 120, y: 830 }, { x: 360, y: 760 }, { x: 620, y: 680 }, { x: 850, y: 570 }, { x: 1120, y: 510 }
+  leftLoop: [
+    { x: 512, y: 1080 }, { x: 390, y: 1050 }, { x: 260, y: 970 }, { x: 175, y: 835 },
+    { x: 190, y: 700 }, { x: 295, y: 585 }, { x: 410, y: 570 }, { x: 512, y: 630 }
+  ],
+  rightLoop: [
+    { x: 512, y: 1080 }, { x: 634, y: 1050 }, { x: 764, y: 970 }, { x: 849, y: 835 },
+    { x: 834, y: 700 }, { x: 729, y: 585 }, { x: 614, y: 570 }, { x: 512, y: 630 }
+  ],
+  upperLoop: [
+    { x: 512, y: 430 }, { x: 405, y: 400 }, { x: 330, y: 320 }, { x: 350, y: 235 },
+    { x: 512, y: 205 }, { x: 674, y: 235 }, { x: 694, y: 320 }, { x: 619, y: 400 }
   ]
 };
 
@@ -58,37 +68,42 @@ export const STAGE_DEFS = Object.freeze({
   mountain: {
     id: 'mountain',
     name: 'Jelly Mountain',
-    displayName: '山間步道',
-    subtitle: '路線判斷 · 山頂觀景台',
+    displayName: '山谷全景',
+    subtitle: '開放草地 · 全景巡邏',
     duration: 180,
-    world: { width: 1700, height: 1000 },
-    start: { x: 145, y: 830 },
+    world: { width: 1024, height: 1536 },
+    start: { x: 512, y: 1390 },
     maxNpcs: 8,
     event: { initialDelay: 2.1, spawnCooldown: 6.3, initialTolerance: 8.2, warningDuration: 2.8 },
     routes: mountainRoutes,
     npcTypes: ['hiker', 'trailRunner', 'photographer', 'elder', 'family'],
     zones: [
-      { id: 'trailhead', label: '登山口', x: 40, y: 730, width: 290, height: 220, preference: 'mixed' },
-      { id: 'forest', label: '森林步道', x: 270, y: 350, width: 480, height: 380, preference: 'itch' },
-      { id: 'platform', label: '休息平台', x: 660, y: 400, width: 300, height: 220, preference: 'mixed' },
-      { id: 'rock', label: '岩石坡', x: 920, y: 350, width: 380, height: 310, preference: 'sore' },
-      { id: 'summit', label: '山頂觀景台', x: 1250, y: 55, width: 390, height: 280, preference: 'sore' }
+      { id: 'trailhead', label: '登山入口', x: 290, y: 1220, width: 444, height: 250, preference: 'mixed' },
+      { id: 'meadow', label: '中央開放草地', x: 250, y: 500, width: 524, height: 670, preference: 'itch' },
+      { id: 'leftMeadow', label: '左側草坡', x: 95, y: 690, width: 245, height: 350, preference: 'mixed' },
+      { id: 'rightMeadow', label: '右側草坡', x: 684, y: 690, width: 245, height: 350, preference: 'sore' },
+      { id: 'platform', label: '中央休息平台', x: 360, y: 650, width: 304, height: 220, preference: 'mixed' },
+      { id: 'summit', label: '山頂觀景台', x: 320, y: 55, width: 384, height: 365, preference: 'sore' }
     ],
     spawnPoints: [
-      { x: 220, y: 835, zone: 'trailhead', route: 'lowerTrail' },
-      { x: 370, y: 570, zone: 'forest' },
-      { x: 560, y: 420, zone: 'forest', route: 'ridge' },
-      { x: 780, y: 510, zone: 'platform' },
-      { x: 1040, y: 535, zone: 'rock' },
-      { x: 1250, y: 280, zone: 'rock', route: 'ridge' },
-      { x: 1410, y: 175, zone: 'summit' },
-      { x: 1510, y: 270, zone: 'summit' }
+      { x: 512, y: 1390, zone: 'trailhead', route: 'mainTrail' },
+      { x: 295, y: 985, zone: 'leftMeadow', route: 'leftLoop' },
+      { x: 729, y: 985, zone: 'rightMeadow', route: 'rightLoop' },
+      { x: 512, y: 760, zone: 'platform', route: 'mainTrail' },
+      { x: 190, y: 735, zone: 'leftMeadow', route: 'leftLoop' },
+      { x: 834, y: 735, zone: 'rightMeadow', route: 'rightLoop' },
+      { x: 405, y: 300, zone: 'summit', route: 'upperLoop' },
+      { x: 619, y: 300, zone: 'summit', route: 'upperLoop' }
     ],
+    // Keep the center open. Only the illustrated edge clusters are blocked so
+    // the player can cross the map without getting trapped in narrow lanes.
     obstacles: [
-      { x: 340, y: 225, width: 205, height: 125, kind: 'cliff' },
-      { x: 760, y: 690, width: 210, height: 130, kind: 'cliff' },
-      { x: 1040, y: 690, width: 280, height: 140, kind: 'cliff' },
-      { x: 1350, y: 365, width: 210, height: 135, kind: 'cliff' }
+      { x: 0, y: 170, width: 230, height: 300, kind: 'upper-left-cliff' },
+      { x: 794, y: 220, width: 230, height: 330, kind: 'upper-right-cliff' },
+      { x: 0, y: 480, width: 150, height: 260, kind: 'left-waterfall' },
+      { x: 874, y: 470, width: 150, height: 260, kind: 'right-waterfall' },
+      { x: 0, y: 1330, width: 250, height: 206, kind: 'left-bottom-forest' },
+      { x: 774, y: 1330, width: 250, height: 206, kind: 'right-bottom-forest' }
     ]
   }
 });
@@ -129,4 +144,3 @@ export class StageManager {
     return 'pressure';
   }
 }
-

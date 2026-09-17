@@ -69,6 +69,7 @@ export class Game {
   constructor() {
     this.canvas = document.querySelector('#game-canvas');
     this.ctx = this.canvas.getContext('2d');
+    this.appShell = document.querySelector('#app');
     this.homeScreen = document.querySelector('#home-screen');
     this.gameShell = document.querySelector('#game-shell');
     this.homeStageCards = [...document.querySelectorAll('[data-stage-select]')];
@@ -84,6 +85,11 @@ export class Game {
     this.lastDistanceSample = 0;
     this.debug = { open: false, infiniteLife: false, showRadius: false };
     this.spriteImage = null;
+    this.playerSpriteSheet = null;
+    this.npcSpriteImage = null;
+    this.npcSpriteSheet = null;
+    this.viewport = { ...VIEWPORT };
+    this.pixelRatio = 1;
 
     this.stageManager = new StageManager();
     this.itemSystem = new ItemSystem();
@@ -112,11 +118,46 @@ export class Game {
   }
 
   async preloadAssets() {
-    const rawSprite = await loadImage('../../reference/player-jelly-preferred.png');
-    this.spriteImage = await removeSpriteBackground(rawSprite);
+    const worldJelly = await loadImage('/reference/world-jelly-player-hq.png');
+    if (worldJelly.naturalWidth) {
+      this.spriteImage = worldJelly;
+      this.playerSpriteSheet = {
+        frameWidth: worldJelly.naturalWidth / 4,
+        frameHeight: worldJelly.naturalHeight,
+        frameCount: 4,
+        directionFrames: { down: 0, left: 1, right: 2, up: 3 },
+        sourceY: Math.round(worldJelly.naturalHeight * 0.06),
+        sourceHeight: Math.round(worldJelly.naturalHeight * 0.88),
+        destinationWidth: 84,
+        destinationHeight: 92,
+        anchorOffset: 58
+      };
+      this.player.spriteSheet = this.playerSpriteSheet;
+    } else {
+      const rawSprite = await loadImage('/reference/player-jelly-preferred.png');
+      this.spriteImage = await removeSpriteBackground(rawSprite);
+      this.playerSpriteSheet = null;
+      this.player.spriteSheet = null;
+    }
     this.player.spriteImage = this.spriteImage;
+    this.npcSpriteImage = await loadImage('/reference/generated-npcs-hiker-elder-child-hq.png');
+    if (!this.npcSpriteImage.naturalWidth) this.npcSpriteImage = null;
+    if (this.npcSpriteImage) {
+      this.npcSpriteSheet = {
+        frameWidth: this.npcSpriteImage.naturalWidth / 3,
+        frameHeight: this.npcSpriteImage.naturalHeight,
+        frameCount: 3
+      };
+    }
+    this.npcs.forEach((npc) => {
+      npc.spriteImage = this.npcSpriteImage;
+      npc.spriteSheet = this.npcSpriteSheet;
+    });
+    const mountainMap = await loadImage('/reference/generated-mountain-open-portrait-hq.png');
+    if (mountainMap.naturalWidth) this.worldRenderer.setMountainImage(mountainMap);
+    const worldFront = await loadImage('/reference/world-jelly-front-hq.png');
     const homeCharacter = document.querySelector('.home-character-crop');
-    if (homeCharacter && this.spriteImage.src) homeCharacter.style.backgroundImage = `url("${this.spriteImage.src}")`;
+    if (homeCharacter && worldFront.src) homeCharacter.style.backgroundImage = `url("${worldFront.src}")`;
   }
 
   bindHome() {
@@ -153,12 +194,42 @@ export class Game {
 
   bindResponsiveLayout() {
     const update = () => {
-      const shouldRotate = this.state === 'playing' && window.innerWidth < 680 && window.innerHeight > window.innerWidth;
-      this.rotateOverlay.classList.toggle('is-hidden', !shouldRotate);
+      this.resizeCanvas();
+      // Portrait play is supported directly; keep the overlay hidden instead of blocking the game.
+      this.rotateOverlay.classList.add('is-hidden');
     };
     window.addEventListener('resize', update);
     window.addEventListener('orientationchange', update);
     this.updateOrientation = update;
+    this.resizeCanvas();
+  }
+
+  resizeCanvas() {
+    const frame = document.querySelector('.game-frame');
+    const frameWidth = frame?.clientWidth || window.innerWidth;
+    const frameHeight = frame?.clientHeight || window.innerHeight;
+    const isPortraitPhone = frameHeight > frameWidth && frameWidth < 760;
+    if (isPortraitPhone) {
+      const logicalWidth = 540;
+      const logicalHeight = Math.round(logicalWidth * frameHeight / Math.max(1, frameWidth));
+      this.viewport = { width: logicalWidth, height: logicalHeight };
+    } else {
+      this.viewport = { ...VIEWPORT };
+    }
+    this.pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    const bufferWidth = Math.max(1, Math.round(this.viewport.width * this.pixelRatio));
+    const bufferHeight = Math.max(1, Math.round(this.viewport.height * this.pixelRatio));
+    if (this.canvas.width !== bufferWidth || this.canvas.height !== bufferHeight) {
+      this.canvas.width = bufferWidth;
+      this.canvas.height = bufferHeight;
+    }
+    this.ctx.setTransform(this.pixelRatio, 0, 0, this.pixelRatio, 0, 0);
+  }
+
+  resetAppScroll() {
+    this.appShell?.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    this.homeScreen.scrollTop = 0;
+    this.resultScreen.screen.scrollTop = 0;
   }
 
   startStage(stageId) {
@@ -177,7 +248,11 @@ export class Game {
     this.eventDirector = new EventDirector(stage, {
       onFailure: (npc) => this.handleFailure(npc),
       onStateChange: (npc, state) => this.handleNPCStateChange(npc, state),
-      onEvent: (npc) => this.handleEventStart(npc)
+      onEvent: (npc) => this.handleEventStart(npc),
+      onSpawn: (npc) => {
+        npc.spriteImage = this.npcSpriteImage;
+        npc.spriteSheet = this.npcSpriteSheet;
+      }
     });
     this.eventDirector.seed(this.npcs);
     this.input.setEnabled(true);
@@ -189,6 +264,7 @@ export class Game {
     this.hud.updateItems(this.itemSystem.selectedId);
     this.hud.showToast(`${stage.name} 開始`, 'info', '先觀察預警，再選擇正確道具。');
     this.updateOrientation?.();
+    this.resetAppScroll();
   }
 
   showHome() {
@@ -198,6 +274,7 @@ export class Game {
     this.resultScreen.hide();
     this.homeScreen.classList.remove('is-hidden');
     this.updateOrientation?.();
+    this.resetAppScroll();
   }
 
   selectItem(itemId) {
@@ -288,6 +365,7 @@ export class Game {
     this.gameShell.classList.add('is-hidden');
     this.resultScreen.showResult(result, this.stageManager.getStage(), this.selectedStage === 'park');
     this.updateOrientation?.();
+    this.resetAppScroll();
   }
 
   finishGameOver() {
@@ -299,6 +377,7 @@ export class Game {
     this.gameShell.classList.add('is-hidden');
     this.resultScreen.showGameOver(result);
     this.updateOrientation?.();
+    this.resetAppScroll();
   }
 
   handleDebug(action, button) {
@@ -377,9 +456,21 @@ export class Game {
   }
 
   getCamera(stage) {
+    if (stage.id === 'mountain') {
+      const scale = Math.min(
+        this.viewport.width / stage.world.width,
+        this.viewport.height / stage.world.height
+      );
+      return {
+        x: (this.viewport.width - stage.world.width * scale) / 2,
+        y: (this.viewport.height - stage.world.height * scale) / 2,
+        scale
+      };
+    }
     return {
-      x: clamp(this.player.x - VIEWPORT.width / 2, 0, Math.max(0, stage.world.width - VIEWPORT.width)),
-      y: clamp(this.player.y - VIEWPORT.height / 2, 0, Math.max(0, stage.world.height - VIEWPORT.height))
+      x: clamp(this.player.x - this.viewport.width / 2, 0, Math.max(0, stage.world.width - this.viewport.width)),
+      y: clamp(this.player.y - this.viewport.height / 2, 0, Math.max(0, stage.world.height - this.viewport.height)),
+      scale: 1
     };
   }
 
@@ -388,9 +479,19 @@ export class Game {
     const stage = this.stageManager.getStage();
     const camera = this.getCamera(stage);
     const ctx = this.ctx;
-    ctx.clearRect(0, 0, VIEWPORT.width, VIEWPORT.height);
+    const pixelRatio = this.pixelRatio || 1;
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+    ctx.clearRect(0, 0, this.viewport.width, this.viewport.height);
+    ctx.fillStyle = stage.id === 'mountain' ? '#78ad83' : '#83c77f';
+    ctx.fillRect(0, 0, this.viewport.width, this.viewport.height);
     ctx.save();
-    ctx.translate(-camera.x, -camera.y);
+    if (stage.id === 'mountain') {
+      ctx.translate(camera.x, camera.y);
+      ctx.scale(camera.scale, camera.scale);
+    } else {
+      ctx.translate(-camera.x, -camera.y);
+    }
     this.worldRenderer.draw(ctx, stage, now);
     const target = this.interactionSystem.currentTarget;
     if (target) {

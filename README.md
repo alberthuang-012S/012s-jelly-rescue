@@ -16,7 +16,8 @@ Open `http://localhost:4173`.
 - `1` / click PPA+1: select itch treatment
 - `2` / click NAP+1: select soreness treatment
 - `E` / `Space` / the mobile 使用 button: rescue when close to an NPC
-- Mobile landscape: virtual D-pad + large 使用 button
+- Mobile portrait: full-screen vertical play with virtual D-pad, fixed item dock and large 使用 button
+- Visual direction: bright pixel-town palette, deep navy outlines and enamel UI panels inspired by the sibling `012s-jelly-world` project
 - Debug panel: click `DEBUG` or press `F2`
 
 ## Architecture
@@ -35,7 +36,13 @@ The core loop is split into focused modules:
 ## Phase 1 status
 
 - `Jelly Park`: complete playable loop with entrance, fountain, paths, benches, picnic area, trees, flower beds and playground.
-- `Jelly Mountain`: simplified playable route with trailhead, forest, rest platform, rock slope, fork-like trail routing and summit lookout.
+- `Jelly Mountain`: terraced alpine route with a trailhead, wide stepped paths, a central rest deck, two readable mid-route branches and a summit lookout.
+- `reference/generated-mountain-open-portrait-hq.png` is the approved portrait mountain concept rendered as the in-game background, with a spacious central meadow and sparse edge obstacles.
+- `reference/world-jelly-player-hq.png` is the polished four-frame player sprite sheet; `reference/generated-npcs-hiker-elder-child-hq.png` contains the updated hiker, elder and child sprites with transparent alpha.
+- `reference/world-jelly-front-hq.png` is the high-resolution front-facing jelly used by the home hero.
+- Park rendering remains code-native; mountain gameplay entities and HUD are composited over the generated map background.
+- Portrait layout keeps a tall camera viewport and uses the `012s-jelly-world` front-facing jelly artwork for the home character reference.
+- Map NPCs use the polished generated sprite sheet `reference/generated-npcs-hiker-elder-child-hq.png`: hiker, elder and child only; no robot or rescue-worker character.
 - Debug tools include forced ITCH/SORENESS events, 3-second tolerance, clear events, infinite life, interaction-radius display and stage switching.
 
 ## Intentional scope limits

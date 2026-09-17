@@ -3,16 +3,35 @@ import { choose, clamp, drawShadow, drawText, distance, roundedRect } from './ut
 import { NPCStateMachine } from './NPCStateMachine.js';
 
 const ROLE_STYLE = {
-  jogger: { shirt: '#f08e76', hair: '#313a50', accent: '#fbd18d', speed: 78, movement: 'runner' },
-  picnic: { shirt: '#e2a7cb', hair: '#684d70', accent: '#ffd986', speed: 14, movement: 'sit' },
-  elder: { shirt: '#7888b9', hair: '#e3e5e8', accent: '#f3c997', speed: 8, movement: 'sit' },
-  visitor: { shirt: '#e6bb70', hair: '#503e4a', accent: '#89c9a1', speed: 32, movement: 'wander' },
-  dogWalker: { shirt: '#8cb9dd', hair: '#484d68', accent: '#e5a773', speed: 58, movement: 'patrol' },
-  hiker: { shirt: '#e59f65', hair: '#3c3b51', accent: '#75c8ad', speed: 35, movement: 'patrol' },
-  trailRunner: { shirt: '#ee7e82', hair: '#353b58', accent: '#fbd377', speed: 82, movement: 'runner' },
-  photographer: { shirt: '#b18bce', hair: '#3c4059', accent: '#7fc5d8', speed: 24, movement: 'wander' },
-  family: { shirt: '#7fc3a1', hair: '#754b4d', accent: '#f7ca7a', speed: 25, movement: 'wander' }
+  jogger: { shirt: '#f47c8d', hair: '#24324a', accent: '#ffd687', speed: 78, movement: 'runner' },
+  picnic: { shirt: '#f47ca4', hair: '#5d3e70', accent: '#ffd687', speed: 14, movement: 'sit' },
+  elder: { shirt: '#8272db', hair: '#e8e5d7', accent: '#f3c997', speed: 8, movement: 'sit' },
+  visitor: { shirt: '#ffd687', hair: '#503e4a', accent: '#96c981', speed: 32, movement: 'wander' },
+  dogWalker: { shirt: '#72d6ff', hair: '#24324a', accent: '#f3c997', speed: 58, movement: 'patrol' },
+  hiker: { shirt: '#f3a66b', hair: '#24324a', accent: '#75d2dc', speed: 35, movement: 'patrol' },
+  trailRunner: { shirt: '#f47c8d', hair: '#24324a', accent: '#ffd687', speed: 82, movement: 'runner' },
+  photographer: { shirt: '#bca9f4', hair: '#24324a', accent: '#75d2dc', speed: 24, movement: 'wander' },
+  family: { shirt: '#78c98a', hair: '#754b4d', accent: '#ffd687', speed: 25, movement: 'wander' }
 };
+
+const NPC_SPRITE_VARIANTS = Object.freeze({
+  jogger: 0,
+  picnic: 1,
+  elder: 1,
+  visitor: 2,
+  dogWalker: 0,
+  hiker: 0,
+  trailRunner: 0,
+  photographer: 2,
+  family: 2
+});
+
+function normalizeCondition(condition) {
+  // Keep the visual dialogue aligned with the two supported rescue conditions.
+  // Older/debug callers may pass SORE instead of SORENESS; anything that is not
+  // explicitly ITCH should therefore resolve to the soreness dialogue.
+  return condition === CONDITIONS.ITCH ? CONDITIONS.ITCH : CONDITIONS.SORENESS;
+}
 
 export class NPC {
   constructor({ id, role, x, y, zone, path = [], name }) {
@@ -40,6 +59,8 @@ export class NPC {
     this.isRescued = false;
     this.highlighted = false;
     this.phase = Math.random() * Math.PI * 2;
+    this.spriteImage = null;
+    this.spriteSheet = null;
     this.stateMachine = new NPCStateMachine(this);
     this.onFailure = null;
     this.onStateChange = null;
@@ -52,7 +73,7 @@ export class NPC {
   startEvent(condition, maxTolerance, warningDuration) {
     if (this.state !== STATES.NORMAL) return false;
     this.state = STATES.WARNING;
-    this.condition = condition;
+    this.condition = normalizeCondition(condition);
     this.maxTolerance = maxTolerance;
     this.tolerance = maxTolerance;
     this.warningTimer = warningDuration;
@@ -161,7 +182,7 @@ export class NPC {
     if (!this.active) return;
     const bob = this.state === STATES.RESCUED ? Math.sin(now * 0.012 + this.phase) * 4 : Math.sin(now * 0.004 + this.phase) * 1.3;
     const style = ROLE_STYLE[this.role] || ROLE_STYLE.visitor;
-    drawShadow(ctx, this.x, this.y + 20, 19, 6, this.state === STATES.FAILED ? 0.06 : 0.16);
+    drawShadow(ctx, this.x, this.y + 43, 23, 7, this.state === STATES.FAILED ? 0.06 : 0.16);
     if (this.highlighted) {
       ctx.save();
       ctx.strokeStyle = '#ffe39b';
@@ -173,36 +194,41 @@ export class NPC {
       ctx.restore();
     }
     ctx.save();
-    ctx.translate(this.x, this.y - 10 + bob);
     if (this.state === STATES.RESCUED) {
       ctx.fillStyle = 'rgba(255, 231, 155, 0.35)';
       ctx.beginPath();
-      ctx.arc(0, -4, 35 + Math.sin(now * 0.01) * 3, 0, Math.PI * 2);
+      ctx.arc(this.x, this.y - 14 + bob, 35 + Math.sin(now * 0.01) * 3, 0, Math.PI * 2);
       ctx.fill();
     }
-    ctx.fillStyle = style.shirt;
-    roundedRect(ctx, -15, -2, 30, 27, 10);
-    ctx.fill();
-    ctx.fillStyle = style.accent;
-    ctx.beginPath();
-    ctx.arc(0, -13, 13, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = style.hair;
-    ctx.beginPath();
-    ctx.arc(0, -19, 12, Math.PI, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#2c354c';
-    ctx.beginPath(); ctx.arc(-5, -13, 1.5, 0, Math.PI * 2); ctx.arc(5, -13, 1.5, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = '#2c354c'; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.arc(0, -9, 4, 0, Math.PI); ctx.stroke();
-    ctx.strokeStyle = style.shirt; ctx.lineWidth = 5; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(-12, 5); ctx.lineTo(-19, 12); ctx.moveTo(12, 5); ctx.lineTo(19, 12); ctx.stroke();
-    ctx.strokeStyle = '#273a55'; ctx.lineWidth = 4;
-    ctx.beginPath(); ctx.moveTo(-7, 24); ctx.lineTo(-8, 30); ctx.moveTo(7, 24); ctx.lineTo(8, 30); ctx.stroke();
-    if (this.role === 'dogWalker') {
-      ctx.fillStyle = '#b57e63'; ctx.beginPath(); ctx.arc(27, 15, 7, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#dca78a'; ctx.beginPath(); ctx.arc(31, 10, 3, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = '#855e78'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(18, 10); ctx.lineTo(25, 14); ctx.stroke();
+    if (!this.drawWorldSprite(ctx, bob)) {
+      ctx.translate(this.x, this.y - 10 + bob);
+      ctx.lineJoin = 'miter';
+      ctx.fillStyle = style.shirt;
+      ctx.strokeStyle = '#24324a';
+      ctx.lineWidth = 3;
+      roundedRect(ctx, -15, -2, 30, 27, 10);
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle = style.accent;
+      ctx.beginPath();
+      ctx.arc(0, -13, 13, 0, Math.PI * 2);
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle = style.hair;
+      ctx.beginPath();
+      ctx.arc(0, -19, 12, Math.PI, Math.PI * 2);
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#24324a';
+      ctx.beginPath(); ctx.arc(-5, -13, 1.5, 0, Math.PI * 2); ctx.arc(5, -13, 1.5, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#24324a'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(0, -9, 4, 0, Math.PI); ctx.stroke();
+      ctx.strokeStyle = style.shirt; ctx.lineWidth = 5; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(-12, 5); ctx.lineTo(-19, 12); ctx.moveTo(12, 5); ctx.lineTo(19, 12); ctx.stroke();
+      ctx.strokeStyle = '#24324a'; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.moveTo(-7, 24); ctx.lineTo(-8, 30); ctx.moveTo(7, 24); ctx.lineTo(8, 30); ctx.stroke();
+      if (this.role === 'dogWalker') {
+        ctx.fillStyle = '#b57e63'; ctx.beginPath(); ctx.arc(27, 15, 7, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#dca78a'; ctx.beginPath(); ctx.arc(31, 10, 3, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#855e78'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(18, 10); ctx.lineTo(25, 14); ctx.stroke();
+      }
     }
     ctx.restore();
 
@@ -210,9 +236,33 @@ export class NPC {
       this.drawStatus(ctx, now);
     }
     if (debugRadius) {
-      ctx.save(); ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)'; ctx.lineWidth = 1; ctx.setLineDash([2, 5]);
+      ctx.save(); ctx.strokeStyle = 'rgba(36, 50, 74, 0.38)'; ctx.lineWidth = 2; ctx.setLineDash([2, 5]);
       ctx.beginPath(); ctx.arc(this.x, this.y, 78, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
     }
+  }
+
+  drawWorldSprite(ctx, bob) {
+    if (!this.spriteImage?.complete || !this.spriteImage.naturalWidth || !this.spriteSheet) return false;
+    const frame = NPC_SPRITE_VARIANTS[this.role] ?? 0;
+    const frameWidth = this.spriteSheet.frameWidth;
+    const frameHeight = this.spriteSheet.frameHeight;
+    const destinationWidth = 72;
+    const destinationHeight = 132;
+    ctx.save();
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(
+      this.spriteImage,
+      frame * frameWidth,
+      0,
+      frameWidth,
+      frameHeight,
+      this.x - destinationWidth / 2,
+      this.y - 84 + bob,
+      destinationWidth,
+      destinationHeight
+    );
+    ctx.restore();
+    return true;
   }
 
   drawStatus(ctx, now) {
@@ -224,32 +274,33 @@ export class NPC {
       drawText(ctx, '我先回去了…', this.x, this.y - 56, { size: 11, color: '#f8f5ee', weight: 700 });
       return;
     }
-    const condition = CONDITION_LABELS[this.condition] || CONDITION_LABELS[CONDITIONS.ITCH];
+    const conditionKey = this.condition === CONDITIONS.ITCH ? CONDITIONS.ITCH : CONDITIONS.SORENESS;
+    const condition = CONDITION_LABELS[conditionKey];
     const isWarning = this.state === STATES.WARNING;
     const isCritical = this.state === STATES.CRITICAL;
     const pulse = isCritical ? Math.sin(now * 0.02) * 1.4 : 0;
     const bubbleWidth = isWarning ? 73 : 76;
     const bubbleX = this.x - bubbleWidth / 2;
-    const bubbleY = this.y - (isWarning ? 66 : 73) - pulse;
+    const spriteOffset = this.spriteSheet ? 104 : 66;
+    const bubbleY = this.y - (isWarning ? spriteOffset : spriteOffset + 7) - pulse;
     ctx.save();
-    ctx.fillStyle = isCritical ? '#fff0c9' : '#f9f5ea';
-    ctx.strokeStyle = isCritical ? '#ed9a72' : condition.color;
-    ctx.lineWidth = 2;
-    roundedRect(ctx, bubbleX, bubbleY, bubbleWidth, 25, 9);
+    ctx.fillStyle = isCritical ? '#ffe1ea' : '#fff5df';
+    ctx.strokeStyle = isCritical ? '#e77fa2' : '#5686c5';
+    ctx.lineWidth = 3;
+    roundedRect(ctx, bubbleX, bubbleY, bubbleWidth, 25, 0);
     ctx.fill(); ctx.stroke();
     ctx.fillStyle = isWarning ? '#9b7855' : condition.color;
     ctx.beginPath(); ctx.moveTo(this.x - 5, bubbleY + 25); ctx.lineTo(this.x, bubbleY + 32); ctx.lineTo(this.x + 5, bubbleY + 25); ctx.fill();
-    drawText(ctx, isWarning ? '好像有點…' : isCritical ? '快受不了了！' : condition.title, this.x, bubbleY + 12, { size: isWarning ? 9 : 10, color: '#34435a', weight: 800 });
+    drawText(ctx, isWarning ? condition.warningTitle : isCritical ? '快受不了了！' : condition.title, this.x, bubbleY + 12, { size: isWarning ? 9 : 10, color: '#173a76', weight: 800 });
     ctx.restore();
     const barWidth = 48;
     const barY = bubbleY - 10;
     ctx.save();
-    ctx.fillStyle = 'rgba(20, 40, 61, 0.35)';
-    roundedRect(ctx, this.x - barWidth / 2, barY, barWidth, 5, 3); ctx.fill();
+    ctx.fillStyle = 'rgba(36, 50, 74, 0.42)';
+    roundedRect(ctx, this.x - barWidth / 2, barY, barWidth, 5, 0); ctx.fill();
     const ratio = clamp(this.tolerance / Math.max(0.1, this.maxTolerance), 0, 1);
     ctx.fillStyle = isCritical ? '#ed8d75' : condition.color;
-    roundedRect(ctx, this.x - barWidth / 2, barY, barWidth * ratio, 5, 3); ctx.fill();
+    roundedRect(ctx, this.x - barWidth / 2, barY, barWidth * ratio, 5, 0); ctx.fill();
     ctx.restore();
   }
 }
-

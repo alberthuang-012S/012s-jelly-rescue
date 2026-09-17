@@ -1,5 +1,9 @@
 import { drawShadow, moveWithCollision } from './utils.js';
 
+function damp(current, target, sharpness, dt) {
+  return current + (target - current) * (1 - Math.exp(-sharpness * dt));
+}
+
 export class Player {
   constructor(spriteImage) {
     this.spriteImage = spriteImage;
@@ -9,7 +13,11 @@ export class Player {
     this.y = 450;
     this.direction = 'down';
     this.walkTime = 0;
+    this.walkPhase = 0;
+    this.walkBlend = 0;
+    this.idleTime = 0;
     this.distanceTravelled = 0;
+    this.spriteSheet = null;
   }
 
   reset(startPosition) {
@@ -17,32 +25,85 @@ export class Player {
     this.y = startPosition.y;
     this.direction = 'down';
     this.walkTime = 0;
+    this.walkPhase = 0;
+    this.walkBlend = 0;
+    this.idleTime = 0;
     this.distanceTravelled = 0;
   }
 
   update(dt, input, stage) {
     const vector = input.getMovementVector();
-    const moving = vector.x !== 0 || vector.y !== 0;
-    if (moving) {
+    const hasIntent = vector.x !== 0 || vector.y !== 0;
+    if (hasIntent) {
       if (Math.abs(vector.x) > Math.abs(vector.y)) this.direction = vector.x < 0 ? 'left' : 'right';
       else this.direction = vector.y < 0 ? 'up' : 'down';
+    }
+
+    const before = { x: this.x, y: this.y };
+    const next = hasIntent
+      ? moveWithCollision({ x: this.x, y: this.y }, this.radius, vector, this.speed * dt, stage.world, stage.obstacles)
+      : before;
+    this.x = next.x;
+    this.y = next.y;
+
+    const distanceMoved = Math.hypot(this.x - before.x, this.y - before.y);
+    const isMoving = distanceMoved > 0.01;
+    if (isMoving) {
+      // Advance the walk cycle by distance, not wall-clock time. If the jelly
+      // is held against a rock, it stops animating instead of sliding in place.
+      this.walkPhase = (this.walkPhase + distanceMoved / 112) % 1;
       this.walkTime += dt;
-      const before = { x: this.x, y: this.y };
-      const next = moveWithCollision({ x: this.x, y: this.y }, this.radius, vector, this.speed * dt, stage.world, stage.obstacles);
-      this.x = next.x;
-      this.y = next.y;
-      this.distanceTravelled += Math.hypot(this.x - before.x, this.y - before.y);
+      this.idleTime = 0;
+      this.distanceTravelled += distanceMoved;
     } else {
       this.walkTime = 0;
+      this.idleTime += dt;
     }
+    this.walkBlend = damp(this.walkBlend, isMoving ? 1 : 0, 13, dt);
   }
 
   draw(ctx) {
-    const moving = this.walkTime > 0;
-    const bob = moving ? Math.sin(this.walkTime * 14) * 2.4 : Math.sin(performance.now() / 600) * 1.2;
-    drawShadow(ctx, this.x, this.y + 29, 27, 8, 0.2);
+    const stepWave = Math.sin(this.walkPhase * Math.PI * 2);
+    const idleWave = Math.sin(this.idleTime * 2.4);
+    const bob = stepWave * 2.4 * this.walkBlend + idleWave * 1.1 * (1 - this.walkBlend);
+    const shadowWidth = 27 + Math.abs(stepWave) * this.walkBlend * 2;
+    drawShadow(ctx, this.x, this.y + 29, shadowWidth, 8, 0.2);
     if (!this.spriteImage?.complete || !this.spriteImage.naturalWidth) {
       this.drawFallback(ctx, bob);
+      return;
+    }
+
+    if (this.spriteSheet?.frameWidth) {
+      const frameCount = this.spriteSheet.frameCount || 1;
+      const directionFrames = this.spriteSheet.directionFrames;
+      const frame = directionFrames
+        ? (directionFrames[this.direction] ?? directionFrames.down ?? 0)
+        : Math.floor(this.walkPhase * frameCount) % frameCount;
+      const { frameWidth, frameHeight } = this.spriteSheet;
+      const sourceY = this.spriteSheet.sourceY || 0;
+      const sourceHeight = this.spriteSheet.sourceHeight || frameHeight;
+      const destinationWidth = this.spriteSheet.destinationWidth || 72;
+      const destinationHeight = this.spriteSheet.destinationHeight || 72;
+      const anchorOffset = this.spriteSheet.anchorOffset || destinationHeight - 30;
+      const squash = Math.abs(stepWave) * this.walkBlend * 0.035;
+      const scaleX = 1 + squash * 0.35;
+      const scaleY = 1 - squash;
+      ctx.save();
+      ctx.imageSmoothingEnabled = false;
+      ctx.translate(this.x, this.y + bob);
+      ctx.scale(scaleX, scaleY);
+      ctx.drawImage(
+        this.spriteImage,
+        frame * frameWidth,
+        sourceY,
+        frameWidth,
+        sourceHeight,
+        -destinationWidth / 2,
+        -anchorOffset,
+        destinationWidth,
+        destinationHeight
+      );
+      ctx.restore();
       return;
     }
 
@@ -96,4 +157,3 @@ export class Player {
     ctx.restore();
   }
 }
-

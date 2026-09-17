@@ -83,7 +83,7 @@ button:focus-visible { outline: 3px solid rgba(91, 194, 242, .7); outline-offset
 .keycap { padding: 3px 6px; border: 1px solid rgba(60, 94, 108, .18); border-bottom-width: 2px; border-radius: 4px; color: #425b6d; background: rgba(255,255,255,.6); font-size: 8px; }
 .home-character-wrap { position: absolute; z-index: 2; left: 48%; bottom: 5%; width: min(360px, 30vw); aspect-ratio: 1; pointer-events: none; transform: translateX(-50%); }
 .character-glow { position: absolute; inset: 20%; border-radius: 50%; background: radial-gradient(circle, rgba(107, 201, 245, .3), transparent 67%); filter: blur(5px); animation: floatGlow 4s ease-in-out infinite; }
-.home-character-crop { position: absolute; left: 8%; top: 12%; width: 84%; height: 67%; background-image: url('../reference/player-jelly-preferred.png'); background-position: left top; background-repeat: no-repeat; background-size: 200% 200%; filter: drop-shadow(0 24px 17px rgba(1, 18, 33, .2)); animation: heroFloat 4s ease-in-out infinite; }
+.home-character-crop { position: absolute; left: 8%; top: 12%; width: 84%; height: 67%; background-image: url('../reference/world-jelly-front-hq.png'); background-position: center; background-repeat: no-repeat; background-size: contain; filter: drop-shadow(0 24px 17px rgba(1, 18, 33, .2)); animation: heroFloat 4s ease-in-out infinite; }
 .floating-spark { position: absolute; color: #f3d493; font-size: 20px; animation: sparkFloat 3.1s ease-in-out infinite; }.spark-a { left: 9%; top: 26%; }.spark-b { right: 9%; top: 45%; font-size: 32px; animation-delay: -1s; }.spark-c { left: 30%; bottom: 6%; font-size: 13px; animation-delay: -1.8s; }
 .home-footer { position: relative; z-index: 4; grid-column: 1 / -1; display: flex; justify-content: space-between; color: rgba(177, 217, 226, .43); font-size: 9px; }
 
@@ -136,3 +136,95 @@ button:focus-visible { outline: 3px solid rgba(91, 194, 242, .7); outline-offset
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* 012S Jelly World visual language: bright pixel-town palette, enamel panels and hard navy outlines. */
+:root {
+  --navy: #173a76;
+  --ink: #173a76;
+  --muted: #526d91;
+  --cream: #fff5df;
+  --paper: #f7fcff;
+  --sky: #bfeafa;
+  --blue: #72d6ff;
+  --blue-deep: #2d68b1;
+  --lilac: #8272db;
+  --coral: #f47ca4;
+  --yellow: #ffd687;
+  --line: rgba(38, 88, 154, .22);
+  --shadow: 6px 6px 0 rgba(36, 67, 113, .26);
+}
+
+body { background: #deeff5; }
+.home-screen { color: var(--ink); background: #b7dec0; }
+.home-screen::before { opacity: .72; background-image: linear-gradient(rgba(33, 94, 144, .08) 1px, transparent 1px), linear-gradient(90deg, rgba(33, 94, 144, .08) 1px, transparent 1px); background-size: 32px 32px; mask-image: none; }
+.home-screen::after { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(90deg, rgba(20, 58, 100, .12), transparent 44%, rgba(20, 58, 100, .08)); content: ''; }
+.home-copy { z-index: 2; }
+.eyebrow { color: #2c75b2; }
+.eyebrow-dot { background: #35a8dd; box-shadow: 0 0 0 5px rgba(53, 168, 221, .14), 0 0 18px #35a8dd; }
+.home-copy h1 { color: #173e80; text-shadow: 3px 4px 0 #c2e5ff; }
+.home-copy h1 span { color: #138de6; text-shadow: 2px 3px 0 #b9ecff; }
+.home-lede { color: #496987; }
+.home-hero-note { border: 2px solid #8aafd0; border-radius: 0; background: #f4fbfff2; box-shadow: 4px 4px 0 rgba(36, 73, 124, .18), inset 0 0 0 2px #fff; }
+.hero-note-icon { border-radius: 0; color: #185fc1; background: #d4f3ff; }
+.home-hero-note b { color: #2d6d9e; }.home-hero-note small { color: #63809e; }
+.glass-panel { border: 3px solid #426fab; border-radius: 0; background: #f4fbfff2; box-shadow: 7px 7px 0 rgba(32, 65, 116, .32), inset 0 0 0 4px #fff; backdrop-filter: none; }
+.panel-kicker { color: #5a7b9b; }
+.stage-card { border: 2px solid #8aace0; border-radius: 0; background: #edf8fff2; box-shadow: 3px 3px 0 rgba(49, 92, 151, .18); }
+.stage-card:hover { border-color: #426fab; background: #fff; }.stage-card.is-selected { border-color: #285aa3; background: #fff; box-shadow: 4px 4px 0 rgba(38, 85, 149, .22); }
+.stage-card-art { border-radius: 0; border: 2px solid #5f8ac2; image-rendering: pixelated; }
+.park-art { background: linear-gradient(180deg, #79d5f1, #77bd74); }.park-art::after { border-radius: 0; background: #e3c990; box-shadow: -10px 11px 0 rgba(61, 118, 91, .26); }.art-tree { color: #3d765b; }.art-bench { border-radius: 0; background: #8b5c3c; box-shadow: 0 10px 0 -2px #24324a; }
+.mountain-art { background: linear-gradient(145deg, #8fd9ed, #5aa06d); }.mountain-art::before, .mountain-art::after { border-bottom-color: rgba(39, 109, 102, .82); }.art-path { border-radius: 0; background: #e3c990; }.art-flag { color: #f47ca4; }
+.stage-card-content b { color: #173e80; }.stage-card-content small { color: #526d91; }.stage-card-content em { color: #5e9980; }.stage-card-check { border-radius: 0; background: #228ce8; }
+.primary-button { border: 3px solid #285aa3; border-radius: 0; color: #fff; background: #228ce8; box-shadow: 0 4px 0 #285aa3, inset 0 2px 0 rgba(255,255,255,.6); text-shadow: 0 1px #145aa1; }.primary-button:hover { background: #2aa6f0; box-shadow: 0 5px 0 #285aa3, inset 0 2px 0 rgba(255,255,255,.7); }.button-arrow { border-radius: 0; color: #173a76; background: #d4f3ff; }
+.control-hint { color: #6486a6; }.keycap { border: 2px solid #8aace0; border-bottom-width: 3px; border-radius: 0; color: #315b8e; background: #f7fcff; }
+.home-character-wrap { z-index: 2; }.character-glow { background: radial-gradient(circle, rgba(82, 190, 240, .4), transparent 67%); }.home-character-crop { background-image: url('/reference/world-jelly-front-hq.png'); background-size: contain; background-position: center; filter: drop-shadow(6px 8px 0 rgba(25, 59, 106, .2)); }
+.home-footer { color: rgba(39, 93, 142, .66); }
+
+.game-shell { padding: 12px; background: #deeff5; }
+.game-frame { border: 4px solid #f4fbff; border-radius: 0; background: #83c77f; box-shadow: 8px 8px 0 rgba(36, 67, 113, .26), inset 0 0 0 2px #7aa9d0; }
+#game-canvas { image-rendering: pixelated; }
+.screen-vignette { background: linear-gradient(180deg, rgba(23, 58, 118, .16), transparent 20%, transparent 78%, rgba(23, 58, 118, .14)); box-shadow: inset 0 0 0 2px rgba(255,255,255,.2); }
+.game-hud { color: var(--ink); text-shadow: none; }
+.hud-brand, .metric-box, .timer-box, .lives-box { border: 2px solid #5b8ac4; border-radius: 0; color: var(--ink); background: #f5fcfff2; box-shadow: 0 3px 0 rgba(30,72,134,.3), inset 0 0 0 2px #fff; backdrop-filter: none; }
+.hud-brand { padding: 8px 10px; }.hud-brand-mark { border-radius: 0; color: #067be6; border: 0; background: #d4f3ff; }.hud-brand b { color: var(--ink); }.hud-brand small, .metric-box small, .timer-box small { color: #5b779b; }.metric-box strong, .timer-box strong { color: #174689; }.combo-metric strong { color: #705bd1; }.heart { color: #f47c8d; text-shadow: none; }.heart.is-empty { color: #b7c6d9; }
+.map-stamp, .objective-chip { border: 2px solid #5b8ac4; border-radius: 0; color: #173a76; background: #f5fcfff2; box-shadow: 0 3px 0 rgba(30,72,134,.22); }.stamp-pin { color: #e8a12b; }.pulse-dot { background: #2fb8df; box-shadow: 0 0 0 4px rgba(47,184,223,.16); }
+.target-callout { border: 3px solid #5686c5; border-radius: 0; color: var(--ink); background: #fff5df; box-shadow: 4px 4px 0 rgba(36, 74, 132, .28), inset 0 0 0 2px #fff; backdrop-filter: none; }.target-callout-line b { color: #173a76; }.target-callout-line span:last-child { color: #5d57a2; }.target-dot { background: #f47c8d; box-shadow: 0 0 0 4px rgba(244,124,141,.16); }.target-callout-help { color: #526d91; }.target-callout kbd { border-radius: 0; color: #173a76; background: #ffd687; }
+.action-button { border: 3px solid #5686c5; border-radius: 0; color: var(--ink); background: #b5e7ff; box-shadow: 4px 4px 0 rgba(36, 74, 132, .28), inset 0 2px 0 #fff; }.action-icon { border-radius: 0; color: #fff5df; background: #173a76; }.action-button small { color: #5b779b; }
+.item-card { border: 3px solid #5686c5; border-radius: 0; color: var(--ink); background: #f5fcfff2; box-shadow: 4px 4px 0 rgba(36, 74, 132, .28), inset 0 0 0 2px #fff; }.item-card.is-selected { border-color: #e8a12b; background: #fff5df; box-shadow: 4px 4px 0 rgba(36, 74, 132, .28), inset 0 0 0 2px #fff; transform: translateY(-4px); }.item-hotkey { color: #5b779b; }.item-info b { color: #173a76; }.item-info small, .item-status { color: #5b779b; }.item-card.is-selected .item-status { color: #c27c25; }
+.mobile-dpad button { border: 3px solid #5686c5; border-radius: 0; color: #173a76; background: #f5fcfff2; box-shadow: 3px 3px 0 rgba(36, 74, 132, .28); }.mobile-dpad button.is-pressed { color: #173a76; background: #b5e7ff; box-shadow: 1px 1px 0 rgba(36, 74, 132, .28); }
+.debug-toggle { border: 2px solid #5686c5; border-radius: 0; color: #173a76; background: #f5fcfff2; opacity: .7; }.debug-toggle span { color: #c27c25; }.debug-panel { border: 3px solid #5686c5; border-radius: 0; color: #173a76; background: #f5fcfff2; box-shadow: 5px 5px 0 rgba(36, 74, 132, .28); backdrop-filter: none; }.debug-title { color: #315b8e; }.debug-title button { color: #173a76; }.debug-grid button { border: 2px solid #8aace0; border-radius: 0; color: #315b8e; background: #fff; }.debug-grid button:hover { background: #d4f3ff; }
+.toast { border: 3px solid #5686c5; border-radius: 0; color: #173a76; background: #fff5df; box-shadow: 4px 4px 0 rgba(36, 74, 132, .28), inset 0 0 0 2px #fff; }.toast-mark { border-radius: 0; color: #067be6; background: #d4f3ff; }.toast b { color: #173a76; }.toast small { color: #526d91; }.toast-danger { border-color: #e77fa2; }.toast-danger .toast-mark { color: #c34d6f; background: #ffe1ea; }
+
+/* Portrait-first mobile layout. The canvas keeps a tall camera view instead of forcing landscape. */
+@media (max-width: 680px) and (orientation: portrait) {
+  html, body, #app { width: 100%; height: 100%; min-height: 0; }
+  .app-shell { height: 100dvh; min-height: 0; overflow: clip; }
+  .home-screen { gap: 16px; padding: max(22px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom)); overflow: hidden; background: #b7dec0; }
+  .home-copy h1 { margin: 8px 0 12px; font-size: clamp(49px, 15vw, 70px); line-height: .86; }
+  .home-lede { font-size: 11px; line-height: 1.65; }.home-hero-note { margin-top: 13px; padding: 9px 11px; }.home-hero-note small { font-size: 9px; }.home-panel { padding: 13px; }.panel-kicker { margin-bottom: 9px; font-size: 9px; }.stage-cards { gap: 7px; }.stage-card { grid-template-columns: 68px 1fr 20px; gap: 9px; padding: 7px; }.stage-card-art { height: 54px; }.stage-card-content b { font-size: 13px; }.stage-card-content small { font-size: 9px; }.stage-card-content em { margin-top: 5px; font-size: 8px; }.primary-button { margin-top: 11px; padding: 12px 13px; }.home-footer { font-size: 6px; }
+  .game-shell { display: block; width: 100vw; height: 100dvh; padding: 0; background: #deeff5; }
+  .game-frame { width: 100vw; height: 100dvh; aspect-ratio: auto; border: 0; border-radius: 0; box-shadow: none; }
+  #game-canvas { width: 100%; height: 100%; }
+  .game-hud { top: 0; gap: 5px; padding: max(8px, env(safe-area-inset-top)) 9px 0; align-items: center; }
+  .hud-brand { min-width: 0; gap: 5px; padding: 5px 6px; }.hud-brand-mark { width: 21px; height: 21px; font-size: 10px; }.hud-brand b { font-size: 9px; }.hud-brand small { font-size: 6px; letter-spacing: .08em; }.hud-metrics { gap: 4px; margin-left: auto; }.metric-box, .timer-box { min-width: 55px; padding: 5px 6px; }.metric-box small, .timer-box small { font-size: 6px; }.metric-box strong, .timer-box strong { font-size: 11px; }.hud-right { gap: 4px; }.timer-box { min-width: 67px; }.lives-box { gap: 1px; padding: 5px 5px; }.heart { font-size: 13px; }
+  .map-stamp { top: calc(max(8px, env(safe-area-inset-top)) + 39px); left: 9px; padding: 5px 7px; font-size: 7px; }.objective-chip { top: calc(max(8px, env(safe-area-inset-top)) + 39px); right: 9px; max-width: 52%; overflow: hidden; padding: 5px 7px; font-size: 7px; white-space: nowrap; text-overflow: ellipsis; }
+  .debug-toggle { top: calc(max(8px, env(safe-area-inset-top)) + 68px); right: 9px; padding: 3px 5px; font-size: 7px; }
+  .target-callout { bottom: calc(max(16px, env(safe-area-inset-bottom)) + 230px); width: min(86%, 330px); min-width: 0; padding: 8px 10px; }.target-callout-line { font-size: 10px; }.target-callout-help { font-size: 8px; }
+  .item-dock { left: 50%; right: auto; bottom: calc(max(16px, env(safe-area-inset-bottom)) + 144px); width: calc(100% - 22px); justify-content: center; gap: 6px; transform: translateX(-50%); }.item-card { width: min(150px, calc((100vw - 34px) / 2)); min-height: 67px; grid-template-columns: 39px auto; padding: 6px 7px 6px 5px; }.item-img-wrap { width: 39px; height: 52px; }.item-img-wrap img { width: 45px; height: 45px; }.item-info b { font-size: 12px; }.item-info small { font-size: 7px; }.item-status { font-size: 6px; }.item-hotkey { font-size: 8px; }
+  .mobile-dpad { display: grid; left: max(14px, env(safe-area-inset-left)); bottom: max(16px, env(safe-area-inset-bottom)); transform: none; grid-template-columns: repeat(3, 43px); grid-template-rows: repeat(3, 36px); gap: 4px; touch-action: none; }.mobile-dpad button { font-size: 11px; touch-action: none; }
+  .action-button { right: max(14px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); width: 88px; height: 88px; min-width: 0; padding: 7px; border-radius: 50%; display: grid; place-items: center; align-content: center; gap: 2px; touch-action: none; }.action-icon { width: 24px; height: 24px; }.action-button b { font-size: 11px; }.action-button small { font-size: 7px; }
+  .toast-region { top: calc(max(8px, env(safe-area-inset-top)) + 78px); width: calc(100% - 28px); }.toast { padding: 8px 10px; }.toast b { font-size: 10px; }.toast small { font-size: 8px; }
+  .rotate-overlay { display: none !important; }
+}
+
+/* Use the approved mountain concept as the stage-card art so the menu and
+   in-game world share the same illustrated alpine language. */
+.mountain-art {
+  overflow: hidden;
+  background: #78b874 url('/reference/generated-mountain-open-portrait-hq.png') center 58% / cover no-repeat;
+}
+.mountain-art::before,
+.mountain-art::after,
+.mountain-art .art-mountain,
+.mountain-art .art-path,
+.mountain-art .art-flag { display: none; }

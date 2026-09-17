@@ -20,8 +20,8 @@ export const ITEMS = Object.freeze({
 });
 
 export const CONDITION_LABELS = Object.freeze({
-  [CONDITIONS.ITCH]: { title: '好癢！', short: '癢', english: 'ITCH', icon: '✦', color: '#f3bd70' },
-  [CONDITIONS.SORENESS]: { title: '好痠……', short: '痠痛', english: 'SORE', icon: '↯', color: '#86c8ff' }
+  [CONDITIONS.ITCH]: { warningTitle: '好像有點癢……', title: '好癢！', short: '癢', english: 'ITCH', icon: '✦', color: '#f3bd70' },
+  [CONDITIONS.SORENESS]: { warningTitle: '好像有點痠……', title: '好痠……', short: '痠痛', english: 'SORE', icon: '↯', color: '#86c8ff' }
 });
 
 export const ROLE_LABELS = Object.freeze({
@@ -48,4 +48,3 @@ export const PALETTE = Object.freeze({
   coral: '#f29b83',
   yellow: '#f9cb70'
 });
-
