@@ -28,7 +28,7 @@ The core loop is split into focused modules:
 - `NPC`, `NPCStateMachine`: NORMAL → WARNING → HELP → CRITICAL → FAILED/RESCUED
 - `EventDirector`: stage-aware event timing, conditions, simultaneous-event pressure and spawn cooldown
 - `ItemSystem`, `InteractionSystem`: fixed items and close-range rescue validation
-- `StageManager`, `WorldRenderer`: stage data, camera-safe map rendering and scenery
+- `StageManager`, `WorldRenderer`: stage data, responsive camera rendering and scenery
 - `ScoreManager`, `ComboManager`: rescue bonuses, response metrics and combo multipliers
 - `HUD`, `ResultScreen`: HUD feedback, stage clear and game-over reporting
 - `Game`: orchestration only; gameplay rules remain in the modules above
@@ -42,6 +42,9 @@ The core loop is split into focused modules:
 - `reference/world-jelly-front-hq.png` is the high-resolution front-facing jelly used by the home hero.
 - `reference/generated-park-open-portrait-hq.png` is the approved clean portrait park artwork, composited under gameplay entities and HUD.
 - Park gameplay uses a 768×1152 logical world mapped to the 1024×1536 portrait artwork, so the full map reads larger on phones while keeping the collision geometry aligned.
+- Camera strategy: portrait mobile uses a full-map fit; desktop and landscape use a clamped, smoothly-following RPG camera.
+- The canvas backing buffer follows its CSS display box × devicePixelRatio (capped at 2.5), and HQ map/sprite images use high-quality smoothing.
+- NPC status bubbles are screen-size compensated for camera zoom, with larger readable dialogue and tolerance bars; the transient location-name stamp is intentionally omitted.
 - Portrait layout keeps a tall camera viewport and uses the `012s-jelly-world` front-facing jelly artwork for the home character reference.
 - Map NPCs use the polished generated sprite sheet `reference/generated-npcs-hiker-elder-child-hq.png`: hiker, elder and child only; no robot or rescue-worker character.
 - Debug tools include forced ITCH/SORENESS events, 3-second tolerance, clear events, infinite life, interaction-radius display and stage switching.

@@ -8,9 +8,9 @@ import { ItemSystem } from './ItemSystem.js';
 import { Player } from './Player.js';
 import { ResultScreen } from './ResultScreen.js';
 import { ScoreManager } from './ScoreManager.js';
-import { StageManager } from './StageManager.js?v=park-art-1';
-import { WorldRenderer } from './WorldRenderer.js?v=park-art-1';
-import { clamp, drawText, formatClock } from './utils.js';
+import { StageManager } from './StageManager.js?v=camera-polish-1';
+import { WorldRenderer } from './WorldRenderer.js?v=camera-polish-1';
+import { clamp, drawText, formatClock, lerp } from './utils.js';
 
 function loadImage(source) {
   return new Promise((resolve) => {
@@ -89,7 +89,11 @@ export class Game {
     this.npcSpriteImage = null;
     this.npcSpriteSheet = null;
     this.viewport = { ...VIEWPORT };
+    this.displaySize = { ...VIEWPORT };
     this.pixelRatio = 1;
+    this.cameraMode = 'fit';
+    this.layoutMode = 'desktop';
+    this.cameraState = null;
 
     this.stageManager = new StageManager();
     this.itemSystem = new ItemSystem();
@@ -208,24 +212,28 @@ export class Game {
 
   resizeCanvas() {
     const frame = document.querySelector('.game-frame');
-    const frameWidth = frame?.clientWidth || window.innerWidth;
-    const frameHeight = frame?.clientHeight || window.innerHeight;
+    const canvasRect = this.canvas.getBoundingClientRect();
+    const frameWidth = Math.round(canvasRect.width || frame?.clientWidth || window.innerWidth);
+    const frameHeight = Math.round(canvasRect.height || frame?.clientHeight || window.innerHeight);
     const isPortraitPhone = frameHeight > frameWidth && frameWidth < 760;
-    if (isPortraitPhone) {
-      const logicalWidth = 540;
-      const logicalHeight = Math.round(logicalWidth * frameHeight / Math.max(1, frameWidth));
-      this.viewport = { width: logicalWidth, height: logicalHeight };
-    } else {
-      this.viewport = { ...VIEWPORT };
-    }
-    this.pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-    const bufferWidth = Math.max(1, Math.round(this.viewport.width * this.pixelRatio));
-    const bufferHeight = Math.max(1, Math.round(this.viewport.height * this.pixelRatio));
+    this.layoutMode = isPortraitPhone ? 'mobile-portrait' : frameWidth < 760 ? 'mobile-landscape' : 'desktop';
+    this.cameraMode = isPortraitPhone ? 'fit' : 'follow';
+    // Gameplay remains in world coordinates, while the render viewport tracks
+    // the actual CSS box. This prevents a 960x540 canvas from being stretched
+    // into a large desktop frame before the DPR is applied.
+    this.viewport = { width: frameWidth, height: frameHeight };
+    this.displaySize = { width: frameWidth, height: frameHeight };
+    this.pixelRatio = Math.min(window.devicePixelRatio || 1, 2.5);
+    const bufferWidth = Math.max(1, Math.round(this.displaySize.width * this.pixelRatio));
+    const bufferHeight = Math.max(1, Math.round(this.displaySize.height * this.pixelRatio));
     if (this.canvas.width !== bufferWidth || this.canvas.height !== bufferHeight) {
       this.canvas.width = bufferWidth;
       this.canvas.height = bufferHeight;
     }
     this.ctx.setTransform(this.pixelRatio, 0, 0, this.pixelRatio, 0, 0);
+    this.ctx.imageSmoothingEnabled = true;
+    this.ctx.imageSmoothingQuality = 'high';
+    this.cameraState = null;
   }
 
   resetAppScroll() {
@@ -246,6 +254,7 @@ export class Game {
     this.combo.reset();
     this.itemSystem.reset();
     this.player.reset(stage.start);
+    this.cameraState = null;
     this.lastDistanceSample = 0;
     this.eventDirector = new EventDirector(stage, {
       onFailure: (npc) => this.handleFailure(npc),
@@ -458,22 +467,47 @@ export class Game {
   }
 
   getCamera(stage) {
-    if (stage.fitToScreen) {
+    if (this.cameraMode === 'fit') {
       const scale = Math.min(
         this.viewport.width / stage.world.width,
         this.viewport.height / stage.world.height
       );
       return {
+        mode: 'fit',
         x: (this.viewport.width - stage.world.width * scale) / 2,
         y: (this.viewport.height - stage.world.height * scale) / 2,
         scale
       };
     }
-    return {
-      x: clamp(this.player.x - this.viewport.width / 2, 0, Math.max(0, stage.world.width - this.viewport.width)),
-      y: clamp(this.player.y - this.viewport.height / 2, 0, Math.max(0, stage.world.height - this.viewport.height)),
-      scale: 1
-    };
+
+    // Landscape keeps the portrait world readable as a normal RPG slice. The
+    // width-driven zoom fills the desktop frame without stretching the map,
+    // while the minimum keeps smaller landscape devices from feeling distant.
+    const scale = Math.max(1.45, this.viewport.width / (stage.world.width * 0.98));
+    const visibleWidth = this.viewport.width / scale;
+    const visibleHeight = this.viewport.height / scale;
+    const targetX = clamp(
+      this.player.x - visibleWidth / 2,
+      0,
+      Math.max(0, stage.world.width - visibleWidth)
+    );
+    const targetY = clamp(
+      this.player.y - visibleHeight / 2,
+      0,
+      Math.max(0, stage.world.height - visibleHeight)
+    );
+    const previous = this.cameraState;
+    const scaleChanged = !previous || Math.abs(previous.scale - scale) > 0.01;
+    if (scaleChanged || previous.mode !== 'follow') {
+      this.cameraState = { mode: 'follow', x: targetX, y: targetY, scale };
+    } else {
+      // Smooth follow avoids a visible snap when the player crosses a zone or
+      // when a long diagonal route changes the camera's target.
+      const followBlend = 0.18;
+      this.cameraState.x = lerp(previous.x, targetX, followBlend);
+      this.cameraState.y = lerp(previous.y, targetY, followBlend);
+    }
+    return { ...this.cameraState };
   }
 
   render(now = performance.now()) {
@@ -483,16 +517,18 @@ export class Game {
     const ctx = this.ctx;
     const pixelRatio = this.pixelRatio || 1;
     ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    ctx.imageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
     ctx.clearRect(0, 0, this.viewport.width, this.viewport.height);
     ctx.fillStyle = stage.id === 'mountain' ? '#78ad83' : '#83c77f';
     ctx.fillRect(0, 0, this.viewport.width, this.viewport.height);
     ctx.save();
-    if (stage.fitToScreen) {
+    if (camera.mode === 'fit') {
       ctx.translate(camera.x, camera.y);
       ctx.scale(camera.scale, camera.scale);
     } else {
-      ctx.translate(-camera.x, -camera.y);
+      ctx.translate(-camera.x * camera.scale, -camera.y * camera.scale);
+      ctx.scale(camera.scale, camera.scale);
     }
     this.worldRenderer.draw(ctx, stage, now);
     const target = this.interactionSystem.currentTarget;
@@ -502,7 +538,11 @@ export class Game {
     const entities = [...this.npcs.filter((npc) => npc.active), this.player].sort((a, b) => a.y - b.y);
     for (const entity of entities) {
       if (entity === this.player) entity.draw(ctx);
-      else entity.draw(ctx, now, { debugRadius: this.debug.showRadius });
+      else entity.draw(ctx, now, {
+        debugRadius: this.debug.showRadius,
+        cameraScale: camera.scale,
+        compactStatusBubble: this.layoutMode !== 'desktop'
+      });
     }
     if (this.debug.showRadius) {
       ctx.save(); ctx.strokeStyle = 'rgba(255, 235, 163, .35)'; ctx.lineWidth = 2; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.arc(this.player.x, this.player.y, this.interactionSystem.radius, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
@@ -510,7 +550,6 @@ export class Game {
     this.renderParticles(ctx);
     this.renderFloaters(ctx);
     ctx.restore();
-    this.renderCameraMarker(stage, camera);
   }
 
   renderParticles(ctx) {
@@ -527,11 +566,6 @@ export class Game {
     this.floaters.forEach((floater) => {
       ctx.save(); ctx.globalAlpha = clamp(floater.life / floater.maxLife, 0, 1); drawText(ctx, floater.text, floater.x, floater.y, { size: floater.text.length > 5 ? 10 : 17, color: floater.color, weight: 900 }); ctx.restore();
     });
-  }
-
-  renderCameraMarker(stage, camera) {
-    const zone = stage.zones.find((item) => this.player.x >= item.x && this.player.x <= item.x + item.width && this.player.y >= item.y && this.player.y <= item.y + item.height);
-    if (zone) document.querySelector('#hud-zone-label').dataset.zone = zone.id;
   }
 
   loop(timestamp) {

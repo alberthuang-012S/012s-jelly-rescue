@@ -41,7 +41,8 @@ export class WorldRenderer {
   }
 
   draw(ctx, stage, now) {
-    ctx.imageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
     if (stage.id === 'mountain') this.drawMountain(ctx, stage, now);
     else this.drawPark(ctx, stage, now);
   }
@@ -50,7 +51,8 @@ export class WorldRenderer {
     const { width, height } = stage.world;
     if (this.parkImage?.complete && this.parkImage.naturalWidth) {
       ctx.save();
-      ctx.imageSmoothingEnabled = false;
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(this.parkImage, 0, 0, this.parkImage.naturalWidth, this.parkImage.naturalHeight, 0, 0, width, height);
       ctx.restore();
       return;
@@ -122,7 +124,8 @@ export class WorldRenderer {
     const { width, height } = stage.world;
     if (this.mountainImage?.complete && this.mountainImage.naturalWidth) {
       ctx.save();
-      ctx.imageSmoothingEnabled = false;
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(this.mountainImage, 0, 0, this.mountainImage.naturalWidth, this.mountainImage.naturalHeight, 0, 0, width, height);
       ctx.restore();
       return;

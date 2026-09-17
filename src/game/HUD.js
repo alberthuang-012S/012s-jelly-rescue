@@ -10,13 +10,14 @@ export class HUD {
       lives: document.querySelector('#hud-lives'),
       stageName: document.querySelector('#hud-stage-name'),
       objective: document.querySelector('#hud-objective'),
-      zone: document.querySelector('#hud-zone-label'),
       target: document.querySelector('#target-callout'),
       targetName: document.querySelector('#target-name'),
       targetDistance: document.querySelector('#target-distance'),
       action: document.querySelector('#action-button')
     };
     this.lastObjective = '';
+    this.lastLives = -1;
+    this.lastSelectedItem = '';
   }
 
   update(game) {
@@ -26,7 +27,16 @@ export class HUD {
     this.elements.combo.textContent = combo.combo ? `x${combo.getMultiplier().toFixed(1)}` : '—';
     this.elements.timer.textContent = formatClock(game.stageManager.getRemaining());
     this.elements.stageName.textContent = stage.name.toUpperCase();
-    this.elements.lives.innerHTML = [0, 1, 2].map((index) => `<span class="heart ${index < game.lives ? '' : 'is-empty'}">♥</span>`).join('');
+    if (this.lastLives !== game.lives) {
+      const hearts = [0, 1, 2].map((index) => {
+        const heart = document.createElement('span');
+        heart.className = `heart ${index < game.lives ? '' : 'is-empty'}`;
+        heart.textContent = '♥';
+        return heart;
+      });
+      this.elements.lives.replaceChildren(...hearts);
+      this.lastLives = game.lives;
+    }
     const target = game.interactionSystem.currentTarget;
     if (target) {
       this.elements.target.classList.remove('is-hidden');
@@ -37,14 +47,12 @@ export class HUD {
       this.elements.target.classList.add('is-hidden');
       this.elements.action.classList.add('is-hidden');
     }
-    const zone = stage.zones.find((item) => game.player.x >= item.x && game.player.x <= item.x + item.width && game.player.y >= item.y && game.player.y <= item.y + item.height);
-    if (zone) this.elements.zone.innerHTML = `<span class="stamp-pin">⌖</span> ${zone.label.toUpperCase()}`;
     const objective = game.debug.showRadius ? 'DEBUG · 互動半徑已顯示' : target ? `靠近 ${target.name} · 選對道具` : game.stageManager.getPhase() === 'intro' ? '巡邏中 · 優先留意黃色預警' : '巡邏中 · 觀察路線與求救泡泡';
     if (objective !== this.lastObjective) {
       this.elements.objective.textContent = objective;
       this.lastObjective = objective;
     }
-    this.updateItems(game.itemSystem.selectedId);
+    if (this.lastSelectedItem !== game.itemSystem.selectedId) this.updateItems(game.itemSystem.selectedId);
   }
 
   updateItems(selectedId) {
@@ -54,6 +62,7 @@ export class HUD {
       const status = button.querySelector('.item-status');
       if (status) status.textContent = isSelected ? 'SELECTED' : 'READY';
     });
+    this.lastSelectedItem = selectedId;
   }
 
   showToast(message, type = 'info', detail = '') {
@@ -69,4 +78,3 @@ export class HUD {
     }, 2300);
   }
 }
-

@@ -178,7 +178,7 @@ export class NPC {
     this.y += (dy / length) * velocity * dt;
   }
 
-  draw(ctx, now, { debugRadius = false } = {}) {
+  draw(ctx, now, { debugRadius = false, cameraScale = 1, compactStatusBubble = false } = {}) {
     if (!this.active) return;
     const bob = this.state === STATES.RESCUED ? Math.sin(now * 0.012 + this.phase) * 4 : Math.sin(now * 0.004 + this.phase) * 1.3;
     const style = ROLE_STYLE[this.role] || ROLE_STYLE.visitor;
@@ -233,7 +233,7 @@ export class NPC {
     ctx.restore();
 
     if (this.state === STATES.WARNING || this.state === STATES.HELP || this.state === STATES.CRITICAL || this.state === STATES.RESCUED || this.state === STATES.FAILED) {
-      this.drawStatus(ctx, now);
+      this.drawStatus(ctx, now, { cameraScale, compactStatusBubble });
     }
     if (debugRadius) {
       ctx.save(); ctx.strokeStyle = 'rgba(36, 50, 74, 0.38)'; ctx.lineWidth = 2; ctx.setLineDash([2, 5]);
@@ -249,7 +249,8 @@ export class NPC {
     const destinationWidth = 72;
     const destinationHeight = 132;
     ctx.save();
-    ctx.imageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(
       this.spriteImage,
       frame * frameWidth,
@@ -265,42 +266,81 @@ export class NPC {
     return true;
   }
 
-  drawStatus(ctx, now) {
-    if (this.state === STATES.RESCUED) {
-      drawText(ctx, '好多了！', this.x, this.y - 66, { size: 12, color: '#f9f5e9', weight: 800 });
-      return;
-    }
-    if (this.state === STATES.FAILED) {
-      drawText(ctx, '我先回去了…', this.x, this.y - 56, { size: 11, color: '#f8f5ee', weight: 700 });
-      return;
-    }
+  drawStatus(ctx, now, { cameraScale = 1, compactStatusBubble = false } = {}) {
     const conditionKey = this.condition === CONDITIONS.ITCH ? CONDITIONS.ITCH : CONDITIONS.SORENESS;
     const condition = CONDITION_LABELS[conditionKey];
     const isWarning = this.state === STATES.WARNING;
     const isCritical = this.state === STATES.CRITICAL;
-    const pulse = isCritical ? Math.sin(now * 0.02) * 1.4 : 0;
-    const bubbleWidth = isWarning ? 73 : 76;
+    const isRescued = this.state === STATES.RESCUED;
+    const isFailed = this.state === STATES.FAILED;
+    const label = isRescued
+      ? '好多了！'
+      : isFailed
+        ? '我先回去了……'
+        : isWarning
+          ? condition.warningTitle
+          : isCritical
+            ? '快受不了了！'
+            : condition.title;
+    const scale = Math.max(0.25, cameraScale);
+    const screenFontSize = compactStatusBubble ? (isCritical ? 16 : 14) : (isCritical ? 19 : 17);
+    const screenPadding = compactStatusBubble ? 24 : 30;
+    const screenBaseWidth = compactStatusBubble ? 116 : 138;
+    ctx.save();
+    ctx.font = `900 ${screenFontSize}px Manrope, 'Noto Sans TC', sans-serif`;
+    const measuredTextWidth = ctx.measureText(label).width;
+    ctx.restore();
+    const screenBubbleWidth = Math.max(screenBaseWidth, measuredTextWidth + screenPadding);
+    const screenBubbleHeight = compactStatusBubble ? 35 : 42;
+    const screenPointerHeight = compactStatusBubble ? 8 : 10;
+    const bubbleWidth = screenBubbleWidth / scale;
+    const bubbleHeight = screenBubbleHeight / scale;
+    const pointerHeight = screenPointerHeight / scale;
     const bubbleX = this.x - bubbleWidth / 2;
-    const spriteOffset = this.spriteSheet ? 104 : 66;
-    const bubbleY = this.y - (isWarning ? spriteOffset : spriteOffset + 7) - pulse;
+    const spriteTopOffset = this.spriteSheet ? 84 : 52;
+    const gap = (compactStatusBubble ? 7 : 9) / scale;
+    const pulse = isCritical ? (Math.sin(now * 0.02) * (compactStatusBubble ? 1.5 : 2)) / scale : 0;
+    const bubbleBottom = this.y - spriteTopOffset - gap;
+    const bubbleY = bubbleBottom - bubbleHeight - pulse;
+    const fill = isCritical ? '#ffe1ea' : isRescued ? '#def5e8' : isFailed ? '#eef3f5' : '#fff5df';
+    const stroke = isCritical ? '#e77fa2' : isRescued ? '#65ae91' : isFailed ? '#95a9b4' : '#5686c5';
+    const textColor = isCritical ? '#a83d67' : isRescued ? '#287b64' : isFailed ? '#566d7b' : '#173a76';
     ctx.save();
-    ctx.fillStyle = isCritical ? '#ffe1ea' : '#fff5df';
-    ctx.strokeStyle = isCritical ? '#e77fa2' : '#5686c5';
-    ctx.lineWidth = 3;
-    roundedRect(ctx, bubbleX, bubbleY, bubbleWidth, 25, 0);
+    ctx.fillStyle = fill;
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = 2 / scale;
+    roundedRect(ctx, bubbleX, bubbleY, bubbleWidth, bubbleHeight, 7 / scale);
     ctx.fill(); ctx.stroke();
-    ctx.fillStyle = isWarning ? '#9b7855' : condition.color;
-    ctx.beginPath(); ctx.moveTo(this.x - 5, bubbleY + 25); ctx.lineTo(this.x, bubbleY + 32); ctx.lineTo(this.x + 5, bubbleY + 25); ctx.fill();
-    drawText(ctx, isWarning ? condition.warningTitle : isCritical ? '快受不了了！' : condition.title, this.x, bubbleY + 12, { size: isWarning ? 9 : 10, color: '#173a76', weight: 800 });
+    ctx.fillStyle = fill;
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = 2 / scale;
+    ctx.beginPath();
+    ctx.moveTo(this.x - 5 / scale, bubbleY + bubbleHeight);
+    ctx.lineTo(this.x, bubbleY + bubbleHeight + pointerHeight);
+    ctx.lineTo(this.x + 5 / scale, bubbleY + bubbleHeight);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    drawText(ctx, label, this.x, bubbleY + bubbleHeight / 2, {
+      size: screenFontSize / scale,
+      color: textColor,
+      weight: 900,
+      font: "Manrope, 'Noto Sans TC', sans-serif"
+    });
     ctx.restore();
-    const barWidth = 48;
-    const barY = bubbleY - 10;
-    ctx.save();
-    ctx.fillStyle = 'rgba(36, 50, 74, 0.42)';
-    roundedRect(ctx, this.x - barWidth / 2, barY, barWidth, 5, 0); ctx.fill();
-    const ratio = clamp(this.tolerance / Math.max(0.1, this.maxTolerance), 0, 1);
-    ctx.fillStyle = isCritical ? '#ed8d75' : condition.color;
-    roundedRect(ctx, this.x - barWidth / 2, barY, barWidth * ratio, 5, 0); ctx.fill();
-    ctx.restore();
+    if (!isRescued && !isFailed) {
+      const screenBarWidth = compactStatusBubble ? 92 : 112;
+      const screenBarHeight = compactStatusBubble ? 8 : 10;
+      const barWidth = screenBarWidth / scale;
+      const barHeight = screenBarHeight / scale;
+      const barY = bubbleY - (compactStatusBubble ? 8 : 10) / scale - barHeight;
+      const ratio = clamp(this.tolerance / Math.max(0.1, this.maxTolerance), 0, 1);
+      ctx.save();
+      ctx.fillStyle = 'rgba(36, 50, 74, 0.52)';
+      roundedRect(ctx, this.x - barWidth / 2, barY, barWidth, barHeight, 3 / scale); ctx.fill();
+      ctx.fillStyle = isCritical ? '#ed8d75' : condition.color;
+      roundedRect(ctx, this.x - barWidth / 2, barY, barWidth * ratio, barHeight, 3 / scale); ctx.fill();
+      ctx.restore();
+    }
   }
 }

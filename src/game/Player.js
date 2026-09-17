@@ -89,7 +89,8 @@ export class Player {
       const scaleX = 1 + squash * 0.35;
       const scaleY = 1 - squash;
       ctx.save();
-      ctx.imageSmoothingEnabled = false;
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
       ctx.translate(this.x, this.y + bob);
       ctx.scale(scaleX, scaleY);
       ctx.drawImage(
@@ -114,7 +115,8 @@ export class Player {
     const destinationWidth = 94;
     const destinationHeight = 82;
     ctx.save();
-    ctx.imageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(
       this.spriteImage,
       columns[this.direction] * sourceWidth,
