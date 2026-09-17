@@ -39,13 +39,16 @@ The core loop is split into focused modules:
 - `Jelly Mountain`: terraced alpine route with a trailhead, wide stepped paths, a central rest deck, two readable mid-route branches and a summit lookout.
 - `reference/generated-mountain-open-portrait-hq.png` is the approved portrait mountain concept rendered as the in-game background, with a spacious central meadow and sparse edge obstacles.
 - `reference/world-jelly-player-hq.png` is the polished four-frame player sprite sheet; `reference/generated-npcs-hiker-elder-child-hq.png` contains the updated hiker, elder and child sprites with transparent alpha.
-- `reference/world-jelly-front-hq.png` is the high-resolution front-facing jelly used by the home hero.
+- `reference/world-jelly-front-hq.png` is the high-resolution home-hero master/fallback; the homepage loads the smaller `reference/runtime/jelly-home.webp` first.
 - `reference/generated-park-open-portrait-hq.png` is the approved clean portrait park artwork, composited under gameplay entities and HUD.
 - Park gameplay uses a 768×1152 logical world mapped to the 1024×1536 portrait artwork, so the full map reads larger on phones while keeping the collision geometry aligned.
 - Camera strategy: portrait mobile uses a full-map fit; desktop and landscape use a clamped, smoothly-following RPG camera.
 - The canvas backing buffer follows its CSS display box × devicePixelRatio (capped at 2.5), and HQ map/sprite images use high-quality smoothing.
 - Loading is staged: the home screen does not fetch the mountain map; player/NPC assets load in parallel when a stage starts, and image responses are cached by the local server for faster reloads.
 - Park and Mountain gameplay backgrounds keep their original 1024×1536 dimensions but load WebP first (PNG remains the compatibility fallback), reducing desktop stage-image transfer by roughly 84%.
+- Runtime gameplay assets live under `reference/runtime/`: `jelly-player.webp`, `npc-sprites.webp`, `ppa-plus-one.webp`, `nap-plus-one.webp` and `jelly-home.webp`; the original PNGs remain as source/master or compatibility fallbacks.
+- Starting a stage waits for the selected map, player, NPC, PPA+1 and NAP+1 assets to finish asynchronous decode before gameplay begins. A lightweight loading overlay prevents partially loaded entities from appearing.
+- Add `?assetReport=1` on localhost to expose `window.__jellyAssetReport` and log asset format, byte size, download time, decode time, total time and cache-hit information.
 - NPC status bubbles are screen-size compensated for camera zoom, with larger readable dialogue and tolerance bars; the transient location-name stamp is intentionally omitted.
 - Touch controls use visual pressed states only; no mobile haptic or vibration API is used.
 - Portrait layout keeps a tall camera viewport and uses the `012s-jelly-world` front-facing jelly artwork for the home character reference.

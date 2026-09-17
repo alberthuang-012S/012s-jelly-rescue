@@ -8,14 +8,32 @@ import { ItemSystem } from './ItemSystem.js';
 import { Player } from './Player.js';
 import { ResultScreen } from './ResultScreen.js';
 import { ScoreManager } from './ScoreManager.js';
-import { StageManager } from './StageManager.js?v=load-polish-1';
-import { WorldRenderer } from './WorldRenderer.js?v=load-polish-1';
+import { StageManager } from './StageManager.js?v=critical-assets-1';
+import { WorldRenderer } from './WorldRenderer.js?v=critical-assets-1';
 import { clamp, drawText, formatClock, lerp } from './utils.js';
 
 const ASSET_PATHS = Object.freeze({
-  player: './reference/world-jelly-player-hq.png',
+  player: [
+    './reference/runtime/jelly-player.webp',
+    './reference/world-jelly-player-hq.png'
+  ],
   playerFallback: './reference/player-jelly-preferred.png',
-  npc: './reference/generated-npcs-hiker-elder-child-hq.png',
+  npc: [
+    './reference/runtime/npc-sprites.webp',
+    './reference/generated-npcs-hiker-elder-child-hq.png'
+  ],
+  ppa: [
+    './reference/runtime/ppa-plus-one.webp',
+    './reference/ppa-plus-one.png'
+  ],
+  nap: [
+    './reference/runtime/nap-plus-one.webp',
+    './reference/nap-plus-one.png'
+  ],
+  home: [
+    './reference/runtime/jelly-home.webp',
+    './reference/world-jelly-front-hq.png'
+  ],
   park: [
     './reference/generated-park-open-portrait-hq.webp',
     './reference/generated-park-open-portrait-hq.png'
@@ -26,25 +44,79 @@ const ASSET_PATHS = Object.freeze({
   ]
 });
 
-function loadImage(source, { fetchPriority = 'auto' } = {}) {
+const ASSET_REPORT_ENABLED = typeof window !== 'undefined'
+  && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  && new URLSearchParams(window.location.search).has('assetReport');
+const assetReport = [];
+
+function now() {
+  return typeof performance !== 'undefined' ? performance.now() : Date.now();
+}
+
+function getResourceEntry(source) {
+  if (typeof performance === 'undefined' || !performance.getEntriesByName) return null;
+  const absoluteSource = new URL(source, window.location.href).href;
+  const entries = performance.getEntriesByName(absoluteSource);
+  return entries[entries.length - 1] || null;
+}
+
+function loadImage(source, { fetchPriority = 'auto', assetName = source } = {}) {
   return new Promise((resolve) => {
+    const loadStart = now();
     const image = new Image();
+    let settled = false;
     image.decoding = 'async';
     if ('fetchPriority' in image) image.fetchPriority = fetchPriority;
-    image.onload = () => resolve(image);
-    image.onerror = () => resolve(image);
+    const finish = async (loaded) => {
+      if (settled) return;
+      settled = true;
+      const downloadComplete = now();
+      let decodeComplete = downloadComplete;
+      let decodeSucceeded = false;
+      if (loaded && typeof image.decode === 'function') {
+        try {
+          await image.decode();
+          decodeSucceeded = true;
+          decodeComplete = now();
+        } catch {
+          decodeComplete = now();
+        }
+      }
+      const resource = getResourceEntry(image.currentSrc || image.src);
+      if (ASSET_REPORT_ENABLED) {
+        assetReport.push({
+          asset: assetName,
+          format: source.split('.').pop().toUpperCase(),
+          bytes: resource?.encodedBodySize || resource?.transferSize || null,
+          loadStart: Math.round(loadStart),
+          downloadMs: Math.round(downloadComplete - loadStart),
+          decodeMs: Math.round(decodeComplete - downloadComplete),
+          totalMs: Math.round(decodeComplete - loadStart),
+          cacheHit: resource ? resource.transferSize === 0 : null,
+          decoded: loaded && (decodeSucceeded || typeof image.decode !== 'function')
+        });
+      }
+      resolve(image);
+    };
+    image.onload = () => finish(true);
+    image.onerror = () => finish(false);
     image.src = source;
   });
 }
 
-async function loadImageWithFallback(sources, options) {
+async function loadImageWithFallback(sources, { assetName, ...options } = {}) {
+  const candidates = Array.isArray(sources) ? sources : [sources];
   let lastImage = null;
-  for (const source of sources) {
-    const image = await loadImage(source, options);
+  for (const source of candidates) {
+    const image = await loadImage(source, { ...options, assetName: assetName || source });
     lastImage = image;
     if (image.naturalWidth) return image;
   }
   return lastImage;
+}
+
+function wait(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
 
 async function removeSpriteBackground(image) {
@@ -101,6 +173,10 @@ export class Game {
     this.homeStageCards = [...document.querySelectorAll('[data-stage-select]')];
     this.startButton = document.querySelector('#start-button');
     this.rotateOverlay = document.querySelector('#rotate-overlay');
+    this.loadingOverlay = document.querySelector('#loading-overlay');
+    this.loadingTitle = document.querySelector('#loading-title');
+    this.loadingProgressBar = document.querySelector('#loading-progress-bar');
+    this.loadingProgressText = document.querySelector('#loading-progress-text');
     this.selectedStage = 'park';
     this.state = 'home';
     this.lives = 3;
@@ -120,8 +196,12 @@ export class Game {
     this.cameraMode = 'fit';
     this.layoutMode = 'desktop';
     this.cameraState = null;
-    this.sharedAssetsPromise = null;
+    this.playerAssetPromise = null;
+    this.npcAssetPromise = null;
+    this.itemAssetPromises = new Map();
     this.stageMapPromises = new Map();
+    this.loadingToken = 0;
+    if (ASSET_REPORT_ENABLED) window.__jellyAssetReport = assetReport;
 
     this.stageManager = new StageManager();
     this.itemSystem = new ItemSystem();
@@ -148,18 +228,13 @@ export class Game {
     requestAnimationFrame(this.loop);
   }
 
-  prepareStageAssets(stageId) {
-    this.ensureSharedAssets();
-    this.ensureStageMap(stageId);
-  }
-
-  ensureSharedAssets() {
-    if (this.sharedAssetsPromise) return this.sharedAssetsPromise;
-    this.sharedAssetsPromise = Promise.all([
-      loadImage(ASSET_PATHS.player, { fetchPriority: 'high' }),
-      loadImage(ASSET_PATHS.npc, { fetchPriority: 'high' })
-    ]).then(async ([worldJelly, npcSprite]) => {
-      if (worldJelly.naturalWidth) {
+  ensurePlayerAsset() {
+    if (this.playerAssetPromise) return this.playerAssetPromise;
+    this.playerAssetPromise = loadImageWithFallback(ASSET_PATHS.player, {
+      fetchPriority: 'high',
+      assetName: 'Player sprite'
+    }).then(async (worldJelly) => {
+      if (worldJelly?.naturalWidth) {
         this.spriteImage = worldJelly;
         this.playerSpriteSheet = {
           frameWidth: worldJelly.naturalWidth / 4,
@@ -174,13 +249,27 @@ export class Game {
         };
         this.player.spriteSheet = this.playerSpriteSheet;
       } else {
-        const rawSprite = await loadImage(ASSET_PATHS.playerFallback, { fetchPriority: 'high' });
+        const rawSprite = await loadImage(ASSET_PATHS.playerFallback, {
+          fetchPriority: 'high',
+          assetName: 'Player fallback'
+        });
         this.spriteImage = await removeSpriteBackground(rawSprite);
         this.playerSpriteSheet = null;
         this.player.spriteSheet = null;
       }
       this.player.spriteImage = this.spriteImage;
-      this.npcSpriteImage = npcSprite.naturalWidth ? npcSprite : null;
+      return this.spriteImage;
+    });
+    return this.playerAssetPromise;
+  }
+
+  ensureNpcAsset() {
+    if (this.npcAssetPromise) return this.npcAssetPromise;
+    this.npcAssetPromise = loadImageWithFallback(ASSET_PATHS.npc, {
+      fetchPriority: 'high',
+      assetName: 'NPC sprite'
+    }).then((npcSprite) => {
+      this.npcSpriteImage = npcSprite?.naturalWidth ? npcSprite : null;
       this.npcSpriteSheet = this.npcSpriteImage ? {
         frameWidth: this.npcSpriteImage.naturalWidth / 3,
         frameHeight: this.npcSpriteImage.naturalHeight,
@@ -190,15 +279,82 @@ export class Game {
         npc.spriteImage = this.npcSpriteImage;
         npc.spriteSheet = this.npcSpriteSheet;
       });
-      return { player: this.spriteImage, npc: this.npcSpriteImage };
+      return this.npcSpriteImage;
     });
-    return this.sharedAssetsPromise;
+    return this.npcAssetPromise;
   }
 
-  ensureStageMap(stageId) {
+  ensureItemAsset(itemId) {
+    if (this.itemAssetPromises.has(itemId)) return this.itemAssetPromises.get(itemId);
+    const assetName = itemId === 'PPA' ? 'PPA+1' : 'NAP+1';
+    const itemPromise = loadImageWithFallback(ASSET_PATHS[itemId === 'PPA' ? 'ppa' : 'nap'], {
+      fetchPriority: 'high',
+      assetName
+    });
+    this.itemAssetPromises.set(itemId, itemPromise);
+    return itemPromise;
+  }
+
+  loadCriticalAssets(stageId, onProgress = () => {}) {
+    const criticalTasks = [
+      ['Stage map', this.ensureStageMap(stageId, { fetchPriority: 'high' })],
+      ['Player', this.ensurePlayerAsset()],
+      ['NPC', this.ensureNpcAsset()],
+      ['PPA+1', this.ensureItemAsset('PPA')],
+      ['NAP+1', this.ensureItemAsset('NAP')]
+    ];
+    let completed = 0;
+    onProgress(0, '準備巡邏素材');
+    const result = Promise.all(criticalTasks.map(([label, task]) => task.then((value) => {
+      completed += 1;
+      onProgress(completed / criticalTasks.length, `${label} ready`);
+      return value;
+    })));
+    return result.then((assets) => {
+      if (ASSET_REPORT_ENABLED) console.table(assetReport);
+      return assets;
+    });
+  }
+
+  showLoading(stage) {
+    this.loadingTitle.textContent = `載入${stage.name}…`;
+    this.loadingOverlay.classList.remove('is-hidden');
+    this.loadingOverlay.setAttribute('aria-hidden', 'false');
+    this.updateLoading(0, '準備巡邏素材');
+  }
+
+  updateLoading(progress, label) {
+    const percent = Math.round(clamp(progress, 0, 1) * 100);
+    this.loadingProgressBar.style.width = `${percent}%`;
+    this.loadingProgressText.textContent = `${label} · ${percent}%`;
+  }
+
+  hideLoading() {
+    this.loadingOverlay.classList.add('is-hidden');
+    this.loadingOverlay.setAttribute('aria-hidden', 'true');
+  }
+
+  scheduleNextStagePreload(stageId) {
+    const nextStageId = stageId === 'park' ? 'mountain' : 'park';
+    const preload = () => {
+      if (this.state === 'playing' && this.selectedStage === stageId) {
+        this.ensureStageMap(nextStageId, { fetchPriority: 'low' });
+      }
+    };
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(preload, { timeout: 2500 });
+    } else {
+      window.setTimeout(preload, 900);
+    }
+  }
+
+  ensureStageMap(stageId, { fetchPriority = 'high' } = {}) {
     const mapId = stageId === 'mountain' ? 'mountain' : 'park';
     if (this.stageMapPromises.has(mapId)) return this.stageMapPromises.get(mapId);
-    const mapPromise = loadImageWithFallback(ASSET_PATHS[mapId], { fetchPriority: 'high' }).then((mapImage) => {
+    const mapPromise = loadImageWithFallback(ASSET_PATHS[mapId], {
+      fetchPriority,
+      assetName: `${mapId} map`
+    }).then((mapImage) => {
       if (!mapImage.naturalWidth) return mapImage;
       if (mapId === 'mountain') {
         this.worldRenderer.setMountainImage(mapImage);
@@ -293,11 +449,11 @@ export class Game {
     this.resultScreen.screen.scrollTop = 0;
   }
 
-  startStage(stageId) {
+  async startStage(stageId) {
     this.selectedStage = stageId;
-    this.prepareStageAssets(stageId);
+    const loadingToken = ++this.loadingToken;
     const stage = this.stageManager.start(stageId);
-    this.state = 'playing';
+    this.state = 'loading';
     this.lives = 3;
     this.npcs = [];
     this.particles = [];
@@ -318,21 +474,42 @@ export class Game {
       }
     });
     this.eventDirector.seed(this.npcs);
-    this.input.setEnabled(true);
+    this.input.setEnabled(false);
     this.resultScreen.hide();
     this.homeScreen.classList.add('is-hidden');
     this.gameShell.classList.remove('is-hidden');
     this.debug.open = false;
     document.querySelector('#debug-panel').classList.add('is-hidden');
-    this.hud.updateItems(this.itemSystem.selectedId);
-    this.hud.showToast(`${stage.name} 開始`, 'info', '先觀察預警，再選擇正確道具。');
     this.updateOrientation?.();
     this.resetAppScroll();
+    this.showLoading(stage);
+
+    const loadStartedAt = now();
+    try {
+      await this.loadCriticalAssets(stageId, (progress, label) => {
+        if (loadingToken === this.loadingToken) this.updateLoading(progress, label);
+      });
+    } catch (error) {
+      console.error('Critical asset loading failed; using available fallbacks.', error);
+    }
+    const minimumLoadingTime = 180;
+    const remainingLoadingTime = minimumLoadingTime - (now() - loadStartedAt);
+    if (remainingLoadingTime > 0) await wait(remainingLoadingTime);
+    if (loadingToken !== this.loadingToken) return;
+
+    this.state = 'playing';
+    this.input.setEnabled(true);
+    this.hud.updateItems(this.itemSystem.selectedId);
+    this.hideLoading();
+    this.hud.showToast(`${stage.name} 開始`, 'info', '先觀察預警，再選擇正確道具。');
+    this.scheduleNextStagePreload(stageId);
   }
 
   showHome() {
+    this.loadingToken += 1;
     this.state = 'home';
     this.input.setEnabled(false);
+    this.hideLoading();
     this.gameShell.classList.add('is-hidden');
     this.resultScreen.hide();
     this.homeScreen.classList.remove('is-hidden');

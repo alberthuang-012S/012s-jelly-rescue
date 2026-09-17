@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#10253c" />
-    <link rel="stylesheet" href="./src/styles.css?v=load-polish-1" />
+    <link rel="stylesheet" href="./src/styles.css?v=critical-assets-1" />
     <title>Jelly Rescue RPG</title>
   </head>
   <body>
@@ -43,7 +43,10 @@
 
         <div class="home-character-wrap" aria-hidden="true">
           <div class="character-glow"></div>
-          <div class="home-character-crop"></div>
+          <picture class="home-character-crop">
+            <source srcset="./reference/runtime/jelly-home.webp" type="image/webp" />
+            <img src="./reference/world-jelly-front-hq.png" alt="" decoding="async" fetchpriority="low" />
+          </picture>
           <div class="floating-spark spark-a">✦</div><div class="floating-spark spark-b">·</div><div class="floating-spark spark-c">✦</div>
         </div>
 
@@ -52,6 +55,14 @@
 
       <section id="game-shell" class="game-shell is-hidden" aria-label="遊戲畫面">
         <div class="game-frame">
+          <div id="loading-overlay" class="loading-overlay is-hidden" role="status" aria-live="polite" aria-hidden="true">
+            <div class="loading-card">
+              <span class="loading-kicker">JELLY RESCUE</span>
+              <strong id="loading-title">載入巡邏區域…</strong>
+              <div class="loading-track" aria-hidden="true"><span id="loading-progress-bar"></span></div>
+              <small id="loading-progress-text">準備巡邏素材 · 0%</small>
+            </div>
+          </div>
           <canvas id="game-canvas" width="960" height="540" aria-label="Jelly Rescue RPG 遊戲地圖"></canvas>
           <div class="screen-vignette"></div>
 
@@ -78,11 +89,11 @@
 
           <div class="item-dock" aria-label="固定道具">
             <button class="item-card is-selected" data-item="PPA" type="button">
-              <span class="item-hotkey">1</span><span class="item-img-wrap"><img src="./reference/ppa-plus-one.png" alt="PPA+1" loading="lazy" decoding="async" /></span>
+              <span class="item-hotkey">1</span><span class="item-img-wrap"><picture><source srcset="./reference/runtime/ppa-plus-one.webp" type="image/webp" /><img src="./reference/ppa-plus-one.png" alt="PPA+1" loading="lazy" decoding="async" /></picture></span>
               <span class="item-info"><b>PPA+1</b><small>癢 · ITCH</small></span><span class="item-status">SELECTED</span>
             </button>
             <button class="item-card" data-item="NAP" type="button">
-              <span class="item-hotkey">2</span><span class="item-img-wrap"><img src="./reference/nap-plus-one.png" alt="NAP+1" loading="lazy" decoding="async" /></span>
+              <span class="item-hotkey">2</span><span class="item-img-wrap"><picture><source srcset="./reference/runtime/nap-plus-one.webp" type="image/webp" /><img src="./reference/nap-plus-one.png" alt="NAP+1" loading="lazy" decoding="async" /></picture></span>
               <span class="item-info"><b>NAP+1</b><small>痠痛 · SORE</small></span><span class="item-status">READY</span>
             </button>
           </div>
@@ -146,6 +157,6 @@
       <div id="toast-region" class="toast-region" aria-live="polite"></div>
       <div id="rotate-overlay" class="rotate-overlay is-hidden"><div class="rotate-card"><span>↻</span><b>請將裝置轉為橫向</b><small>Jelly Rescue 需要一點寬度，才能看見整座地圖。</small></div></div>
     </main>
-    <script type="module" src="./src/main.js?v=load-polish-1"></script>
+    <script type="module" src="./src/main.js?v=critical-assets-1"></script>
   </body>
 </html>
