@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#10253c" />
+    <link rel="stylesheet" href="./src/styles.css" />
+    <title>Jelly Rescue RPG</title>
+  </head>
+  <body>
+    <main id="app" class="app-shell">
+      <div class="ambient ambient-one"></div>
+      <div class="ambient ambient-two"></div>
+
+      <section id="home-screen" class="screen home-screen" aria-labelledby="game-title">
+        <div class="home-copy">
+          <div class="eyebrow"><span class="eyebrow-dot"></span> FIELD MEDIC UNIT 01</div>
+          <h1 id="game-title">JELLY<br /><span>RESCUE</span></h1>
+          <p class="home-lede">巡邏、觀察、預判，讓每一位公園居民<br />在小水母的守護下恢復笑容。</p>
+          <div class="home-hero-note">
+            <span class="hero-note-icon">✦</span>
+            <span><b>今天的任務</b><small>聽見求救訊號，及時送上舒緩道具。</small></span>
+          </div>
+        </div>
+
+        <div class="home-panel glass-panel">
+          <div class="panel-kicker">SELECT A PATROL</div>
+          <div class="stage-cards" role="listbox" aria-label="選擇關卡">
+            <button class="stage-card is-selected" data-stage-select="park" role="option" aria-selected="true">
+              <span class="stage-card-art park-art"><span class="art-sun">☼</span><span class="art-tree">♣</span><span class="art-bench"></span></span>
+              <span class="stage-card-content"><b>Jelly Park</b><small>城市公園 · 教學巡邏</small><em>建議 3 分鐘</em></span>
+              <span class="stage-card-check">✓</span>
+            </button>
+            <button class="stage-card" data-stage-select="mountain" role="option" aria-selected="false">
+              <span class="stage-card-art mountain-art"><span class="art-mountain">⌃</span><span class="art-path"></span><span class="art-flag">⚑</span></span>
+              <span class="stage-card-content"><b>Jelly Mountain</b><small>山間步道 · 路線判斷</small><em>預警更重要</em></span>
+              <span class="stage-card-check">✓</span>
+            </button>
+          </div>
+          <button id="start-button" class="primary-button" type="button"><span>開始巡邏</span><span class="button-arrow">→</span></button>
+          <div class="control-hint"><span class="keycap">WASD</span><span class="keycap">方向鍵</span><span>移動</span><i></i><span class="keycap">E</span><span>使用道具</span></div>
+        </div>
+
+        <div class="home-character-wrap" aria-hidden="true">
+          <div class="character-glow"></div>
+          <div class="home-character-crop"></div>
+          <div class="floating-spark spark-a">✦</div><div class="floating-spark spark-b">·</div><div class="floating-spark spark-c">✦</div>
+        </div>
+
+        <div class="home-footer"><span>PHASE 01 / CORE RESCUE LOOP</span><span>© JELLY RESCUE FIELD TEAM</span></div>
+      </section>
+
+      <section id="game-shell" class="game-shell is-hidden" aria-label="遊戲畫面">
+        <div class="game-frame">
+          <canvas id="game-canvas" width="960" height="540" aria-label="Jelly Rescue RPG 遊戲地圖"></canvas>
+          <div class="screen-vignette"></div>
+
+          <header class="game-hud">
+            <div class="hud-brand"><span class="hud-brand-mark">✦</span><span><b>JELLY RESCUE</b><small id="hud-stage-name">JELLY PARK</small></span></div>
+            <div class="hud-metrics">
+              <div class="metric-box"><small>SCORE</small><strong id="hud-score">00000</strong></div>
+              <div class="metric-box combo-metric"><small>COMBO</small><strong id="hud-combo">—</strong></div>
+            </div>
+            <div class="hud-right">
+              <div class="timer-box"><small>巡邏剩餘</small><strong id="hud-timer">03:00</strong></div>
+              <div class="lives-box" id="hud-lives" aria-label="生命值"></div>
+            </div>
+          </header>
+
+          <div class="map-stamp" id="hud-zone-label"><span class="stamp-pin">⌖</span> CENTRAL LOOP</div>
+          <div class="objective-chip"><span class="pulse-dot"></span><span id="hud-objective">巡邏中 · 留意黃色預警</span></div>
+
+          <div id="target-callout" class="target-callout is-hidden">
+            <div class="target-callout-line"><span class="target-dot"></span><b id="target-name">需要救援</b><span id="target-distance">近距離</span></div>
+            <div class="target-callout-help">靠近後按 <kbd>E</kbd> 使用目前道具</div>
+          </div>
+
+          <div id="action-button" class="action-button is-hidden" role="button" tabindex="0" data-action="use"><span class="action-icon">✦</span><span><b>使用</b><small>E / SPACE</small></span></div>
+
+          <div class="item-dock" aria-label="固定道具">
+            <button class="item-card is-selected" data-item="PPA" type="button">
+              <span class="item-hotkey">1</span><span class="item-img-wrap"><img src="./reference/ppa-plus-one.png" alt="PPA+1" /></span>
+              <span class="item-info"><b>PPA+1</b><small>癢 · ITCH</small></span><span class="item-status">SELECTED</span>
+            </button>
+            <button class="item-card" data-item="NAP" type="button">
+              <span class="item-hotkey">2</span><span class="item-img-wrap"><img src="./reference/nap-plus-one.png" alt="NAP+1" /></span>
+              <span class="item-info"><b>NAP+1</b><small>痠痛 · SORE</small></span><span class="item-status">READY</span>
+            </button>
+          </div>
+
+          <div class="mobile-dpad" aria-label="虛擬方向控制">
+            <button data-dir="up" aria-label="向上">▲</button>
+            <button data-dir="left" aria-label="向左">◀</button>
+            <button data-dir="down" aria-label="向下">▼</button>
+            <button data-dir="right" aria-label="向右">▶</button>
+          </div>
+
+          <button id="debug-toggle" class="debug-toggle" type="button">DEBUG <span>D</span></button>
+          <aside id="debug-panel" class="debug-panel is-hidden" aria-label="開發測試面板">
+            <div class="debug-title">DEV CONSOLE <button id="debug-close" type="button">×</button></div>
+            <div class="debug-grid">
+              <button data-debug="itch" type="button">觸發 ITCH</button><button data-debug="soreness" type="button">觸發 SORENESS</button>
+              <button data-debug="clear" type="button">清除事件</button><button data-debug="tolerance" type="button">耐受值設為 3s</button>
+              <button data-debug="life" type="button">無限生命：OFF</button>
+              <button data-debug="radius" type="button">互動半徑：OFF</button><button data-debug="stage" type="button">切換關卡</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="result-screen" class="screen result-screen is-hidden" aria-labelledby="result-title">
+        <div class="result-glow"></div>
+        <div class="result-inner">
+          <div class="result-badge">PATROL COMPLETE <span>✦</span></div>
+          <p class="result-kicker" id="result-kicker">JELLY PARK · STAGE CLEAR</p>
+          <h2 id="result-title">巡邏完成！</h2>
+          <p class="result-summary" id="result-summary">今天也有好好守護大家。</p>
+          <div class="result-score-card">
+            <div><small>本局分數</small><strong id="result-score">0</strong></div>
+            <div class="result-grade" id="result-grade">GOOD<br /><small>WORK</small></div>
+          </div>
+          <div class="result-stat-grid">
+            <div><span>成功救援</span><b id="result-rescued">0 人</b></div>
+            <div><span>平均反應</span><b id="result-average">0.0 秒</b></div>
+            <div><span>PPA+1 成功</span><b id="result-ppa">0 次</b></div>
+            <div><span>NAP+1 成功</span><b id="result-nap">0 次</b></div>
+            <div><span>最佳 Combo</span><b id="result-max-combo">0</b></div>
+            <div><span>錯誤道具</span><b id="result-wrong">0 次</b></div>
+          </div>
+          <div class="result-actions"><button id="result-next" class="primary-button" type="button"><span>前往下一站</span><span>→</span></button><button id="result-replay" class="secondary-button" type="button">再巡邏一次</button><button id="result-home" class="text-button" type="button">回到主選單</button></div>
+        </div>
+      </section>
+
+      <section id="gameover-screen" class="screen result-screen is-hidden" aria-labelledby="gameover-title">
+        <div class="result-glow result-glow-danger"></div>
+        <div class="result-inner">
+          <div class="result-badge danger-badge">PATROL ENDED <span>♡</span></div>
+          <p class="result-kicker">FIELD REPORT · NEEDS REST</p>
+          <h2 id="gameover-title">先休息一下吧</h2>
+          <p class="result-summary">小水母已經很努力了。下次我們會更早發現預警。</p>
+          <div class="result-score-card"><div><small>本局分數</small><strong id="gameover-score">0</strong></div><div class="result-grade danger-grade">TRY<br /><small>AGAIN</small></div></div>
+          <div class="result-stat-grid"><div><span>成功救援</span><b id="gameover-rescued">0 人</b></div><div><span>平均反應</span><b id="gameover-average">0.0 秒</b></div><div><span>最佳 Combo</span><b id="gameover-max-combo">0</b></div><div><span>PPA+1 成功</span><b id="gameover-ppa">0 次</b></div><div><span>NAP+1 成功</span><b id="gameover-nap">0 次</b></div></div>
+          <div class="result-actions"><button id="gameover-replay" class="primary-button" type="button"><span>重新開始</span><span>↻</span></button><button id="gameover-home" class="text-button" type="button">回到主選單</button></div>
+        </div>
+      </section>
+
+      <div id="toast-region" class="toast-region" aria-live="polite"></div>
+      <div id="rotate-overlay" class="rotate-overlay is-hidden"><div class="rotate-card"><span>↻</span><b>請將裝置轉為橫向</b><small>Jelly Rescue 需要一點寬度，才能看見整座地圖。</small></div></div>
+    </main>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
