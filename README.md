@@ -35,7 +35,7 @@ The core loop is split into focused modules:
 
 ## Phase 1 status
 
-- `Jelly Park`: complete playable loop with entrance, fountain, paths, benches, picnic area, trees, flower beds and playground.
+- `Jelly Park`: complete portrait-friendly loop with a wide central route, open side loops, entrance, fountain, benches, picnic area, trees, flower beds and playground.
 - `Jelly Mountain`: terraced alpine route with a trailhead, wide stepped paths, a central rest deck, two readable mid-route branches and a summit lookout.
 - `reference/generated-mountain-open-portrait-hq.png` is the approved portrait mountain concept rendered as the in-game background, with a spacious central meadow and sparse edge obstacles.
 - `reference/world-jelly-player-hq.png` is the polished four-frame player sprite sheet; `reference/generated-npcs-hiker-elder-child-hq.png` contains the updated hiker, elder and child sprites with transparent alpha.

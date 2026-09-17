@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#10253c" />
-    <link rel="stylesheet" href="./src/styles.css" />
+    <link rel="stylesheet" href="./src/styles.css?v=park-layout-2" />
     <title>Jelly Rescue RPG</title>
   </head>
   <body>
@@ -28,7 +28,7 @@
           <div class="stage-cards" role="listbox" aria-label="選擇關卡">
             <button class="stage-card is-selected" data-stage-select="park" role="option" aria-selected="true">
               <span class="stage-card-art park-art"><span class="art-sun">☼</span><span class="art-tree">♣</span><span class="art-bench"></span></span>
-              <span class="stage-card-content"><b>Jelly Park</b><small>城市公園 · 教學巡邏</small><em>建議 3 分鐘</em></span>
+              <span class="stage-card-content"><b>Jelly Park</b><small>城市公園 · 寬路巡邏</small><em>建議 3 分鐘</em></span>
               <span class="stage-card-check">✓</span>
             </button>
             <button class="stage-card" data-stage-select="mountain" role="option" aria-selected="false">
@@ -147,6 +147,6 @@
       <div id="toast-region" class="toast-region" aria-live="polite"></div>
       <div id="rotate-overlay" class="rotate-overlay is-hidden"><div class="rotate-card"><span>↻</span><b>請將裝置轉為橫向</b><small>Jelly Rescue 需要一點寬度，才能看見整座地圖。</small></div></div>
     </main>
-    <script type="module" src="./src/main.js"></script>
+    <script type="module" src="./src/main.js?v=park-layout-2"></script>
   </body>
 </html>

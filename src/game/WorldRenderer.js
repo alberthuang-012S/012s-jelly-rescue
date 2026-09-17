@@ -45,50 +45,56 @@ export class WorldRenderer {
     this.drawGrassTexture(ctx, width, height, MAP.grassDeep);
     this.drawParkBorder(ctx, width, height);
 
-    // The cream cobblestone loop keeps every zone connected on desktop and in
-    // the portrait camera, where only a smaller slice of the world is visible.
+    // The park uses one broad central route and two relaxed side loops. The
+    // layout is intentionally open so the full portrait map stays readable on
+    // phones and the player can always route around a landmark.
     this.drawCobblePath(ctx, [
-      [92, 455], [1480, 455], [1480, 820], [92, 820], [92, 455]
-    ], 82);
+      [512, 1435], [512, 1240], [512, 1060], [512, 900],
+      [360, 850], [250, 760], [250, 620], [350, 520],
+      [512, 520], [512, 340], [512, 130]
+    ], 150);
     this.drawCobblePath(ctx, [
-      [330, 170], [330, 455], [330, 820]
-    ], 56);
+      [512, 1050], [420, 1040], [310, 980], [215, 875],
+      [185, 745], [240, 610], [350, 530], [450, 570], [512, 650]
+    ], 116);
     this.drawCobblePath(ctx, [
-      [1040, 165], [1040, 455], [1040, 820]
-    ], 56);
+      [512, 1050], [604, 1040], [714, 980], [809, 875],
+      [839, 745], [784, 610], [674, 530], [574, 570], [512, 650]
+    ], 116);
     this.drawCobblePath(ctx, [
-      [460, 278], [1120, 278], [1120, 730], [460, 730], [460, 278]
-    ], 42);
+      [512, 520], [415, 470], [345, 385], [375, 285],
+      [512, 250], [649, 285], [679, 385], [609, 470]
+    ], 96);
 
-    this.drawParkPlaza(ctx, 610, 298, 390, 275);
-    this.drawPond(ctx, 55, 105, 230, 135);
-    this.drawFountain(ctx, 675, 350, 250, 150, now);
-    this.drawPicnic(ctx, 1090, 185);
-    this.drawPicnic(ctx, 1245, 255, true);
-    this.drawPlayground(ctx, 1180, 640);
-    this.drawFlowerBed(ctx, 420, 225, 120);
-    this.drawFlowerBed(ctx, 915, 190, 105);
-    this.drawFlowerBed(ctx, 1010, 730, 112);
-    this.drawParkGate(ctx, 74, 455);
-    this.drawFence(ctx, 1155, 594, 230);
-    this.drawLamp(ctx, 405, 398);
-    this.drawLamp(ctx, 1080, 535);
-    this.drawLamp(ctx, 1435, 585);
+    this.drawParkPlaza(ctx, 345, 575, 334, 320);
+    this.drawPond(ctx, 70, 220, 240, 160);
+    this.drawFountain(ctx, 390, 675, 244, 155, now);
+    this.drawPicnic(ctx, 770, 380);
+    this.drawPicnic(ctx, 770, 490, true);
+    this.drawPlayground(ctx, 700, 1110);
+    this.drawFlowerBed(ctx, 128, 500, 126);
+    this.drawFlowerBed(ctx, 704, 700, 116);
+    this.drawFlowerBed(ctx, 330, 1135, 126);
+    this.drawParkGate(ctx, 470, 1435);
+    this.drawLamp(ctx, 342, 610);
+    this.drawLamp(ctx, 682, 610);
+    this.drawLamp(ctx, 610, 1010);
 
     this.drawTrees(ctx, [
-      [112, 275], [185, 735], [340, 110], [515, 120],
-      [1190, 118], [1430, 120], [1515, 735], [1060, 865],
-      [430, 865], [540, 865], [1475, 300]
+      [90, 455], [115, 890], [95, 1235], [255, 1395],
+      [340, 125], [690, 125], [925, 250], [920, 730],
+      [930, 1010], [885, 1395], [110, 1115]
     ]);
-    this.drawTrees(ctx, [[430, 745], [585, 765], [1470, 565]], true);
+    this.drawTrees(ctx, [[332, 450], [692, 450], [270, 1080], [760, 930], [570, 1190]], true);
 
-    this.drawBench(ctx, 430, 370, 0);
-    this.drawBench(ctx, 1035, 575, -0.08);
-    this.drawMapLabel(ctx, '公園入口', 150, 545);
-    this.drawMapLabel(ctx, '樹蔭草地', 515, 112);
-    this.drawMapLabel(ctx, '中央噴水池', 800, 314);
-    this.drawMapLabel(ctx, '野餐區', 1190, 105);
-    this.drawMapLabel(ctx, '遊戲區', 1300, 858);
+    this.drawBench(ctx, 318, 620, 0);
+    this.drawBench(ctx, 706, 620, 0);
+    this.drawBench(ctx, 320, 1010, -0.08);
+    this.drawMapLabel(ctx, '公園入口', 512, 1490);
+    this.drawMapLabel(ctx, '樹蔭草地', 215, 445);
+    this.drawMapLabel(ctx, '中央噴水池', 512, 610);
+    this.drawMapLabel(ctx, '野餐區', 790, 300);
+    this.drawMapLabel(ctx, '遊戲區', 765, 1035);
   }
 
   drawMountain(ctx, stage, now) {

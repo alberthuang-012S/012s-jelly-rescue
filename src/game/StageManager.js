@@ -1,11 +1,22 @@
 import { clamp } from './utils.js';
 
 const parkRoutes = {
-  loop: [
-    { x: 120, y: 455 }, { x: 1480, y: 455 }, { x: 1480, y: 820 }, { x: 120, y: 820 }
+  mainTrail: [
+    { x: 512, y: 1420 }, { x: 512, y: 1240 }, { x: 512, y: 1060 }, { x: 512, y: 900 },
+    { x: 360, y: 850 }, { x: 250, y: 760 }, { x: 250, y: 620 }, { x: 350, y: 520 },
+    { x: 512, y: 520 }, { x: 512, y: 340 }, { x: 512, y: 130 }
   ],
-  shortLoop: [
-    { x: 460, y: 278 }, { x: 1120, y: 278 }, { x: 1120, y: 730 }, { x: 460, y: 730 }
+  leftLoop: [
+    { x: 512, y: 1050 }, { x: 420, y: 1040 }, { x: 310, y: 980 }, { x: 215, y: 875 },
+    { x: 185, y: 745 }, { x: 240, y: 610 }, { x: 350, y: 530 }, { x: 450, y: 570 }, { x: 512, y: 650 }
+  ],
+  rightLoop: [
+    { x: 512, y: 1050 }, { x: 604, y: 1040 }, { x: 714, y: 980 }, { x: 809, y: 875 },
+    { x: 839, y: 745 }, { x: 784, y: 610 }, { x: 674, y: 530 }, { x: 574, y: 570 }, { x: 512, y: 650 }
+  ],
+  upperLoop: [
+    { x: 512, y: 520 }, { x: 415, y: 470 }, { x: 345, y: 385 }, { x: 375, y: 285 },
+    { x: 512, y: 250 }, { x: 649, y: 285 }, { x: 679, y: 385 }, { x: 609, y: 470 }
   ]
 };
 
@@ -33,36 +44,37 @@ export const STAGE_DEFS = Object.freeze({
     id: 'park',
     name: 'Jelly Park',
     displayName: '城市公園',
-    subtitle: '教學巡邏 · 中央噴水池',
+    subtitle: '開放公園 · 寬路巡邏',
     duration: 180,
-    world: { width: 1600, height: 900 },
-    start: { x: 160, y: 505 },
+    world: { width: 1024, height: 1536 },
+    fitToScreen: true,
+    start: { x: 512, y: 1390 },
     maxNpcs: 8,
     event: { initialDelay: 2.4, spawnCooldown: 7.2, initialTolerance: 10.5, warningDuration: 3.4 },
     routes: parkRoutes,
     npcTypes: ['jogger', 'picnic', 'elder', 'visitor', 'dogWalker'],
     zones: [
-      { id: 'entrance', label: '公園入口', x: 40, y: 360, width: 250, height: 280, preference: 'mixed' },
-      { id: 'grove', label: '樹蔭草地', x: 300, y: 80, width: 400, height: 260, preference: 'itch' },
-      { id: 'fountain', label: '中央噴水池', x: 620, y: 300, width: 360, height: 280, preference: 'mixed' },
-      { id: 'picnic', label: '野餐區', x: 1020, y: 80, width: 430, height: 260, preference: 'itch' },
-      { id: 'playground', label: '遊戲區', x: 1160, y: 620, width: 330, height: 220, preference: 'itch' },
-      { id: 'track', label: '慢跑步道', x: 280, y: 580, width: 820, height: 250, preference: 'sore' }
+      { id: 'entrance', label: '公園入口', x: 300, y: 1260, width: 424, height: 250, preference: 'mixed' },
+      { id: 'grove', label: '樹蔭草地', x: 70, y: 420, width: 300, height: 330, preference: 'itch' },
+      { id: 'fountain', label: '中央噴水池', x: 350, y: 570, width: 324, height: 340, preference: 'mixed' },
+      { id: 'picnic', label: '野餐區', x: 650, y: 300, width: 300, height: 300, preference: 'itch' },
+      { id: 'playground', label: '遊戲區', x: 620, y: 1040, width: 330, height: 280, preference: 'itch' },
+      { id: 'track', label: '慢跑步道', x: 180, y: 720, width: 660, height: 470, preference: 'sore' }
     ],
     spawnPoints: [
-      { x: 230, y: 470, zone: 'entrance', route: 'loop' },
-      { x: 360, y: 185, zone: 'grove' },
-      { x: 540, y: 245, zone: 'grove' },
-      { x: 1080, y: 190, zone: 'picnic' },
-      { x: 1330, y: 255, zone: 'picnic' },
-      { x: 1090, y: 650, zone: 'track', route: 'shortLoop' },
-      { x: 1290, y: 735, zone: 'playground' },
-      { x: 770, y: 730, zone: 'track', route: 'loop' }
+      { x: 512, y: 1390, zone: 'entrance', route: 'mainTrail' },
+      { x: 270, y: 830, zone: 'grove', route: 'leftLoop' },
+      { x: 754, y: 830, zone: 'picnic', route: 'rightLoop' },
+      { x: 512, y: 940, zone: 'fountain', route: 'mainTrail' },
+      { x: 380, y: 360, zone: 'grove', route: 'upperLoop' },
+      { x: 644, y: 360, zone: 'picnic', route: 'upperLoop' },
+      { x: 760, y: 1290, zone: 'playground', route: 'rightLoop' },
+      { x: 280, y: 1210, zone: 'track', route: 'leftLoop' }
     ],
     obstacles: [
-      { x: 675, y: 350, width: 250, height: 150, kind: 'fountain' },
-      { x: 1180, y: 640, width: 230, height: 120, kind: 'playground' },
-      { x: 55, y: 105, width: 230, height: 135, kind: 'pond' }
+      { x: 390, y: 675, width: 244, height: 155, kind: 'fountain' },
+      { x: 700, y: 1110, width: 230, height: 120, kind: 'playground' },
+      { x: 70, y: 220, width: 240, height: 160, kind: 'pond' }
     ]
   },
   mountain: {
@@ -72,6 +84,7 @@ export const STAGE_DEFS = Object.freeze({
     subtitle: '開放草地 · 全景巡邏',
     duration: 180,
     world: { width: 1024, height: 1536 },
+    fitToScreen: true,
     start: { x: 512, y: 1390 },
     maxNpcs: 8,
     event: { initialDelay: 2.1, spawnCooldown: 6.3, initialTolerance: 8.2, warningDuration: 2.8 },

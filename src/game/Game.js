@@ -8,8 +8,8 @@ import { ItemSystem } from './ItemSystem.js';
 import { Player } from './Player.js';
 import { ResultScreen } from './ResultScreen.js';
 import { ScoreManager } from './ScoreManager.js';
-import { StageManager } from './StageManager.js';
-import { WorldRenderer } from './WorldRenderer.js';
+import { StageManager } from './StageManager.js?v=park-layout-2';
+import { WorldRenderer } from './WorldRenderer.js?v=park-layout-2';
 import { clamp, drawText, formatClock } from './utils.js';
 
 function loadImage(source) {
@@ -456,7 +456,7 @@ export class Game {
   }
 
   getCamera(stage) {
-    if (stage.id === 'mountain') {
+    if (stage.fitToScreen) {
       const scale = Math.min(
         this.viewport.width / stage.world.width,
         this.viewport.height / stage.world.height
@@ -486,7 +486,7 @@ export class Game {
     ctx.fillStyle = stage.id === 'mountain' ? '#78ad83' : '#83c77f';
     ctx.fillRect(0, 0, this.viewport.width, this.viewport.height);
     ctx.save();
-    if (stage.id === 'mountain') {
+    if (stage.fitToScreen) {
       ctx.translate(camera.x, camera.y);
       ctx.scale(camera.scale, camera.scale);
     } else {
