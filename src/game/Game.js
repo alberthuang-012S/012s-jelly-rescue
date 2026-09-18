@@ -1220,10 +1220,33 @@ export class Game {
     return { ...this.cameraState };
   }
 
+  getVisibleWorldBounds(stage, camera) {
+    const scale = Math.max(0.001, camera.scale || 1);
+    const left = camera.mode === 'fit'
+      ? -camera.x / scale
+      : camera.x;
+    const top = camera.mode === 'fit'
+      ? -camera.y / scale
+      : camera.y;
+    const right = camera.mode === 'fit'
+      ? (this.viewport.width - camera.x) / scale
+      : camera.x + this.viewport.width / scale;
+    const bottom = camera.mode === 'fit'
+      ? (this.viewport.height - camera.y) / scale
+      : camera.y + this.viewport.height / scale;
+    return {
+      left: clamp(left, 0, stage.world.width),
+      right: clamp(right, 0, stage.world.width),
+      top: clamp(top, 0, stage.world.height),
+      bottom: clamp(bottom, 0, stage.world.height)
+    };
+  }
+
   render(now = performance.now()) {
     if (this.state !== 'playing') return;
     const stage = this.stageManager.getStage();
     const camera = this.getCamera(stage);
+    const visibleBounds = this.getVisibleWorldBounds(stage, camera);
     this.hud.updateRescueIndicators(this, camera);
     const ctx = this.ctx;
     const pixelRatio = this.pixelRatio || 1;
@@ -1252,7 +1275,8 @@ export class Game {
       else entity.draw(ctx, now, {
         debugRadius: this.debug.showRadius,
         cameraScale: camera.scale,
-        compactStatusBubble: this.layoutMode !== 'desktop'
+        compactStatusBubble: this.layoutMode !== 'desktop',
+        visibleBounds
       });
     }
     if (this.debug.showRadius) {

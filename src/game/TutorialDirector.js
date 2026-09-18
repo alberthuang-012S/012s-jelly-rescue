@@ -14,6 +14,11 @@ const PRACTICE_TOLERANCE = 999;
 const PRACTICE_WARNING_DURATION = 2.8;
 const MOVE_DISTANCE = 150;
 const PRACTICE_RADIUS = 19;
+const PRACTICE_SAFE_INSET = Object.freeze({
+  horizontal: 160,
+  top: 190,
+  bottom: 110
+});
 
 /**
  * Fixed, low-pressure onboarding for the two-condition rescue loop plus one
@@ -104,6 +109,7 @@ export class TutorialDirector {
   }
 
   findPracticePosition(origin, npcs, preferredDistance, minDistance, maxDistance) {
+    const safeBounds = this.getPracticeSafeBounds();
     const directionVectors = {
       up: { x: 0, y: -1 },
       down: { x: 0, y: 1 },
@@ -125,8 +131,8 @@ export class TutorialDirector {
     for (const direction of directions) {
       for (const amount of distances) {
         const candidate = {
-          x: clamp(origin.x + direction.x * amount, PRACTICE_RADIUS + 12, this.stage.world.width - PRACTICE_RADIUS - 12),
-          y: clamp(origin.y + direction.y * amount, PRACTICE_RADIUS + 12, this.stage.world.height - PRACTICE_RADIUS - 12)
+          x: clamp(origin.x + direction.x * amount, safeBounds.left, safeBounds.right),
+          y: clamp(origin.y + direction.y * amount, safeBounds.top, safeBounds.bottom)
         };
         const actualDistance = distance(origin, candidate);
         const occupiedByOtherNpc = npcs.some((npc) => npc.active && distance(npc, candidate) < 74);
@@ -142,12 +148,44 @@ export class TutorialDirector {
 
     // The open training park should always provide a nearby point, but keep a
     // legal fallback if a device leaves the player beside a landmark.
-    const fallback = {
-      x: clamp(origin.x, PRACTICE_RADIUS + 12, this.stage.world.width - PRACTICE_RADIUS - 12),
-      y: clamp(origin.y - Math.min(preferredDistance, 150), PRACTICE_RADIUS + 12, this.stage.world.height - PRACTICE_RADIUS - 12)
+    const fallbackCandidates = [
+      {
+        x: clamp(origin.x, safeBounds.left, safeBounds.right),
+        y: clamp(origin.y - Math.min(preferredDistance, 150), safeBounds.top, safeBounds.bottom)
+      },
+      {
+        x: clamp(this.stage.start.x, safeBounds.left, safeBounds.right),
+        y: clamp(this.stage.start.y - 120, safeBounds.top, safeBounds.bottom)
+      },
+      {
+        x: (safeBounds.left + safeBounds.right) / 2,
+        y: (safeBounds.top + safeBounds.bottom) / 2
+      }
+    ];
+    return fallbackCandidates.find((candidate) => this.canPracticeOccupy(candidate)) || fallbackCandidates[0];
+  }
+
+  getPracticeSafeBounds() {
+    const { width, height } = this.stage.world;
+    const minimumInset = PRACTICE_RADIUS + 12;
+    const horizontalInset = Math.min(
+      PRACTICE_SAFE_INSET.horizontal,
+      Math.max(minimumInset, width / 2 - PRACTICE_RADIUS)
+    );
+    const topInset = Math.min(
+      PRACTICE_SAFE_INSET.top,
+      Math.max(minimumInset, height / 2 - PRACTICE_RADIUS)
+    );
+    const bottomInset = Math.min(
+      PRACTICE_SAFE_INSET.bottom,
+      Math.max(minimumInset, height / 2 - PRACTICE_RADIUS)
+    );
+    return {
+      left: horizontalInset,
+      right: Math.max(horizontalInset, width - horizontalInset),
+      top: topInset,
+      bottom: Math.max(topInset, height - bottomInset)
     };
-    if (this.canPracticeOccupy(fallback)) return fallback;
-    return { x: this.stage.start.x, y: Math.max(PRACTICE_RADIUS + 12, this.stage.start.y - 120) };
   }
 
   canPracticeOccupy(position) {

@@ -742,7 +742,7 @@ body { background: #deeff5; }
 .game-shell.is-tutorial-stage .lives-box,
 .game-shell.is-tutorial-stage .tutorial-guide,
 .game-shell.is-tutorial-stage .target-callout { display: none !important; }
-.game-shell.is-tutorial-stage .hud-brand { display: flex; min-width: 190px; }
+.game-shell.is-tutorial-stage .hud-brand { display: none !important; }
 .game-shell.is-tutorial-stage .hud-brand b { color: #fff5cf; }
 .game-shell.is-tutorial-stage .objective-chip { top: 87px; right: 21px; }
 .game-shell.is-tutorial-stage .item-toggle-hint.is-hidden { display: none !important; }
@@ -786,9 +786,7 @@ body { background: #deeff5; }
 }
 
 @media (max-width: 680px), (max-height: 520px) and (orientation: landscape) and (max-width: 1100px) {
-  .game-shell.is-tutorial-stage .hud-brand { display: flex; min-width: 0; padding: 4px 6px; }
-  .game-shell.is-tutorial-stage .hud-brand-mark { width: 21px; height: 21px; font-size: 10px; }
-  .game-shell.is-tutorial-stage .hud-brand b { font-size: 9px; }
+  .game-shell.is-tutorial-stage .hud-brand { display: none !important; }
   .game-shell.is-tutorial-stage .objective-chip { top: calc(max(6px, env(safe-area-inset-top)) + 48px); left: 50%; right: auto; }
   .tutorial-modal-visual-label { min-height: 30px; padding: 5px 9px; font-size: 12px; }
   .tutorial-modal-flow { gap: 4px; margin-top: 8px; }

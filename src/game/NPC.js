@@ -262,7 +262,7 @@ export class NPC {
     return Math.hypot(this.x - before.x, this.y - before.y);
   }
 
-  draw(ctx, now, { debugRadius = false, cameraScale = 1, compactStatusBubble = false } = {}) {
+  draw(ctx, now, { debugRadius = false, cameraScale = 1, compactStatusBubble = false, visibleBounds = null } = {}) {
     if (!this.active) return;
     const bob = this.state === STATES.RESCUED ? Math.sin(now * 0.012 + this.phase) * 4 : Math.sin(now * 0.004 + this.phase) * 1.3;
     const style = ROLE_STYLE[this.role] || ROLE_STYLE.visitor;
@@ -330,7 +330,7 @@ export class NPC {
     ctx.restore();
 
     if (this.state === STATES.WARNING || this.state === STATES.HELP || this.state === STATES.CRITICAL || this.state === STATES.RESCUED || this.state === STATES.FAILED) {
-      this.drawStatus(ctx, now, { cameraScale, compactStatusBubble });
+      this.drawStatus(ctx, now, { cameraScale, compactStatusBubble, visibleBounds });
     }
     if (debugRadius) {
       ctx.save(); ctx.strokeStyle = 'rgba(36, 50, 74, 0.38)'; ctx.lineWidth = 2; ctx.setLineDash([2, 5]);
@@ -363,7 +363,7 @@ export class NPC {
     return true;
   }
 
-  drawStatus(ctx, now, { cameraScale = 1, compactStatusBubble = false } = {}) {
+  drawStatus(ctx, now, { cameraScale = 1, compactStatusBubble = false, visibleBounds = null } = {}) {
     const conditionKey = this.condition === CONDITIONS.ITCH ? CONDITIONS.ITCH : CONDITIONS.SORENESS;
     const condition = CONDITION_LABELS[conditionKey];
     const isWarning = this.state === STATES.WARNING;
@@ -393,12 +393,50 @@ export class NPC {
     const bubbleWidth = screenBubbleWidth / scale;
     const bubbleHeight = screenBubbleHeight / scale;
     const pointerHeight = screenPointerHeight / scale;
-    const bubbleX = this.x - bubbleWidth / 2;
     const spriteTopOffset = this.spriteSheet ? 84 : 52;
     const gap = (compactStatusBubble ? 7 : 9) / scale;
     const pulse = isCritical ? (Math.sin(now * 0.02) * (compactStatusBubble ? 1.5 : 2)) / scale : 0;
     const bubbleBottom = this.y - spriteTopOffset - gap;
-    const bubbleY = bubbleBottom - bubbleHeight - pulse;
+    const normalBubbleY = bubbleBottom - bubbleHeight - pulse;
+    const canClampToViewport = Boolean(
+      visibleBounds
+      && this.x + this.radius >= visibleBounds.left
+      && this.x - this.radius <= visibleBounds.right
+      && this.y + this.radius >= visibleBounds.top
+      && this.y - this.radius <= visibleBounds.bottom
+    );
+    const safePadding = (compactStatusBubble ? 10 : 14) / scale;
+    let bubbleCenterX = this.x;
+    let bubbleX = this.x - bubbleWidth / 2;
+    let bubbleY = normalBubbleY;
+    let pointerPointsUp = false;
+    if (canClampToViewport) {
+      const minCenterX = visibleBounds.left + bubbleWidth / 2 + safePadding;
+      const maxCenterX = visibleBounds.right - bubbleWidth / 2 - safePadding;
+      bubbleCenterX = minCenterX <= maxCenterX
+        ? clamp(this.x, minCenterX, maxCenterX)
+        : (visibleBounds.left + visibleBounds.right) / 2;
+      bubbleX = bubbleCenterX - bubbleWidth / 2;
+
+      const safeTop = visibleBounds.top + safePadding;
+      const safeBottom = visibleBounds.bottom - safePadding;
+      const maxBubbleY = Math.max(safeTop, safeBottom - bubbleHeight);
+      const spriteBottomOffset = this.spriteSheet ? 54 : 40;
+      const belowBubbleY = this.y + spriteBottomOffset + gap;
+      if (normalBubbleY < safeTop && belowBubbleY <= maxBubbleY) {
+        bubbleY = belowBubbleY;
+        pointerPointsUp = true;
+      } else {
+        bubbleY = clamp(normalBubbleY, safeTop, maxBubbleY);
+      }
+    }
+    const pointerSafeInset = Math.min(
+      Math.max(8 / scale, 5 / scale),
+      Math.max(0, bubbleWidth / 2 - 5 / scale)
+    );
+    const pointerX = canClampToViewport
+      ? clamp(this.x, bubbleX + pointerSafeInset, bubbleX + bubbleWidth - pointerSafeInset)
+      : this.x;
     const fill = isCritical ? '#ffe1ea' : isRescued ? '#def5e8' : isFailed ? '#eef3f5' : '#fff5df';
     const stroke = isCritical ? '#e77fa2' : isRescued ? '#65ae91' : isFailed ? '#95a9b4' : '#5686c5';
     const textColor = isCritical ? '#a83d67' : isRescued ? '#287b64' : isFailed ? '#566d7b' : '#173a76';
@@ -412,13 +450,19 @@ export class NPC {
     ctx.strokeStyle = stroke;
     ctx.lineWidth = 2 / scale;
     ctx.beginPath();
-    ctx.moveTo(this.x - 5 / scale, bubbleY + bubbleHeight);
-    ctx.lineTo(this.x, bubbleY + bubbleHeight + pointerHeight);
-    ctx.lineTo(this.x + 5 / scale, bubbleY + bubbleHeight);
+    if (pointerPointsUp) {
+      ctx.moveTo(pointerX - 5 / scale, bubbleY);
+      ctx.lineTo(pointerX, bubbleY - pointerHeight);
+      ctx.lineTo(pointerX + 5 / scale, bubbleY);
+    } else {
+      ctx.moveTo(pointerX - 5 / scale, bubbleY + bubbleHeight);
+      ctx.lineTo(pointerX, bubbleY + bubbleHeight + pointerHeight);
+      ctx.lineTo(pointerX + 5 / scale, bubbleY + bubbleHeight);
+    }
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
-    drawText(ctx, label, this.x, bubbleY + bubbleHeight / 2, {
+    drawText(ctx, label, bubbleCenterX, bubbleY + bubbleHeight / 2, {
       size: screenFontSize / scale,
       color: textColor,
       weight: 900,
@@ -430,13 +474,19 @@ export class NPC {
       const screenBarHeight = compactStatusBubble ? 8 : 10;
       const barWidth = screenBarWidth / scale;
       const barHeight = screenBarHeight / scale;
-      const barY = bubbleY - (compactStatusBubble ? 8 : 10) / scale - barHeight;
+      let barY = bubbleY - (compactStatusBubble ? 8 : 10) / scale - barHeight;
+      if (canClampToViewport) {
+        const barSafeTop = visibleBounds.top + safePadding;
+        const barSafeBottom = visibleBounds.bottom - safePadding;
+        const maxBarY = Math.max(barSafeTop, barSafeBottom - barHeight);
+        barY = clamp(barY, barSafeTop, maxBarY);
+      }
       const ratio = clamp(this.tolerance / Math.max(0.1, this.maxTolerance), 0, 1);
       ctx.save();
       ctx.fillStyle = 'rgba(36, 50, 74, 0.52)';
-      roundedRect(ctx, this.x - barWidth / 2, barY, barWidth, barHeight, 3 / scale); ctx.fill();
+      roundedRect(ctx, bubbleCenterX - barWidth / 2, barY, barWidth, barHeight, 3 / scale); ctx.fill();
       ctx.fillStyle = isCritical ? '#ed8d75' : condition.color;
-      roundedRect(ctx, this.x - barWidth / 2, barY, barWidth * ratio, barHeight, 3 / scale); ctx.fill();
+      roundedRect(ctx, bubbleCenterX - barWidth / 2, barY, barWidth * ratio, barHeight, 3 / scale); ctx.fill();
       ctx.restore();
     }
   }
