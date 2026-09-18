@@ -267,7 +267,9 @@ export const STAGE_DEFS = Object.freeze({
       { x: 512, y: 1390, zone: 'trailhead', route: 'mainTrail' },
       { x: 295, y: 985, zone: 'leftMeadow', route: 'leftLoop' },
       { x: 729, y: 985, zone: 'rightMeadow', route: 'rightLoop' },
-      { x: 512, y: 760, zone: 'platform', route: 'mainTrail' },
+      // Keep the seeded elder just in front of the pavilion so the roof
+      // foreground never visually covers the resident before the player arrives.
+      { x: 512, y: 832, zone: 'platform', route: 'mainTrail' },
       { x: 190, y: 735, zone: 'leftMeadow', route: 'leftLoop' },
       { x: 834, y: 735, zone: 'rightMeadow', route: 'rightLoop' },
       { x: 454, y: 320, zone: 'summit', route: 'upperLoop' },

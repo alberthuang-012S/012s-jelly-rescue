@@ -9,9 +9,9 @@ import { Player } from './Player.js';
 import { PersonalBestStore } from './PersonalBestStore.js?result-best-v1';
 import { ResultScreen } from './ResultScreen.js?result-best-v1';
 import { ScoreManager } from './ScoreManager.js';
-import { StageManager } from './StageManager.js?v=mountain-pavilion-v1';
+import { StageManager } from './StageManager.js?v=mountain-pavilion-v2';
 import { TutorialDirector } from './TutorialDirector.js';
-import { WorldRenderer } from './WorldRenderer.js?v=mountain-pavilion-v1';
+import { WorldRenderer } from './WorldRenderer.js?v=mountain-pavilion-v2';
 import { clamp, drawText, formatClock, lerp } from './utils.js';
 
 const ASSET_PATHS = Object.freeze({
