@@ -485,7 +485,14 @@ export class NPC {
       ctx.save();
       ctx.fillStyle = 'rgba(36, 50, 74, 0.52)';
       roundedRect(ctx, bubbleCenterX - barWidth / 2, barY, barWidth, barHeight, 3 / scale); ctx.fill();
-      ctx.fillStyle = isCritical ? '#ed8d75' : condition.color;
+      const toleranceColor = isCritical
+        ? '#ed8d75'
+        : ratio > 0.6
+          ? '#73c8b4'
+          : ratio >= 0.3
+            ? '#f2c66d'
+            : '#ed8d75';
+      ctx.fillStyle = toleranceColor;
       roundedRect(ctx, bubbleCenterX - barWidth / 2, barY, barWidth * ratio, barHeight, 3 / scale); ctx.fill();
       ctx.restore();
     }

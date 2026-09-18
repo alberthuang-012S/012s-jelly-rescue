@@ -1,4 +1,4 @@
-import { CONDITION_LABELS, STATES } from './constants.js';
+import { STATES } from './constants.js';
 import { clamp, formatClock, formatScore } from './utils.js';
 
 const ACTIVE_EVENT_STATES = [STATES.WARNING, STATES.HELP, STATES.CRITICAL];
@@ -9,10 +9,11 @@ const INDICATOR_STATE_PRIORITY = Object.freeze({
 });
 const INDICATOR_ARROWS = Object.freeze({ up: '▲', down: '▼', left: '◀', right: '▶' });
 const INDICATOR_STATE_LABELS = Object.freeze({
-  [STATES.WARNING]: '預警',
+  [STATES.WARNING]: '求救',
   [STATES.HELP]: '求救',
   [STATES.CRITICAL]: '緊急'
 });
+const INDICATOR_DIRECTION_LABELS = Object.freeze({ up: '上', down: '下', left: '左', right: '右' });
 
 export class HUD {
   constructor() {
@@ -246,6 +247,7 @@ export class HUD {
       if (!selectedIds.has(id)) node.classList.add('is-hidden');
     });
     region.classList.toggle('is-hidden', !events.length);
+    const occupiedPositions = [];
     events.forEach((npc) => {
       let node = this.indicatorNodes.get(npc.id);
       if (!node) {
@@ -254,16 +256,15 @@ export class HUD {
         region.appendChild(node);
         this.indicatorNodes.set(npc.id, node);
       }
-      const conditionKey = npc.condition === 'ITCH' ? 'ITCH' : 'SORENESS';
-      const condition = CONDITION_LABELS[conditionKey];
       const direction = this.getIndicatorDirection(game.player, npc);
-      const position = this.getIndicatorPosition(game, camera, npc);
-      node.className = `rescue-indicator rescue-indicator-${npc.state.toLowerCase()} rescue-indicator-${conditionKey.toLowerCase()}`;
+      const position = this.getIndicatorPosition(game, camera, npc, occupiedPositions);
+      occupiedPositions.push(position);
+      node.className = `rescue-indicator rescue-indicator-${npc.state.toLowerCase()}`;
       node.style.left = `${position.x}px`;
       node.style.top = `${position.y}px`;
       node.querySelector('.rescue-indicator-arrow').textContent = INDICATOR_ARROWS[direction];
-      node.querySelector('.rescue-indicator-label').textContent = `${condition.icon} ${condition.short}`;
-      node.setAttribute('aria-label', `${INDICATOR_STATE_LABELS[npc.state]}：${condition.short}，方向${direction}`);
+      node.querySelector('.rescue-indicator-label').textContent = INDICATOR_STATE_LABELS[npc.state];
+      node.setAttribute('aria-label', `${INDICATOR_STATE_LABELS[npc.state]}，方向${INDICATOR_DIRECTION_LABELS[direction]}`);
     });
   }
 
@@ -274,17 +275,35 @@ export class HUD {
     return dy < 0 ? 'up' : 'down';
   }
 
-  getIndicatorPosition(game, camera, npc) {
+  getIndicatorBounds(game) {
     const width = game.viewport.width;
     const height = game.viewport.height;
     const isPortrait = game.layoutMode === 'mobile-portrait';
-    const isLandscapePhone = game.layoutMode === 'mobile-landscape';
-    const bounds = {
-      left: isPortrait ? 24 : 28,
-      right: width - (isPortrait ? 24 : 28),
-      top: isPortrait ? 112 : isLandscapePhone ? 76 : 96,
-      bottom: height - (isPortrait ? 180 : isLandscapePhone ? 84 : 106)
+    const isLandscapePhone = game.layoutMode === 'mobile-landscape'
+      || (height <= 520 && width <= 1100);
+    const edgeInset = isPortrait ? 50 : isLandscapePhone ? 48 : 56;
+    const topInset = isPortrait ? 118 : isLandscapePhone ? 108 : 170;
+    const bottomInset = isPortrait ? 194 : isLandscapePhone ? 174 : 170;
+    return {
+      left: edgeInset,
+      right: Math.max(edgeInset, width - edgeInset),
+      top: topInset,
+      bottom: Math.max(topInset, height - bottomInset)
     };
+  }
+
+  getIndicatorDimensions(game) {
+    const isPortrait = game.layoutMode === 'mobile-portrait';
+    const isLandscapePhone = game.layoutMode === 'mobile-landscape'
+      || (game.viewport.height <= 520 && game.viewport.width <= 1100);
+    return {
+      width: isPortrait || isLandscapePhone ? 74 : 86,
+      height: isPortrait || isLandscapePhone ? 30 : 34
+    };
+  }
+
+  getIndicatorPosition(game, camera, npc, occupiedPositions = []) {
+    const bounds = this.getIndicatorBounds(game);
     const scale = camera.scale || 1;
     const sourceX = clamp((game.player.x - camera.x) * scale, bounds.left, bounds.right);
     const sourceY = clamp((game.player.y - camera.y) * scale, bounds.top, bounds.bottom);
@@ -298,10 +317,44 @@ export class HUD {
     if (rayY > 0) factor = Math.min(factor, (bounds.bottom - sourceY) / rayY);
     if (rayY < 0) factor = Math.min(factor, (bounds.top - sourceY) / rayY);
     if (!Number.isFinite(factor) || factor < 0) factor = 1;
-    return {
+    const position = {
       x: clamp(sourceX + rayX * factor, bounds.left, bounds.right),
       y: clamp(sourceY + rayY * factor, bounds.top, bounds.bottom)
     };
+    return this.separateIndicatorPosition(game, position, occupiedPositions, bounds);
+  }
+
+  separateIndicatorPosition(game, position, occupiedPositions, bounds) {
+    if (!occupiedPositions.length) return position;
+    const { width, height } = this.getIndicatorDimensions(game);
+    const overlaps = (candidate) => occupiedPositions.some((occupied) => (
+      Math.abs(candidate.x - occupied.x) < width
+      && Math.abs(candidate.y - occupied.y) < height
+    ));
+    if (!overlaps(position)) return position;
+
+    const onHorizontalEdge = Math.abs(position.x - bounds.left) < 1
+      || Math.abs(position.x - bounds.right) < 1;
+    const offset = (onHorizontalEdge ? height : width) + 12;
+    const candidates = onHorizontalEdge
+      ? [
+          { x: position.x, y: position.y + offset },
+          { x: position.x, y: position.y - offset },
+          { x: position.x, y: position.y + offset * 2 },
+          { x: position.x, y: position.y - offset * 2 }
+        ]
+      : [
+          { x: position.x + offset, y: position.y },
+          { x: position.x - offset, y: position.y },
+          { x: position.x + offset * 2, y: position.y },
+          { x: position.x - offset * 2, y: position.y }
+        ];
+    return candidates
+      .map((candidate) => ({
+        x: clamp(candidate.x, bounds.left, bounds.right),
+        y: clamp(candidate.y, bounds.top, bounds.bottom)
+      }))
+      .find((candidate) => !overlaps(candidate)) || position;
   }
 
   updateItems(selectedId) {
