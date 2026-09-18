@@ -12,12 +12,13 @@ const KEY_VECTORS = {
 };
 
 export class InputController {
-  constructor({ onAction, onItemSelect, onItemToggle }) {
+  constructor({ onAction, onItemSelect, onItemToggle, onEscape }) {
     this.keys = new Set();
     this.activeDirectionPointers = new Map();
     this.onAction = onAction;
     this.onItemSelect = onItemSelect;
     this.onItemToggle = onItemToggle;
+    this.onEscape = onEscape;
     this.enabled = true;
     this.boundKeyDown = (event) => this.handleKeyDown(event);
     this.boundKeyUp = (event) => this.handleKeyUp(event);
@@ -35,6 +36,11 @@ export class InputController {
   }
 
   handleKeyDown(event) {
+    if (event.code === 'Escape') {
+      event.preventDefault();
+      this.onEscape?.();
+      return;
+    }
     if (!this.enabled) return;
     if (KEY_VECTORS[event.code]) {
       event.preventDefault();

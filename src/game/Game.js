@@ -238,6 +238,11 @@ export class Game {
     this.tutorialModalPrimary = document.querySelector('#tutorial-modal-primary');
     this.tutorialModalSecondary = document.querySelector('#tutorial-modal-secondary');
     this.tutorialModalTertiary = document.querySelector('#tutorial-modal-tertiary');
+    this.exitStageButton = document.querySelector('#exit-stage-button');
+    this.exitConfirmModal = document.querySelector('#exit-confirm-modal');
+    this.exitConfirmBody = document.querySelector('#exit-confirm-body');
+    this.exitConfirmPrimary = document.querySelector('#exit-confirm-primary');
+    this.exitConfirmSecondary = document.querySelector('#exit-confirm-secondary');
     this.selectedStage = 'tutorial';
     this.state = 'home';
     this.lives = 3;
@@ -266,6 +271,8 @@ export class Game {
     this.tutorialDirector = null;
     this.isTutorialModalOpen = false;
     this.tutorialModalMode = '';
+    this.isExitConfirmOpen = false;
+    this.exitPreviousTutorialMode = '';
     this.tutorialTransitionTimer = null;
     this.tutorialDebugCondition = TUTORIAL_DEBUG_CONDITION === 'itch'
       ? CONDITIONS.ITCH
@@ -285,7 +292,8 @@ export class Game {
     this.input = new InputController({
       onAction: () => this.tryAction(),
       onItemSelect: (itemId) => this.selectItem(itemId),
-      onItemToggle: () => this.toggleItem()
+      onItemToggle: () => this.toggleItem(),
+      onEscape: () => this.handleEscape()
     });
     this.player = new Player(null);
     this.resultScreen = new ResultScreen({
@@ -298,6 +306,7 @@ export class Game {
     this.updateHomeSelection();
     this.bindDebug();
     this.bindTutorialModal();
+    this.bindExitConfirmation();
     this.bindResponsiveLayout();
     this.loop = this.loop.bind(this);
     requestAnimationFrame(this.loop);
@@ -534,6 +543,73 @@ export class Game {
     this.tutorialModalTertiary?.addEventListener('click', () => this.handleTutorialModalAction('tertiary'));
   }
 
+  bindExitConfirmation() {
+    this.exitStageButton?.addEventListener('click', () => this.openExitConfirmation());
+    this.exitConfirmPrimary?.addEventListener('click', () => this.confirmExit());
+    this.exitConfirmSecondary?.addEventListener('click', () => this.closeExitConfirmation());
+  }
+
+  handleEscape() {
+    if (this.isExitConfirmOpen) {
+      this.closeExitConfirmation();
+      return;
+    }
+    if (this.state === 'playing') this.openExitConfirmation();
+  }
+
+  openExitConfirmation() {
+    if (this.state !== 'playing' || this.isExitConfirmOpen) return;
+    if (this.isTutorial() && (this.tutorialModalMode === 'complete' || this.tutorialDirector?.isComplete?.())) return;
+
+    this.isExitConfirmOpen = true;
+    this.exitPreviousTutorialMode = this.isTutorialModalOpen ? this.tutorialModalMode : '';
+    this.input.setEnabled(false);
+    this.gameShell.classList.add('is-exit-confirm-open');
+    if (this.isTutorialModalOpen) {
+      this.tutorialModal?.classList.add('is-hidden');
+      this.tutorialModal?.setAttribute('aria-hidden', 'true');
+    }
+    if (this.exitConfirmBody) {
+      this.exitConfirmBody.textContent = this.isTutorial()
+        ? '目前的教學進度將會重新開始。'
+        : '目前的巡邏進度將不會保留。';
+    }
+    this.exitConfirmModal?.classList.remove('is-hidden');
+    this.exitConfirmModal?.setAttribute('aria-hidden', 'false');
+    this.hud.update(this);
+    window.requestAnimationFrame(() => this.exitConfirmPrimary?.focus());
+  }
+
+  closeExitConfirmation({ resume = true } = {}) {
+    if (!this.isExitConfirmOpen) return;
+    const restoreTutorialModal = resume
+      && this.state === 'playing'
+      && Boolean(this.exitPreviousTutorialMode);
+    this.isExitConfirmOpen = false;
+    this.gameShell.classList.remove('is-exit-confirm-open');
+    this.exitConfirmModal?.classList.add('is-hidden');
+    this.exitConfirmModal?.setAttribute('aria-hidden', 'true');
+    if (restoreTutorialModal) {
+      this.tutorialModal?.classList.remove('is-hidden');
+      this.tutorialModal?.setAttribute('aria-hidden', 'false');
+      this.input.setEnabled(false);
+    } else if (resume && this.state === 'playing') {
+      this.input.setEnabled(true);
+    }
+    this.exitPreviousTutorialMode = '';
+    this.hud.update(this);
+    window.requestAnimationFrame(() => {
+      if (restoreTutorialModal) this.tutorialModalPrimary?.focus();
+      else if (resume) this.exitStageButton?.focus();
+    });
+  }
+
+  confirmExit() {
+    if (!this.isExitConfirmOpen) return;
+    this.closeExitConfirmation({ resume: false });
+    this.showHome();
+  }
+
   getTutorialModalCopy(mode) {
     const isMobile = this.layoutMode !== 'desktop';
     const copy = {
@@ -758,6 +834,7 @@ export class Game {
   async startStage(stageId) {
     window.clearTimeout(this.tutorialTransitionTimer);
     this.tutorialTransitionTimer = null;
+    this.closeExitConfirmation({ resume: false });
     this.closeTutorialModal({ enableInput: false });
     this.selectedStage = stageId;
     this.updateHomeSelection();
@@ -836,6 +913,7 @@ export class Game {
     this.loadingToken += 1;
     window.clearTimeout(this.tutorialTransitionTimer);
     this.tutorialTransitionTimer = null;
+    this.closeExitConfirmation({ resume: false });
     this.closeTutorialModal({ enableInput: false });
     this.state = 'home';
     this.input.setEnabled(false);
@@ -860,7 +938,7 @@ export class Game {
 
   update(dt) {
     if (this.state !== 'playing') return;
-    if (this.isTutorialModalOpen) return;
+    if (this.isTutorialModalOpen || this.isExitConfirmOpen) return;
     const stage = this.stageManager.getStage();
     this.stageManager.update(dt);
     this.player.update(dt, this.input, stage);
@@ -873,7 +951,7 @@ export class Game {
     } else {
       this.eventDirector?.update(dt, this.stageManager.elapsed, this.npcs);
     }
-    if (this.isTutorialModalOpen) {
+    if (this.isTutorialModalOpen || this.isExitConfirmOpen) {
       this.hud.update(this);
       return;
     }

@@ -25,7 +25,7 @@ export class HUD {
       lives: document.querySelector('#hud-lives'),
       brandTitle: document.querySelector('#hud-brand-title'),
       stageName: document.querySelector('#hud-stage-name'),
-      tutorialProgress: document.querySelector('#hud-tutorial-progress'),
+      exitButton: document.querySelector('#exit-stage-button'),
       objectiveChip: document.querySelector('.objective-chip'),
       objective: document.querySelector('#hud-objective'),
       target: document.querySelector('#target-callout'),
@@ -60,6 +60,12 @@ export class HUD {
     this.mobileMode = game.layoutMode !== 'desktop';
     const tutorialStage = game.isTutorial();
     document.querySelector('#game-shell')?.classList.toggle('is-tutorial-stage', tutorialStage);
+    const tutorialComplete = tutorialStage && game.tutorialDirector?.isComplete?.();
+    const canExitStage = game.state === 'playing'
+      && !game.isExitConfirmOpen
+      && !tutorialComplete;
+    this.elements.exitButton?.classList.toggle('is-hidden', !canExitStage);
+    this.elements.exitButton?.setAttribute('aria-hidden', canExitStage ? 'false' : 'true');
     this.elements.score.textContent = formatScore(game.scoreManager.score);
     this.elements.combo.textContent = combo.combo ? `x${combo.getMultiplier().toFixed(1)}` : '—';
     const isTimedStage = stage.timed !== false;
@@ -71,11 +77,6 @@ export class HUD {
     this.elements.timerBox?.classList.toggle('is-untimed', !isTimedStage);
     if (this.elements.brandTitle) this.elements.brandTitle.textContent = tutorialStage ? 'JELLY TRAINING' : 'JELLY RESCUE';
     this.elements.stageName.textContent = tutorialStage ? '' : stage.name.toUpperCase();
-    if (this.elements.tutorialProgress) {
-      const progress = tutorialStage ? game.tutorialDirector?.getProgressLabel?.() || '' : '';
-      this.elements.tutorialProgress.textContent = progress;
-      this.elements.tutorialProgress.classList.toggle('is-hidden', !progress);
-    }
     if (this.lastLives !== game.lives) {
       const lostLife = this.lifeLossPending || (this.lastLives >= 0 && game.lives < this.lastLives);
       const hearts = [0, 1, 2].map((index) => {
@@ -100,10 +101,11 @@ export class HUD {
       this.elements.target.classList.add('is-hidden');
     }
     this.elements.action.classList.toggle('is-hidden', !(mobileActionVisible || Boolean(target)));
-    const actionDisabled = Boolean(game.isTutorialModalOpen) || !target;
-    this.elements.action.classList.toggle('is-action-ready', Boolean(target) && !game.isTutorialModalOpen);
+    const actionPaused = Boolean(game.isTutorialModalOpen || game.isExitConfirmOpen);
+    const actionDisabled = actionPaused || !target;
+    this.elements.action.classList.toggle('is-action-ready', Boolean(target) && !actionPaused);
     this.elements.action.setAttribute('aria-disabled', actionDisabled ? 'true' : 'false');
-    this.elements.action.dataset.state = game.isTutorialModalOpen ? 'paused' : target ? 'ready' : 'idle';
+    this.elements.action.dataset.state = actionPaused ? 'paused' : target ? 'ready' : 'idle';
     const tutorialObjective = game.tutorialDirector?.getObjective?.(game);
     const objective = tutorialStage
       ? tutorialObjective || ''

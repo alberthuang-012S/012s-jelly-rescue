@@ -744,7 +744,6 @@ body { background: #deeff5; }
 .game-shell.is-tutorial-stage .target-callout { display: none !important; }
 .game-shell.is-tutorial-stage .hud-brand { display: flex; min-width: 190px; }
 .game-shell.is-tutorial-stage .hud-brand b { color: #fff5cf; }
-.game-shell.is-tutorial-stage #hud-tutorial-progress { margin-top: 4px; color: #9fe0d0; font-size: 8px; letter-spacing: .08em; }
 .game-shell.is-tutorial-stage .objective-chip { top: 87px; right: 21px; }
 .game-shell.is-tutorial-stage .item-toggle-hint.is-hidden { display: none !important; }
 
@@ -790,7 +789,6 @@ body { background: #deeff5; }
   .game-shell.is-tutorial-stage .hud-brand { display: flex; min-width: 0; padding: 4px 6px; }
   .game-shell.is-tutorial-stage .hud-brand-mark { width: 21px; height: 21px; font-size: 10px; }
   .game-shell.is-tutorial-stage .hud-brand b { font-size: 9px; }
-  .game-shell.is-tutorial-stage #hud-tutorial-progress { margin-top: 2px; font-size: 6px; }
   .game-shell.is-tutorial-stage .objective-chip { top: calc(max(6px, env(safe-area-inset-top)) + 48px); left: 50%; right: auto; }
   .tutorial-modal-visual-label { min-height: 30px; padding: 5px 9px; font-size: 12px; }
   .tutorial-modal-flow { gap: 4px; margin-top: 8px; }
@@ -923,4 +921,179 @@ body { background: #deeff5; }
   .stage-tab-number { font-size: 8px; }.stage-tab-copy b { font-size: 10px; }.stage-tab-copy small { font-size: 7px; }
   .home-screen .primary-button { min-height: 43px; margin-top: 7px; padding: 10px 13px; }
   .home-screen .control-hint, .home-screen .home-footer { display: none; }
+}
+
+/* Final UI pass: selected tools, lightweight tutorial objective, and a safe
+   exit flow shared by Training, Park, and Mountain. */
+@media (min-width: 681px) and (min-height: 521px) {
+  .item-card.is-selected::after {
+    content: '✓';
+    position: absolute;
+    right: 7px;
+    bottom: 7px;
+    display: grid;
+    place-items: center;
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+    color: #fff;
+    background: #e8a12b;
+    box-shadow: 0 2px 5px rgba(36, 74, 132, .2);
+    font: 900 12px/1 Arial, sans-serif;
+    pointer-events: none;
+  }
+}
+
+.game-shell.is-tutorial-stage .objective-chip {
+  padding: 4px 7px;
+  border-color: transparent;
+  border-radius: 999px;
+  color: rgba(244, 248, 231, .78);
+  background: rgba(20, 57, 70, .28);
+  box-shadow: none;
+  backdrop-filter: none;
+  font-size: 8px;
+}
+.game-shell.is-tutorial-stage .objective-chip .pulse-dot {
+  width: 4px;
+  height: 4px;
+  box-shadow: 0 0 0 3px rgba(152, 227, 183, .1);
+}
+
+.exit-stage-button {
+  position: absolute;
+  z-index: 46;
+  top: 116px;
+  right: 21px;
+  display: grid;
+  place-items: center;
+  min-width: 56px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid rgba(226, 246, 242, .28);
+  border-radius: 9px;
+  color: rgba(244, 248, 231, .82);
+  background: rgba(20, 45, 64, .72);
+  box-shadow: 0 5px 14px rgba(5, 20, 31, .18);
+  font: 700 10px 'Noto Sans TC', sans-serif;
+  letter-spacing: .04em;
+  opacity: .82;
+  transition: opacity .16s ease, background .16s ease, border-color .16s ease;
+  pointer-events: auto;
+}
+.exit-stage-button:hover,
+.exit-stage-button:focus-visible {
+  border-color: rgba(255, 224, 154, .68);
+  color: #fff5cf;
+  background: rgba(31, 68, 79, .9);
+  opacity: 1;
+}
+.game-shell.is-exit-confirm-open .exit-stage-button {
+  opacity: .28;
+  pointer-events: none;
+}
+
+.exit-confirm-modal {
+  position: absolute;
+  z-index: 55;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(12, 30, 49, .54);
+  backdrop-filter: blur(3px);
+}
+.exit-confirm-card {
+  width: min(390px, calc(100% - 32px));
+  padding: 23px 25px 21px;
+  border: 3px solid #5686c5;
+  color: #173a76;
+  background: #f5fcff;
+  box-shadow: 8px 8px 0 rgba(36, 74, 132, .28), inset 0 0 0 2px #fff;
+  text-align: center;
+}
+.exit-confirm-kicker {
+  color: #c27c25;
+  font: 700 10px 'DM Mono', 'Noto Sans TC', monospace;
+  letter-spacing: .12em;
+}
+.exit-confirm-card h2 {
+  margin: 10px 0 8px;
+  font: 800 clamp(21px, 3vw, 28px) 'Noto Sans TC', sans-serif;
+  letter-spacing: -.04em;
+}
+.exit-confirm-card p {
+  margin: 0;
+  color: #315b8e;
+  font-size: 13px;
+  line-height: 1.75;
+}
+.exit-confirm-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 18px;
+}
+.exit-confirm-primary,
+.exit-confirm-secondary {
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 2px solid #b0c7e8;
+  border-radius: 9px;
+  font: 800 12px 'Noto Sans TC', sans-serif;
+  transition: background .16s ease, border-color .16s ease, transform .16s ease;
+}
+.exit-confirm-primary {
+  border-color: #e8a12b;
+  color: #6f4c1d;
+  background: #fff0b7;
+}
+.exit-confirm-secondary {
+  color: #315b8e;
+  background: #eef6ff;
+}
+.exit-confirm-primary:hover,
+.exit-confirm-primary:focus-visible,
+.exit-confirm-secondary:hover,
+.exit-confirm-secondary:focus-visible {
+  border-color: #5686c5;
+  background: #dff4ff;
+}
+.exit-confirm-primary:active,
+.exit-confirm-secondary:active { transform: translateY(1px); }
+
+.game-shell.is-exit-confirm-open .mobile-dpad,
+.game-shell.is-exit-confirm-open .item-dock,
+.game-shell.is-exit-confirm-open #action-button,
+.game-shell.is-exit-confirm-open #action-feedback,
+.game-shell.is-exit-confirm-open #debug-toggle {
+  opacity: .28;
+  pointer-events: none;
+}
+
+@media (max-width: 680px), (max-height: 520px) and (orientation: landscape) and (max-width: 1100px) {
+  .game-shell.is-tutorial-stage .objective-chip {
+    padding: 3px 6px;
+    font-size: 7px;
+  }
+  .exit-stage-button {
+    top: calc(max(6px, env(safe-area-inset-top)) + 38px);
+    right: auto;
+    left: max(8px, env(safe-area-inset-left));
+    min-width: 42px;
+    height: 30px;
+    padding: 0 8px;
+    border-radius: 8px;
+    font-size: 9px;
+  }
+  .exit-confirm-modal { padding: 16px; }
+  .exit-confirm-card {
+    width: min(calc(100vw - 32px), 390px);
+    padding: 19px 16px 16px;
+  }
+  .exit-confirm-card h2 { font-size: 22px; }
+  .exit-confirm-card p { font-size: 12px; line-height: 1.65; }
+  .exit-confirm-actions { grid-template-columns: 1fr; gap: 6px; margin-top: 14px; }
+  .exit-confirm-primary,
+  .exit-confirm-secondary { min-height: 46px; }
 }

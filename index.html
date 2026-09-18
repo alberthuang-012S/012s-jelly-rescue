@@ -81,7 +81,7 @@
           <div class="screen-vignette"></div>
 
           <header class="game-hud">
-            <div class="hud-brand"><span class="hud-brand-mark">✦</span><span><b id="hud-brand-title">JELLY RESCUE</b><small id="hud-stage-name">JELLY PARK</small><small id="hud-tutorial-progress" class="is-hidden">教學進度 1 / 4</small></span></div>
+            <div class="hud-brand"><span class="hud-brand-mark">✦</span><span><b id="hud-brand-title">JELLY RESCUE</b><small id="hud-stage-name">JELLY PARK</small></span></div>
             <div class="hud-metrics">
               <div class="metric-box"><small>SCORE</small><strong id="hud-score">00000</strong></div>
               <div class="metric-box combo-metric"><small>COMBO</small><strong id="hud-combo">—</strong></div>
@@ -91,6 +91,20 @@
               <div class="lives-box" id="hud-lives" aria-label="生命值"></div>
             </div>
           </header>
+
+          <button id="exit-stage-button" class="exit-stage-button is-hidden" type="button" aria-label="退出目前關卡">退出</button>
+
+          <div id="exit-confirm-modal" class="exit-confirm-modal is-hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="exit-confirm-title">
+            <div class="exit-confirm-card">
+              <div class="exit-confirm-kicker">PAUSE PATROL</div>
+              <h2 id="exit-confirm-title">結束目前關卡？</h2>
+              <p id="exit-confirm-body">目前的巡邏進度將不會保留。</p>
+              <div class="exit-confirm-actions">
+                <button id="exit-confirm-primary" class="exit-confirm-primary" type="button">退出關卡</button>
+                <button id="exit-confirm-secondary" class="exit-confirm-secondary" type="button">繼續遊戲</button>
+              </div>
+            </div>
+          </div>
 
           <div class="objective-chip"><span class="pulse-dot"></span><span id="hud-objective">巡邏中 · 留意黃色預警</span></div>
 

@@ -211,14 +211,6 @@ export class TutorialDirector {
     return null;
   }
 
-  getProgressLabel() {
-    if (this.step === STEPS.MOVE) return '教學進度 1 / 4';
-    if (this.step === STEPS.FIRST_RESCUE) return '教學進度 2 / 4';
-    if (this.step === STEPS.SECOND_RESCUE) return '教學進度 3 / 4';
-    if (this.step === STEPS.FINAL_CHECK) return '教學進度 4 / 4';
-    return '';
-  }
-
   recordFinalWrongItem() {
     if (this.step !== STEPS.FINAL_CHECK) return 0;
     this.finalWrongAttempts += 1;
