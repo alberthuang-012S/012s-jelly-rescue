@@ -57,8 +57,9 @@ const parkObstacles = [
 
 const mountainRoutes = {
   mainTrail: [
-    { x: 512, y: 1390 }, { x: 512, y: 1190 }, { x: 512, y: 1010 }, { x: 512, y: 820 },
-    { x: 512, y: 650 }, { x: 512, y: 470 }, { x: 512, y: 290 }, { x: 512, y: 130 }
+    { x: 512, y: 1390 }, { x: 512, y: 1190 }, { x: 512, y: 1010 }, { x: 512, y: 840 },
+    // The center lane deliberately crosses the pavilion deck, not its rails.
+    { x: 512, y: 805 }, { x: 512, y: 675 }, { x: 512, y: 470 }, { x: 512, y: 290 }, { x: 512, y: 130 }
   ],
   leftLoop: [
     { x: 512, y: 1080 }, { x: 390, y: 1050 }, { x: 260, y: 970 }, { x: 175, y: 835 },
@@ -77,6 +78,32 @@ const mountainRoutes = {
     { x: 570, y: 320 }, { x: 586, y: 365 }, { x: 594, y: 410 }, { x: 566, y: 450 }
   ]
 };
+
+const mountainPavilionInterior = Object.freeze({
+  x: 420,
+  y: 688,
+  width: 184,
+  height: 116
+});
+
+// The roof is redrawn from the loaded Mountain image after entities render.
+// These points cover the blue roof only; the deck, stairs, and surrounding
+// grass remain part of the background and stay fully walkable.
+const mountainPavilionRoof = Object.freeze([
+  { x: 418, y: 712 },
+  { x: 512, y: 642 },
+  { x: 607, y: 712 },
+  { x: 598, y: 730 },
+  { x: 512, y: 699 },
+  { x: 426, y: 730 }
+]);
+
+const mountainPavilionRoofBounds = Object.freeze({
+  x: 410,
+  y: 636,
+  width: 205,
+  height: 101
+});
 
 // Collision follows the approved portrait artwork rather than treating the
 // whole upper half as a single wall. Short stepped rectangles keep sky,
@@ -119,25 +146,20 @@ const mountainObstacles = [
   { x: 430, y: 112, width: 42, height: 12, kind: 'summit-fence' },
   { x: 552, y: 112, width: 42, height: 12, kind: 'summit-fence' },
 
-  // Central pavilion fencing. The short front pieces stop before the stairs,
-  // so the wooden deck remains reachable from the road below.
-  { x: 382, y: 665, width: 16, height: 80, kind: 'pavilion-fence' },
-  { x: 396, y: 666, width: 67, height: 14, kind: 'pavilion-fence' },
-  { x: 561, y: 666, width: 67, height: 14, kind: 'pavilion-fence' },
-  { x: 389, y: 737, width: 82, height: 14, kind: 'pavilion-fence' },
-  { x: 553, y: 737, width: 82, height: 14, kind: 'pavilion-fence' },
-  { x: 430, y: 764, width: 40, height: 14, kind: 'pavilion-fence' },
-  { x: 554, y: 764, width: 40, height: 14, kind: 'pavilion-fence' },
-  { x: 626, y: 665, width: 16, height: 80, kind: 'pavilion-fence' },
-  { x: 454, y: 676, width: 18, height: 68, kind: 'pavilion-post' },
-  { x: 552, y: 676, width: 18, height: 68, kind: 'pavilion-post' },
+  // Pavilion side rails and support posts are solid. There are intentionally
+  // no horizontal roof/deck rectangles, leaving both entrances and the center
+  // aisle open so Player/NPCs can walk through the entire shelter.
+  { x: 382, y: 686, width: 16, height: 70, kind: 'pavilion-side-fence' },
+  { x: 626, y: 686, width: 16, height: 70, kind: 'pavilion-side-fence' },
+  { x: 454, y: 694, width: 18, height: 60, kind: 'pavilion-post' },
+  { x: 552, y: 694, width: 18, height: 60, kind: 'pavilion-post' },
 
   // Only the trunks/rock bases are solid; the tree crowns remain visually
   // passable so the collision does not create a wide invisible wall.
-  { x: 344, y: 710, width: 34, height: 58, kind: 'pavilion-tree' },
-  { x: 394, y: 758, width: 28, height: 50, kind: 'pavilion-tree' },
-  { x: 656, y: 710, width: 34, height: 58, kind: 'pavilion-tree' },
-  { x: 602, y: 758, width: 28, height: 50, kind: 'pavilion-tree' },
+  { x: 344, y: 710, width: 34, height: 58, kind: 'pavilion-tree-trunk' },
+  { x: 394, y: 758, width: 28, height: 50, kind: 'pavilion-tree-trunk' },
+  { x: 656, y: 710, width: 34, height: 58, kind: 'pavilion-tree-trunk' },
+  { x: 602, y: 758, width: 28, height: 50, kind: 'pavilion-tree-trunk' },
 
   // Mid-height forest shelves leave a generous open lane beside each loop.
   { x: 0, y: 748, width: 82, height: 154, kind: 'left-forest' },
@@ -223,6 +245,9 @@ export const STAGE_DEFS = Object.freeze({
     duration: 60,
     world: { width: 1024, height: 1536 },
     fitToScreen: true,
+    pavilionInterior: { ...mountainPavilionInterior },
+    pavilionRoof: mountainPavilionRoof,
+    pavilionRoofBounds: { ...mountainPavilionRoofBounds },
     start: { x: 512, y: 1390 },
     maxNpcs: 8,
     event: { initialDelay: 2.1, spawnCooldown: 5.2, initialTolerance: 9.2, warningDuration: 3.2 },

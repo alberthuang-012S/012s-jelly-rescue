@@ -1,4 +1,4 @@
-import { Game } from './game/Game.js?input-controls-v1';
+import { Game } from './game/Game.js?mountain-pavilion-v1';
 
 window.addEventListener('DOMContentLoaded', () => {
   new Game();

@@ -9,9 +9,9 @@ import { Player } from './Player.js';
 import { PersonalBestStore } from './PersonalBestStore.js?result-best-v1';
 import { ResultScreen } from './ResultScreen.js?result-best-v1';
 import { ScoreManager } from './ScoreManager.js';
-import { StageManager } from './StageManager.js?v=mountain-collision-v3';
+import { StageManager } from './StageManager.js?v=mountain-pavilion-v1';
 import { TutorialDirector } from './TutorialDirector.js';
-import { WorldRenderer } from './WorldRenderer.js?v=critical-assets-1';
+import { WorldRenderer } from './WorldRenderer.js?v=mountain-pavilion-v1';
 import { clamp, drawText, formatClock, lerp } from './utils.js';
 
 const ASSET_PATHS = Object.freeze({
@@ -263,6 +263,7 @@ export class Game {
     this.cameraMode = 'fit';
     this.layoutMode = 'desktop';
     this.cameraState = null;
+    this.pavilionRoofOpacity = 1;
     this.playerAssetPromise = null;
     this.npcAssetPromise = null;
     this.itemAssetPromises = new Map();
@@ -853,6 +854,7 @@ export class Game {
     this.interactionSystem.currentTarget = null;
     this.player.reset(stage.start);
     this.cameraState = null;
+    this.pavilionRoofOpacity = 1;
     this.lastDistanceSample = 0;
     const directorCallbacks = {
       onFailure: (npc) => this.handleFailure(npc),
@@ -958,6 +960,7 @@ export class Game {
       return;
     }
     for (const npc of this.npcs) npc.update(dt, stage, this.stageManager.elapsed);
+    this.updatePavilionRoof(dt, stage);
     this.interactionSystem.findTarget(this.player, this.npcs);
     this.updateParticles(dt);
     this.updateFloaters(dt);
@@ -1179,6 +1182,31 @@ export class Game {
     this.floaters = this.floaters.filter((floater) => floater.life > 0);
   }
 
+  isInsidePavilion(entity, stage) {
+    const interior = stage?.pavilionInterior;
+    if (stage?.id !== 'mountain' || !interior || !entity) return false;
+    return entity.x >= interior.x
+      && entity.x <= interior.x + interior.width
+      && entity.y >= interior.y
+      && entity.y <= interior.y + interior.height;
+  }
+
+  updatePavilionRoof(dt, stage) {
+    if (stage?.id !== 'mountain') {
+      this.pavilionRoofOpacity = 1;
+      return;
+    }
+    const playerInsidePavilion = this.isInsidePavilion(this.player, stage);
+    const activeRescueNpcInsidePavilion = this.npcs.some((npc) => (
+      npc.active
+      && [STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(npc.state)
+      && this.isInsidePavilion(npc, stage)
+    ));
+    const targetOpacity = playerInsidePavilion || activeRescueNpcInsidePavilion ? 0.55 : 1;
+    const blend = 1 - Math.exp(-Math.max(0, dt) / 0.08);
+    this.pavilionRoofOpacity = lerp(this.pavilionRoofOpacity, targetOpacity, blend);
+  }
+
   getCamera(stage) {
     if (this.cameraMode === 'fit') {
       const scale = Math.min(
@@ -1285,6 +1313,9 @@ export class Game {
     if (this.debug.showRadius) {
       ctx.save(); ctx.strokeStyle = 'rgba(255, 235, 163, .35)'; ctx.lineWidth = 2; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.arc(this.player.x, this.player.y, this.interactionSystem.radius, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
     }
+    this.worldRenderer.drawMountainForeground(ctx, stage, now, {
+      roofOpacity: this.pavilionRoofOpacity
+    });
     this.renderParticles(ctx);
     this.renderFloaters(ctx);
     ctx.restore();

@@ -43,7 +43,7 @@ export class WorldRenderer {
   draw(ctx, stage, now) {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    if (stage.id === 'mountain') this.drawMountain(ctx, stage, now);
+    if (stage.id === 'mountain') this.drawMountainBackground(ctx, stage, now);
     else this.drawPark(ctx, stage, now);
   }
 
@@ -120,7 +120,7 @@ export class WorldRenderer {
     ctx.restore();
   }
 
-  drawMountain(ctx, stage, now) {
+  drawMountainBackground(ctx, stage, now) {
     const { width, height } = stage.world;
     if (this.mountainImage?.complete && this.mountainImage.naturalWidth) {
       ctx.save();
@@ -166,6 +166,74 @@ export class WorldRenderer {
     this.drawFlowerBed(ctx, 653, 870, 96);
     this.drawCrystalCluster(ctx, 116, 520);
     this.drawCrystalCluster(ctx, 908, 520, true);
+  }
+
+  drawMountainForeground(ctx, stage, _now, { roofOpacity = 1 } = {}) {
+    if (stage.id !== 'mountain' || !stage.pavilionRoof?.length) return;
+    const opacity = Math.max(0, Math.min(1, roofOpacity));
+    if (this.mountainImage?.complete && this.mountainImage.naturalWidth) {
+      const bounds = stage.pavilionRoofBounds;
+      ctx.save();
+      ctx.globalAlpha = opacity;
+      this.clipPolygon(ctx, stage.pavilionRoof);
+      if (bounds) {
+        const sourceScaleX = this.mountainImage.naturalWidth / stage.world.width;
+        const sourceScaleY = this.mountainImage.naturalHeight / stage.world.height;
+        ctx.drawImage(
+          this.mountainImage,
+          bounds.x * sourceScaleX,
+          bounds.y * sourceScaleY,
+          bounds.width * sourceScaleX,
+          bounds.height * sourceScaleY,
+          bounds.x,
+          bounds.y,
+          bounds.width,
+          bounds.height
+        );
+      } else {
+        ctx.drawImage(
+          this.mountainImage,
+          0,
+          0,
+          this.mountainImage.naturalWidth,
+          this.mountainImage.naturalHeight,
+          0,
+          0,
+          stage.world.width,
+          stage.world.height
+        );
+      }
+      ctx.restore();
+      return;
+    }
+
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    this.drawPavilionRoof(ctx, stage.pavilionRoof);
+    ctx.restore();
+  }
+
+  clipPolygon(ctx, points) {
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let index = 1; index < points.length; index += 1) ctx.lineTo(points[index].x, points[index].y);
+    ctx.closePath();
+    ctx.clip();
+  }
+
+  drawPavilionRoof(ctx, points) {
+    this.fillPolygon(ctx, points.map(({ x, y }) => [x, y]), '#173a76', MAP.ink, 5);
+    this.fillPolygon(ctx, [
+      [points[0].x + 8, points[0].y - 2],
+      [points[1].x, points[1].y + 8],
+      [points[2].x - 8, points[2].y - 2],
+      [points[4].x, points[4].y - 4]
+    ], '#2789c8', null, 0);
+    ctx.save();
+    ctx.fillStyle = '#72d6ff';
+    ctx.fillRect(points[1].x - 40, points[1].y + 20, 80, 5);
+    ctx.fillRect(points[1].x - 58, points[1].y + 36, 116, 5);
+    ctx.restore();
   }
 
   drawMountainBackdrop(ctx, width, height) {
