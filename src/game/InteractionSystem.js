@@ -9,7 +9,7 @@ export class InteractionSystem {
 
   findTarget(player, npcs) {
     const candidates = npcs
-      .filter((npc) => npc.active && [STATES.HELP, STATES.CRITICAL].includes(npc.state))
+      .filter((npc) => npc.active && [STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(npc.state))
       .map((npc) => ({ npc, distance: distance(player, npc) }))
       .filter((item) => item.distance <= this.radius)
       .sort((a, b) => a.distance - b.distance);
@@ -22,4 +22,3 @@ export class InteractionSystem {
     return target ? distance(player, target) : null;
   }
 }
-

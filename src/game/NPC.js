@@ -72,7 +72,7 @@ export class NPC {
     return this.active && this.state === STATES.NORMAL && stageTime >= this.nextEventAt;
   }
 
-  startEvent(condition, maxTolerance, warningDuration) {
+  startEvent(condition, maxTolerance, warningDuration, stageTime = 0) {
     if (this.state !== STATES.NORMAL) return false;
     this.state = STATES.WARNING;
     this.condition = normalizeCondition(condition);
@@ -80,13 +80,13 @@ export class NPC {
     this.tolerance = maxTolerance;
     this.warningTimer = warningDuration;
     this.conditionTimer = maxTolerance;
+    this.eventStartedAt = stageTime;
     this.isRescued = false;
     return true;
   }
 
   enterHelp(stageTime) {
     this.state = STATES.HELP;
-    this.eventStartedAt = stageTime;
     this.conditionTimer = this.tolerance;
   }
 

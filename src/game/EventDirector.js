@@ -60,7 +60,7 @@ export class EventDirector {
     if (!candidates.length) return false;
     const npc = this.selectCandidate(candidates, stageTime);
     const condition = forcedCondition || this.pickCondition(npc, stageTime);
-    npc.startEvent(condition, this.getTolerance(stageTime), this.getWarningDuration(stageTime));
+    npc.startEvent(condition, this.getTolerance(stageTime), this.getWarningDuration(stageTime), stageTime);
     this.lastCondition = condition;
     this.callbacks.onEvent?.(npc, condition);
     return true;

@@ -637,7 +637,7 @@ export class Game {
       npc.wanderTarget = null;
       npc.placeAt({ x: this.player.x, y: this.player.y }, stage);
       npc.zone = stage.zones.find((zone) => this.player.x >= zone.x && this.player.x <= zone.x + zone.width && this.player.y >= zone.y && this.player.y <= zone.y + zone.height)?.id || stage.zones[0].id;
-      const triggered = npc.startEvent(condition, this.eventDirector.getTolerance(this.stageManager.elapsed), this.eventDirector.getWarningDuration(this.stageManager.elapsed));
+      const triggered = npc.startEvent(condition, this.eventDirector.getTolerance(this.stageManager.elapsed), this.eventDirector.getWarningDuration(this.stageManager.elapsed), this.stageManager.elapsed);
       this.eventDirector.callbacks.onEvent?.(npc, condition);
       this.hud.showToast(triggered ? `${condition} 已強制觸發` : '目前沒有可用 NPC', triggered ? 'success' : 'danger');
     }
