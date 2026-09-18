@@ -34,7 +34,7 @@ function normalizeCondition(condition) {
 }
 
 export class NPC {
-  constructor({ id, role, x, y, zone, path = [], name }) {
+  constructor({ id, role, x, y, zone, path = [], name, isPractice = false }) {
     this.id = id;
     this.role = role;
     this.name = name || ROLE_LABELS[role] || '遊客';
@@ -61,6 +61,8 @@ export class NPC {
     this.nextEventAt = 0;
     this.active = true;
     this.isRescued = false;
+    this.isPractice = isPractice;
+    this.practicePulseTimer = 0;
     this.highlighted = false;
     this.phase = Math.random() * Math.PI * 2;
     this.spriteImage = null;
@@ -131,6 +133,7 @@ export class NPC {
   update(dt, stage, stageTime) {
     if (!this.active) return;
     this.phase += dt * 2;
+    if (this.practicePulseTimer > 0) this.practicePulseTimer = Math.max(0, this.practicePulseTimer - dt);
     if (this.dialogueOverrideTimer > 0) {
       this.dialogueOverrideTimer = Math.max(0, this.dialogueOverrideTimer - dt);
       if (this.dialogueOverrideTimer <= 0) this.dialogueOverride = '';
@@ -275,6 +278,18 @@ export class NPC {
       ctx.stroke();
       ctx.restore();
     }
+    if (this.isPractice && this.practicePulseTimer > 0 && !this.isRescued) {
+      const pulseProgress = 1 - this.practicePulseTimer / 1.35;
+      const pulseScale = 1 + pulseProgress * 0.35;
+      ctx.save();
+      ctx.globalAlpha = (1 - pulseProgress) * 0.58;
+      ctx.strokeStyle = '#fff0ad';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.ellipse(this.x, this.y + 37, 30 * pulseScale, 9 * pulseScale, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
     ctx.save();
     if (this.state === STATES.RESCUED) {
       ctx.fillStyle = 'rgba(255, 231, 155, 0.35)';
@@ -410,7 +425,7 @@ export class NPC {
       font: "Manrope, 'Noto Sans TC', sans-serif"
     });
     ctx.restore();
-    if (!isRescued && !isFailed) {
+    if (!this.isPractice && !isRescued && !isFailed) {
       const screenBarWidth = compactStatusBubble ? 92 : 112;
       const screenBarHeight = compactStatusBubble ? 8 : 10;
       const barWidth = screenBarWidth / scale;

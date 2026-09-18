@@ -81,7 +81,7 @@
           <div class="screen-vignette"></div>
 
           <header class="game-hud">
-            <div class="hud-brand"><span class="hud-brand-mark">✦</span><span><b>JELLY RESCUE</b><small id="hud-stage-name">JELLY PARK</small></span></div>
+            <div class="hud-brand"><span class="hud-brand-mark">✦</span><span><b id="hud-brand-title">JELLY RESCUE</b><small id="hud-stage-name">JELLY PARK</small><small id="hud-tutorial-progress" class="is-hidden">教學進度 1 / 4</small></span></div>
             <div class="hud-metrics">
               <div class="metric-box"><small>SCORE</small><strong id="hud-score">00000</strong></div>
               <div class="metric-box combo-metric"><small>COMBO</small><strong id="hud-combo">—</strong></div>
@@ -105,7 +105,7 @@
           <div id="action-feedback" class="action-feedback is-hidden" aria-live="polite"></div>
 
           <div class="item-dock" aria-label="固定道具">
-            <span class="item-toggle-hint" aria-hidden="true">Q 切換</span>
+            <span id="item-toggle-hint" class="item-toggle-hint" aria-hidden="true">Q 切換</span>
             <button class="item-card is-selected" data-item="PPA" type="button">
               <span class="item-hotkey">1</span><span class="item-img-wrap"><picture><source srcset="./reference/runtime/ppa-plus-one.webp" type="image/webp" /><img src="./reference/ppa-plus-one.png" alt="PPA+1" loading="lazy" decoding="async" /></picture></span>
               <span class="item-info"><b>PPA+1</b><small>癢 · ITCH</small></span><span class="item-compact-label">PPA</span><span class="item-status">SELECTED</span>
@@ -126,13 +126,14 @@
 
           <div id="tutorial-modal" class="tutorial-modal is-hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="tutorial-modal-title">
             <div class="tutorial-modal-card">
-              <div class="tutorial-modal-step" id="tutorial-modal-step">STEP 1 / 3</div>
-              <h2 id="tutorial-modal-title">Jelly Rescue 新手教學</h2>
-              <div class="tutorial-modal-visual"><span id="tutorial-modal-icon">✦</span><img id="tutorial-modal-item" class="is-hidden" alt="" /></div>
+              <div class="tutorial-modal-step" id="tutorial-modal-step">STEP 1 / 4</div>
+              <h2 id="tutorial-modal-title">先試著移動</h2>
+              <div class="tutorial-modal-visual"><span id="tutorial-modal-icon">↕</span><span id="tutorial-modal-visual-label" class="tutorial-modal-visual-label">移動</span><img id="tutorial-modal-item" class="is-hidden" alt="" /></div>
               <p id="tutorial-modal-body"></p>
+              <div id="tutorial-modal-flow" class="tutorial-modal-flow is-hidden" aria-label="教學步驟"></div>
               <p id="tutorial-modal-hint" class="tutorial-modal-hint"></p>
               <div class="tutorial-modal-actions">
-                <button id="tutorial-modal-primary" class="primary-button" type="button">開始教學</button>
+                <button id="tutorial-modal-primary" class="primary-button" type="button">開始練習</button>
                 <button id="tutorial-modal-secondary" class="secondary-button is-hidden" type="button"></button>
                 <button id="tutorial-modal-tertiary" class="text-button is-hidden" type="button"></button>
               </div>

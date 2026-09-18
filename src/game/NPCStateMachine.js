@@ -17,6 +17,10 @@ export class NPCStateMachine {
       return;
     }
     if (npc.state === STATES.HELP || npc.state === STATES.CRITICAL) {
+      // Tutorial residents are practice targets: they stay in HELP forever so
+      // the player can observe the dialogue, choose an item, and walk over
+      // without a hidden countdown or CRITICAL transition.
+      if (npc.isPractice) return;
       npc.tolerance = Math.max(0, npc.tolerance - dt);
       npc.conditionTimer = npc.tolerance;
       if (npc.state === STATES.HELP && npc.tolerance <= npc.maxTolerance * 0.3) {
@@ -35,4 +39,3 @@ export class NPCStateMachine {
     }
   }
 }
-

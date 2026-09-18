@@ -86,6 +86,10 @@ const ASSET_REPORT_ENABLED = typeof window !== 'undefined'
   && new URLSearchParams(window.location.search).has('assetReport');
 const assetReport = [];
 
+const TUTORIAL_DEBUG_CONDITION = typeof window !== 'undefined'
+  ? new URLSearchParams(window.location.search).get('tutorialCondition')?.toLowerCase()
+  : '';
+
 function now() {
   return typeof performance !== 'undefined' ? performance.now() : Date.now();
 }
@@ -226,8 +230,10 @@ export class Game {
     this.tutorialModalStep = document.querySelector('#tutorial-modal-step');
     this.tutorialModalTitle = document.querySelector('#tutorial-modal-title');
     this.tutorialModalIcon = document.querySelector('#tutorial-modal-icon');
+    this.tutorialModalVisualLabel = document.querySelector('#tutorial-modal-visual-label');
     this.tutorialModalBody = document.querySelector('#tutorial-modal-body');
     this.tutorialModalHint = document.querySelector('#tutorial-modal-hint');
+    this.tutorialModalFlow = document.querySelector('#tutorial-modal-flow');
     this.tutorialModalItem = document.querySelector('#tutorial-modal-item');
     this.tutorialModalPrimary = document.querySelector('#tutorial-modal-primary');
     this.tutorialModalSecondary = document.querySelector('#tutorial-modal-secondary');
@@ -260,6 +266,12 @@ export class Game {
     this.tutorialDirector = null;
     this.isTutorialModalOpen = false;
     this.tutorialModalMode = '';
+    this.tutorialTransitionTimer = null;
+    this.tutorialDebugCondition = TUTORIAL_DEBUG_CONDITION === 'itch'
+      ? CONDITIONS.ITCH
+      : TUTORIAL_DEBUG_CONDITION === 'soreness'
+        ? CONDITIONS.SORENESS
+        : null;
     this.homeStageTransitionTimer = null;
     if (ASSET_REPORT_ENABLED) window.__jellyAssetReport = assetReport;
 
@@ -525,58 +537,67 @@ export class Game {
   getTutorialModalCopy(mode) {
     const isMobile = this.layoutMode !== 'desktop';
     const copy = {
-      intro: {
-        step: 'START',
-        title: 'Jelly Rescue 新手教學',
-        icon: '✦',
-        body: '先熟悉移動、判斷居民狀況，以及 PPA+1 / NAP+1 的使用方式。\n\n教學沒有時間限制，可以慢慢操作。',
-        hint: '準備好後，按下開始教學。',
-        primary: '開始教學'
-      },
       move: {
-        step: 'STEP 1 / 3',
+        step: 'STEP 1 / 4',
         title: '先試著移動',
-        icon: '▲▼',
+        icon: '↕',
+        visual: '移動',
         body: isMobile
-          ? '使用左下方方向控制移動小水母。\n\n可以持續按住方向鍵移動。'
-          : '使用 WASD 或方向鍵移動小水母。\n\n移動一小段後，就會開始第一個救援任務。',
-        hint: isMobile ? '移動一小段後，就會開始第一個救援任務。' : '移動一小段後，就會開始第一個救援任務。',
-        primary: '我知道了'
+          ? '這裡沒有時間限制，可以慢慢操作。\n\n使用左下方方向控制移動小水母。\n先移動一小段，熟悉操作。'
+          : '這裡沒有時間限制，可以慢慢操作。\n\n使用 WASD 或方向鍵移動小水母。\n先移動一小段，熟悉操作。',
+        hint: isMobile ? '移動控制在畫面左下方。' : 'WASD / 方向鍵',
+        primary: '開始練習'
       },
       itch: {
-        step: 'STEP 2 / 3',
-        title: '第一個任務：居民覺得癢',
+        step: 'STEP 2 / 4',
+        title: '居民覺得癢',
         icon: '✦ 癢',
+        visual: '好癢！',
         item: 'PPA',
-        body: '當居民出現「癢」的狀況時，請使用 PPA+1。\n\n找到居民 → 選擇 PPA+1 → 靠近 → 按「使用」',
+        body: '癢 → PPA+1\n看到居民說「好癢！」時，選擇 PPA+1。',
+        flow: ['① 找到居民', '② 選擇 PPA+1', '③ 靠近並使用'],
         hint: isMobile
-          ? '直接點選下方 PPA+1，即可在靠近後按「使用」。'
-          : '1 選擇 PPA+1 · Q 可快速切換 · 靠近後按 E / SPACE 使用',
+          ? '靠近後按下方「使用」。'
+          : '1 = PPA+1 · 靠近後按 E / SPACE 使用',
         primary: '開始第一次救援'
       },
       soreness: {
-        step: 'STEP 3 / 3',
-        title: '第二個任務：居民覺得痠痛',
+        step: 'STEP 3 / 4',
+        title: '這次是痠痛',
         icon: '↯ 痠痛',
+        visual: '痠痛不太舒服……',
         item: 'NAP',
-        body: '當居民出現「痠痛」的狀況時，改用 NAP+1。\n\n切換 NAP+1 → 靠近居民 → 按「使用」',
+        body: '痠痛 → NAP+1\n看到居民說「痠痛不太舒服……」時，改用 NAP+1。',
+        flow: ['① 觀察居民 Bubble', '② 切換 NAP+1', '③ 靠近並使用'],
         hint: isMobile
-          ? '直接點選下方 NAP+1，即可在靠近後按「使用」。'
-          : 'Q 切換道具 · 2 選擇 NAP+1 · 靠近後按 E / SPACE',
+          ? '直接點選下方 NAP+1，再按「使用」。'
+          : 'Q = 快速切換 · 2 = NAP+1 · 靠近後按 E / SPACE',
         primary: '開始第二次救援'
+      },
+      'final-check': {
+        step: 'STEP 4 / 4',
+        title: '最後試一次',
+        icon: '?',
+        visual: '自己判斷',
+        body: '這次不告訴你要用哪個道具。\n看居民的狀況，自己判斷。',
+        flow: ['✦ 癢', '↯ 痠痛'],
+        hint: isMobile ? '兩個道具都可以自由選擇。' : '觀察 Bubble，再選擇正確道具。',
+        primary: '開始最後練習'
       },
       complete: {
         step: 'COMPLETE',
-        title: '✓ 教學完成',
+        title: '教學完成',
         icon: '✓',
-        body: '你已經學會 Jelly Rescue 的基本操作。\n\n✦ 癢 → PPA+1\n↯ 痠痛 → NAP+1',
+        visual: '準備出發',
+        body: '準備好開始第一次正式巡邏了。',
+        flow: ['✦ 癢  →  PPA+1', '↯ 痠痛  →  NAP+1'],
         hint: '看到居民求救 → 判斷狀況 → 選擇正確道具 → 靠近並使用',
         primary: '前往 Jelly Park',
         secondary: '再練習一次',
         tertiary: '回主選單'
       }
     };
-    return copy[mode] || copy.intro;
+    return copy[mode] || copy.move;
   }
 
   renderTutorialModal(mode) {
@@ -585,8 +606,16 @@ export class Game {
     this.tutorialModalStep.textContent = copy.step;
     this.tutorialModalTitle.textContent = copy.title;
     this.tutorialModalIcon.textContent = copy.icon;
+    this.tutorialModalVisualLabel.textContent = copy.visual || '';
+    this.tutorialModalVisualLabel.classList.toggle('is-hidden', !copy.visual);
     this.tutorialModalBody.textContent = copy.body;
     this.tutorialModalHint.textContent = copy.hint;
+    this.tutorialModalFlow.replaceChildren(...(copy.flow || []).map((label) => {
+      const item = document.createElement('span');
+      item.textContent = label;
+      return item;
+    }));
+    this.tutorialModalFlow.classList.toggle('is-hidden', !copy.flow?.length);
     const itemImage = copy.item
       ? document.querySelector(`[data-item="${copy.item}"] img`)
       : null;
@@ -630,17 +659,13 @@ export class Game {
 
   beginTutorialRescue() {
     this.closeTutorialModal({ enableInput: false });
-    this.tutorialDirector?.beginRescue(this.stageManager.elapsed, this.npcs);
+    this.tutorialDirector?.beginRescue(this.stageManager.elapsed, this.npcs, this.player);
     this.input.setEnabled(true);
     this.hud.update(this);
   }
 
   handleTutorialModalAction(action) {
     if (!this.isTutorialModalOpen) return;
-    if (this.tutorialModalMode === 'intro' && action === 'primary') {
-      this.openTutorialModal('move');
-      return;
-    }
     if (this.tutorialModalMode === 'move' && action === 'primary') {
       this.closeTutorialModal();
       return;
@@ -650,6 +675,10 @@ export class Game {
       return;
     }
     if (this.tutorialModalMode === 'soreness' && action === 'primary') {
+      this.beginTutorialRescue();
+      return;
+    }
+    if (this.tutorialModalMode === 'final-check' && action === 'primary') {
       this.beginTutorialRescue();
       return;
     }
@@ -705,6 +734,8 @@ export class Game {
   }
 
   async startStage(stageId) {
+    window.clearTimeout(this.tutorialTransitionTimer);
+    this.tutorialTransitionTimer = null;
     this.closeTutorialModal({ enableInput: false });
     this.selectedStage = stageId;
     this.updateHomeSelection();
@@ -737,6 +768,7 @@ export class Game {
     if (this.isTutorial()) {
       this.tutorialDirector = new TutorialDirector(stage, {
         ...directorCallbacks,
+        getFinalCondition: () => this.tutorialDebugCondition,
         onStep: (step, npc) => this.handleTutorialStep(step, npc)
       });
     } else {
@@ -771,7 +803,7 @@ export class Game {
     this.hud.updateItems(this.itemSystem.selectedId);
     this.hideLoading();
     if (this.isTutorial()) {
-      this.openTutorialModal('intro');
+      this.openTutorialModal('move');
     } else {
       this.input.setEnabled(true);
     }
@@ -780,6 +812,8 @@ export class Game {
 
   showHome() {
     this.loadingToken += 1;
+    window.clearTimeout(this.tutorialTransitionTimer);
+    this.tutorialTransitionTimer = null;
     this.closeTutorialModal({ enableInput: false });
     this.state = 'home';
     this.input.setEnabled(false);
@@ -808,7 +842,9 @@ export class Game {
     const stage = this.stageManager.getStage();
     this.stageManager.update(dt);
     this.player.update(dt, this.input, stage);
-    this.scoreManager.addDistance(Math.max(0, this.player.distanceTravelled - this.lastDistanceSample));
+    if (!this.isTutorial()) {
+      this.scoreManager.addDistance(Math.max(0, this.player.distanceTravelled - this.lastDistanceSample));
+    }
     this.lastDistanceSample = this.player.distanceTravelled;
     if (this.tutorialDirector) {
       this.tutorialDirector.update(dt, this.stageManager.elapsed, this.npcs, this.player);
@@ -835,6 +871,11 @@ export class Game {
       return;
     }
     if (this.itemSystem.isCorrect(target.condition)) {
+      if (this.isTutorial()) {
+        target.rescue(this.stageManager.elapsed);
+        this.createRescueParticles(target, target.condition);
+        return;
+      }
       const responseTime = target.getResponseTime(this.stageManager.elapsed);
       const comboCount = this.combo.registerSuccess();
       const scored = this.scoreManager.recordRescue(responseTime, target.condition, this.combo.getMultiplier());
@@ -845,6 +886,26 @@ export class Game {
       this.addFloater(target.x, target.y - 82, `${rating} · +${scored.points}`, '#fff0b7');
       if (comboText) this.addFloater(target.x, target.y - 112, `${comboCount} COMBO`, '#dff8e9');
     } else {
+      if (this.isTutorial()) {
+        const isFinalCheck = this.tutorialDirector?.step === 'final-check';
+        const wrongAttempts = isFinalCheck
+          ? this.tutorialDirector.recordFinalWrongItem()
+          : 0;
+        const correctItemId = target.condition === CONDITIONS.ITCH ? ITEMS.PPA.id : ITEMS.NAP.id;
+        const dialogue = isFinalCheck
+          ? wrongAttempts >= 2
+            ? target.condition === CONDITIONS.ITCH
+              ? '想想看：「癢」要用哪一個？'
+              : '想想看：「痠痛」要用哪一個？'
+            : '再想想看……'
+          : '好像不是這個……';
+        target.showDialogue(dialogue, isFinalCheck ? 1.35 : 1.15);
+        this.hud.flashItemFeedback(
+          this.itemSystem.selectedId,
+          isFinalCheck && wrongAttempts < 2 ? null : correctItemId
+        );
+        return;
+      }
       this.scoreManager.recordWrongItem();
       this.combo.break();
       this.createMistakeParticles(target);
@@ -854,11 +915,30 @@ export class Game {
     }
   }
 
+  showTutorialFeedback(text, color, delay, callback) {
+    window.clearTimeout(this.tutorialTransitionTimer);
+    this.addFloater(this.player.x, this.player.y - 84, text, color, {
+      duration: Math.max(0.8, delay / 1000),
+      size: 14
+    });
+    this.tutorialTransitionTimer = window.setTimeout(() => {
+      this.tutorialTransitionTimer = null;
+      if (this.state === 'playing' && this.isTutorial()) callback?.();
+    }, delay);
+  }
+
   handleTutorialStep(step) {
     if (this.state !== 'playing') return;
-    if (step === 'first-rescue') this.openTutorialModal('itch');
-    if (step === 'second-rescue') this.openTutorialModal('soreness');
-    if (step === 'complete') this.openTutorialModal('complete');
+    if (step === 'first-rescue') {
+      this.showTutorialFeedback('✓ 移動完成', '#fff0b7', 700, () => this.openTutorialModal('itch'));
+    }
+    if (step === 'second-rescue') {
+      this.showTutorialFeedback('✓ 救援成功', '#dff8e9', 700, () => this.openTutorialModal('soreness'));
+    }
+    if (step === 'final-check') this.openTutorialModal('final-check');
+    if (step === 'complete') {
+      this.showTutorialFeedback('✓ 判斷正確', '#dff8e9', 800, () => this.openTutorialModal('complete'));
+    }
   }
 
   handleNPCStateChange(_npc, _state) {
@@ -980,8 +1060,8 @@ export class Game {
     }
   }
 
-  addFloater(x, y, text, color) {
-    this.floaters.push({ x, y, text, color, life: 1.15, maxLife: 1.15 });
+  addFloater(x, y, text, color, { duration = 1.15, size = null } = {}) {
+    this.floaters.push({ x, y, text, color, life: duration, maxLife: duration, size });
   }
 
   updateParticles(dt) {
@@ -1095,7 +1175,7 @@ export class Game {
 
   renderFloaters(ctx) {
     this.floaters.forEach((floater) => {
-      ctx.save(); ctx.globalAlpha = clamp(floater.life / floater.maxLife, 0, 1); drawText(ctx, floater.text, floater.x, floater.y, { size: floater.text.length > 5 ? 10 : 17, color: floater.color, weight: 900 }); ctx.restore();
+      ctx.save(); ctx.globalAlpha = clamp(floater.life / floater.maxLife, 0, 1); drawText(ctx, floater.text, floater.x, floater.y, { size: floater.size || (floater.text.length > 5 ? 10 : 17), color: floater.color, weight: 900 }); ctx.restore();
     });
   }
 

@@ -23,7 +23,9 @@ export class HUD {
       timerLabel: document.querySelector('#hud-timer-label'),
       timerBox: document.querySelector('.timer-box'),
       lives: document.querySelector('#hud-lives'),
+      brandTitle: document.querySelector('#hud-brand-title'),
       stageName: document.querySelector('#hud-stage-name'),
+      tutorialProgress: document.querySelector('#hud-tutorial-progress'),
       objectiveChip: document.querySelector('.objective-chip'),
       objective: document.querySelector('#hud-objective'),
       target: document.querySelector('#target-callout'),
@@ -34,6 +36,7 @@ export class HUD {
       tutorialGuide: document.querySelector('#tutorial-guide'),
       tutorialStep: document.querySelector('#tutorial-guide-step'),
       tutorialHints: [...document.querySelectorAll('[data-tutorial-hint]')],
+      itemToggleHint: document.querySelector('#item-toggle-hint'),
       rescueIndicators: document.querySelector('#rescue-indicator-region')
     };
     this.lastObjective = '';
@@ -55,6 +58,8 @@ export class HUD {
     const stage = game.stageManager.getStage();
     const { score, combo } = game;
     this.mobileMode = game.layoutMode !== 'desktop';
+    const tutorialStage = game.isTutorial();
+    document.querySelector('#game-shell')?.classList.toggle('is-tutorial-stage', tutorialStage);
     this.elements.score.textContent = formatScore(game.scoreManager.score);
     this.elements.combo.textContent = combo.combo ? `x${combo.getMultiplier().toFixed(1)}` : '—';
     const isTimedStage = stage.timed !== false;
@@ -64,7 +69,13 @@ export class HUD {
       this.elements.timerLabel.textContent = isTimedStage ? '巡邏剩餘' : '模式';
     }
     this.elements.timerBox?.classList.toggle('is-untimed', !isTimedStage);
-    this.elements.stageName.textContent = stage.name.toUpperCase();
+    if (this.elements.brandTitle) this.elements.brandTitle.textContent = tutorialStage ? 'JELLY TRAINING' : 'JELLY RESCUE';
+    this.elements.stageName.textContent = tutorialStage ? '' : stage.name.toUpperCase();
+    if (this.elements.tutorialProgress) {
+      const progress = tutorialStage ? game.tutorialDirector?.getProgressLabel?.() || '' : '';
+      this.elements.tutorialProgress.textContent = progress;
+      this.elements.tutorialProgress.classList.toggle('is-hidden', !progress);
+    }
     if (this.lastLives !== game.lives) {
       const lostLife = this.lifeLossPending || (this.lastLives >= 0 && game.lives < this.lastLives);
       const hearts = [0, 1, 2].map((index) => {
@@ -94,7 +105,9 @@ export class HUD {
     this.elements.action.setAttribute('aria-disabled', actionDisabled ? 'true' : 'false');
     this.elements.action.dataset.state = game.isTutorialModalOpen ? 'paused' : target ? 'ready' : 'idle';
     const tutorialObjective = game.tutorialDirector?.getObjective?.(game);
-    const objective = game.debug.showRadius
+    const objective = tutorialStage
+      ? tutorialObjective || ''
+      : game.debug.showRadius
       ? 'DEBUG · 互動半徑已顯示'
       : tutorialObjective || (target
         ? `靠近 ${target.name} · 選對道具`
@@ -105,6 +118,7 @@ export class HUD {
       this.elements.objective.textContent = objective;
       this.lastObjective = objective;
     }
+    this.elements.objectiveChip?.classList.toggle('is-hidden', !objective);
     const tutorialActive = Boolean(game.tutorialDirector && !game.tutorialDirector.isComplete());
     const objectiveFaded = this.mobileMode
       && game.state === 'playing'
@@ -113,6 +127,10 @@ export class HUD {
     this.elements.objectiveChip?.classList.toggle('is-mobile-faded', objectiveFaded);
     this.updateTutorialGuide(game);
     this.updateTutorialItemFocus(game);
+    if (this.elements.itemToggleHint) {
+      const showTutorialToggle = tutorialStage && ['second-rescue', 'final-check'].includes(game.tutorialDirector?.step);
+      this.elements.itemToggleHint.classList.toggle('is-hidden', tutorialStage ? !showTutorialToggle : false);
+    }
     if (this.lastSelectedItem !== game.itemSystem.selectedId) this.updateItems(game.itemSystem.selectedId);
   }
 
@@ -120,7 +138,7 @@ export class HUD {
     const guide = this.elements.tutorialGuide;
     if (!guide) return;
     const tutorial = game.tutorialDirector;
-    const visible = Boolean(tutorial && game.state === 'playing' && !tutorial.isComplete());
+    const visible = Boolean(tutorial && game.state === 'playing' && !tutorial.isComplete() && !game.isTutorial());
     guide.classList.toggle('is-hidden', !visible);
     if (!visible) {
       this.lastTutorialStep = '';
@@ -129,9 +147,10 @@ export class HUD {
     if (tutorial.step === this.lastTutorialStep) return;
 
     const stepMap = {
-      move: { label: '1 / 3', active: ['move'] },
-      'first-rescue': { label: '2 / 3', active: ['itch'] },
-      'second-rescue': { label: '3 / 3', active: ['soreness', 'toggle'] },
+      move: { label: '1 / 4', active: ['move'] },
+      'first-rescue': { label: '2 / 4', active: ['itch'] },
+      'second-rescue': { label: '3 / 4', active: ['soreness', 'toggle'] },
+      'final-check': { label: '4 / 4', active: [] },
       complete: { label: '✓', active: [] }
     };
     const step = stepMap[tutorial.step] || stepMap.move;
