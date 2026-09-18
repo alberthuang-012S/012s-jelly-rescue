@@ -9,7 +9,7 @@ import { Player } from './Player.js';
 import { PersonalBestStore } from './PersonalBestStore.js?result-best-v1';
 import { ResultScreen } from './ResultScreen.js?result-best-v1';
 import { ScoreManager } from './ScoreManager.js';
-import { StageManager } from './StageManager.js?v=critical-assets-1';
+import { StageManager } from './StageManager.js?v=mountain-collision-v3';
 import { TutorialDirector } from './TutorialDirector.js';
 import { WorldRenderer } from './WorldRenderer.js?v=critical-assets-1';
 import { clamp, drawText, formatClock, lerp } from './utils.js';

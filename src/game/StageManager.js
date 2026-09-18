@@ -69,31 +69,76 @@ const mountainRoutes = {
     { x: 834, y: 700 }, { x: 729, y: 585 }, { x: 614, y: 570 }, { x: 512, y: 630 }
   ],
   upperLoop: [
-    // Keep the upper patrol on the open meadow around the central trailhead.
-    // The old points crossed the illustrated side waterfalls/ledge faces.
-    { x: 512, y: 470 }, { x: 438, y: 450 }, { x: 405, y: 390 }, { x: 420, y: 315 },
-    { x: 512, y: 255 }, { x: 604, y: 315 }, { x: 619, y: 390 }, { x: 586, y: 450 }
+    // Keep the upper patrol on the central meadow. The outer ledges in the
+    // artwork are sky, cliff, or waterfall rather than connected walkable
+    // ground, so the loop stays inside the open grass around the main trail.
+    { x: 512, y: 470 }, { x: 458, y: 450 }, { x: 430, y: 410 }, { x: 438, y: 365 },
+    { x: 454, y: 320 }, { x: 470, y: 278 }, { x: 512, y: 252 }, { x: 554, y: 278 },
+    { x: 570, y: 320 }, { x: 586, y: 365 }, { x: 594, y: 410 }, { x: 566, y: 450 }
   ]
 };
 
-// The mountain artwork is mostly open meadow.  Collision therefore follows
-// the visible outer cliffs, waterfalls, and forest shelves in short stepped
-// rectangles instead of using a few large invisible walls.  The rectangles
-// are inset from the artwork edge so a player meets the scenery at its edge,
-// while the central trail and the side loops remain broad and continuous.
+// Collision follows the approved portrait artwork rather than treating the
+// whole upper half as a single wall. Short stepped rectangles keep sky,
+// waterfalls, fences, trees, and rock faces solid while leaving the road,
+// meadow, platform, and pavilion entrance open. The rectangles are slightly
+// inset from the visible edges because Player/NPC radii already provide the
+// final clearance.
 const mountainObstacles = [
-  // Upper-left cliff and waterfall edge.
-  { x: 12, y: 140, width: 116, height: 112, kind: 'upper-left-cliff' },
-  { x: 0, y: 242, width: 132, height: 112, kind: 'upper-left-cliff' },
-  { x: 40, y: 344, width: 122, height: 100, kind: 'upper-left-cliff' },
-  { x: 0, y: 435, width: 72, height: 165, kind: 'left-waterfall' },
-  { x: 10, y: 590, width: 90, height: 140, kind: 'left-waterfall' },
-  // Upper-right is a mirrored stepped boundary.
-  { x: 896, y: 140, width: 116, height: 112, kind: 'upper-right-cliff' },
-  { x: 892, y: 242, width: 132, height: 112, kind: 'upper-right-cliff' },
-  { x: 862, y: 344, width: 122, height: 100, kind: 'upper-right-cliff' },
-  { x: 952, y: 435, width: 72, height: 165, kind: 'right-waterfall' },
-  { x: 924, y: 590, width: 90, height: 140, kind: 'right-waterfall' },
+  // The top corners are sky and distant mountains. The stepped shape leaves
+  // the central stairway and summit lookout as the only upper approach.
+  { x: 0, y: 0, width: 320, height: 160, kind: 'mountain-sky' },
+  { x: 704, y: 0, width: 320, height: 160, kind: 'mountain-sky' },
+  { x: 0, y: 160, width: 286, height: 100, kind: 'mountain-sky' },
+  { x: 738, y: 160, width: 286, height: 100, kind: 'mountain-sky' },
+  { x: 0, y: 260, width: 238, height: 100, kind: 'mountain-sky' },
+  { x: 786, y: 260, width: 238, height: 100, kind: 'mountain-sky' },
+
+  // The two inner cascades descend from the upper cliffs into the meadow.
+  { x: 360, y: 145, width: 66, height: 78, kind: 'left-waterfall' },
+  { x: 332, y: 208, width: 78, height: 104, kind: 'left-waterfall' },
+  { x: 296, y: 286, width: 78, height: 112, kind: 'left-waterfall' },
+  { x: 594, y: 145, width: 70, height: 78, kind: 'right-waterfall' },
+  { x: 614, y: 208, width: 78, height: 104, kind: 'right-waterfall' },
+  { x: 650, y: 286, width: 78, height: 112, kind: 'right-waterfall' },
+
+  // Large side waterfalls continue down the visible rock shelves. Each side
+  // is split into overlapping steps so the nearby grass route stays open.
+  { x: 0, y: 330, width: 112, height: 210, kind: 'left-waterfall' },
+  { x: 64, y: 420, width: 106, height: 205, kind: 'left-waterfall' },
+  { x: 90, y: 530, width: 68, height: 160, kind: 'left-waterfall' },
+  { x: 912, y: 330, width: 112, height: 210, kind: 'right-waterfall' },
+  { x: 854, y: 420, width: 106, height: 205, kind: 'right-waterfall' },
+  { x: 866, y: 530, width: 68, height: 160, kind: 'right-waterfall' },
+
+  // Upper summit lookout: the platform is walkable, but its rear and side
+  // rails are not. The lower central opening lines up with the stairs.
+  { x: 424, y: 48, width: 176, height: 12, kind: 'summit-fence' },
+  { x: 416, y: 62, width: 14, height: 62, kind: 'summit-fence' },
+  { x: 594, y: 62, width: 14, height: 62, kind: 'summit-fence' },
+  { x: 430, y: 112, width: 42, height: 12, kind: 'summit-fence' },
+  { x: 552, y: 112, width: 42, height: 12, kind: 'summit-fence' },
+
+  // Central pavilion fencing. The short front pieces stop before the stairs,
+  // so the wooden deck remains reachable from the road below.
+  { x: 382, y: 665, width: 16, height: 80, kind: 'pavilion-fence' },
+  { x: 396, y: 666, width: 67, height: 14, kind: 'pavilion-fence' },
+  { x: 561, y: 666, width: 67, height: 14, kind: 'pavilion-fence' },
+  { x: 389, y: 737, width: 82, height: 14, kind: 'pavilion-fence' },
+  { x: 553, y: 737, width: 82, height: 14, kind: 'pavilion-fence' },
+  { x: 430, y: 764, width: 40, height: 14, kind: 'pavilion-fence' },
+  { x: 554, y: 764, width: 40, height: 14, kind: 'pavilion-fence' },
+  { x: 626, y: 665, width: 16, height: 80, kind: 'pavilion-fence' },
+  { x: 454, y: 676, width: 18, height: 68, kind: 'pavilion-post' },
+  { x: 552, y: 676, width: 18, height: 68, kind: 'pavilion-post' },
+
+  // Only the trunks/rock bases are solid; the tree crowns remain visually
+  // passable so the collision does not create a wide invisible wall.
+  { x: 344, y: 710, width: 34, height: 58, kind: 'pavilion-tree' },
+  { x: 394, y: 758, width: 28, height: 50, kind: 'pavilion-tree' },
+  { x: 656, y: 710, width: 34, height: 58, kind: 'pavilion-tree' },
+  { x: 602, y: 758, width: 28, height: 50, kind: 'pavilion-tree' },
+
   // Mid-height forest shelves leave a generous open lane beside each loop.
   { x: 0, y: 748, width: 82, height: 154, kind: 'left-forest' },
   { x: 0, y: 886, width: 92, height: 208, kind: 'left-forest' },
@@ -189,7 +234,9 @@ export const STAGE_DEFS = Object.freeze({
       { id: 'leftMeadow', label: '左側草坡', x: 95, y: 690, width: 245, height: 350, preference: 'mixed' },
       { id: 'rightMeadow', label: '右側草坡', x: 684, y: 690, width: 245, height: 350, preference: 'sore' },
       { id: 'platform', label: '中央休息平台', x: 360, y: 650, width: 304, height: 220, preference: 'mixed' },
-      { id: 'summit', label: '山頂觀景台', x: 320, y: 55, width: 384, height: 365, preference: 'sore' }
+      // Keep random wander attempts in the central summit meadow instead of
+      // repeatedly sampling the sky, waterfalls, and fenced lookout.
+      { id: 'summit', label: '山頂觀景台', x: 440, y: 238, width: 144, height: 222, preference: 'sore' }
     ],
     spawnPoints: [
       { x: 512, y: 1390, zone: 'trailhead', route: 'mainTrail' },
@@ -198,8 +245,8 @@ export const STAGE_DEFS = Object.freeze({
       { x: 512, y: 760, zone: 'platform', route: 'mainTrail' },
       { x: 190, y: 735, zone: 'leftMeadow', route: 'leftLoop' },
       { x: 834, y: 735, zone: 'rightMeadow', route: 'rightLoop' },
-      { x: 405, y: 300, zone: 'summit', route: 'upperLoop' },
-      { x: 619, y: 300, zone: 'summit', route: 'upperLoop' }
+      { x: 454, y: 320, zone: 'summit', route: 'upperLoop' },
+      { x: 570, y: 320, zone: 'summit', route: 'upperLoop' }
     ],
     obstacles: mountainObstacles
   }

@@ -1,4 +1,4 @@
-import { Game } from './game/Game.js?result-best-v1';
+import { Game } from './game/Game.js?mountain-collision-v3';
 
 window.addEventListener('DOMContentLoaded', () => {
   new Game();
