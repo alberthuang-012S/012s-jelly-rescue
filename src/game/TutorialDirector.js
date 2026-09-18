@@ -82,18 +82,24 @@ export class TutorialDirector {
   }
 
   getObjective(game) {
-    if (this.step === STEPS.MOVE) return '先移動一小段 · 使用 WASD／方向鍵';
+    if (this.step === STEPS.MOVE) return '移動看看';
     if (this.step === STEPS.FIRST_RESCUE) {
       return game.interactionSystem.currentTarget
-        ? '選擇 PPA+1 · 靠近後按 E 救援'
-        : '找到黃色求救泡泡 · 使用 PPA+1';
+        ? '選擇 PPA+1'
+        : '找到需要幫忙的居民';
     }
     if (this.step === STEPS.SECOND_RESCUE) {
       return game.interactionSystem.currentTarget
-        ? '選擇 NAP+1 · 靠近後按 E 救援'
-        : '找到藍色求救泡泡 · 使用 NAP+1';
+        ? '選擇 NAP+1'
+        : '找到下一位需要幫忙的居民';
     }
-    return '教學完成 · 準備開始正式巡邏';
+    return '教學完成';
+  }
+
+  getItemFocus() {
+    if (this.step === STEPS.FIRST_RESCUE) return 'PPA';
+    if (this.step === STEPS.SECOND_RESCUE) return 'NAP';
+    return null;
   }
 
   isComplete() {

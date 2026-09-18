@@ -50,13 +50,66 @@ export class ScoreManager {
     return this.responseTimes.reduce((sum, time) => sum + time, 0) / this.responseTimes.length;
   }
 
-  getGrade() {
-    if (this.score >= 2600 || this.rescuedCount >= 18) return 'EXCELLENT';
-    if (this.score >= 1200 || this.rescuedCount >= 9) return 'GREAT';
-    return this.rescuedCount ? 'GOOD' : 'READY';
+  getRescueRate() {
+    const attempts = this.rescuedCount + this.failedCount;
+    return attempts ? this.rescuedCount / attempts : 0;
   }
 
-  getResult() {
+  getResponseSpeedScore() {
+    const average = this.getAverageResponseTime();
+    if (!this.responseTimes.length) return 0;
+    if (average <= 3) return 100;
+    if (average <= 5) return 100 - ((average - 3) / 2) * 18;
+    if (average <= 8) return 82 - ((average - 5) / 3) * 22;
+    return Math.max(0, 60 - (average - 8) * 8);
+  }
+
+  getToolAccuracy() {
+    const operations = this.rescuedCount + this.wrongItemCount;
+    return operations ? this.rescuedCount / operations : 1;
+  }
+
+  getComboScore(maxCombo = 0) {
+    if (maxCombo <= 0) return 20;
+    if (maxCombo === 1) return 32;
+    if (maxCombo === 2) return 55;
+    if (maxCombo === 3) return 68;
+    if (maxCombo === 4) return 80;
+    if (maxCombo === 5) return 89;
+    return Math.min(100, 92 + (maxCombo - 6) * 2);
+  }
+
+  getPerformanceMetrics(maxCombo = 0) {
+    const rescueRate = this.getRescueRate();
+    const responseSpeed = this.getResponseSpeedScore();
+    const toolAccuracy = this.getToolAccuracy();
+    const comboScore = this.getComboScore(maxCombo);
+    const performanceScore = (
+      rescueRate * 40
+      + responseSpeed * 0.25
+      + toolAccuracy * 20
+      + comboScore * 0.15
+    );
+    return {
+      rescueRate,
+      responseSpeed,
+      toolAccuracy,
+      comboScore,
+      performanceScore: Math.round(performanceScore * 10) / 10
+    };
+  }
+
+  getGrade(maxCombo = 0) {
+    if (!this.rescuedCount) return 'READY';
+    const { performanceScore } = this.getPerformanceMetrics(maxCombo);
+    if (performanceScore >= 90) return 'EXCELLENT';
+    if (performanceScore >= 75) return 'GREAT';
+    if (performanceScore >= 55) return 'GOOD';
+    return 'KEEP GOING';
+  }
+
+  getResult(maxCombo = 0) {
+    const metrics = this.getPerformanceMetrics(maxCombo);
     return {
       score: this.score,
       rescuedCount: this.rescuedCount,
@@ -66,9 +119,9 @@ export class ScoreManager {
       wrongItemCount: this.wrongItemCount,
       averageResponseTime: this.getAverageResponseTime(),
       fastestResponseTime: this.fastestResponseTime || 0,
-      maxCombo: 0,
+      maxCombo,
+      ...metrics,
       distanceTravelled: Math.round(this.distanceTravelled)
     };
   }
 }
-

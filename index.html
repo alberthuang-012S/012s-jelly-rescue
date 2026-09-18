@@ -91,9 +91,11 @@
               <div class="tutorial-guide-item" data-tutorial-hint="move"><span class="tutorial-guide-icon">▲▼</span><span><b>移動</b><small>WASD／方向鍵</small></span></div>
               <div class="tutorial-guide-item" data-tutorial-hint="itch"><span class="tutorial-guide-icon tutorial-icon-itch">✦</span><span><b>癢</b><small>PPA+1</small></span></div>
               <div class="tutorial-guide-item" data-tutorial-hint="soreness"><span class="tutorial-guide-icon tutorial-icon-sore">↯</span><span><b>痠痛</b><small>NAP+1</small></span></div>
-              <div class="tutorial-guide-item" data-tutorial-hint="action"><span class="tutorial-guide-icon tutorial-icon-key">E</span><span><b>靠近</b><small>按 E 救援</small></span></div>
+              <div class="tutorial-guide-item" data-tutorial-hint="toggle"><span class="tutorial-guide-icon tutorial-icon-key">Q</span><span><b>切換</b><small>快速切換道具</small></span></div>
             </div>
           </aside>
+
+          <div id="rescue-indicator-region" class="rescue-indicator-region is-hidden" aria-label="鏡頭外求救方向"></div>
 
           <div id="target-callout" class="target-callout is-hidden">
             <div class="target-callout-line"><span class="target-dot"></span><b id="target-name">需要救援</b><span id="target-distance">近距離</span></div>
@@ -141,8 +143,14 @@
           <p class="result-kicker" id="result-kicker">JELLY PARK · STAGE CLEAR</p>
           <h2 id="result-title">巡邏完成！</h2>
           <p class="result-summary" id="result-summary">今天也有好好守護大家。</p>
-          <div class="result-score-card">
-            <div><small>本局分數</small><strong id="result-score">0</strong></div>
+          <div class="result-primary-grid">
+            <div class="result-primary-card result-primary-score"><small>SCORE</small><strong id="result-score">0</strong></div>
+            <div class="result-primary-card"><small>平均反應</small><strong id="result-average-primary">0.0 秒</strong></div>
+            <div class="result-primary-card"><small>道具準確率</small><strong id="result-accuracy-primary">0%</strong></div>
+          </div>
+          <div class="result-performance-card">
+            <span>PERFORMANCE SCORE</span>
+            <strong id="result-performance-score">0</strong>
             <div class="result-grade" id="result-grade">GOOD<br /><small>WORK</small></div>
           </div>
           <div class="result-stat-grid">

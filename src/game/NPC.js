@@ -251,11 +251,12 @@ export class NPC {
     drawShadow(ctx, this.x, this.y + 43, 23, 7, this.state === STATES.FAILED ? 0.06 : 0.16);
     if (this.highlighted) {
       ctx.save();
-      ctx.strokeStyle = '#ffe39b';
-      ctx.lineWidth = 3;
-      ctx.setLineDash([5, 4]);
+      ctx.fillStyle = 'rgba(255, 224, 154, .2)';
+      ctx.strokeStyle = 'rgba(255, 224, 154, .82)';
+      ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(this.x, this.y, 32, 0, Math.PI * 2);
+      ctx.ellipse(this.x, this.y + 35, 28, 8, 0, 0, Math.PI * 2);
+      ctx.fill();
       ctx.stroke();
       ctx.restore();
     }

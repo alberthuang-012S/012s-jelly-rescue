@@ -216,7 +216,7 @@ export class StageManager {
       return 'pressure';
     }
     if (this.elapsed < 12) return 'intro';
-    if (this.elapsed < 24) return 'nap';
+    if (this.elapsed < 20) return 'nap';
     if (this.elapsed < 45) return 'mixed';
     return 'pressure';
   }

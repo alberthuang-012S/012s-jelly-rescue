@@ -1,4 +1,4 @@
-import { CONDITIONS, STATES, VIEWPORT } from './constants.js';
+import { CONDITIONS, ITEMS, STATES, VIEWPORT } from './constants.js';
 import { ComboManager } from './ComboManager.js';
 import { EventDirector } from './EventDirector.js';
 import { HUD } from './HUD.js';
@@ -499,7 +499,8 @@ export class Game {
       onSpawn: (npc) => {
         npc.spriteImage = this.npcSpriteImage;
         npc.spriteSheet = this.npcSpriteSheet;
-      }
+      },
+      getPlayer: () => this.player
     };
     this.eventDirector = null;
     this.tutorialDirector = null;
@@ -540,11 +541,7 @@ export class Game {
     this.input.setEnabled(true);
     this.hud.updateItems(this.itemSystem.selectedId);
     this.hideLoading();
-    this.hud.showToast(
-      this.isTutorial() ? '教學開始' : `${stage.name} 開始`,
-      'info',
-      this.isTutorial() ? '先移動一小段，再找到練習居民。' : '先觀察預警，再選擇正確道具。'
-    );
+    if (!this.isTutorial()) this.hud.showToast(`${stage.name} 開始`, 'info', '先觀察預警，再選擇正確道具。');
     this.scheduleNextStagePreload(stageId);
   }
 
@@ -614,18 +611,14 @@ export class Game {
       this.combo.break();
       this.createMistakeParticles(target);
       this.addFloater(target.x, target.y - 82, '好像不是這個……', '#ffd1b0');
+      const correctItemId = target.condition === CONDITIONS.ITCH ? ITEMS.PPA.id : ITEMS.NAP.id;
+      this.hud.flashItemFeedback(this.itemSystem.selectedId, correctItemId);
       this.hud.showToast('好像不是這個……', 'danger', '請換另一個道具再試試。');
     }
   }
 
   handleTutorialStep(step) {
     if (this.state !== 'playing') return;
-    if (step === 'first-rescue') {
-      this.hud.showToast('✦ 第一個練習', 'info', '癢 → PPA+1 · 靠近後按 E');
-    }
-    if (step === 'second-rescue') {
-      this.hud.showToast('↯ 第二個練習', 'info', '痠痛 → NAP+1 · 靠近後按 E');
-    }
     if (step === 'complete') {
       this.hud.showToast('✓ 教學完成！', 'success', '接下來可以開始 Jelly Park。');
     }
@@ -633,6 +626,7 @@ export class Game {
 
   handleNPCStateChange(npc, state) {
     if (this.state !== 'playing') return;
+    if (this.isTutorial()) return;
     if (state === STATES.HELP) {
       this.hud.showToast('求救訊號！', 'info', `${npc.name} 需要 ${npc.condition === CONDITIONS.ITCH ? 'PPA+1' : 'NAP+1'}`);
     }
@@ -664,9 +658,9 @@ export class Game {
     if (this.state !== 'playing') return;
     this.state = 'result';
     this.input.setEnabled(false);
-    const result = this.scoreManager.getResult();
+    const result = this.scoreManager.getResult(this.combo.maxCombo);
     result.maxCombo = this.combo.maxCombo;
-    result.grade = this.scoreManager.getGrade();
+    result.grade = this.scoreManager.getGrade(this.combo.maxCombo);
     result.tutorialComplete = this.tutorialDirector?.isComplete() || false;
     this.gameShell.classList.add('is-hidden');
     this.resultScreen.showResult(
@@ -683,7 +677,7 @@ export class Game {
     if (this.state !== 'playing') return;
     this.state = 'gameover';
     this.input.setEnabled(false);
-    const result = this.scoreManager.getResult();
+    const result = this.scoreManager.getResult(this.combo.maxCombo);
     result.maxCombo = this.combo.maxCombo;
     this.gameShell.classList.add('is-hidden');
     this.resultScreen.showGameOver(result);
@@ -815,6 +809,7 @@ export class Game {
     if (this.state !== 'playing') return;
     const stage = this.stageManager.getStage();
     const camera = this.getCamera(stage);
+    this.hud.updateRescueIndicators(this, camera);
     const ctx = this.ctx;
     const pixelRatio = this.pixelRatio || 1;
     ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);

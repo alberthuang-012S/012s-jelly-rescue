@@ -19,8 +19,12 @@ export class ResultScreen {
 
   showResult(result, stage, hasNext, nextLabel = '前往下一站') {
     this.hide();
-    document.querySelector('#result-kicker').textContent = `${stage.name.toUpperCase()} · STAGE CLEAR`;
-    const summary = stage.id === 'tutorial'
+    const isTutorial = stage.id === 'tutorial';
+    document.querySelector('#result-kicker').textContent = isTutorial
+      ? 'JELLY TRAINING · TRAINING COMPLETE'
+      : `${stage.name.toUpperCase()} · STAGE CLEAR`;
+    document.querySelector('#result-title').textContent = isTutorial ? '教學完成' : '巡邏完成！';
+    const summary = isTutorial
       ? (result.tutorialComplete
         ? '你已學會移動、辨認症狀，並完成兩次基礎救援。'
         : '先熟悉移動與道具對應，再試一次教學會更順手。')
@@ -29,7 +33,17 @@ export class ResultScreen {
         : '熟悉路線後，再試一次會更順手。';
     document.querySelector('#result-summary').textContent = summary;
     document.querySelector('#result-score').textContent = result.score.toLocaleString();
-    document.querySelector('#result-grade').innerHTML = `${result.grade}<br /><small>WORK</small>`;
+    document.querySelector('#result-average-primary').textContent = `${result.averageResponseTime.toFixed(1)} 秒`;
+    document.querySelector('#result-accuracy-primary').textContent = isTutorial
+      ? '—'
+      : `${Math.round(result.toolAccuracy * 100)}%`;
+    document.querySelector('#result-performance-score').textContent = isTutorial
+      ? 'TRAINING COMPLETE'
+      : `${Math.round(result.performanceScore)}`;
+    document.querySelector('#result-grade').innerHTML = isTutorial
+      ? '教學完成'
+      : `${result.grade}<br /><small>GRADE</small>`;
+    document.querySelector('#result-grade').classList.toggle('result-grade-training', isTutorial);
     document.querySelector('#result-rescued').textContent = `${result.rescuedCount} 人`;
     document.querySelector('#result-average').textContent = `${result.averageResponseTime.toFixed(1)} 秒`;
     document.querySelector('#result-ppa').textContent = `${result.ppaSuccess} 次`;
