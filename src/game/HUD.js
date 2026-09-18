@@ -13,11 +13,15 @@ export class HUD {
       target: document.querySelector('#target-callout'),
       targetName: document.querySelector('#target-name'),
       targetDistance: document.querySelector('#target-distance'),
-      action: document.querySelector('#action-button')
+      action: document.querySelector('#action-button'),
+      tutorialGuide: document.querySelector('#tutorial-guide'),
+      tutorialStep: document.querySelector('#tutorial-guide-step'),
+      tutorialHints: [...document.querySelectorAll('[data-tutorial-hint]')]
     };
     this.lastObjective = '';
     this.lastLives = -1;
     this.lastSelectedItem = '';
+    this.lastTutorialStep = '';
     this.activeToast = null;
     this.activeToastTimer = null;
     this.activeToastRemovalTimer = null;
@@ -62,7 +66,35 @@ export class HUD {
       this.elements.objective.textContent = objective;
       this.lastObjective = objective;
     }
+    this.updateTutorialGuide(game);
     if (this.lastSelectedItem !== game.itemSystem.selectedId) this.updateItems(game.itemSystem.selectedId);
+  }
+
+  updateTutorialGuide(game) {
+    const guide = this.elements.tutorialGuide;
+    if (!guide) return;
+    const tutorial = game.tutorialDirector;
+    const visible = Boolean(tutorial && game.state === 'playing');
+    guide.classList.toggle('is-hidden', !visible);
+    if (!visible) {
+      this.lastTutorialStep = '';
+      return;
+    }
+    if (tutorial.step === this.lastTutorialStep) return;
+
+    const stepMap = {
+      move: { label: '1 / 3', active: ['move'] },
+      'first-rescue': { label: '2 / 3', active: ['itch', 'action'] },
+      'second-rescue': { label: '3 / 3', active: ['soreness', 'action'] },
+      complete: { label: '✓', active: ['move', 'itch', 'soreness', 'action'] }
+    };
+    const step = stepMap[tutorial.step] || stepMap.move;
+    guide.dataset.step = tutorial.step;
+    this.elements.tutorialStep.textContent = step.label;
+    this.elements.tutorialHints.forEach((hint) => {
+      hint.classList.toggle('is-active', step.active.includes(hint.dataset.tutorialHint));
+    });
+    this.lastTutorialStep = tutorial.step;
   }
 
   updateItems(selectedId) {

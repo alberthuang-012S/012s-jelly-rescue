@@ -621,13 +621,13 @@ export class Game {
   handleTutorialStep(step) {
     if (this.state !== 'playing') return;
     if (step === 'first-rescue') {
-      this.hud.showToast('第一個練習', 'info', '這位居民需要 PPA+1，靠近後按 E。');
+      this.hud.showToast('✦ 第一個練習', 'info', '癢 → PPA+1 · 靠近後按 E');
     }
     if (step === 'second-rescue') {
-      this.hud.showToast('第二個練習', 'info', '這次請切換 NAP+1，再靠近居民。');
+      this.hud.showToast('↯ 第二個練習', 'info', '痠痛 → NAP+1 · 靠近後按 E');
     }
     if (step === 'complete') {
-      this.hud.showToast('教學完成！', 'success', '接下來可以開始 Jelly Park。');
+      this.hud.showToast('✓ 教學完成！', 'success', '接下來可以開始 Jelly Park。');
     }
   }
 
