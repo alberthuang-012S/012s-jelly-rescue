@@ -967,7 +967,7 @@ export class Game {
     if (this.state !== 'playing') return;
     const target = this.interactionSystem.currentTarget;
     if (!target) {
-      this.hud.showActionFeedback('再靠近一點');
+      this.hud.showActionFeedback();
       return;
     }
     if (this.itemSystem.isCorrect(target.condition)) {

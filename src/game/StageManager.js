@@ -69,10 +69,46 @@ const mountainRoutes = {
     { x: 834, y: 700 }, { x: 729, y: 585 }, { x: 614, y: 570 }, { x: 512, y: 630 }
   ],
   upperLoop: [
-    { x: 512, y: 430 }, { x: 405, y: 400 }, { x: 330, y: 320 }, { x: 350, y: 235 },
-    { x: 512, y: 205 }, { x: 674, y: 235 }, { x: 694, y: 320 }, { x: 619, y: 400 }
+    // Keep the upper patrol on the open meadow around the central trailhead.
+    // The old points crossed the illustrated side waterfalls/ledge faces.
+    { x: 512, y: 470 }, { x: 438, y: 450 }, { x: 405, y: 390 }, { x: 420, y: 315 },
+    { x: 512, y: 255 }, { x: 604, y: 315 }, { x: 619, y: 390 }, { x: 586, y: 450 }
   ]
 };
+
+// The mountain artwork is mostly open meadow.  Collision therefore follows
+// the visible outer cliffs, waterfalls, and forest shelves in short stepped
+// rectangles instead of using a few large invisible walls.  The rectangles
+// are inset from the artwork edge so a player meets the scenery at its edge,
+// while the central trail and the side loops remain broad and continuous.
+const mountainObstacles = [
+  // Upper-left cliff and waterfall edge.
+  { x: 12, y: 140, width: 116, height: 112, kind: 'upper-left-cliff' },
+  { x: 0, y: 242, width: 132, height: 112, kind: 'upper-left-cliff' },
+  { x: 40, y: 344, width: 122, height: 100, kind: 'upper-left-cliff' },
+  { x: 0, y: 435, width: 72, height: 165, kind: 'left-waterfall' },
+  { x: 10, y: 590, width: 90, height: 140, kind: 'left-waterfall' },
+  // Upper-right is a mirrored stepped boundary.
+  { x: 896, y: 140, width: 116, height: 112, kind: 'upper-right-cliff' },
+  { x: 892, y: 242, width: 132, height: 112, kind: 'upper-right-cliff' },
+  { x: 862, y: 344, width: 122, height: 100, kind: 'upper-right-cliff' },
+  { x: 952, y: 435, width: 72, height: 165, kind: 'right-waterfall' },
+  { x: 924, y: 590, width: 90, height: 140, kind: 'right-waterfall' },
+  // Mid-height forest shelves leave a generous open lane beside each loop.
+  { x: 0, y: 748, width: 82, height: 154, kind: 'left-forest' },
+  { x: 0, y: 886, width: 92, height: 208, kind: 'left-forest' },
+  { x: 30, y: 1080, width: 108, height: 170, kind: 'left-forest' },
+  { x: 942, y: 748, width: 82, height: 154, kind: 'right-forest' },
+  { x: 932, y: 886, width: 92, height: 208, kind: 'right-forest' },
+  { x: 886, y: 1080, width: 108, height: 170, kind: 'right-forest' },
+  // Bottom forest follows the artwork edge without narrowing the entrance.
+  { x: 0, y: 1230, width: 108, height: 194, kind: 'left-bottom-forest' },
+  { x: 48, y: 1380, width: 150, height: 156, kind: 'left-bottom-forest' },
+  { x: 174, y: 1460, width: 126, height: 76, kind: 'left-bottom-forest' },
+  { x: 916, y: 1230, width: 108, height: 194, kind: 'right-bottom-forest' },
+  { x: 826, y: 1380, width: 150, height: 156, kind: 'right-bottom-forest' },
+  { x: 724, y: 1460, width: 126, height: 76, kind: 'right-bottom-forest' }
+];
 
 export const STAGE_DEFS = Object.freeze({
   park: {
@@ -165,16 +201,7 @@ export const STAGE_DEFS = Object.freeze({
       { x: 405, y: 300, zone: 'summit', route: 'upperLoop' },
       { x: 619, y: 300, zone: 'summit', route: 'upperLoop' }
     ],
-    // Keep the center open. Only the illustrated edge clusters are blocked so
-    // the player can cross the map without getting trapped in narrow lanes.
-    obstacles: [
-      { x: 0, y: 170, width: 230, height: 300, kind: 'upper-left-cliff' },
-      { x: 794, y: 220, width: 230, height: 330, kind: 'upper-right-cliff' },
-      { x: 0, y: 480, width: 150, height: 260, kind: 'left-waterfall' },
-      { x: 874, y: 470, width: 150, height: 260, kind: 'right-waterfall' },
-      { x: 0, y: 1330, width: 250, height: 206, kind: 'left-bottom-forest' },
-      { x: 774, y: 1330, width: 250, height: 206, kind: 'right-bottom-forest' }
-    ]
+    obstacles: mountainObstacles
   }
 });
 

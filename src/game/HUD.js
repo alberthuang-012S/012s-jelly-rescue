@@ -29,11 +29,7 @@ export class HUD {
       exitButton: document.querySelector('#exit-stage-button'),
       objectiveChip: document.querySelector('.objective-chip'),
       objective: document.querySelector('#hud-objective'),
-      target: document.querySelector('#target-callout'),
-      targetName: document.querySelector('#target-name'),
-      targetDistance: document.querySelector('#target-distance'),
       action: document.querySelector('#action-button'),
-      actionFeedback: document.querySelector('#action-feedback'),
       tutorialGuide: document.querySelector('#tutorial-guide'),
       tutorialStep: document.querySelector('#tutorial-guide-step'),
       tutorialHints: [...document.querySelectorAll('[data-tutorial-hint]')],
@@ -58,7 +54,8 @@ export class HUD {
   update(game) {
     const stage = game.stageManager.getStage();
     const { score, combo } = game;
-    this.mobileMode = game.layoutMode !== 'desktop';
+    this.mobileMode = game.layoutMode !== 'desktop'
+      || (game.viewport.height <= 520 && game.viewport.width <= 1100);
     const tutorialStage = game.isTutorial();
     document.querySelector('#game-shell')?.classList.toggle('is-tutorial-stage', tutorialStage);
     const tutorialComplete = tutorialStage && game.tutorialDirector?.isComplete?.();
@@ -94,13 +91,6 @@ export class HUD {
     }
     const target = game.interactionSystem.currentTarget;
     const mobileActionVisible = this.mobileMode && game.state === 'playing';
-    if (target) {
-      this.elements.target.classList.remove('is-hidden');
-      this.elements.targetName.textContent = target.name;
-      this.elements.targetDistance.textContent = target.state === STATES.CRITICAL ? '快受不了了' : '進入救援範圍';
-    } else {
-      this.elements.target.classList.add('is-hidden');
-    }
     this.elements.action.classList.toggle('is-hidden', !(mobileActionVisible || Boolean(target)));
     const actionPaused = Boolean(game.isTutorialModalOpen || game.isExitConfirmOpen);
     const actionDisabled = actionPaused || !target;
@@ -108,15 +98,9 @@ export class HUD {
     this.elements.action.setAttribute('aria-disabled', actionDisabled ? 'true' : 'false');
     this.elements.action.dataset.state = actionPaused ? 'paused' : target ? 'ready' : 'idle';
     const tutorialObjective = game.tutorialDirector?.getObjective?.(game);
-    const objective = tutorialStage
-      ? tutorialObjective || ''
-      : game.debug.showRadius
-      ? 'DEBUG · 互動半徑已顯示'
-      : tutorialObjective || (target
-        ? `靠近 ${target.name} · 選對道具`
-        : game.stageManager.getPhase() === 'intro'
-          ? '巡邏中 · 優先留意黃色預警'
-          : '巡邏中 · 觀察路線與求救泡泡');
+    // Formal stages communicate through the map, NPC bubble, and Use state.
+    // Keep the chip available only for the explicit tutorial instructions.
+    const objective = tutorialStage ? tutorialObjective || '' : '';
     if (objective !== this.lastObjective) {
       this.elements.objective.textContent = objective;
       this.lastObjective = objective;
@@ -173,9 +157,7 @@ export class HUD {
     if (focus === this.lastTutorialFocus && tutorialActive === this.lastTutorialActive) return;
     document.querySelectorAll('[data-item]').forEach((button) => {
       const isFocus = Boolean(focus) && button.dataset.item === focus;
-      const isDimmed = Boolean(focus) && button.dataset.item !== focus;
       button.classList.toggle('is-tutorial-focus', isFocus);
-      button.classList.toggle('is-tutorial-dimmed', isDimmed);
     });
     this.lastTutorialFocus = focus;
     this.lastTutorialActive = tutorialActive;
@@ -198,22 +180,17 @@ export class HUD {
     }
   }
 
-  showActionFeedback(message = '再靠近一點') {
+  showActionFeedback() {
     const action = this.elements.action;
-    const feedback = this.elements.actionFeedback;
-    if (!action || !feedback) return;
+    if (!action || !this.mobileMode) return;
     window.clearTimeout(this.actionFeedbackTimer);
-    feedback.textContent = message;
-    feedback.classList.remove('is-hidden');
     action.classList.remove('is-action-feedback');
     void action.offsetWidth;
     action.classList.add('is-action-feedback');
-    requestAnimationFrame(() => feedback.classList.add('is-visible'));
     this.actionFeedbackTimer = window.setTimeout(() => {
-      feedback.classList.remove('is-visible');
       action.classList.remove('is-action-feedback');
-      window.setTimeout(() => feedback.classList.add('is-hidden'), 180);
-    }, 900);
+      this.actionFeedbackTimer = null;
+    }, 360);
   }
 
   flashLifeLost() {
