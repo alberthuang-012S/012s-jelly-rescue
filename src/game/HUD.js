@@ -22,6 +22,7 @@ export class HUD {
       timer: document.querySelector('#hud-timer'),
       lives: document.querySelector('#hud-lives'),
       stageName: document.querySelector('#hud-stage-name'),
+      objectiveChip: document.querySelector('.objective-chip'),
       objective: document.querySelector('#hud-objective'),
       target: document.querySelector('#target-callout'),
       targetName: document.querySelector('#target-name'),
@@ -42,11 +43,13 @@ export class HUD {
     this.activeToastTimer = null;
     this.activeToastRemovalTimer = null;
     this.indicatorNodes = new Map();
+    this.mobileMode = false;
   }
 
   update(game) {
     const stage = game.stageManager.getStage();
     const { score, combo } = game;
+    this.mobileMode = game.layoutMode !== 'desktop';
     this.elements.score.textContent = formatScore(game.scoreManager.score);
     this.elements.combo.textContent = combo.combo ? `x${combo.getMultiplier().toFixed(1)}` : '—';
     this.elements.timer.textContent = formatClock(game.stageManager.getRemaining());
@@ -62,15 +65,18 @@ export class HUD {
       this.lastLives = game.lives;
     }
     const target = game.interactionSystem.currentTarget;
+    const mobileActionVisible = this.mobileMode && game.state === 'playing';
     if (target) {
       this.elements.target.classList.remove('is-hidden');
-      this.elements.action.classList.remove('is-hidden');
       this.elements.targetName.textContent = target.name;
       this.elements.targetDistance.textContent = target.state === STATES.CRITICAL ? '快受不了了' : '進入救援範圍';
     } else {
       this.elements.target.classList.add('is-hidden');
-      this.elements.action.classList.add('is-hidden');
     }
+    this.elements.action.classList.toggle('is-hidden', !(mobileActionVisible || Boolean(target)));
+    this.elements.action.classList.toggle('is-action-ready', Boolean(target));
+    this.elements.action.setAttribute('aria-disabled', target ? 'false' : 'true');
+    this.elements.action.dataset.state = target ? 'ready' : 'idle';
     const tutorialObjective = game.tutorialDirector?.getObjective?.(game);
     const objective = game.debug.showRadius
       ? 'DEBUG · 互動半徑已顯示'
@@ -83,6 +89,12 @@ export class HUD {
       this.elements.objective.textContent = objective;
       this.lastObjective = objective;
     }
+    const tutorialActive = Boolean(game.tutorialDirector && !game.tutorialDirector.isComplete());
+    const objectiveFaded = this.mobileMode
+      && game.state === 'playing'
+      && !tutorialActive
+      && game.stageManager.elapsed >= 3;
+    this.elements.objectiveChip?.classList.toggle('is-mobile-faded', objectiveFaded);
     this.updateTutorialGuide(game);
     this.updateTutorialItemFocus(game);
     if (this.lastSelectedItem !== game.itemSystem.selectedId) this.updateItems(game.itemSystem.selectedId);
@@ -260,6 +272,9 @@ export class HUD {
     requestAnimationFrame(() => {
       if (this.activeToast === toast) toast.classList.add('is-visible');
     });
+    const toastDuration = this.mobileMode
+      ? (type === 'success' ? 1500 : 1800)
+      : 2300;
     this.activeToastTimer = window.setTimeout(() => {
       if (this.activeToast !== toast) return;
       toast.classList.remove('is-visible');
@@ -270,6 +285,6 @@ export class HUD {
         this.activeToastRemovalTimer = null;
       }, 260);
       this.activeToastTimer = null;
-    }, 2300);
+    }, toastDuration);
   }
 }

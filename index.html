@@ -88,10 +88,10 @@
           <aside id="tutorial-guide" class="tutorial-guide is-hidden" aria-label="教學重點" aria-live="polite">
             <div class="tutorial-guide-head"><span class="tutorial-guide-mark">?</span><b>教學重點</b><small id="tutorial-guide-step">1 / 3</small></div>
             <div class="tutorial-guide-items">
-              <div class="tutorial-guide-item" data-tutorial-hint="move"><span class="tutorial-guide-icon">▲▼</span><span><b>移動</b><small>WASD／方向鍵</small></span></div>
-              <div class="tutorial-guide-item" data-tutorial-hint="itch"><span class="tutorial-guide-icon tutorial-icon-itch">✦</span><span><b>癢</b><small>PPA+1</small></span></div>
-              <div class="tutorial-guide-item" data-tutorial-hint="soreness"><span class="tutorial-guide-icon tutorial-icon-sore">↯</span><span><b>痠痛</b><small>NAP+1</small></span></div>
-              <div class="tutorial-guide-item" data-tutorial-hint="toggle"><span class="tutorial-guide-icon tutorial-icon-key">Q</span><span><b>切換</b><small>快速切換道具</small></span></div>
+              <div class="tutorial-guide-item" data-tutorial-hint="move"><span class="tutorial-guide-icon">▲▼</span><span><b>移動</b><small>WASD／方向鍵</small></span><span class="tutorial-guide-mobile-copy">移動看看</span></div>
+              <div class="tutorial-guide-item" data-tutorial-hint="itch"><span class="tutorial-guide-icon tutorial-icon-itch">✦</span><span><b>癢</b><small>PPA+1</small></span><span class="tutorial-guide-mobile-copy">✦ 癢 → PPA+1</span></div>
+              <div class="tutorial-guide-item" data-tutorial-hint="soreness"><span class="tutorial-guide-icon tutorial-icon-sore">↯</span><span><b>痠痛</b><small>NAP+1</small></span><span class="tutorial-guide-mobile-copy">↯ 痠痛 → NAP+1</span></div>
+              <div class="tutorial-guide-item" data-tutorial-hint="toggle"><span class="tutorial-guide-icon tutorial-icon-key">Q</span><span><b>切換</b><small>快速切換道具</small></span><span class="tutorial-guide-mobile-copy">Q 切換道具</span></div>
             </div>
           </aside>
 
@@ -102,25 +102,26 @@
             <div class="target-callout-help">靠近後按 <kbd>E</kbd> 使用目前道具</div>
           </div>
 
-          <div id="action-button" class="action-button is-hidden" role="button" tabindex="0" data-action="use"><span class="action-icon">✦</span><span><b>使用</b><small>E / SPACE</small></span></div>
+          <div id="action-button" class="action-button is-hidden" role="button" tabindex="0" aria-label="使用目前道具" aria-disabled="true" data-action="use"><span class="action-icon">✦</span><span><b>使用</b><small>E / SPACE</small></span></div>
 
           <div class="item-dock" aria-label="固定道具">
             <span class="item-toggle-hint" aria-hidden="true">Q 切換</span>
             <button class="item-card is-selected" data-item="PPA" type="button">
               <span class="item-hotkey">1</span><span class="item-img-wrap"><picture><source srcset="./reference/runtime/ppa-plus-one.webp" type="image/webp" /><img src="./reference/ppa-plus-one.png" alt="PPA+1" loading="lazy" decoding="async" /></picture></span>
-              <span class="item-info"><b>PPA+1</b><small>癢 · ITCH</small></span><span class="item-status">SELECTED</span>
+              <span class="item-info"><b>PPA+1</b><small>癢 · ITCH</small></span><span class="item-compact-label">PPA</span><span class="item-status">SELECTED</span>
             </button>
             <button class="item-card" data-item="NAP" type="button">
               <span class="item-hotkey">2</span><span class="item-img-wrap"><picture><source srcset="./reference/runtime/nap-plus-one.webp" type="image/webp" /><img src="./reference/nap-plus-one.png" alt="NAP+1" loading="lazy" decoding="async" /></picture></span>
-              <span class="item-info"><b>NAP+1</b><small>痠痛 · SORE</small></span><span class="item-status">READY</span>
+              <span class="item-info"><b>NAP+1</b><small>痠痛 · SORE</small></span><span class="item-compact-label">NAP</span><span class="item-status">READY</span>
             </button>
           </div>
 
           <div class="mobile-dpad" aria-label="虛擬方向控制">
             <button data-dir="up" aria-label="向上">▲</button>
             <button data-dir="left" aria-label="向左">◀</button>
-            <button data-dir="down" aria-label="向下">▼</button>
+            <span class="mobile-dpad-center" aria-hidden="true"></span>
             <button data-dir="right" aria-label="向右">▶</button>
+            <button data-dir="down" aria-label="向下">▼</button>
           </div>
 
           <button id="debug-toggle" class="debug-toggle" type="button">DEBUG <span>D</span></button>

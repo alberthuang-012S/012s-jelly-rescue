@@ -14,7 +14,7 @@ const KEY_VECTORS = {
 export class InputController {
   constructor({ onAction, onItemSelect, onItemToggle }) {
     this.keys = new Set();
-    this.touchDirections = new Set();
+    this.activeDirectionPointers = new Map();
     this.onAction = onAction;
     this.onItemSelect = onItemSelect;
     this.onItemToggle = onItemToggle;
@@ -30,7 +30,7 @@ export class InputController {
     this.enabled = enabled;
     if (!enabled) {
       this.keys.clear();
-      this.touchDirections.clear();
+      this.clearDirectionPointers();
     }
   }
 
@@ -65,18 +65,25 @@ export class InputController {
       const press = (event) => {
         event.preventDefault();
         if (!this.enabled) return;
-        this.touchDirections.add(direction);
-        button.classList.add('is-pressed');
+        this.activeDirectionPointers.set(event.pointerId, direction);
+        this.updateDirectionButtonState(direction);
+        if (button.setPointerCapture) {
+          try {
+            button.setPointerCapture(event.pointerId);
+          } catch (_error) {
+            // Pointer capture is an enhancement; the pointer events still work
+            // on browsers that do not expose it for this control.
+          }
+        }
       };
       const release = (event) => {
         event.preventDefault();
-        this.touchDirections.delete(direction);
-        button.classList.remove('is-pressed');
+        this.releaseDirectionPointer(event.pointerId, direction);
       };
       button.addEventListener('pointerdown', press, { passive: false });
       button.addEventListener('pointerup', release, { passive: false });
       button.addEventListener('pointercancel', release, { passive: false });
-      button.addEventListener('pointerleave', release, { passive: false });
+      button.addEventListener('lostpointercapture', release, { passive: false });
     });
     document.querySelectorAll('[data-action="use"]').forEach((button) => {
       button.addEventListener('pointerdown', (event) => {
@@ -91,10 +98,31 @@ export class InputController {
       });
     });
     document.querySelectorAll('[data-item]').forEach((button) => {
-      button.addEventListener('click', () => {
+      button.addEventListener('pointerdown', (event) => {
+        event.preventDefault();
         if (this.enabled) this.onItemSelect?.(button.dataset.item);
-      });
+      }, { passive: false });
     });
+  }
+
+  releaseDirectionPointer(pointerId, direction = null) {
+    const activeDirection = this.activeDirectionPointers.get(pointerId);
+    if (!activeDirection) return;
+    this.activeDirectionPointers.delete(pointerId);
+    this.updateDirectionButtonState(direction || activeDirection);
+  }
+
+  updateDirectionButtonState(direction) {
+    const isPressed = [...this.activeDirectionPointers.values()].includes(direction);
+    document.querySelectorAll(`[data-dir="${direction}"]`).forEach((button) => {
+      button.classList.toggle('is-pressed', isPressed);
+    });
+  }
+
+  clearDirectionPointers() {
+    const directions = new Set(this.activeDirectionPointers.values());
+    this.activeDirectionPointers.clear();
+    directions.forEach((direction) => this.updateDirectionButtonState(direction));
   }
 
   getMovementVector() {
@@ -108,10 +136,12 @@ export class InputController {
         y += vector.y;
       }
     }
-    if (this.touchDirections.has('left')) x -= 1;
-    if (this.touchDirections.has('right')) x += 1;
-    if (this.touchDirections.has('up')) y -= 1;
-    if (this.touchDirections.has('down')) y += 1;
+    for (const direction of this.activeDirectionPointers.values()) {
+      if (direction === 'left') x -= 1;
+      if (direction === 'right') x += 1;
+      if (direction === 'up') y -= 1;
+      if (direction === 'down') y += 1;
+    }
     return normalize(x, y);
   }
 
