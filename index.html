@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#10253c" />
-    <link rel="stylesheet" href="./src/styles.css?v=mountain-boundary-v2" />
+    <link rel="stylesheet" href="./src/styles.css?v=result-best-v1" />
     <title>Jelly Rescue RPG</title>
   </head>
   <body>
@@ -168,23 +168,18 @@
           <p class="result-kicker" id="result-kicker">JELLY PARK · STAGE CLEAR</p>
           <h2 id="result-title">巡邏完成！</h2>
           <p class="result-summary" id="result-summary">今天也有好好守護大家。</p>
-          <div class="result-primary-grid">
-            <div class="result-primary-card result-primary-score"><small>SCORE</small><strong id="result-score">0</strong></div>
-            <div class="result-primary-card"><small>平均反應</small><strong id="result-average-primary">0.0 秒</strong></div>
-            <div class="result-primary-card"><small>道具準確率</small><strong id="result-accuracy-primary">0%</strong></div>
-          </div>
-          <div class="result-performance-card">
-            <span>PERFORMANCE SCORE</span>
-            <strong id="result-performance-score">0</strong>
-            <div class="result-grade" id="result-grade">GOOD<br /><small>WORK</small></div>
+          <div class="result-score-hero"><small>本次分數</small><strong id="result-score">0</strong></div>
+          <div id="result-personal-best-card" class="result-personal-best-row">
+            <div><span>PERSONAL BEST</span><strong id="result-personal-best">—</strong></div>
+            <div id="result-new-best" class="result-new-best is-hidden" role="status" aria-live="polite" aria-hidden="true">★ NEW PERSONAL BEST</div>
           </div>
           <div class="result-stat-grid">
             <div><span>成功救援</span><b id="result-rescued">0 人</b></div>
-            <div><span>平均反應</span><b id="result-average">0.0 秒</b></div>
-            <div><span>PPA+1 成功</span><b id="result-ppa">0 次</b></div>
-            <div><span>NAP+1 成功</span><b id="result-nap">0 次</b></div>
-            <div><span>最佳 Combo</span><b id="result-max-combo">0</b></div>
-            <div><span>錯誤道具</span><b id="result-wrong">0 次</b></div>
+            <div><span>最佳 COMBO</span><b id="result-max-combo">0</b></div>
+          </div>
+          <div class="result-performance-card">
+            <div class="result-performance-main"><span>PERFORMANCE SCORE</span><strong id="result-performance-score">0</strong></div>
+            <div class="result-performance-detail"><div class="result-grade" id="result-grade">GOOD<br /><small>WORK</small></div><small id="result-accuracy">道具準確率 0%</small></div>
           </div>
           <div class="result-actions"><button id="result-next" class="primary-button" type="button"><span>前往下一站</span><span>→</span></button><button id="result-replay" class="secondary-button" type="button">再巡邏一次</button><button id="result-home" class="text-button" type="button">回到主選單</button></div>
         </div>
@@ -197,8 +192,8 @@
           <p class="result-kicker">FIELD REPORT · NEEDS REST</p>
           <h2 id="gameover-title">先休息一下吧</h2>
           <p class="result-summary">小水母已經很努力了。下次我們會更早發現預警。</p>
-          <div class="result-score-card"><div><small>本局分數</small><strong id="gameover-score">0</strong></div><div class="result-grade danger-grade">TRY<br /><small>AGAIN</small></div></div>
-          <div class="result-stat-grid"><div><span>成功救援</span><b id="gameover-rescued">0 人</b></div><div><span>平均反應</span><b id="gameover-average">0.0 秒</b></div><div><span>最佳 Combo</span><b id="gameover-max-combo">0</b></div><div><span>PPA+1 成功</span><b id="gameover-ppa">0 次</b></div><div><span>NAP+1 成功</span><b id="gameover-nap">0 次</b></div></div>
+          <div class="result-score-card"><div><small>本局分數</small><strong id="gameover-score">0</strong></div></div>
+          <div class="result-stat-grid"><div><span>成功救援</span><b id="gameover-rescued">0 人</b></div><div><span>最佳 COMBO</span><b id="gameover-max-combo">0</b></div></div>
           <div class="result-actions"><button id="gameover-replay" class="primary-button" type="button"><span>重新開始</span><span>↻</span></button><button id="gameover-home" class="text-button" type="button">回到主選單</button></div>
         </div>
       </section>
@@ -206,6 +201,6 @@
       <div id="toast-region" class="toast-region" aria-live="polite"></div>
       <div id="rotate-overlay" class="rotate-overlay is-hidden"><div class="rotate-card"><span>↻</span><b>請將裝置轉為橫向</b><small>Jelly Rescue 需要一點寬度，才能看見整座地圖。</small></div></div>
     </main>
-    <script type="module" src="./src/main.js?v=critical-assets-1"></script>
+    <script type="module" src="./src/main.js?v=result-best-v1"></script>
   </body>
 </html>

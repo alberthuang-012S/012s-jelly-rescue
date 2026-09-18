@@ -1108,3 +1108,131 @@ body { background: #deeff5; }
   .exit-confirm-primary,
   .exit-confirm-secondary { min-height: 46px; }
 }
+
+/* Result page: make the score and stage-specific best the emotional center,
+   while keeping performance as a compact quality readout. */
+.result-score-hero {
+  margin-top: 17px;
+  padding: 16px 18px 19px;
+  border: 1px solid rgba(70, 134, 139, .18);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(218, 242, 233, .94), rgba(234, 240, 249, .78));
+}
+.result-screen { overflow-x: hidden; }
+.result-score-hero small {
+  display: block;
+  color: #6f8d93;
+  font: 800 10px 'Noto Sans TC', sans-serif;
+  letter-spacing: .12em;
+}
+.result-score-hero strong {
+  display: block;
+  margin-top: 3px;
+  color: #173d5a;
+  font: 700 clamp(42px, 7vw, 62px) 'Space Grotesk', sans-serif;
+  letter-spacing: .01em;
+  line-height: 1;
+}
+.result-personal-best-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 9px;
+  padding: 11px 14px;
+  border: 1px solid rgba(70, 134, 139, .12);
+  border-radius: 13px;
+  color: #7a9298;
+  background: rgba(255, 255, 255, .54);
+  text-align: left;
+}
+.result-personal-best-row > div:first-child { min-width: 0; }
+.result-personal-best-row span {
+  display: block;
+  font: 800 9px 'DM Mono', monospace;
+  letter-spacing: .1em;
+}
+.result-personal-best-row strong {
+  display: block;
+  margin-top: 3px;
+  color: #385d70;
+  font: 700 24px 'Space Grotesk', sans-serif;
+}
+.result-new-best {
+  flex: 0 0 auto;
+  padding: 6px 8px;
+  border: 1px solid rgba(197, 150, 48, .38);
+  border-radius: 8px;
+  color: #986a24;
+  background: rgba(255, 224, 138, .38);
+  font: 900 9px 'DM Mono', 'Noto Sans TC', monospace;
+  letter-spacing: .06em;
+  white-space: nowrap;
+  animation: resultNewBestIn .32s ease-out both;
+}
+.result-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.result-performance-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.result-performance-main { min-width: 0; }
+.result-performance-main > span {
+  display: block;
+  font: 800 8px 'DM Mono', monospace;
+  letter-spacing: .08em;
+}
+.result-performance-main > strong {
+  display: block;
+  margin-top: 3px;
+  color: #274d64;
+  font: 700 28px 'Space Grotesk', sans-serif;
+}
+.result-performance-detail {
+  display: grid;
+  justify-items: end;
+  gap: 5px;
+  min-width: 100px;
+}
+.result-performance-detail .result-grade { min-width: 84px; margin-left: 0; }
+.result-performance-detail > small {
+  color: #718990;
+  font-size: 9px;
+  white-space: nowrap;
+}
+@keyframes resultNewBestIn {
+  from { opacity: 0; transform: scale(.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 680px), (max-height: 520px) and (orientation: landscape) and (max-width: 1100px) {
+  .result-screen { padding: 10px; }
+  .result-inner {
+    width: min(calc(100% - 8px), 580px);
+    padding: 19px 15px 15px;
+    border-radius: 20px;
+  }
+  .result-kicker { margin-top: 13px; }
+  .result-summary { margin: 7px 0 13px; font-size: 11px; }
+  .result-score-hero { margin-top: 11px; padding: 13px 14px 15px; }
+  .result-score-hero strong { font-size: clamp(42px, 14vw, 58px); }
+  .result-personal-best-row { margin-top: 7px; padding: 9px 11px; }
+  .result-personal-best-row strong { font-size: 21px; }
+  .result-new-best { padding: 5px 6px; font-size: 8px; }
+  .result-stat-grid { margin-top: 9px; }
+  .result-stat-grid div { min-height: 52px; padding: 8px 4px; }
+  .result-stat-grid span { font-size: 9px; }
+  .result-stat-grid b { margin-top: 3px; font-size: 14px; }
+  .result-performance-card { gap: 8px; margin-top: 8px; padding: 8px 9px; }
+  .result-performance-main > span { font-size: 7px; }
+  .result-performance-main > strong { font-size: 24px; }
+  .result-performance-detail { min-width: 88px; gap: 3px; }
+  .result-performance-detail .result-grade { min-width: 76px; padding: 6px 5px; font-size: 10px; }
+  .result-performance-detail > small { font-size: 8px; }
+  .result-actions { gap: 6px; margin-top: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result-new-best { animation: none; }
+}

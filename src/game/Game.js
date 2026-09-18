@@ -6,7 +6,8 @@ import { InputController } from './InputController.js';
 import { InteractionSystem } from './InteractionSystem.js';
 import { ItemSystem } from './ItemSystem.js';
 import { Player } from './Player.js';
-import { ResultScreen } from './ResultScreen.js';
+import { PersonalBestStore } from './PersonalBestStore.js?result-best-v1';
+import { ResultScreen } from './ResultScreen.js?result-best-v1';
 import { ScoreManager } from './ScoreManager.js';
 import { StageManager } from './StageManager.js?v=critical-assets-1';
 import { TutorialDirector } from './TutorialDirector.js';
@@ -285,6 +286,7 @@ export class Game {
     this.stageManager = new StageManager();
     this.itemSystem = new ItemSystem();
     this.scoreManager = new ScoreManager();
+    this.personalBestStore = new PersonalBestStore();
     this.combo = new ComboManager();
     this.interactionSystem = new InteractionSystem(84);
     this.worldRenderer = new WorldRenderer();
@@ -1075,6 +1077,7 @@ export class Game {
     const result = this.scoreManager.getResult(this.combo.maxCombo);
     result.maxCombo = this.combo.maxCombo;
     result.grade = this.scoreManager.getGrade(this.combo.maxCombo);
+    Object.assign(result, this.personalBestStore.update(this.selectedStage, result.score));
     result.tutorialComplete = this.tutorialDirector?.isComplete() || false;
     this.gameShell.classList.add('is-hidden');
     this.resultScreen.showResult(

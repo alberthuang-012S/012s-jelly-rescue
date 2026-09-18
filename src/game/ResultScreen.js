@@ -29,14 +29,19 @@ export class ResultScreen {
         ? '你已學會移動、辨認症狀，並完成兩次基礎救援。'
         : '先熟悉移動與道具對應，再試一次教學會更順手。')
       : result.rescuedCount
-        ? `今天有 ${result.rescuedCount} 位居民，因為你重新露出了笑容。`
-        : '熟悉路線後，再試一次會更順手。';
+        ? `本次成功幫助 ${result.rescuedCount} 位居民${result.isNewBest ? '，並刷新個人最佳紀錄！' : '。'}`
+        : result.isNewBest
+          ? '本次完成巡邏，並建立個人最佳紀錄！'
+          : '熟悉路線後，再試一次會更順手。';
     document.querySelector('#result-summary').textContent = summary;
     document.querySelector('#result-score').textContent = result.score.toLocaleString();
-    document.querySelector('#result-average-primary').textContent = `${result.averageResponseTime.toFixed(1)} 秒`;
-    document.querySelector('#result-accuracy-primary').textContent = isTutorial
+    document.querySelector('#result-personal-best').textContent = isTutorial || !Number.isFinite(result.bestScore)
       ? '—'
-      : `${Math.round(result.toolAccuracy * 100)}%`;
+      : result.bestScore.toLocaleString();
+    document.querySelector('#result-personal-best-card')?.classList.toggle('is-hidden', isTutorial);
+    const newBest = document.querySelector('#result-new-best');
+    newBest?.classList.toggle('is-hidden', isTutorial || !result.isNewBest);
+    newBest?.setAttribute('aria-hidden', isTutorial || !result.isNewBest ? 'true' : 'false');
     document.querySelector('#result-performance-score').textContent = isTutorial
       ? 'TRAINING COMPLETE'
       : `${Math.round(result.performanceScore)}`;
@@ -44,12 +49,11 @@ export class ResultScreen {
       ? '教學完成'
       : `${result.grade}<br /><small>GRADE</small>`;
     document.querySelector('#result-grade').classList.toggle('result-grade-training', isTutorial);
+    document.querySelector('#result-accuracy').textContent = isTutorial
+      ? '道具準確率 —'
+      : `道具準確率 ${Math.round(result.toolAccuracy * 100)}%`;
     document.querySelector('#result-rescued').textContent = `${result.rescuedCount} 人`;
-    document.querySelector('#result-average').textContent = `${result.averageResponseTime.toFixed(1)} 秒`;
-    document.querySelector('#result-ppa').textContent = `${result.ppaSuccess} 次`;
-    document.querySelector('#result-nap').textContent = `${result.napSuccess} 次`;
     document.querySelector('#result-max-combo').textContent = result.maxCombo;
-    document.querySelector('#result-wrong').textContent = `${result.wrongItemCount} 次`;
     const next = document.querySelector('#result-next');
     const nextText = next.querySelector('span');
     if (nextText) nextText.textContent = nextLabel;
@@ -61,10 +65,7 @@ export class ResultScreen {
     this.hide();
     document.querySelector('#gameover-score').textContent = result.score.toLocaleString();
     document.querySelector('#gameover-rescued').textContent = `${result.rescuedCount} 人`;
-    document.querySelector('#gameover-average').textContent = `${result.averageResponseTime.toFixed(1)} 秒`;
     document.querySelector('#gameover-max-combo').textContent = result.maxCombo;
-    document.querySelector('#gameover-ppa').textContent = `${result.ppaSuccess} 次`;
-    document.querySelector('#gameover-nap').textContent = `${result.napSuccess} 次`;
     this.gameover.classList.remove('is-hidden');
   }
 }

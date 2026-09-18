@@ -1,4 +1,4 @@
-import { Game } from './game/Game.js?v=critical-assets-1';
+import { Game } from './game/Game.js?result-best-v1';
 
 window.addEventListener('DOMContentLoaded', () => {
   new Game();
