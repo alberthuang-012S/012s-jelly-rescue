@@ -110,11 +110,6 @@ export class NPC {
     this.warningTimer = 0;
   }
 
-  penalizeWrongItem() {
-    this.tolerance = Math.max(0.25, this.tolerance - 0.9);
-    this.conditionTimer = this.tolerance;
-  }
-
   fail() {
     if (this.state === STATES.FAILED) return;
     this.state = STATES.FAILED;

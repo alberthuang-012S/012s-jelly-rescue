@@ -567,10 +567,9 @@ export class Game {
     } else {
       this.scoreManager.recordWrongItem();
       this.combo.break();
-      target.penalizeWrongItem();
       this.createMistakeParticles(target);
       this.addFloater(target.x, target.y - 82, '好像不是這個……', '#ffd1b0');
-      this.hud.showToast('好像不是這個……', 'danger', '耐受值繼續下降，換一個道具試試。');
+      this.hud.showToast('好像不是這個……', 'danger', '請換另一個道具再試試。');
     }
   }
 
