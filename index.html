@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#10253c" />
-    <link rel="stylesheet" href="./src/styles.css?v=critical-assets-1" />
+    <link rel="stylesheet" href="./src/styles.css?v=home-screen-v2" />
     <title>Jelly Rescue RPG</title>
   </head>
   <body>
@@ -12,38 +12,47 @@
       <div class="ambient ambient-one"></div>
       <div class="ambient ambient-two"></div>
 
-      <section id="home-screen" class="screen home-screen" aria-labelledby="game-title">
+      <section id="home-screen" class="screen home-screen" data-stage-tone="tutorial" aria-labelledby="game-title">
         <div class="home-copy">
-          <div class="eyebrow"><span class="eyebrow-dot"></span> FIELD MEDIC UNIT 01</div>
+          <div class="eyebrow">2050 × 012S</div>
           <h1 id="game-title">JELLY<br /><span>RESCUE</span></h1>
-          <p class="home-lede">巡邏、觀察、預判，讓每一位公園居民<br />在小水母的守護下恢復笑容。</p>
-          <div class="home-hero-note">
-            <span class="hero-note-icon">✦</span>
-            <span><b>今天的任務</b><small>聽見求救訊號，及時送上舒緩道具。</small></span>
-          </div>
+          <p class="home-positioning">小水母救援任務</p>
+          <p class="home-lede">觀察居民的狀況，選擇正確道具，在巡邏途中完成救援。</p>
         </div>
 
-        <div class="home-panel glass-panel">
-          <div class="panel-kicker">SELECT A PATROL</div>
-          <div class="stage-cards" role="listbox" aria-label="選擇關卡">
-            <button class="stage-card is-selected" data-stage-select="tutorial" role="option" aria-selected="true">
-              <span class="stage-card-art tutorial-art"><span class="art-sparkle">✦</span><span class="art-guide-jelly">●</span><span class="art-guide-path"></span></span>
-              <span class="stage-card-content"><b>Jelly Training</b><small>新手教學 · 基礎救援</small><em>無時間限制 · 無壓力</em></span>
-              <span class="stage-card-check">✓</span>
+        <div class="home-panel stage-selector-panel">
+          <div class="stage-selector-heading"><span>選擇任務</span><span class="stage-selector-rule"></span></div>
+          <article id="home-featured-stage" class="stage-featured-card" data-stage="tutorial" aria-live="polite">
+            <div class="stage-featured-copy">
+              <span id="home-stage-kicker" class="stage-featured-kicker">新手教學</span>
+              <h2 id="home-stage-title">JELLY TRAINING</h2>
+              <p id="home-stage-description">學習移動、辨認居民狀況，以及 PPA+1 / NAP+1 的使用方式。</p>
+              <div id="home-stage-meta" class="stage-featured-meta"><span>無時間限制</span><span>初次遊玩推薦</span></div>
+            </div>
+            <div class="stage-featured-art" aria-hidden="true">
+              <picture>
+                <source id="home-stage-preview-source" srcset="./reference/runtime/generated-park-open-portrait-hq.webp" type="image/webp" />
+                <img id="home-stage-preview" src="./reference/generated-park-open-portrait-hq.png" alt="" loading="eager" decoding="async" fetchpriority="high" />
+              </picture>
+              <span class="stage-featured-art-wash"></span>
+              <span id="home-stage-art-label" class="stage-featured-art-label">JELLY TRAINING</span>
+            </div>
+          </article>
+
+          <div class="stage-tabs" role="tablist" aria-label="選擇任務">
+            <button class="stage-tab is-selected" data-stage-select="tutorial" role="tab" aria-selected="true" aria-controls="home-featured-stage">
+              <span class="stage-tab-number">01</span><span class="stage-tab-copy"><b>教學</b><small>無時間限制</small></span>
             </button>
-            <button class="stage-card" data-stage-select="park" role="option" aria-selected="false">
-              <span class="stage-card-art park-art"><span class="art-sun">☼</span><span class="art-tree">♣</span><span class="art-bench"></span></span>
-              <span class="stage-card-content"><b>Jelly Park</b><small>城市公園 · 寬路巡邏</small><em>建議 1 分鐘</em></span>
-              <span class="stage-card-check">✓</span>
+            <button class="stage-tab" data-stage-select="park" role="tab" aria-selected="false" aria-controls="home-featured-stage">
+              <span class="stage-tab-number">02</span><span class="stage-tab-copy"><b>公園</b><small>1 分鐘</small></span>
             </button>
-            <button class="stage-card" data-stage-select="mountain" role="option" aria-selected="false">
-              <span class="stage-card-art mountain-art"><span class="art-mountain">⌃</span><span class="art-path"></span><span class="art-flag">⚑</span></span>
-              <span class="stage-card-content"><b>Jelly Mountain</b><small>山谷全景 · 開放草地</small><em>1 分鐘全景巡邏</em></span>
-              <span class="stage-card-check">✓</span>
+            <button class="stage-tab" data-stage-select="mountain" role="tab" aria-selected="false" aria-controls="home-featured-stage">
+              <span class="stage-tab-number">03</span><span class="stage-tab-copy"><b>山區</b><small>1 分鐘</small></span>
             </button>
           </div>
+
           <button id="start-button" class="primary-button" type="button"><span>開始教學</span><span class="button-arrow">→</span></button>
-          <div class="control-hint"><span class="keycap">WASD</span><span class="keycap">方向鍵</span><span>移動</span><i></i><span class="keycap">E</span><span>使用道具</span></div>
+          <div class="control-hint"><span>WASD 移動</span><i></i><span>Q 切換道具</span><i></i><span>E 使用</span></div>
         </div>
 
         <div class="home-character-wrap" aria-hidden="true">
@@ -55,7 +64,7 @@
           <div class="floating-spark spark-a">✦</div><div class="floating-spark spark-b">·</div><div class="floating-spark spark-c">✦</div>
         </div>
 
-        <div class="home-footer"><span>PHASE 01 / CORE RESCUE LOOP</span><span>© JELLY RESCUE FIELD TEAM</span></div>
+        <div class="home-footer"><span>2050 × 012S</span></div>
       </section>
 
       <section id="game-shell" class="game-shell is-hidden" aria-label="遊戲畫面">

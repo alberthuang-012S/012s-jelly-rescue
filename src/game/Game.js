@@ -45,6 +45,42 @@ const ASSET_PATHS = Object.freeze({
   ]
 });
 
+const HOME_STAGE_CONTENT = Object.freeze({
+  tutorial: {
+    tone: 'tutorial',
+    kicker: '新手教學',
+    title: 'JELLY TRAINING',
+    description: '學習移動、辨認居民狀況，以及 PPA+1 / NAP+1 的使用方式。',
+    meta: ['無時間限制', '初次遊玩推薦'],
+    artLabel: 'JELLY TRAINING',
+    preview: ASSET_PATHS.park[0],
+    fallback: ASSET_PATHS.park[1],
+    alt: 'Jelly Park 教學預覽'
+  },
+  park: {
+    tone: 'park',
+    kicker: '城市公園',
+    title: 'JELLY PARK',
+    description: '在寬闊步道間快速發現居民狀況，練習判斷與救援速度。',
+    meta: ['1 分鐘', '反應型關卡'],
+    artLabel: 'JELLY PARK',
+    preview: ASSET_PATHS.park[0],
+    fallback: ASSET_PATHS.park[1],
+    alt: 'Jelly Park 城市公園地圖預覽'
+  },
+  mountain: {
+    tone: 'mountain',
+    kicker: '山谷巡邏',
+    title: 'JELLY MOUNTAIN',
+    description: '面對較遠的救援目標，判斷先後順序並規劃移動路線。',
+    meta: ['1 分鐘', '路線型關卡'],
+    artLabel: 'JELLY MOUNTAIN',
+    preview: ASSET_PATHS.mountain[0],
+    fallback: ASSET_PATHS.mountain[1],
+    alt: 'Jelly Mountain 山谷地圖預覽'
+  }
+});
+
 const ASSET_REPORT_ENABLED = typeof window !== 'undefined'
   && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   && new URLSearchParams(window.location.search).has('assetReport');
@@ -172,6 +208,14 @@ export class Game {
     this.homeScreen = document.querySelector('#home-screen');
     this.gameShell = document.querySelector('#game-shell');
     this.homeStageCards = [...document.querySelectorAll('[data-stage-select]')];
+    this.homeStageFeatured = document.querySelector('#home-featured-stage');
+    this.homeStageKicker = document.querySelector('#home-stage-kicker');
+    this.homeStageTitle = document.querySelector('#home-stage-title');
+    this.homeStageDescription = document.querySelector('#home-stage-description');
+    this.homeStageMeta = document.querySelector('#home-stage-meta');
+    this.homeStageArtLabel = document.querySelector('#home-stage-art-label');
+    this.homeStagePreviewSource = document.querySelector('#home-stage-preview-source');
+    this.homeStagePreview = document.querySelector('#home-stage-preview');
     this.startButton = document.querySelector('#start-button');
     this.rotateOverlay = document.querySelector('#rotate-overlay');
     this.loadingOverlay = document.querySelector('#loading-overlay');
@@ -216,6 +260,7 @@ export class Game {
     this.tutorialDirector = null;
     this.isTutorialModalOpen = false;
     this.tutorialModalMode = '';
+    this.homeStageTransitionTimer = null;
     if (ASSET_REPORT_ENABLED) window.__jellyAssetReport = assetReport;
 
     this.stageManager = new StageManager();
@@ -238,6 +283,7 @@ export class Game {
     });
 
     this.bindHome();
+    this.updateHomeSelection();
     this.bindDebug();
     this.bindTutorialModal();
     this.bindResponsiveLayout();
@@ -262,11 +308,42 @@ export class Game {
   }
 
   updateHomeSelection() {
+    const content = HOME_STAGE_CONTENT[this.selectedStage] || HOME_STAGE_CONTENT.tutorial;
+    const stageChanged = this.homeStageFeatured?.dataset.stage && this.homeStageFeatured.dataset.stage !== this.selectedStage;
     this.homeStageCards.forEach((item) => {
       const selected = item.dataset.stageSelect === this.selectedStage;
       item.classList.toggle('is-selected', selected);
       item.setAttribute('aria-selected', selected ? 'true' : 'false');
     });
+    this.homeScreen.dataset.stageTone = content.tone;
+    if (this.homeStageFeatured) {
+      this.homeStageFeatured.dataset.stage = this.selectedStage;
+      if (stageChanged) {
+        window.clearTimeout(this.homeStageTransitionTimer);
+        this.homeStageFeatured.classList.add('is-changing');
+        this.homeStageTransitionTimer = window.setTimeout(() => {
+          this.homeStageFeatured?.classList.remove('is-changing');
+        }, 280);
+      }
+    }
+    if (this.homeStageKicker) this.homeStageKicker.textContent = content.kicker;
+    if (this.homeStageTitle) this.homeStageTitle.textContent = content.title;
+    if (this.homeStageDescription) this.homeStageDescription.textContent = content.description;
+    if (this.homeStageMeta) {
+      this.homeStageMeta.replaceChildren(...content.meta.map((label) => {
+        const item = document.createElement('span');
+        item.textContent = label;
+        return item;
+      }));
+    }
+    if (this.homeStageArtLabel) this.homeStageArtLabel.textContent = content.artLabel;
+    if (this.homeStagePreviewSource) this.homeStagePreviewSource.srcset = content.preview;
+    if (this.homeStagePreview) {
+      this.homeStagePreview.src = content.fallback;
+      this.homeStagePreview.alt = content.alt;
+      this.homeStagePreview.loading = this.selectedStage === 'mountain' ? 'lazy' : 'eager';
+      this.homeStagePreview.fetchPriority = this.selectedStage === 'mountain' ? 'low' : 'high';
+    }
     const label = this.startButton.querySelector('span');
     if (label) label.textContent = this.isTutorial() ? '開始教學' : '開始巡邏';
   }
@@ -401,11 +478,6 @@ export class Game {
       if (!mapImage.naturalWidth) return mapImage;
       if (mapId === 'mountain') {
         this.worldRenderer.setMountainImage(mapImage);
-        const mountainPreview = document.querySelector('[data-stage-select="mountain"] .mountain-art');
-        if (mountainPreview) {
-          mountainPreview.style.backgroundImage = `url("${mapImage.src}")`;
-          mountainPreview.classList.add('is-loaded');
-        }
       } else {
         this.worldRenderer.setParkImage(mapImage);
       }
@@ -419,7 +491,6 @@ export class Game {
     this.homeStageCards.forEach((card) => {
       card.addEventListener('click', () => {
         this.selectedStage = card.dataset.stageSelect;
-        if (this.selectedStage === 'mountain') this.ensureStageMap('mountain');
         this.updateHomeSelection();
       });
     });
