@@ -797,6 +797,96 @@ body { background: #deeff5; }
   .tutorial-modal-flow span { padding: 6px 4px; font-size: 9px; }
 }
 
+/* Tutorial item hierarchy: both tools stay visible; focus is a suggestion,
+   while the selected card still represents the player's actual choice. */
+.game-shell.is-tutorial-stage .item-card {
+  transition: border-color .18s ease, background .18s ease, box-shadow .18s ease, opacity .18s ease, filter .18s ease;
+}
+.game-shell.is-tutorial-stage .item-card.is-selected,
+.game-shell.is-tutorial-stage .item-card.is-tutorial-focus {
+  transform: none !important;
+}
+.game-shell.is-tutorial-stage .item-card.is-tutorial-dimmed {
+  opacity: .70;
+  filter: saturate(.84);
+}
+.game-shell.is-tutorial-stage .item-card.is-tutorial-focus {
+  border-color: #e8a12b;
+  box-shadow: 0 0 0 3px rgba(232, 161, 43, .24), 0 5px 14px rgba(36, 74, 132, .22);
+}
+.game-shell.is-tutorial-stage .item-card.is-selected {
+  box-shadow: 0 0 0 2px rgba(232, 161, 43, .34), 3px 3px 0 rgba(36, 74, 132, .22);
+}
+.game-shell.is-tutorial-stage .item-card.is-selected.is-tutorial-focus {
+  box-shadow: 0 0 0 3px rgba(232, 161, 43, .34), 0 0 14px rgba(232, 161, 43, .18), 3px 3px 0 rgba(36, 74, 132, .22);
+}
+
+/* Keep the lesson visible behind a paused Modal without making controls
+   actionable. The item dock is intentionally clearer than movement/use. */
+.game-shell.is-tutorial-modal-open .mobile-dpad,
+.game-shell.is-tutorial-modal-open #action-button {
+  opacity: .50;
+  pointer-events: none;
+}
+.game-shell.is-tutorial-modal-open .item-dock {
+  opacity: .78;
+  pointer-events: none;
+}
+.game-shell.is-tutorial-modal-open .item-card.is-tutorial-dimmed {
+  opacity: .92;
+}
+.game-shell.is-tutorial-stage.is-tutorial-modal-open .objective-chip {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tutorial-modal-flow.is-product-map {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.tutorial-modal-flow.is-product-map > .tutorial-modal-product {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 6px;
+  text-align: left;
+}
+.tutorial-modal-product > img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  image-rendering: auto;
+}
+.tutorial-modal-product > span {
+  min-width: 0;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: #315b8e !important;
+  background: transparent !important;
+  font: inherit !important;
+  line-height: 1.3 !important;
+}
+.tutorial-modal-product b,
+.tutorial-modal-product small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tutorial-modal-product b { color: #287b64; font-size: 11px; }
+.tutorial-modal-product small { margin-top: 2px; color: #173a76; font: 800 10px 'DM Mono', monospace; }
+
+@media (max-width: 680px), (max-height: 520px) and (orientation: landscape) and (max-width: 1100px) {
+  .game-shell.is-tutorial-stage .item-card.is-tutorial-dimmed { opacity: .74; }
+  .tutorial-modal-flow.is-product-map { gap: 4px; }
+  .tutorial-modal-flow.is-product-map > .tutorial-modal-product { grid-template-columns: 29px minmax(0, 1fr); gap: 4px; padding: 5px 4px; }
+  .tutorial-modal-product > img { width: 29px; height: 29px; }
+  .tutorial-modal-product b { font-size: 9px; }
+  .tutorial-modal-product small { font-size: 8px; }
+}
+
 @media (max-height: 650px) and (max-width: 680px) and (orientation: portrait) {
   .home-screen { gap: 5px; padding-top: max(10px, env(safe-area-inset-top)); }
   .home-screen .home-copy h1 { margin: 5px 0 4px; font-size: 48px; }

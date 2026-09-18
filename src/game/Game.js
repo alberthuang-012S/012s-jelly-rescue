@@ -579,7 +579,7 @@ export class Game {
         title: '最後試一次',
         icon: '?',
         visual: '自己判斷',
-        body: '這次不告訴你要用哪個道具。\n看居民的狀況，自己判斷。',
+        body: '這次不告訴你要使用哪個道具。\n觀察居民的狀況，再自己選擇。',
         flow: ['✦ 癢', '↯ 痠痛'],
         hint: isMobile ? '兩個道具都可以自由選擇。' : '觀察 Bubble，再選擇正確道具。',
         primary: '開始最後練習'
@@ -590,7 +590,10 @@ export class Game {
         icon: '✓',
         visual: '準備出發',
         body: '準備好開始第一次正式巡邏了。',
-        flow: ['✦ 癢  →  PPA+1', '↯ 痠痛  →  NAP+1'],
+        products: [
+          { condition: '✦ 癢', itemId: 'PPA', itemLabel: 'PPA+1' },
+          { condition: '↯ 痠痛', itemId: 'NAP', itemLabel: 'NAP+1' }
+        ],
         hint: '看到居民求救 → 判斷狀況 → 選擇正確道具 → 靠近並使用',
         primary: '前往 Jelly Park',
         secondary: '再練習一次',
@@ -610,12 +613,31 @@ export class Game {
     this.tutorialModalVisualLabel.classList.toggle('is-hidden', !copy.visual);
     this.tutorialModalBody.textContent = copy.body;
     this.tutorialModalHint.textContent = copy.hint;
-    this.tutorialModalFlow.replaceChildren(...(copy.flow || []).map((label) => {
-      const item = document.createElement('span');
-      item.textContent = label;
-      return item;
-    }));
-    this.tutorialModalFlow.classList.toggle('is-hidden', !copy.flow?.length);
+    const flowItems = copy.products?.length
+      ? copy.products.map(({ condition, itemId, itemLabel }) => {
+        const item = document.createElement('span');
+        item.className = 'tutorial-modal-product';
+        const source = document.querySelector(`[data-item="${itemId}"] img`);
+        const image = document.createElement('img');
+        image.src = source?.currentSrc || source?.src || '';
+        image.alt = itemLabel;
+        const labels = document.createElement('span');
+        const conditionLabel = document.createElement('b');
+        conditionLabel.textContent = condition;
+        const itemLabelNode = document.createElement('small');
+        itemLabelNode.textContent = itemLabel;
+        labels.append(conditionLabel, itemLabelNode);
+        item.append(image, labels);
+        return item;
+      })
+      : (copy.flow || []).map((label) => {
+        const item = document.createElement('span');
+        item.textContent = label;
+        return item;
+      });
+    this.tutorialModalFlow.replaceChildren(...flowItems);
+    this.tutorialModalFlow.classList.toggle('is-hidden', !flowItems.length);
+    this.tutorialModalFlow.classList.toggle('is-product-map', Boolean(copy.products?.length));
     const itemImage = copy.item
       ? document.querySelector(`[data-item="${copy.item}"] img`)
       : null;
