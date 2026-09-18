@@ -9,6 +9,7 @@ import { Player } from './Player.js';
 import { ResultScreen } from './ResultScreen.js';
 import { ScoreManager } from './ScoreManager.js';
 import { StageManager } from './StageManager.js?v=critical-assets-1';
+import { TutorialDirector } from './TutorialDirector.js';
 import { WorldRenderer } from './WorldRenderer.js?v=critical-assets-1';
 import { clamp, drawText, formatClock, lerp } from './utils.js';
 
@@ -177,7 +178,7 @@ export class Game {
     this.loadingTitle = document.querySelector('#loading-title');
     this.loadingProgressBar = document.querySelector('#loading-progress-bar');
     this.loadingProgressText = document.querySelector('#loading-progress-text');
-    this.selectedStage = 'park';
+    this.selectedStage = 'tutorial';
     this.state = 'home';
     this.lives = 3;
     this.npcs = [];
@@ -201,6 +202,8 @@ export class Game {
     this.itemAssetPromises = new Map();
     this.stageMapPromises = new Map();
     this.loadingToken = 0;
+    this.eventDirector = null;
+    this.tutorialDirector = null;
     if (ASSET_REPORT_ENABLED) window.__jellyAssetReport = assetReport;
 
     this.stageManager = new StageManager();
@@ -218,7 +221,7 @@ export class Game {
     this.player = new Player(null);
     this.resultScreen = new ResultScreen({
       onReplay: () => this.startStage(this.selectedStage),
-      onNext: () => this.startStage(this.selectedStage === 'park' ? 'mountain' : 'park'),
+      onNext: () => this.startStage(this.getNextStageId()),
       onHome: () => this.showHome()
     });
 
@@ -227,6 +230,32 @@ export class Game {
     this.bindResponsiveLayout();
     this.loop = this.loop.bind(this);
     requestAnimationFrame(this.loop);
+  }
+
+  isTutorial() {
+    return this.selectedStage === 'tutorial';
+  }
+
+  getNextStageId() {
+    if (this.selectedStage === 'tutorial') return 'park';
+    if (this.selectedStage === 'park') return 'mountain';
+    return 'park';
+  }
+
+  getNextStageLabel() {
+    if (this.selectedStage === 'tutorial') return '開始 Jelly Park';
+    if (this.selectedStage === 'park') return '前往 Jelly Mountain';
+    return '回到 Jelly Park';
+  }
+
+  updateHomeSelection() {
+    this.homeStageCards.forEach((item) => {
+      const selected = item.dataset.stageSelect === this.selectedStage;
+      item.classList.toggle('is-selected', selected);
+      item.setAttribute('aria-selected', selected ? 'true' : 'false');
+    });
+    const label = this.startButton.querySelector('span');
+    if (label) label.textContent = this.isTutorial() ? '開始教學' : '開始巡邏';
   }
 
   ensurePlayerAsset() {
@@ -378,11 +407,7 @@ export class Game {
       card.addEventListener('click', () => {
         this.selectedStage = card.dataset.stageSelect;
         if (this.selectedStage === 'mountain') this.ensureStageMap('mountain');
-        this.homeStageCards.forEach((item) => {
-          const selected = item === card;
-          item.classList.toggle('is-selected', selected);
-          item.setAttribute('aria-selected', selected ? 'true' : 'false');
-        });
+        this.updateHomeSelection();
       });
     });
     this.startButton.addEventListener('click', () => this.startStage(this.selectedStage));
@@ -452,6 +477,7 @@ export class Game {
 
   async startStage(stageId) {
     this.selectedStage = stageId;
+    this.updateHomeSelection();
     const loadingToken = ++this.loadingToken;
     const stage = this.stageManager.start(stageId);
     this.state = 'loading';
@@ -464,10 +490,9 @@ export class Game {
     this.itemSystem.reset();
     this.interactionSystem.currentTarget = null;
     this.player.reset(stage.start);
-    this.hud.update(this);
     this.cameraState = null;
     this.lastDistanceSample = 0;
-    this.eventDirector = new EventDirector(stage, {
+    const directorCallbacks = {
       onFailure: (npc) => this.handleFailure(npc),
       onStateChange: (npc, state) => this.handleNPCStateChange(npc, state),
       onEvent: (npc) => this.handleEventStart(npc),
@@ -475,8 +500,19 @@ export class Game {
         npc.spriteImage = this.npcSpriteImage;
         npc.spriteSheet = this.npcSpriteSheet;
       }
-    });
-    this.eventDirector.seed(this.npcs);
+    };
+    this.eventDirector = null;
+    this.tutorialDirector = null;
+    if (this.isTutorial()) {
+      this.tutorialDirector = new TutorialDirector(stage, {
+        ...directorCallbacks,
+        onStep: (step, npc) => this.handleTutorialStep(step, npc)
+      });
+    } else {
+      this.eventDirector = new EventDirector(stage, directorCallbacks);
+      this.eventDirector.seed(this.npcs);
+    }
+    this.hud.update(this);
     this.input.setEnabled(false);
     this.resultScreen.hide();
     this.homeScreen.classList.add('is-hidden');
@@ -504,7 +540,11 @@ export class Game {
     this.input.setEnabled(true);
     this.hud.updateItems(this.itemSystem.selectedId);
     this.hideLoading();
-    this.hud.showToast(`${stage.name} 開始`, 'info', '先觀察預警，再選擇正確道具。');
+    this.hud.showToast(
+      this.isTutorial() ? '教學開始' : `${stage.name} 開始`,
+      'info',
+      this.isTutorial() ? '先移動一小段，再找到練習居民。' : '先觀察預警，再選擇正確道具。'
+    );
     this.scheduleNextStagePreload(stageId);
   }
 
@@ -538,8 +578,13 @@ export class Game {
     this.player.update(dt, this.input, stage);
     this.scoreManager.addDistance(Math.max(0, this.player.distanceTravelled - this.lastDistanceSample));
     this.lastDistanceSample = this.player.distanceTravelled;
-    this.eventDirector.update(dt, this.stageManager.elapsed, this.npcs);
+    if (this.tutorialDirector) {
+      this.tutorialDirector.update(dt, this.stageManager.elapsed, this.npcs, this.player);
+    } else {
+      this.eventDirector?.update(dt, this.stageManager.elapsed, this.npcs);
+    }
     for (const npc of this.npcs) npc.update(dt, stage, this.stageManager.elapsed);
+    if (this.tutorialDirector?.isComplete()) this.stageManager.status = 'complete';
     this.interactionSystem.findTarget(this.player, this.npcs);
     this.updateParticles(dt);
     this.updateFloaters(dt);
@@ -573,6 +618,19 @@ export class Game {
     }
   }
 
+  handleTutorialStep(step) {
+    if (this.state !== 'playing') return;
+    if (step === 'first-rescue') {
+      this.hud.showToast('第一個練習', 'info', '這位居民需要 PPA+1，靠近後按 E。');
+    }
+    if (step === 'second-rescue') {
+      this.hud.showToast('第二個練習', 'info', '這次請切換 NAP+1，再靠近居民。');
+    }
+    if (step === 'complete') {
+      this.hud.showToast('教學完成！', 'success', '接下來可以開始 Jelly Park。');
+    }
+  }
+
   handleNPCStateChange(npc, state) {
     if (this.state !== 'playing') return;
     if (state === STATES.HELP) {
@@ -591,6 +649,9 @@ export class Game {
 
   handleFailure(npc) {
     if (this.state !== 'playing') return;
+    // The onboarding stage is intentionally forgiving. A malformed/debug
+    // failure must never turn a learning mistake into a Game Over.
+    if (this.isTutorial()) return;
     this.scoreManager.recordFailure();
     this.combo.break();
     if (!this.debug.infiniteLife) this.lives = Math.max(0, this.lives - 1);
@@ -606,8 +667,14 @@ export class Game {
     const result = this.scoreManager.getResult();
     result.maxCombo = this.combo.maxCombo;
     result.grade = this.scoreManager.getGrade();
+    result.tutorialComplete = this.tutorialDirector?.isComplete() || false;
     this.gameShell.classList.add('is-hidden');
-    this.resultScreen.showResult(result, this.stageManager.getStage(), this.selectedStage === 'park');
+    this.resultScreen.showResult(
+      result,
+      this.stageManager.getStage(),
+      this.selectedStage !== 'mountain',
+      this.getNextStageLabel()
+    );
     this.updateOrientation?.();
     this.resetAppScroll();
   }
@@ -626,6 +693,7 @@ export class Game {
 
   handleDebug(action, button) {
     if (this.state !== 'playing') return;
+    if (this.isTutorial() && ['itch', 'soreness', 'clear', 'tolerance'].includes(action)) return;
     if (action === 'itch' || action === 'soreness') {
       const condition = action === 'itch' ? CONDITIONS.ITCH : CONDITIONS.SORENESS;
       const stage = this.stageManager.getStage();

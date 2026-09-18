@@ -26,7 +26,12 @@
         <div class="home-panel glass-panel">
           <div class="panel-kicker">SELECT A PATROL</div>
           <div class="stage-cards" role="listbox" aria-label="選擇關卡">
-            <button class="stage-card is-selected" data-stage-select="park" role="option" aria-selected="true">
+            <button class="stage-card is-selected" data-stage-select="tutorial" role="option" aria-selected="true">
+              <span class="stage-card-art tutorial-art"><span class="art-sparkle">✦</span><span class="art-guide-jelly">●</span><span class="art-guide-path"></span></span>
+              <span class="stage-card-content"><b>Jelly Training</b><small>新手教學 · 基礎救援</small><em>約 45 秒 · 無壓力</em></span>
+              <span class="stage-card-check">✓</span>
+            </button>
+            <button class="stage-card" data-stage-select="park" role="option" aria-selected="false">
               <span class="stage-card-art park-art"><span class="art-sun">☼</span><span class="art-tree">♣</span><span class="art-bench"></span></span>
               <span class="stage-card-content"><b>Jelly Park</b><small>城市公園 · 寬路巡邏</small><em>建議 1 分鐘</em></span>
               <span class="stage-card-check">✓</span>
@@ -37,7 +42,7 @@
               <span class="stage-card-check">✓</span>
             </button>
           </div>
-          <button id="start-button" class="primary-button" type="button"><span>開始巡邏</span><span class="button-arrow">→</span></button>
+          <button id="start-button" class="primary-button" type="button"><span>開始教學</span><span class="button-arrow">→</span></button>
           <div class="control-hint"><span class="keycap">WASD</span><span class="keycap">方向鍵</span><span>移動</span><i></i><span class="keycap">E</span><span>使用道具</span></div>
         </div>
 

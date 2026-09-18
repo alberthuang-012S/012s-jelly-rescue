@@ -60,6 +60,11 @@ button:focus-visible { outline: 3px solid rgba(91, 194, 242, .7); outline-offset
 .stage-card-art { position: relative; display: block; height: 74px; overflow: hidden; border-radius: 11px; }
 .park-art { background: linear-gradient(180deg, #b3e3ec, #8dcaa3); }
 .park-art::after { content: ''; position: absolute; left: 14px; right: -16px; bottom: 13px; height: 19px; border-radius: 50%; background: #e8d19c; transform: rotate(-6deg); box-shadow: -10px 11px 0 rgba(112, 166, 126, .25); }
+.tutorial-art { background: linear-gradient(145deg, #d9f4f7, #a9c9f2 54%, #8bcfa5); }
+.tutorial-art::after { content: ''; position: absolute; left: 21px; right: 18px; bottom: 10px; height: 19px; border-radius: 50%; background: #f4d894; transform: rotate(-8deg); box-shadow: 0 -8px 0 rgba(255,255,255,.42); }
+.art-sparkle { position: absolute; z-index: 2; top: 8px; right: 13px; color: #f5bd66; font-size: 21px; }
+.art-guide-jelly { position: absolute; z-index: 3; left: 43px; bottom: 25px; display: grid; place-items: center; width: 27px; height: 23px; border: 3px solid #438fc7; border-radius: 55% 55% 48% 48%; color: #fff; background: #70cdf0; box-shadow: 0 7px 0 -2px rgba(51, 111, 164, .25); font-size: 0; }
+.art-guide-path { position: absolute; z-index: 1; left: 63px; bottom: 0; width: 28px; height: 43px; border-radius: 50% 50% 0 0; background: rgba(255, 236, 177, .9); transform: rotate(17deg); }
 .art-sun { position: absolute; top: 7px; right: 12px; color: #fae0a3; font-size: 20px; }
 .art-tree { position: absolute; left: 13px; bottom: 24px; z-index: 1; color: #4f9478; font-size: 42px; line-height: .8; }
 .art-bench { position: absolute; z-index: 2; right: 18px; bottom: 21px; width: 25px; height: 8px; border-radius: 3px; background: #986a51; box-shadow: 0 10px 0 -2px #705552; }
@@ -196,6 +201,7 @@ body { background: #deeff5; }
 .stage-card { border: 2px solid #8aace0; border-radius: 0; background: #edf8fff2; box-shadow: 3px 3px 0 rgba(49, 92, 151, .18); }
 .stage-card:hover { border-color: #426fab; background: #fff; }.stage-card.is-selected { border-color: #285aa3; background: #fff; box-shadow: 4px 4px 0 rgba(38, 85, 149, .22); }
 .stage-card-art { border-radius: 0; border: 2px solid #5f8ac2; image-rendering: auto; }
+.tutorial-art { background: linear-gradient(145deg, #c7f0f4, #8ebbea 54%, #74ba83); }.tutorial-art::after { border-radius: 0; background: #e3c990; box-shadow: 0 -8px 0 rgba(255,255,255,.42); }.art-guide-jelly { border-radius: 0; background: #70cdf0; box-shadow: 0 7px 0 -2px rgba(51, 111, 164, .25); }.art-guide-path { border-radius: 0; background: #e3c990; }
 .park-art { background: linear-gradient(180deg, #79d5f1, #77bd74); }.park-art::after { border-radius: 0; background: #e3c990; box-shadow: -10px 11px 0 rgba(61, 118, 91, .26); }.art-tree { color: #3d765b; }.art-bench { border-radius: 0; background: #8b5c3c; box-shadow: 0 10px 0 -2px #24324a; }
 .mountain-art { background: linear-gradient(145deg, #8fd9ed, #5aa06d); }.mountain-art::before, .mountain-art::after { border-bottom-color: rgba(39, 109, 102, .82); }.art-path { border-radius: 0; background: #e3c990; }.art-flag { color: #f47ca4; }
 .stage-card-content b { color: #173e80; }.stage-card-content small { color: #526d91; }.stage-card-content em { color: #5e9980; }.stage-card-check { border-radius: 0; background: #228ce8; }

@@ -50,7 +50,14 @@ export class HUD {
       this.elements.target.classList.add('is-hidden');
       this.elements.action.classList.add('is-hidden');
     }
-    const objective = game.debug.showRadius ? 'DEBUG · 互動半徑已顯示' : target ? `靠近 ${target.name} · 選對道具` : game.stageManager.getPhase() === 'intro' ? '巡邏中 · 優先留意黃色預警' : '巡邏中 · 觀察路線與求救泡泡';
+    const tutorialObjective = game.tutorialDirector?.getObjective?.(game);
+    const objective = game.debug.showRadius
+      ? 'DEBUG · 互動半徑已顯示'
+      : tutorialObjective || (target
+        ? `靠近 ${target.name} · 選對道具`
+        : game.stageManager.getPhase() === 'intro'
+          ? '巡邏中 · 優先留意黃色預警'
+          : '巡邏中 · 觀察路線與求救泡泡');
     if (objective !== this.lastObjective) {
       this.elements.objective.textContent = objective;
       this.lastObjective = objective;

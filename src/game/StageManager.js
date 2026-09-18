@@ -46,6 +46,15 @@ const parkRoutes = Object.fromEntries(
   Object.entries(parkRouteDesign).map(([routeName, points]) => [routeName, points.map(scaleParkPoint)])
 );
 
+// The tutorial uses the same open Park artwork and collision layout. Keeping
+// the obstacle set shared guarantees that the guided route teaches the player
+// the exact movement rules used by the real Park stage.
+const parkObstacles = [
+  { x: 390, y: 675, width: 244, height: 155, kind: 'fountain' },
+  { x: 700, y: 1110, width: 230, height: 120, kind: 'playground' },
+  { x: 70, y: 220, width: 240, height: 160, kind: 'pond' }
+].map(scaleParkRect);
+
 const mountainRoutes = {
   mainTrail: [
     { x: 512, y: 1390 }, { x: 512, y: 1190 }, { x: 512, y: 1010 }, { x: 512, y: 820 },
@@ -99,11 +108,28 @@ export const STAGE_DEFS = Object.freeze({
       { x: 760, y: 1290, zone: 'playground', route: 'rightLoop' },
       { x: 280, y: 1210, zone: 'track', route: 'leftLoop' }
     ].map(scaleParkPoint),
-    obstacles: [
-      { x: 390, y: 675, width: 244, height: 155, kind: 'fountain' },
-      { x: 700, y: 1110, width: 230, height: 120, kind: 'playground' },
-      { x: 70, y: 220, width: 240, height: 160, kind: 'pond' }
-    ].map(scaleParkRect)
+    obstacles: parkObstacles
+  },
+  tutorial: {
+    id: 'tutorial',
+    name: 'Jelly Training',
+    displayName: '新手教學',
+    subtitle: '基礎救援 · 無壓力練習',
+    duration: 45,
+    world: { width: Math.round(PARK_DESIGN_WIDTH * PARK_SCALE), height: Math.round(PARK_DESIGN_HEIGHT * PARK_SCALE) },
+    fitToScreen: true,
+    start: scaleParkPoint({ x: 512, y: 1390 }),
+    maxNpcs: 2,
+    // TutorialDirector controls the two fixed practice events. These values
+    // only keep the stage definition compatible with shared HUD/debug code.
+    event: { initialDelay: 999, spawnCooldown: 999, initialTolerance: 999, warningDuration: 2.8 },
+    routes: {},
+    npcTypes: ['elder'],
+    zones: [
+      { id: 'training', label: '教學草地', x: 220, y: 820, width: 328, height: 360, preference: 'mixed' }
+    ].map(scaleParkRect),
+    spawnPoints: [],
+    obstacles: parkObstacles
   },
   mountain: {
     id: 'mountain',
@@ -179,6 +205,11 @@ export class StageManager {
   }
 
   getPhase() {
+    if (this.currentStageId === 'tutorial') {
+      if (this.elapsed < 8) return 'intro';
+      if (this.elapsed < 28) return 'normal';
+      return 'pressure';
+    }
     if (this.currentStageId === 'mountain') {
       if (this.elapsed < 15) return 'intro';
       if (this.elapsed < 40) return 'normal';
