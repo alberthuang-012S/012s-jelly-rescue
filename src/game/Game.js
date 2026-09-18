@@ -178,6 +178,16 @@ export class Game {
     this.loadingTitle = document.querySelector('#loading-title');
     this.loadingProgressBar = document.querySelector('#loading-progress-bar');
     this.loadingProgressText = document.querySelector('#loading-progress-text');
+    this.tutorialModal = document.querySelector('#tutorial-modal');
+    this.tutorialModalStep = document.querySelector('#tutorial-modal-step');
+    this.tutorialModalTitle = document.querySelector('#tutorial-modal-title');
+    this.tutorialModalIcon = document.querySelector('#tutorial-modal-icon');
+    this.tutorialModalBody = document.querySelector('#tutorial-modal-body');
+    this.tutorialModalHint = document.querySelector('#tutorial-modal-hint');
+    this.tutorialModalItem = document.querySelector('#tutorial-modal-item');
+    this.tutorialModalPrimary = document.querySelector('#tutorial-modal-primary');
+    this.tutorialModalSecondary = document.querySelector('#tutorial-modal-secondary');
+    this.tutorialModalTertiary = document.querySelector('#tutorial-modal-tertiary');
     this.selectedStage = 'tutorial';
     this.state = 'home';
     this.lives = 3;
@@ -204,6 +214,8 @@ export class Game {
     this.loadingToken = 0;
     this.eventDirector = null;
     this.tutorialDirector = null;
+    this.isTutorialModalOpen = false;
+    this.tutorialModalMode = '';
     if (ASSET_REPORT_ENABLED) window.__jellyAssetReport = assetReport;
 
     this.stageManager = new StageManager();
@@ -227,6 +239,7 @@ export class Game {
 
     this.bindHome();
     this.bindDebug();
+    this.bindTutorialModal();
     this.bindResponsiveLayout();
     this.loop = this.loop.bind(this);
     requestAnimationFrame(this.loop);
@@ -431,6 +444,151 @@ export class Game {
     });
   }
 
+  bindTutorialModal() {
+    if (!this.tutorialModalPrimary) return;
+    this.tutorialModalPrimary.addEventListener('click', () => this.handleTutorialModalAction('primary'));
+    this.tutorialModalSecondary?.addEventListener('click', () => this.handleTutorialModalAction('secondary'));
+    this.tutorialModalTertiary?.addEventListener('click', () => this.handleTutorialModalAction('tertiary'));
+  }
+
+  getTutorialModalCopy(mode) {
+    const isMobile = this.layoutMode !== 'desktop';
+    const copy = {
+      intro: {
+        step: 'START',
+        title: 'Jelly Rescue 新手教學',
+        icon: '✦',
+        body: '先熟悉移動、判斷居民狀況，以及 PPA+1 / NAP+1 的使用方式。\n\n教學沒有時間限制，可以慢慢操作。',
+        hint: '準備好後，按下開始教學。',
+        primary: '開始教學'
+      },
+      move: {
+        step: 'STEP 1 / 3',
+        title: '先試著移動',
+        icon: '▲▼',
+        body: isMobile
+          ? '使用左下方方向控制移動小水母。\n\n可以持續按住方向鍵移動。'
+          : '使用 WASD 或方向鍵移動小水母。\n\n移動一小段後，就會開始第一個救援任務。',
+        hint: isMobile ? '移動一小段後，就會開始第一個救援任務。' : '移動一小段後，就會開始第一個救援任務。',
+        primary: '我知道了'
+      },
+      itch: {
+        step: 'STEP 2 / 3',
+        title: '第一個任務：居民覺得癢',
+        icon: '✦ 癢',
+        item: 'PPA',
+        body: '當居民出現「癢」的狀況時，請使用 PPA+1。\n\n找到居民 → 選擇 PPA+1 → 靠近 → 按「使用」',
+        hint: isMobile
+          ? '直接點選下方 PPA+1，即可在靠近後按「使用」。'
+          : '1 選擇 PPA+1 · Q 可快速切換 · 靠近後按 E / SPACE 使用',
+        primary: '開始第一次救援'
+      },
+      soreness: {
+        step: 'STEP 3 / 3',
+        title: '第二個任務：居民覺得痠痛',
+        icon: '↯ 痠痛',
+        item: 'NAP',
+        body: '當居民出現「痠痛」的狀況時，改用 NAP+1。\n\n切換 NAP+1 → 靠近居民 → 按「使用」',
+        hint: isMobile
+          ? '直接點選下方 NAP+1，即可在靠近後按「使用」。'
+          : 'Q 切換道具 · 2 選擇 NAP+1 · 靠近後按 E / SPACE',
+        primary: '開始第二次救援'
+      },
+      complete: {
+        step: 'COMPLETE',
+        title: '✓ 教學完成',
+        icon: '✓',
+        body: '你已經學會 Jelly Rescue 的基本操作。\n\n✦ 癢 → PPA+1\n↯ 痠痛 → NAP+1',
+        hint: '看到居民求救 → 判斷狀況 → 選擇正確道具 → 靠近並使用',
+        primary: '前往 Jelly Park',
+        secondary: '再練習一次',
+        tertiary: '回主選單'
+      }
+    };
+    return copy[mode] || copy.intro;
+  }
+
+  renderTutorialModal(mode) {
+    const copy = this.getTutorialModalCopy(mode);
+    this.tutorialModal.dataset.mode = mode;
+    this.tutorialModalStep.textContent = copy.step;
+    this.tutorialModalTitle.textContent = copy.title;
+    this.tutorialModalIcon.textContent = copy.icon;
+    this.tutorialModalBody.textContent = copy.body;
+    this.tutorialModalHint.textContent = copy.hint;
+    const itemImage = copy.item
+      ? document.querySelector(`[data-item="${copy.item}"] img`)
+      : null;
+    if (itemImage) {
+      this.tutorialModalItem.src = itemImage.currentSrc || itemImage.src;
+      this.tutorialModalItem.alt = copy.item === 'PPA' ? 'PPA+1' : 'NAP+1';
+      this.tutorialModalItem.classList.remove('is-hidden');
+    } else {
+      this.tutorialModalItem.removeAttribute('src');
+      this.tutorialModalItem.alt = '';
+      this.tutorialModalItem.classList.add('is-hidden');
+    }
+    this.tutorialModalPrimary.textContent = copy.primary;
+    this.tutorialModalSecondary.textContent = copy.secondary || '';
+    this.tutorialModalSecondary.classList.toggle('is-hidden', !copy.secondary);
+    this.tutorialModalTertiary.textContent = copy.tertiary || '';
+    this.tutorialModalTertiary.classList.toggle('is-hidden', !copy.tertiary);
+  }
+
+  openTutorialModal(mode) {
+    if (!this.tutorialModal || !this.isTutorial()) return;
+    this.isTutorialModalOpen = true;
+    this.tutorialModalMode = mode;
+    this.input.setEnabled(false);
+    this.gameShell.classList.add('is-tutorial-modal-open');
+    this.renderTutorialModal(mode);
+    this.tutorialModal.classList.remove('is-hidden');
+    this.tutorialModal.setAttribute('aria-hidden', 'false');
+    this.hud.update(this);
+    window.requestAnimationFrame(() => this.tutorialModalPrimary.focus());
+  }
+
+  closeTutorialModal({ enableInput = true } = {}) {
+    this.isTutorialModalOpen = false;
+    this.tutorialModalMode = '';
+    this.gameShell.classList.remove('is-tutorial-modal-open');
+    this.tutorialModal?.classList.add('is-hidden');
+    this.tutorialModal?.setAttribute('aria-hidden', 'true');
+    if (enableInput && this.state === 'playing' && this.isTutorial()) this.input.setEnabled(true);
+  }
+
+  beginTutorialRescue() {
+    this.closeTutorialModal({ enableInput: false });
+    this.tutorialDirector?.beginRescue(this.stageManager.elapsed, this.npcs);
+    this.input.setEnabled(true);
+    this.hud.update(this);
+  }
+
+  handleTutorialModalAction(action) {
+    if (!this.isTutorialModalOpen) return;
+    if (this.tutorialModalMode === 'intro' && action === 'primary') {
+      this.openTutorialModal('move');
+      return;
+    }
+    if (this.tutorialModalMode === 'move' && action === 'primary') {
+      this.closeTutorialModal();
+      return;
+    }
+    if (this.tutorialModalMode === 'itch' && action === 'primary') {
+      this.beginTutorialRescue();
+      return;
+    }
+    if (this.tutorialModalMode === 'soreness' && action === 'primary') {
+      this.beginTutorialRescue();
+      return;
+    }
+    if (this.tutorialModalMode === 'complete') {
+      if (action === 'primary') this.startStage('park');
+      if (action === 'secondary') this.startStage('tutorial');
+      if (action === 'tertiary') this.showHome();
+    }
+  }
+
   bindResponsiveLayout() {
     const update = () => {
       this.resizeCanvas();
@@ -476,6 +634,7 @@ export class Game {
   }
 
   async startStage(stageId) {
+    this.closeTutorialModal({ enableInput: false });
     this.selectedStage = stageId;
     this.updateHomeSelection();
     const loadingToken = ++this.loadingToken;
@@ -538,15 +697,19 @@ export class Game {
     if (loadingToken !== this.loadingToken) return;
 
     this.state = 'playing';
-    this.input.setEnabled(true);
     this.hud.updateItems(this.itemSystem.selectedId);
     this.hideLoading();
-    if (!this.isTutorial()) this.hud.showToast(`${stage.name} 開始`, 'info', '先觀察預警，再選擇正確道具。');
+    if (this.isTutorial()) {
+      this.openTutorialModal('intro');
+    } else {
+      this.input.setEnabled(true);
+    }
     this.scheduleNextStagePreload(stageId);
   }
 
   showHome() {
     this.loadingToken += 1;
+    this.closeTutorialModal({ enableInput: false });
     this.state = 'home';
     this.input.setEnabled(false);
     this.hideLoading();
@@ -570,6 +733,7 @@ export class Game {
 
   update(dt) {
     if (this.state !== 'playing') return;
+    if (this.isTutorialModalOpen) return;
     const stage = this.stageManager.getStage();
     this.stageManager.update(dt);
     this.player.update(dt, this.input, stage);
@@ -580,8 +744,11 @@ export class Game {
     } else {
       this.eventDirector?.update(dt, this.stageManager.elapsed, this.npcs);
     }
+    if (this.isTutorialModalOpen) {
+      this.hud.update(this);
+      return;
+    }
     for (const npc of this.npcs) npc.update(dt, stage, this.stageManager.elapsed);
-    if (this.tutorialDirector?.isComplete()) this.stageManager.status = 'complete';
     this.interactionSystem.findTarget(this.player, this.npcs);
     this.updateParticles(dt);
     this.updateFloaters(dt);
@@ -593,7 +760,7 @@ export class Game {
     if (this.state !== 'playing') return;
     const target = this.interactionSystem.currentTarget;
     if (!target) {
-      this.hud.showToast('再靠近一點', 'info', '需要進入居民的救援範圍。');
+      this.hud.showActionFeedback('再靠近一點');
       return;
     }
     if (this.itemSystem.isCorrect(target.condition)) {
@@ -602,44 +769,33 @@ export class Game {
       const scored = this.scoreManager.recordRescue(responseTime, target.condition, this.combo.getMultiplier());
       target.rescue(this.stageManager.elapsed);
       this.createRescueParticles(target, target.condition);
-      this.addFloater(target.x, target.y - 82, `+${scored.points}`, '#fff0b7');
-      const rating = responseTime <= 3 ? 'PERFECT!' : responseTime <= 5 ? 'FAST!' : 'GOOD!';
+      const rating = responseTime <= 3 ? 'PERFECT' : responseTime <= 5 ? 'FAST' : 'GOOD';
       const comboText = comboCount >= 2 ? ` · ${comboCount} COMBO` : '';
-      this.hud.showToast(rating, 'success', `+${scored.points} 分${comboText}`);
+      this.addFloater(target.x, target.y - 82, `${rating} · +${scored.points}`, '#fff0b7');
+      if (comboText) this.addFloater(target.x, target.y - 112, `${comboCount} COMBO`, '#dff8e9');
     } else {
       this.scoreManager.recordWrongItem();
       this.combo.break();
       this.createMistakeParticles(target);
-      this.addFloater(target.x, target.y - 82, '好像不是這個……', '#ffd1b0');
+      target.showDialogue('好像不是這個……', 1.15);
       const correctItemId = target.condition === CONDITIONS.ITCH ? ITEMS.PPA.id : ITEMS.NAP.id;
       this.hud.flashItemFeedback(this.itemSystem.selectedId, correctItemId);
-      this.hud.showToast('好像不是這個……', 'danger', '請換另一個道具再試試。');
     }
   }
 
   handleTutorialStep(step) {
     if (this.state !== 'playing') return;
-    if (step === 'complete') {
-      this.hud.showToast('✓ 教學完成！', 'success', '接下來可以開始 Jelly Park。');
-    }
+    if (step === 'first-rescue') this.openTutorialModal('itch');
+    if (step === 'second-rescue') this.openTutorialModal('soreness');
+    if (step === 'complete') this.openTutorialModal('complete');
   }
 
-  handleNPCStateChange(npc, state) {
-    if (this.state !== 'playing') return;
-    if (this.isTutorial()) return;
-    if (state === STATES.HELP) {
-      this.hud.showToast('求救訊號！', 'info', `${npc.name} 需要 ${npc.condition === CONDITIONS.ITCH ? 'PPA+1' : 'NAP+1'}`);
-    }
-    if (state === STATES.CRITICAL) {
-      this.hud.showToast('快受不了了！', 'danger', '先救最近的居民。');
-    }
+  handleNPCStateChange(_npc, _state) {
+    // NPC status bubbles are the primary event communication layer. The HUD
+    // only keeps score, time, lives, indicators, and the current action state.
   }
 
-  handleEventStart(npc) {
-    if (this.stageManager.elapsed < 7) return;
-    const conditionText = npc.condition === CONDITIONS.ITCH ? '癢' : '痠痛';
-    this.addFloater(npc.x, npc.y - 90, conditionText, npc.condition === CONDITIONS.ITCH ? '#ffe09a' : '#a8deff');
-  }
+  handleEventStart(_npc) {}
 
   handleFailure(npc) {
     if (this.state !== 'playing') return;
@@ -650,12 +806,19 @@ export class Game {
     this.combo.break();
     if (!this.debug.infiniteLife) this.lives = Math.max(0, this.lives - 1);
     this.createMistakeParticles(npc);
-    this.hud.showToast('居民離開了……', 'danger', this.debug.infiniteLife ? '無限生命模式：仍可繼續巡邏。' : '生命 -1 · Combo 已中斷');
+    if (!this.debug.infiniteLife) {
+      this.hud.flashLifeLost();
+    }
     if (this.lives <= 0) this.finishGameOver();
   }
 
   finishStage() {
     if (this.state !== 'playing') return;
+    if (this.isTutorial()) {
+      this.openTutorialModal('complete');
+      return;
+    }
+    this.closeTutorialModal({ enableInput: false });
     this.state = 'result';
     this.input.setEnabled(false);
     const result = this.scoreManager.getResult(this.combo.maxCombo);
@@ -675,6 +838,7 @@ export class Game {
 
   finishGameOver() {
     if (this.state !== 'playing') return;
+    this.closeTutorialModal({ enableInput: false });
     this.state = 'gameover';
     this.input.setEnabled(false);
     const result = this.scoreManager.getResult(this.combo.maxCombo);

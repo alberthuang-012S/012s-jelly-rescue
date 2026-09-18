@@ -80,6 +80,7 @@ export const STAGE_DEFS = Object.freeze({
     name: 'Jelly Park',
     displayName: '城市公園',
     subtitle: '開放公園 · 寬路巡邏',
+    timed: true,
     duration: 60,
     // Keep the same 2:3 portrait ratio as the artwork, but reduce the logical
     // world so the full map reads larger on a phone screen.
@@ -115,6 +116,7 @@ export const STAGE_DEFS = Object.freeze({
     name: 'Jelly Training',
     displayName: '新手教學',
     subtitle: '基礎救援 · 無壓力練習',
+    timed: false,
     duration: 45,
     world: { width: Math.round(PARK_DESIGN_WIDTH * PARK_SCALE), height: Math.round(PARK_DESIGN_HEIGHT * PARK_SCALE) },
     fitToScreen: true,
@@ -136,6 +138,7 @@ export const STAGE_DEFS = Object.freeze({
     name: 'Jelly Mountain',
     displayName: '山谷全景',
     subtitle: '開放草地 · 全景巡邏',
+    timed: true,
     duration: 60,
     world: { width: 1024, height: 1536 },
     fitToScreen: true,
@@ -192,7 +195,9 @@ export class StageManager {
   update(dt) {
     if (this.status !== 'playing') return;
     const stage = this.getStage();
-    this.elapsed = clamp(this.elapsed + dt, 0, stage.duration);
+    this.elapsed += Math.max(0, dt);
+    if (stage.timed === false) return;
+    this.elapsed = clamp(this.elapsed, 0, stage.duration);
     if (this.elapsed >= stage.duration) this.status = 'complete';
   }
 
@@ -201,6 +206,7 @@ export class StageManager {
   }
 
   getRemaining() {
+    if (this.getStage().timed === false) return null;
     return Math.max(0, this.getStage().duration - this.elapsed);
   }
 

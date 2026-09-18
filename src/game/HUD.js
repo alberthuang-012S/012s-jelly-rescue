@@ -20,6 +20,8 @@ export class HUD {
       score: document.querySelector('#hud-score'),
       combo: document.querySelector('#hud-combo'),
       timer: document.querySelector('#hud-timer'),
+      timerLabel: document.querySelector('#hud-timer-label'),
+      timerBox: document.querySelector('.timer-box'),
       lives: document.querySelector('#hud-lives'),
       stageName: document.querySelector('#hud-stage-name'),
       objectiveChip: document.querySelector('.objective-chip'),
@@ -28,6 +30,7 @@ export class HUD {
       targetName: document.querySelector('#target-name'),
       targetDistance: document.querySelector('#target-distance'),
       action: document.querySelector('#action-button'),
+      actionFeedback: document.querySelector('#action-feedback'),
       tutorialGuide: document.querySelector('#tutorial-guide'),
       tutorialStep: document.querySelector('#tutorial-guide-step'),
       tutorialHints: [...document.querySelectorAll('[data-tutorial-hint]')],
@@ -42,6 +45,8 @@ export class HUD {
     this.activeToast = null;
     this.activeToastTimer = null;
     this.activeToastRemovalTimer = null;
+    this.actionFeedbackTimer = null;
+    this.lifeLossPending = false;
     this.indicatorNodes = new Map();
     this.mobileMode = false;
   }
@@ -52,17 +57,27 @@ export class HUD {
     this.mobileMode = game.layoutMode !== 'desktop';
     this.elements.score.textContent = formatScore(game.scoreManager.score);
     this.elements.combo.textContent = combo.combo ? `x${combo.getMultiplier().toFixed(1)}` : '—';
-    this.elements.timer.textContent = formatClock(game.stageManager.getRemaining());
+    const isTimedStage = stage.timed !== false;
+    const timerText = isTimedStage ? formatClock(game.stageManager.getRemaining()) : '教學';
+    if (this.elements.timer.textContent !== timerText) this.elements.timer.textContent = timerText;
+    if (this.elements.timerLabel && this.elements.timerLabel.textContent !== (isTimedStage ? '巡邏剩餘' : '模式')) {
+      this.elements.timerLabel.textContent = isTimedStage ? '巡邏剩餘' : '模式';
+    }
+    this.elements.timerBox?.classList.toggle('is-untimed', !isTimedStage);
     this.elements.stageName.textContent = stage.name.toUpperCase();
     if (this.lastLives !== game.lives) {
+      const lostLife = this.lifeLossPending || (this.lastLives >= 0 && game.lives < this.lastLives);
       const hearts = [0, 1, 2].map((index) => {
         const heart = document.createElement('span');
-        heart.className = `heart ${index < game.lives ? '' : 'is-empty'}`;
-        heart.textContent = '♥';
+        const isEmpty = index >= game.lives;
+        heart.className = `heart ${isEmpty ? 'is-empty' : ''}`;
+        if (lostLife && index === game.lives) heart.classList.add('is-life-lost');
+        heart.textContent = isEmpty ? '♡' : '♥';
         return heart;
       });
       this.elements.lives.replaceChildren(...hearts);
       this.lastLives = game.lives;
+      this.lifeLossPending = false;
     }
     const target = game.interactionSystem.currentTarget;
     const mobileActionVisible = this.mobileMode && game.state === 'playing';
@@ -74,9 +89,10 @@ export class HUD {
       this.elements.target.classList.add('is-hidden');
     }
     this.elements.action.classList.toggle('is-hidden', !(mobileActionVisible || Boolean(target)));
-    this.elements.action.classList.toggle('is-action-ready', Boolean(target));
-    this.elements.action.setAttribute('aria-disabled', target ? 'false' : 'true');
-    this.elements.action.dataset.state = target ? 'ready' : 'idle';
+    const actionDisabled = Boolean(game.isTutorialModalOpen) || !target;
+    this.elements.action.classList.toggle('is-action-ready', Boolean(target) && !game.isTutorialModalOpen);
+    this.elements.action.setAttribute('aria-disabled', actionDisabled ? 'true' : 'false');
+    this.elements.action.dataset.state = game.isTutorialModalOpen ? 'paused' : target ? 'ready' : 'idle';
     const tutorialObjective = game.tutorialDirector?.getObjective?.(game);
     const objective = game.debug.showRadius
       ? 'DEBUG · 互動半徑已顯示'
@@ -158,6 +174,28 @@ export class HUD {
       recommended.classList.add('is-item-hint');
       window.setTimeout(() => recommended.classList.remove('is-item-hint'), 720);
     }
+  }
+
+  showActionFeedback(message = '再靠近一點') {
+    const action = this.elements.action;
+    const feedback = this.elements.actionFeedback;
+    if (!action || !feedback) return;
+    window.clearTimeout(this.actionFeedbackTimer);
+    feedback.textContent = message;
+    feedback.classList.remove('is-hidden');
+    action.classList.remove('is-action-feedback');
+    void action.offsetWidth;
+    action.classList.add('is-action-feedback');
+    requestAnimationFrame(() => feedback.classList.add('is-visible'));
+    this.actionFeedbackTimer = window.setTimeout(() => {
+      feedback.classList.remove('is-visible');
+      action.classList.remove('is-action-feedback');
+      window.setTimeout(() => feedback.classList.add('is-hidden'), 180);
+    }, 900);
+  }
+
+  flashLifeLost() {
+    this.lifeLossPending = true;
   }
 
   updateRescueIndicators(game, camera) {

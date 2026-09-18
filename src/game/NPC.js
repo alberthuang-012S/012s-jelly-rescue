@@ -53,6 +53,8 @@ export class NPC {
     this.maxTolerance = 0;
     this.warningTimer = 0;
     this.conditionTimer = 0;
+    this.dialogueOverride = '';
+    this.dialogueOverrideTimer = 0;
     this.eventStartedAt = 0;
     this.rescueTimer = 0;
     this.removeTimer = 0;
@@ -100,6 +102,8 @@ export class NPC {
     this.tolerance = this.maxTolerance;
     this.conditionTimer = 0;
     this.isRescued = true;
+    this.dialogueOverride = '';
+    this.dialogueOverrideTimer = 0;
     this.nextEventAt = stageTime + 4 + Math.random() * 2;
   }
 
@@ -115,11 +119,22 @@ export class NPC {
     this.state = STATES.FAILED;
     this.removeTimer = 1.25;
     this.isRescued = false;
+    this.dialogueOverride = '';
+    this.dialogueOverrideTimer = 0;
+  }
+
+  showDialogue(text, duration = 1.2) {
+    this.dialogueOverride = text;
+    this.dialogueOverrideTimer = duration;
   }
 
   update(dt, stage, stageTime) {
     if (!this.active) return;
     this.phase += dt * 2;
+    if (this.dialogueOverrideTimer > 0) {
+      this.dialogueOverrideTimer = Math.max(0, this.dialogueOverrideTimer - dt);
+      if (this.dialogueOverrideTimer <= 0) this.dialogueOverride = '';
+    }
     if (this.state === STATES.FAILED) {
       this.removeTimer -= dt;
       this.moveByVector({ x: 15, y: -7 }, Math.hypot(15, 7), dt, stage);
@@ -340,7 +355,7 @@ export class NPC {
     const isCritical = this.state === STATES.CRITICAL;
     const isRescued = this.state === STATES.RESCUED;
     const isFailed = this.state === STATES.FAILED;
-    const label = isRescued
+    const label = this.dialogueOverride || (isRescued
       ? '好多了！'
       : isFailed
         ? '我先回去了……'
@@ -348,7 +363,7 @@ export class NPC {
           ? condition.warningTitle
           : isCritical
             ? '快受不了了！'
-            : condition.title;
+            : condition.title);
     const scale = Math.max(0.25, cameraScale);
     const screenFontSize = compactStatusBubble ? (isCritical ? 16 : 14) : (isCritical ? 19 : 17);
     const screenPadding = compactStatusBubble ? 24 : 30;

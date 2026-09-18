@@ -32,28 +32,19 @@ export class TutorialDirector {
     this.nextNpcNumber = 1;
   }
 
-  update(_dt, stageTime, npcs, player) {
-    if (this.step === STEPS.MOVE && (player.distanceTravelled >= 55 || stageTime >= 8)) {
-      this.firstNpc = this.spawnPracticeNpc(
-        npcs,
-        { x: this.stage.start.x, y: this.stage.start.y - 155 },
-        CONDITIONS.ITCH,
-        stageTime
-      );
+  update(_dt, _stageTime, _npcs, player) {
+    // Every transition is driven by player action or rescue completion. There
+    // is deliberately no elapsed-time fallback: Tutorial is an untimed,
+    // confirmation-led learning flow.
+    if (this.step === STEPS.MOVE && player.distanceTravelled >= 55) {
       this.step = STEPS.FIRST_RESCUE;
-      this.callbacks.onStep?.(this.step, this.firstNpc);
+      this.callbacks.onStep?.(this.step, null);
       return;
     }
 
     if (this.step === STEPS.FIRST_RESCUE && this.firstNpc?.isRescued) {
-      this.secondNpc = this.spawnPracticeNpc(
-        npcs,
-        { x: this.stage.start.x, y: this.stage.start.y - 340 },
-        CONDITIONS.SORENESS,
-        stageTime
-      );
       this.step = STEPS.SECOND_RESCUE;
-      this.callbacks.onStep?.(this.step, this.secondNpc);
+      this.callbacks.onStep?.(this.step, null);
       return;
     }
 
@@ -61,6 +52,28 @@ export class TutorialDirector {
       this.step = STEPS.COMPLETE;
       this.callbacks.onStep?.(this.step, this.secondNpc);
     }
+  }
+
+  beginRescue(stageTime, npcs) {
+    if (this.step === STEPS.FIRST_RESCUE && !this.firstNpc) {
+      this.firstNpc = this.spawnPracticeNpc(
+        npcs,
+        { x: this.stage.start.x, y: this.stage.start.y - 155 },
+        CONDITIONS.ITCH,
+        stageTime
+      );
+      return this.firstNpc;
+    }
+    if (this.step === STEPS.SECOND_RESCUE && !this.secondNpc) {
+      this.secondNpc = this.spawnPracticeNpc(
+        npcs,
+        { x: this.stage.start.x, y: this.stage.start.y - 340 },
+        CONDITIONS.SORENESS,
+        stageTime
+      );
+      return this.secondNpc;
+    }
+    return null;
   }
 
   spawnPracticeNpc(npcs, position, condition, stageTime) {
@@ -76,6 +89,9 @@ export class TutorialDirector {
     npc.onFailure = this.callbacks.onFailure || null;
     npc.onStateChange = this.callbacks.onStateChange || null;
     npc.startEvent(condition, PRACTICE_TOLERANCE, PRACTICE_WARNING_DURATION, stageTime);
+    // The modal has already explained the task. Start the practice resident
+    // directly in HELP so the first visible line is the actionable dialogue.
+    npc.enterHelp(stageTime);
     npcs.push(npc);
     this.callbacks.onSpawn?.(npc);
     return npc;
@@ -85,13 +101,13 @@ export class TutorialDirector {
     if (this.step === STEPS.MOVE) return '移動看看';
     if (this.step === STEPS.FIRST_RESCUE) {
       return game.interactionSystem.currentTarget
-        ? '選擇 PPA+1'
-        : '找到需要幫忙的居民';
+        ? '使用 PPA+1 救援'
+        : '幫助覺得癢的居民';
     }
     if (this.step === STEPS.SECOND_RESCUE) {
       return game.interactionSystem.currentTarget
-        ? '選擇 NAP+1'
-        : '找到下一位需要幫忙的居民';
+        ? '使用 NAP+1 救援'
+        : '幫助覺得痠痛的居民';
     }
     return '教學完成';
   }

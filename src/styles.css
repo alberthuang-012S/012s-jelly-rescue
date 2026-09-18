@@ -396,3 +396,45 @@ body { background: #deeff5; }
   .item-dock { left: auto; right: calc(76px + max(8px, env(safe-area-inset-right)) + 8px); }
   .action-button { width: 70px; height: 70px; }
 }
+
+/* Tutorial confirmation layer and lightweight in-world feedback. */
+.timer-box.is-untimed strong { letter-spacing: .08em; }
+.action-feedback { position: absolute; z-index: 14; right: 23px; bottom: 176px; padding: 5px 9px; border: 2px solid #e77fa2; color: #a83d67; background: #fff5df; box-shadow: 3px 3px 0 rgba(36, 74, 132, .2); font: 800 10px 'Noto Sans TC', sans-serif; opacity: 0; transform: translateY(4px); transition: opacity .16s ease, transform .16s ease; pointer-events: none; }
+.action-feedback.is-visible { opacity: 1; transform: translateY(0); }
+.action-button.is-action-feedback { animation: actionFeedbackShake .32s ease-in-out; }
+.heart.is-life-lost { animation: lifeLost .65s ease-in-out; }
+@keyframes actionFeedbackShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+@keyframes lifeLost { 0% { color: #f47c8d; transform: scale(1); } 38% { color: #e45f70; transform: scale(1.28); text-shadow: 0 0 10px rgba(228, 95, 112, .5); } 100% { color: #b7c6d9; transform: scale(1); text-shadow: none; } }
+
+.tutorial-modal { position: absolute; z-index: 40; inset: 0; display: grid; place-items: center; padding: 24px; background: rgba(20, 40, 65, .35); }
+.tutorial-modal-card { width: min(520px, calc(100% - 48px)); max-height: calc(100% - 48px); overflow: auto; padding: 24px 28px 22px; border: 3px solid #5686c5; color: #173a76; background: #f5fcff; box-shadow: 8px 8px 0 rgba(36, 74, 132, .28), inset 0 0 0 2px #fff; text-align: center; }
+.tutorial-modal-step { color: #c27c25; font: 700 10px 'DM Mono', 'Noto Sans TC', monospace; letter-spacing: .12em; }
+.tutorial-modal-card h2 { margin: 10px 0 8px; font: 800 clamp(22px, 3vw, 30px) 'Noto Sans TC', sans-serif; letter-spacing: -.04em; }
+.tutorial-modal-visual { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 70px; margin: 8px 0 10px; color: #228ce8; font: 900 24px 'Noto Sans TC', sans-serif; }
+.tutorial-modal-visual img { width: 66px; height: 66px; object-fit: contain; image-rendering: auto; }
+.tutorial-modal-card p { margin: 0; color: #315b8e; font-size: 13px; line-height: 1.8; white-space: pre-line; }
+.tutorial-modal-hint { margin-top: 10px !important; padding: 8px 10px; border: 2px solid #b0c7e8; color: #526d91 !important; background: #fff5df; font: 700 11px 'Noto Sans TC', sans-serif; line-height: 1.55 !important; }
+.tutorial-modal-actions { display: grid; gap: 8px; margin-top: 17px; }
+.tutorial-modal-actions .primary-button, .tutorial-modal-actions .secondary-button, .tutorial-modal-actions .text-button { margin-top: 0; }
+.game-shell.is-tutorial-modal-open .mobile-dpad,
+.game-shell.is-tutorial-modal-open .item-dock,
+.game-shell.is-tutorial-modal-open #action-button,
+.game-shell.is-tutorial-modal-open #action-feedback,
+.game-shell.is-tutorial-modal-open #debug-toggle { opacity: .24; pointer-events: none; }
+
+@media (max-width: 680px), (max-height: 520px) and (orientation: landscape) and (max-width: 1100px) {
+  .action-feedback { right: max(8px, env(safe-area-inset-right)); bottom: calc(max(8px, env(safe-area-inset-bottom)) + 91px); padding: 4px 7px; font-size: 9px; }
+  .tutorial-modal { padding: 16px; }
+  .tutorial-modal-card { width: min(calc(100vw - 32px), 390px); max-height: calc(100dvh - 32px); padding: 19px 16px 16px; }
+  .tutorial-modal-card h2 { font-size: 22px; }
+  .tutorial-modal-visual { min-height: 58px; margin: 4px 0 7px; font-size: 20px; }
+  .tutorial-modal-visual img { width: 56px; height: 56px; }
+  .tutorial-modal-card p { font-size: 12px; line-height: 1.65; }
+  .tutorial-modal-hint { margin-top: 8px !important; font-size: 10px; }
+  .tutorial-modal-actions { margin-top: 13px; }
+  .tutorial-modal-actions .primary-button { min-height: 52px; justify-content: center; padding: 12px 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heart.is-life-lost, .action-button.is-action-feedback { animation: none !important; }
+}
