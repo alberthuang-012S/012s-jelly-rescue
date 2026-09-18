@@ -50,8 +50,6 @@ export class InputController {
       event.preventDefault();
       if (!event.repeat) this.onAction?.();
     }
-    if (event.code === 'Digit1') this.onItemSelect?.('PPA');
-    if (event.code === 'Digit2') this.onItemSelect?.('NAP');
     if (event.code === 'KeyQ') {
       event.preventDefault();
       if (!event.repeat) this.onItemToggle?.();

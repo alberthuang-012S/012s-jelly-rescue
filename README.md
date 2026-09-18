@@ -13,8 +13,8 @@ Open `http://localhost:4173`.
 ## Controls
 
 - `WASD` / Arrow keys: move the jelly
-- `1` / click PPA+1: select itch treatment
-- `2` / click NAP+1: select soreness treatment
+- `Q`: toggle between PPA+1 and NAP+1
+- Click or tap an item card: select that treatment
 - `E` / `Space` / the mobile 使用 button: rescue when close to an NPC
 - Mobile portrait: full-screen vertical play with virtual D-pad, fixed item dock and large 使用 button
 - Visual direction: bright pixel-town palette, deep navy outlines and enamel UI panels inspired by the sibling `012s-jelly-world` project

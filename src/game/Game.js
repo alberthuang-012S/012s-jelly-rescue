@@ -2,7 +2,7 @@ import { CONDITIONS, ITEMS, STATES, VIEWPORT } from './constants.js';
 import { ComboManager } from './ComboManager.js';
 import { EventDirector } from './EventDirector.js';
 import { HUD } from './HUD.js';
-import { InputController } from './InputController.js';
+import { InputController } from './InputController.js?input-controls-v1';
 import { InteractionSystem } from './InteractionSystem.js';
 import { ItemSystem } from './ItemSystem.js';
 import { Player } from './Player.js';
@@ -636,7 +636,7 @@ export class Game {
         flow: ['① 找到居民', '② 選擇 PPA+1', '③ 靠近並使用'],
         hint: isMobile
           ? '靠近後按下方「使用」。'
-          : '1 = PPA+1 · 靠近後按 E / SPACE 使用',
+          : '點選 PPA+1 · 靠近後按 E / SPACE 使用',
         primary: '開始第一次救援'
       },
       soreness: {
@@ -649,7 +649,7 @@ export class Game {
         flow: ['① 觀察居民 Bubble', '② 切換 NAP+1', '③ 靠近並使用'],
         hint: isMobile
           ? '直接點選下方 NAP+1，再按「使用」。'
-          : 'Q = 快速切換 · 2 = NAP+1 · 靠近後按 E / SPACE',
+          : 'Q = 快速切換 · 點選 NAP+1 · 靠近後按 E / SPACE',
         primary: '開始第二次救援'
       },
       'final-check': {
