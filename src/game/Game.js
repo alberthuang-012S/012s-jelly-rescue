@@ -1,6 +1,6 @@
 import { CONDITIONS, ITEMS, STATES, VIEWPORT } from './constants.js';
 import { ComboManager } from './ComboManager.js';
-import { EventDirector } from './EventDirector.js?mountain-pavilion-dialogue-v1';
+import { EventDirector } from './EventDirector.js?mountain-pavilion-dialogue-v2';
 import { HUD } from './HUD.js';
 import { InputController } from './InputController.js?input-controls-v1';
 import { InteractionSystem } from './InteractionSystem.js';
@@ -9,9 +9,9 @@ import { Player } from './Player.js';
 import { PersonalBestStore } from './PersonalBestStore.js?result-best-v1';
 import { ResultScreen } from './ResultScreen.js?result-best-v1';
 import { ScoreManager } from './ScoreManager.js';
-import { StageManager } from './StageManager.js?v=mountain-pavilion-dialogue-v1';
-import { TutorialDirector } from './TutorialDirector.js?mountain-pavilion-dialogue-v1';
-import { WorldRenderer } from './WorldRenderer.js?v=mountain-pavilion-dialogue-v1';
+import { StageManager } from './StageManager.js?v=mountain-pavilion-dialogue-v2';
+import { TutorialDirector } from './TutorialDirector.js?mountain-pavilion-dialogue-v2';
+import { WorldRenderer } from './WorldRenderer.js?v=mountain-pavilion-dialogue-v2';
 import { clamp, drawText, formatClock, lerp } from './utils.js';
 
 const ASSET_PATHS = Object.freeze({
@@ -1202,7 +1202,20 @@ export class Game {
       && [STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(npc.state)
       && this.isInsidePavilion(npc, stage)
     ));
-    const targetOpacity = playerInsidePavilion || activeRescueNpcInsidePavilion ? 0.55 : 1;
+    const normalNpcInsidePavilion = this.npcs.some((npc) => (
+      npc.active
+      && npc.state === STATES.NORMAL
+      && this.isInsidePavilion(npc, stage)
+    ));
+    // A normal passer-by should remain visible while crossing the deck, but
+    // the roof should still read as a foreground object. Rescue states get
+    // the stronger fade so the resident and its dialogue are immediately
+    // readable; normal traffic only uses a lighter pass-through fade.
+    const targetOpacity = playerInsidePavilion || activeRescueNpcInsidePavilion
+      ? 0.55
+      : normalNpcInsidePavilion
+        ? 0.72
+        : 1;
     const blend = 1 - Math.exp(-Math.max(0, dt) / 0.08);
     this.pavilionRoofOpacity = lerp(this.pavilionRoofOpacity, targetOpacity, blend);
   }
