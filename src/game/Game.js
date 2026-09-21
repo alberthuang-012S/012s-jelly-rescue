@@ -1,6 +1,6 @@
 import { CONDITIONS, ITEMS, STATES, VIEWPORT } from './constants.js';
 import { ComboManager } from './ComboManager.js';
-import { EventDirector } from './EventDirector.js';
+import { EventDirector } from './EventDirector.js?mountain-pavilion-dialogue-v1';
 import { HUD } from './HUD.js';
 import { InputController } from './InputController.js?input-controls-v1';
 import { InteractionSystem } from './InteractionSystem.js';
@@ -9,9 +9,9 @@ import { Player } from './Player.js';
 import { PersonalBestStore } from './PersonalBestStore.js?result-best-v1';
 import { ResultScreen } from './ResultScreen.js?result-best-v1';
 import { ScoreManager } from './ScoreManager.js';
-import { StageManager } from './StageManager.js?v=mountain-pavilion-v2';
-import { TutorialDirector } from './TutorialDirector.js';
-import { WorldRenderer } from './WorldRenderer.js?v=mountain-pavilion-v2';
+import { StageManager } from './StageManager.js?v=mountain-pavilion-dialogue-v1';
+import { TutorialDirector } from './TutorialDirector.js?mountain-pavilion-dialogue-v1';
+import { WorldRenderer } from './WorldRenderer.js?v=mountain-pavilion-dialogue-v1';
 import { clamp, drawText, formatClock, lerp } from './utils.js';
 
 const ASSET_PATHS = Object.freeze({
@@ -1300,14 +1300,19 @@ export class Game {
     if (target) {
       ctx.save(); ctx.strokeStyle = 'rgba(255, 235, 163, .38)'; ctx.lineWidth = 2; ctx.setLineDash([5, 7]); ctx.beginPath(); ctx.moveTo(this.player.x, this.player.y - 4); ctx.lineTo(target.x, target.y - 4); ctx.stroke(); ctx.restore();
     }
-    const entities = [...this.npcs.filter((npc) => npc.active), this.player].sort((a, b) => a.y - b.y);
+    const drawableNpcs = this.npcs.filter((npc) => npc.active);
+    const entities = [...drawableNpcs, this.player].sort((a, b) => a.y - b.y);
     for (const entity of entities) {
       if (entity === this.player) entity.draw(ctx);
       else entity.draw(ctx, now, {
         debugRadius: this.debug.showRadius,
         cameraScale: camera.scale,
         compactStatusBubble: this.layoutMode !== 'desktop',
-        visibleBounds
+        visibleBounds,
+        // Mountain's pavilion roof is a foreground occluder. Keep NPC bodies
+        // behind it, but render their rescue dialogue in the dedicated layer
+        // below so the roof never hides the information needed to help them.
+        drawStatusBubble: stage.id !== 'mountain'
       });
     }
     if (this.debug.showRadius) {
@@ -1316,6 +1321,16 @@ export class Game {
     this.worldRenderer.drawMountainForeground(ctx, stage, now, {
       roofOpacity: this.pavilionRoofOpacity
     });
+    if (stage.id === 'mountain') {
+      for (const npc of drawableNpcs) {
+        if (!npc.hasStatusBubble()) continue;
+        npc.drawStatus(ctx, now, {
+          cameraScale: camera.scale,
+          compactStatusBubble: this.layoutMode !== 'desktop',
+          visibleBounds
+        });
+      }
+    }
     this.renderParticles(ctx);
     this.renderFloaters(ctx);
     ctx.restore();

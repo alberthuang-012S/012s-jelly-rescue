@@ -262,7 +262,17 @@ export class NPC {
     return Math.hypot(this.x - before.x, this.y - before.y);
   }
 
-  draw(ctx, now, { debugRadius = false, cameraScale = 1, compactStatusBubble = false, visibleBounds = null } = {}) {
+  hasStatusBubble() {
+    return [STATES.WARNING, STATES.HELP, STATES.CRITICAL, STATES.RESCUED, STATES.FAILED].includes(this.state);
+  }
+
+  draw(ctx, now, {
+    debugRadius = false,
+    cameraScale = 1,
+    compactStatusBubble = false,
+    visibleBounds = null,
+    drawStatusBubble = true
+  } = {}) {
     if (!this.active) return;
     const bob = this.state === STATES.RESCUED ? Math.sin(now * 0.012 + this.phase) * 4 : Math.sin(now * 0.004 + this.phase) * 1.3;
     const style = ROLE_STYLE[this.role] || ROLE_STYLE.visitor;
@@ -329,7 +339,7 @@ export class NPC {
     }
     ctx.restore();
 
-    if (this.state === STATES.WARNING || this.state === STATES.HELP || this.state === STATES.CRITICAL || this.state === STATES.RESCUED || this.state === STATES.FAILED) {
+    if (drawStatusBubble && this.hasStatusBubble()) {
       this.drawStatus(ctx, now, { cameraScale, compactStatusBubble, visibleBounds });
     }
     if (debugRadius) {

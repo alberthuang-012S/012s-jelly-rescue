@@ -1,5 +1,5 @@
 import { CONDITIONS } from './constants.js';
-import { NPC } from './NPC.js';
+import { NPC } from './NPC.js?mountain-pavilion-dialogue-v1';
 import { circleHitsRect, clamp, distance } from './utils.js';
 
 const STEPS = Object.freeze({

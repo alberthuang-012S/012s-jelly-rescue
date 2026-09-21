@@ -1,5 +1,5 @@
 import { CONDITIONS, STATES } from './constants.js';
-import { NPC } from './NPC.js';
+import { NPC } from './NPC.js?mountain-pavilion-dialogue-v1';
 import { choose, distance } from './utils.js';
 
 const ACTIVE_STATES = [STATES.WARNING, STATES.HELP, STATES.CRITICAL];
