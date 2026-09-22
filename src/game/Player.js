@@ -15,6 +15,7 @@ export class Player {
     this.walkTime = 0;
     this.walkPhase = 0;
     this.walkBlend = 0;
+    this.isMoving = false;
     this.idleTime = 0;
     this.distanceTravelled = 0;
     this.spriteSheet = null;
@@ -27,6 +28,7 @@ export class Player {
     this.walkTime = 0;
     this.walkPhase = 0;
     this.walkBlend = 0;
+    this.isMoving = false;
     this.idleTime = 0;
     this.distanceTravelled = 0;
   }
@@ -35,8 +37,13 @@ export class Player {
     const vector = input.getMovementVector();
     const hasIntent = vector.x !== 0 || vector.y !== 0;
     if (hasIntent) {
-      if (Math.abs(vector.x) > Math.abs(vector.y)) this.direction = vector.x < 0 ? 'left' : 'right';
-      else this.direction = vector.y < 0 ? 'up' : 'down';
+      // Keep the current axis near a diagonal so small joystick changes do
+      // not flicker between the side and front/back poses.
+      const horizontal = this.direction === 'left' || this.direction === 'right';
+      const x = Math.abs(vector.x);
+      const y = Math.abs(vector.y);
+      const faceHorizontal = horizontal ? x > 0 && x >= y * 0.8 : x > y * 1.25;
+      this.direction = faceHorizontal ? (vector.x < 0 ? 'left' : 'right') : (vector.y < 0 ? 'up' : 'down');
     }
 
     const before = { x: this.x, y: this.y };
@@ -48,15 +55,18 @@ export class Player {
 
     const distanceMoved = Math.hypot(this.x - before.x, this.y - before.y);
     const isMoving = distanceMoved > 0.01;
+    this.isMoving = isMoving;
     if (isMoving) {
       // Advance the walk cycle by distance, not wall-clock time. If the jelly
       // is held against a rock, it stops animating instead of sliding in place.
-      this.walkPhase = (this.walkPhase + distanceMoved / 112) % 1;
+      const strideDistance = this.spriteSheet?.strideDistance || 112;
+      this.walkPhase = (this.walkPhase + distanceMoved / strideDistance) % 1;
       this.walkTime += dt;
       this.idleTime = 0;
       this.distanceTravelled += distanceMoved;
     } else {
       this.walkTime = 0;
+      this.walkPhase = 0;
       this.idleTime += dt;
     }
     this.walkBlend = damp(this.walkBlend, isMoving ? 1 : 0, 13, dt);
@@ -65,7 +75,9 @@ export class Player {
   draw(ctx) {
     const stepWave = Math.sin(this.walkPhase * Math.PI * 2);
     const idleWave = Math.sin(this.idleTime * 2.4);
-    const bob = stepWave * 0.35 * this.walkBlend + idleWave * 0.6 * (1 - this.walkBlend);
+    const isHumanoidWalk = !!this.spriteSheet?.directionRows;
+    const bob = (isHumanoidWalk ? -Math.abs(stepWave) * 0.7 : stepWave * 0.35) * this.walkBlend
+      + idleWave * 0.6 * (1 - this.walkBlend);
     const shadowWidth = 27 + Math.abs(stepWave) * this.walkBlend * 2;
     drawShadow(ctx, this.x, this.y + 29, shadowWidth, 8, 0.2);
     if (!this.spriteImage?.complete || !this.spriteImage.naturalWidth) {
@@ -76,7 +88,7 @@ export class Player {
     if (this.spriteSheet?.frameWidth) {
       const frameCount = this.spriteSheet.frameCount || 1;
       const directionFrames = this.spriteSheet.directionFrames;
-      const isWalking = this.walkBlend > 0.1;
+      const isWalking = this.isMoving;
       const walkSequence = Array.isArray(this.spriteSheet.walkSequence) && this.spriteSheet.walkSequence.length
         ? this.spriteSheet.walkSequence
         : Array.from({ length: frameCount }, (_, index) => index);
@@ -96,6 +108,9 @@ export class Player {
       const destinationWidth = this.spriteSheet.destinationWidth || 72;
       const destinationHeight = this.spriteSheet.destinationHeight || 72;
       const anchorOffset = this.spriteSheet.anchorOffset || destinationHeight - 30;
+      // Register each pose to the same head position. Offset only the draw
+      // destination; retain the full source cell and collision position.
+      const registration = this.spriteSheet.frameOffsets?.[this.direction]?.[frame] || { x: 0, y: 0 };
       // The sprite sheet already contains the intended pose changes. Keep a
       // fixed display scale so the head, shoes, and ground contact do not
       // visibly stretch while the walk frames change.
@@ -112,8 +127,8 @@ export class Player {
         sourceY,
         frameWidth,
         sourceHeight,
-        -destinationWidth / 2,
-        -anchorOffset,
+        -destinationWidth / 2 + registration.x * destinationWidth / frameWidth,
+        -anchorOffset + registration.y * destinationHeight / sourceHeight,
         destinationWidth,
         destinationHeight
       );

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-Hant">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>人型水母走路預覽</title>
+<style>
+body{margin:0;padding:28px;background:#edf5fa;color:#23465c;font:15px system-ui}main{max-width:1000px;margin:auto}h1{font-size:26px}p{line-height:1.7}.controls{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0}button{padding:10px 18px;border:1px solid #86a9bc;border-radius:10px;background:white;color:#23465c;cursor:pointer}.views{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}figure{margin:0;border-radius:16px;background:white;padding:12px}canvas{display:block;width:100%}figcaption{text-align:center;font-weight:bold}#status{min-height:25px}@media(max-width:650px){.views{grid-template-columns:repeat(2,1fr)}}
+</style>
+<main><h1>人型水母・走路預覽</h1><p>四個方向同步預覽。角色位置已校正，進化後的步頻更穩定；停下或碰到障礙會立刻收步。</p><div class="controls"><button id="move">停下</button><button id="speed">目前：進化速度 +25%</button><button id="cycle">自動走停</button><button id="step">逐格檢查</button></div><p id="status" role="status">載入角色…</p><div class="views"></div></main>
+<script type="module">
+import { Player } from '../src/game/Player.js?walk-v4';
+import { PLAYER_SPRITE_MANIFESTS } from '../src/game/Game.js';
+const sheet = new Image(); sheet.src='../reference/runtime/jelly-anthropomorphic-player-walk-v5.png'; await sheet.decode();
+const manifest=PLAYER_SPRITE_MANIFESTS['./reference/runtime/jelly-anthropomorphic-player-walk-v5.png'];
+let moving=true, speed=256.25, auto=false, time=0, last=0, manualFrame=-1;
+const views=Object.entries({down:['正面',0,1],left:['向左',-1,0],right:['向右',1,0],up:['背面',0,-1]}).map(([direction,[label,x,y]])=>{
+ const figure=document.createElement('figure'), caption=document.createElement('figcaption'), canvas=document.createElement('canvas');
+ caption.textContent=label;canvas.width=440;canvas.height=400;figure.append(caption,canvas);document.querySelector('.views').append(figure);
+ const player=new Player(sheet);player.spriteSheet=manifest;player.direction=direction;player.x=500;player.y=500;
+ return {player,canvas,ctx:canvas.getContext('2d'),x,y};
+});
+const stage={world:{width:10000,height:10000},obstacles:[]};
+document.querySelector('#move').onclick=()=>{manualFrame=-1;moving=auto?!(time%3<2):!moving;auto=false;document.querySelector('#move').textContent=moving?'停下':'開始走路';};
+document.querySelector('#speed').onclick=()=>{speed=speed===256.25?205:256.25;document.querySelector('#speed').textContent=speed===256.25?'目前：進化速度 +25%':'目前：一般速度';};
+document.querySelector('#cycle').onclick=()=>{manualFrame=-1;auto=!auto;time=0;document.querySelector('#cycle').textContent=auto?'停止自動走停':'自動走停';};
+document.querySelector('#step').onclick=()=>{auto=false;manualFrame=(manualFrame+1)%4;};
+function tick(now){const dt=last?Math.min((now-last)/1000,.05):0;last=now;time+=dt;const active=auto?time%3<2:moving;
+ for(const {player,ctx,canvas,x,y} of views){player.speed=speed;player.x=500;player.y=500;player.update(dt,{getMovementVector:()=>active?{x,y}:{x:0,y:0}},stage);
+ if(manualFrame>=0){player.isMoving=true;player.walkBlend=1;player.walkPhase=(manifest.walkSequence.indexOf(manualFrame)+.01)/4;} ctx.fillStyle='#e7f1f0';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.strokeStyle='#c7dedb';ctx.lineWidth=1;for(let line=0;line<400;line+=40){ctx.beginPath();ctx.moveTo(0,line);ctx.lineTo(440,line);ctx.stroke();}
+ ctx.save();ctx.scale(2.2,2.2);ctx.translate(100-player.x,105-player.y);player.draw(ctx);ctx.restore();}
+ document.querySelector('#move').textContent=active?'停下':'開始走路';document.querySelector('#cycle').textContent=auto?'停止自動走停':'自動走停';document.querySelector('#status').textContent=manualFrame>=0?('逐格檢查：第 '+(manualFrame+1)+' / 4 格'):active?'行走中・四方向影格位置穩定':'已停步・回到中央站姿';requestAnimationFrame(tick);}
+requestAnimationFrame(tick);
+</script></html>

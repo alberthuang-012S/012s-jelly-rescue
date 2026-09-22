@@ -6,7 +6,7 @@ import { HUD } from './HUD.js';
 import { InputController } from './InputController.js?input-controls-v1';
 import { InteractionSystem } from './InteractionSystem.js';
 import { ItemSystem } from './ItemSystem.js';
-import { Player } from './Player.js';
+import { Player } from './Player.js?walk-v4';
 import { PersonalBestStore } from './PersonalBestStore.js?result-best-v1';
 import { ResultScreen } from './ResultScreen.js?evolution-v2';
 import { ScoreManager } from './ScoreManager.js';
@@ -17,6 +17,7 @@ import { clamp, drawText, formatClock, lerp } from './utils.js';
 
 const ASSET_PATHS = Object.freeze({
   player: [
+    './reference/runtime/jelly-anthropomorphic-player-walk-v5.png',
     './reference/runtime/jelly-anthropomorphic-player-walk-v3.png',
     './reference/runtime/jelly-anthropomorphic-player-walk-v2.png',
     './reference/jelly-anthropomorphic-player-walk.png',
@@ -55,7 +56,22 @@ const ASSET_PATHS = Object.freeze({
 // Player sprite layout is selected by the actual loaded asset path. Keep the
 // geometry explicit so a different image cannot silently inherit a guessed
 // row/column layout from its dimensions.
-const PLAYER_SPRITE_MANIFESTS = Object.freeze({
+export const PLAYER_SPRITE_MANIFESTS = Object.freeze({
+  './reference/runtime/jelly-anthropomorphic-player-walk-v5.png': Object.freeze({
+    layout: 'direction-grid',
+    frameWidth: 420,
+    frameHeight: 400,
+    frameCount: 4,
+    directionRows: Object.freeze({ down: 0, left: 1, right: 2, up: 3 }),
+    sourceY: 0,
+    sourceHeight: 400,
+    destinationWidth: 84,
+    destinationHeight: 92,
+    anchorOffset: 58,
+    strideDistance: 148,
+    walkSequence: Object.freeze([1, 2, 3, 0]),
+    idleFrame: 1
+  }),
   './reference/runtime/jelly-anthropomorphic-player-walk-v3.png': Object.freeze({
     layout: 'direction-grid',
     frameWidth: 420,
@@ -68,6 +84,15 @@ const PLAYER_SPRITE_MANIFESTS = Object.freeze({
     destinationHeight: 92,
     anchorOffset: 58,
     walkSequence: Object.freeze([1, 0, 1, 2]),
+    strideDistance: 148,
+    // Source-pixel registration measured from the blue crest in each pose.
+    // Preserve the neutral pose as the common anchor for each direction.
+    frameOffsets: Object.freeze({
+      down: [{ x: -26.4, y: 0 }, { x: 0, y: 0 }, { x: 33, y: 1.2 }],
+      left: [{ x: 2.8, y: -0.4 }, { x: 0, y: 0 }, { x: 19.2, y: -1.4 }],
+      right: [{ x: -31.9, y: 2.3 }, { x: 0, y: 0 }, { x: 14.1, y: 1.1 }],
+      up: [{ x: -25.2, y: 1.1 }, { x: 0, y: 0 }, { x: 24.2, y: 0.6 }]
+    }),
     idleFrame: 1
   }),
   './reference/runtime/jelly-anthropomorphic-player-walk-v2.png': Object.freeze({
@@ -471,8 +496,8 @@ export class Game {
   ensurePlayerAsset() {
     if (this.playerAssetPromise) return this.playerAssetPromise;
     const sources = this.evolutionStore.state.evolved
-      ? ASSET_PATHS.player.slice(0, 4)
-      : ASSET_PATHS.player.slice(4);
+      ? ASSET_PATHS.player.slice(0, 5)
+      : ASSET_PATHS.player.slice(5);
     this.playerAssetPromise = loadImageWithFallback(sources, {
       fetchPriority: 'high',
       assetName: 'Player sprite'
