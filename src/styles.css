@@ -1235,3 +1235,16 @@ body { background: #deeff5; }
 @media (prefers-reduced-motion: reduce) {
   .result-new-best { animation: none; }
 }
+
+/* Persistent character evolution on both completion screens. */
+.evolution-panel { display: flex; align-items: center; gap: 16px; margin-top: 18px; padding: 14px; border: 1px solid #b7dce1; border-radius: 16px; background: linear-gradient(120deg, #eefbf8, #e7efff); text-align: left; }
+.evolution-character { flex: 0 0 86px; width: 86px; height: 100px; object-fit: contain; }
+.evolution-copy { flex: 1; min-width: 0; }
+.evolution-copy strong { color: #235373; font-size: 15px; }
+.evolution-copy p { margin: 6px 0 10px; color: #527382; font-size: 12px; line-height: 1.6; }
+.evolution-consume { background: #fff7d6; color: #72511e; font-weight: 700; }
+.capsule-icon { display: inline-block; width: 23px; height: 10px; margin-right: 8px; border: 1px solid #967440; border-radius: 10px; background: linear-gradient(90deg, #f1c865 50%, #fffef4 50%); transform: rotate(-30deg); }
+.is-evolving .evolution-character { animation: jelly-evolve 1.2s ease-out both; }
+@keyframes jelly-evolve { 0% { transform: scale(.65); filter: brightness(3) drop-shadow(0 0 20px #fff); opacity: .3; } 55% { transform: scale(1.12); filter: brightness(1.6) drop-shadow(0 0 14px #60dfec); opacity: 1; } 100% { transform: scale(1); filter: none; } }
+@media (prefers-reduced-motion: reduce) { .is-evolving .evolution-character { animation: none; } }
+@media (max-width: 420px) { .evolution-panel { gap: 10px; padding: 10px; } .evolution-character { flex-basis: 64px; width: 64px; height: 84px; } }

@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="zh-Hant">
+<meta charset="utf-8">
+<title>Evolution integration checks</title>
+<script type="module">
+  const source = await (await fetch('../index.html')).text();
+  const fixture = source.replace('<head>', '<head><base href="../">')
+    .replace(/\.\/src\/main\.js[^" ]*/, './qa/evolution-browser.js');
+  document.open();
+  document.write(fixture);
+  document.close();
+</script>
+</html>

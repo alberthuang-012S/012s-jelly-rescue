@@ -1,10 +1,12 @@
 export class ResultScreen {
-  constructor({ onReplay, onNext, onHome }) {
+  constructor({ onReplay, onNext, onHome, evolutionStore, onEvolve }) {
     this.screen = document.querySelector('#result-screen');
     this.gameover = document.querySelector('#gameover-screen');
     this.onReplay = onReplay;
     this.onNext = onNext;
     this.onHome = onHome;
+    this.evolutionStore = evolutionStore;
+    this.onEvolve = onEvolve;
     document.querySelector('#result-replay').addEventListener('click', () => this.onReplay?.());
     document.querySelector('#result-next').addEventListener('click', () => this.onNext?.());
     document.querySelector('#result-home').addEventListener('click', () => this.onHome?.());
@@ -15,6 +17,42 @@ export class ResultScreen {
   hide() {
     this.screen.classList.add('is-hidden');
     this.gameover.classList.add('is-hidden');
+  }
+
+  showEvolution(screen) {
+    let panel = screen.querySelector('.evolution-panel');
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.className = 'evolution-panel';
+      screen.querySelector('.result-actions').before(panel);
+    }
+    panel.classList.remove('is-evolving');
+    const { capsule, evolved } = this.evolutionStore.state;
+    panel.innerHTML = `
+      <img class="evolution-character" src="${evolved ? './reference/jelly-anthropomorphic-home.png' : './reference/runtime/jelly-home.webp'}" alt="${evolved ? '人型水母' : '小水母'}" />
+      <div class="evolution-copy" aria-live="polite">
+        <strong>${evolved ? '人型水母' : capsule ? '獲得 PNN+3 膠囊' : '小水母'}</strong>
+        <p>${evolved ? '移動速度永久 +25%' : capsule ? '服用膠囊，進化成人型水母，移動速度永久 +25%。' : '在山區成功救援第 2 位居民，即可獲得進化膠囊。'}</p>
+        ${capsule ? '<button class="secondary-button evolution-consume" type="button"><span class="capsule-icon" aria-hidden="true"></span>服用 PNN+3・進化</button>' : ''}
+      </div>`;
+    panel.querySelector('.evolution-consume')?.addEventListener('click', async (event) => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      button.textContent = '正在進化…';
+      const navigation = [...screen.querySelectorAll('.result-actions button')];
+      navigation.forEach((item) => { item.disabled = true; });
+      try {
+        if (await this.onEvolve()) {
+          this.showEvolution(screen);
+          panel.classList.remove('is-evolving');
+          void panel.offsetWidth;
+          panel.classList.add('is-evolving');
+          panel.querySelector('strong').textContent = '進化成功！人型水母';
+        }
+      } finally {
+        navigation.forEach((item) => { item.disabled = false; });
+      }
+    });
   }
 
   showResult(result, stage, hasNext, nextLabel = '前往下一站') {
@@ -59,6 +97,7 @@ export class ResultScreen {
     if (nextText) nextText.textContent = nextLabel;
     next.classList.toggle('is-hidden', !hasNext);
     this.screen.classList.remove('is-hidden');
+    this.showEvolution(this.screen);
   }
 
   showGameOver(result) {
@@ -67,5 +106,6 @@ export class ResultScreen {
     document.querySelector('#gameover-rescued').textContent = `${result.rescuedCount} 人`;
     document.querySelector('#gameover-max-combo').textContent = result.maxCombo;
     this.gameover.classList.remove('is-hidden');
+    this.showEvolution(this.gameover);
   }
 }

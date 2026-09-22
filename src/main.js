@@ -1,4 +1,4 @@
-import { Game } from './game/Game.js?mountain-pavilion-dialogue-v2';
+import { Game } from './game/Game.js?evolution-v1';
 
 window.addEventListener('DOMContentLoaded', () => {
   new Game();

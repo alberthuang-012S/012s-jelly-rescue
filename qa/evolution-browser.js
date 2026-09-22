@@ -1,0 +1,45 @@
+import { Game } from '../src/game/Game.js';
+import { EvolutionStore } from '../src/game/EvolutionStore.js';
+const checks = [];
+const check = (condition, label) => { if (!condition) throw Error(label); checks.push(label); };
+const game = new Game();
+const storage = new Map();
+const memory = { getItem: key => storage.get(key), setItem: (key, value) => storage.set(key, value) };
+game.evolutionStore = new EvolutionStore(memory);
+game.resultScreen.evolutionStore = game.evolutionStore;
+game.personalBestStore.storage = { getItem: () => null, setItem() {} };
+game.syncEvolution();
+await game.startStage('mountain');
+check(game.player.speed === 205, '初始速度');
+check(game.player.spriteImage.src.includes('jelly-player.webp'), '初始小水母素材');
+function rescue() {
+  game.handleDebug('itch');
+  game.interactionSystem.findTarget(game.player, game.npcs);
+  game.selectItem('PPA');
+  game.tryAction();
+}
+rescue();
+check(!game.evolutionStore.state.capsule, '第一位居民沒有膠囊');
+game.tryAction();
+check(game.scoreManager.rescuedCount === 1, '連按不能重複救援同一居民');
+rescue();
+check(game.evolutionStore.state.capsule, '第二位居民固定發放膠囊');
+check(game.player.speed === 205, '服用前不加速');
+check(new EvolutionStore(memory).state.capsule, '未服用膠囊保存');
+if (new URLSearchParams(location.search).has('gameover')) game.finishGameOver();
+else game.finishStage();
+check(!!document.querySelector('.evolution-consume'), '結算提供服用按鈕');
+const originalEvolve = game.resultScreen.onEvolve;
+game.resultScreen.onEvolve = async () => {
+  const result = await originalEvolve();
+  check(game.player.speed === 256.25, '進化速度 +25%');
+  check(game.player.spriteImage.src.includes('walk-v3'), '進化後使用人型行走素材');
+  check(document.querySelector('.home-character-crop img').src.includes('anthropomorphic'), '主選單同步人型');
+  check(new EvolutionStore(memory).state.evolved, '重載保留進化');
+  check(!game.evolutionStore.award('mountain', 2), '進化後不再發放');
+  game.player.reset({ x: 200, y: 450 });
+  check(game.player.speed === 256.25, '重玩保留速度');
+  document.title = `PASS ${checks.length} evolution checks`;
+  return result;
+};
+document.title = `READY ${checks.length} evolution checks`;

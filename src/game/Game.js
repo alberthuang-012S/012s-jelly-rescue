@@ -1,5 +1,6 @@
 import { CONDITIONS, ITEMS, STATES, VIEWPORT } from './constants.js';
 import { ComboManager } from './ComboManager.js';
+import { EvolutionStore, EVOLVED_SPEED_MULTIPLIER } from './EvolutionStore.js';
 import { EventDirector } from './EventDirector.js?mountain-pavilion-dialogue-v2';
 import { HUD } from './HUD.js';
 import { InputController } from './InputController.js?input-controls-v1';
@@ -7,7 +8,7 @@ import { InteractionSystem } from './InteractionSystem.js';
 import { ItemSystem } from './ItemSystem.js';
 import { Player } from './Player.js';
 import { PersonalBestStore } from './PersonalBestStore.js?result-best-v1';
-import { ResultScreen } from './ResultScreen.js?result-best-v1';
+import { ResultScreen } from './ResultScreen.js?evolution-v1';
 import { ScoreManager } from './ScoreManager.js';
 import { StageManager } from './StageManager.js?v=mountain-pavilion-dialogue-v2';
 import { TutorialDirector } from './TutorialDirector.js?mountain-pavilion-dialogue-v2';
@@ -389,11 +390,15 @@ export class Game {
       onItemToggle: () => this.toggleItem(),
       onEscape: () => this.handleEscape()
     });
+    this.evolutionStore = new EvolutionStore();
     this.player = new Player(null);
+    this.syncEvolution();
     this.resultScreen = new ResultScreen({
       onReplay: () => this.startStage(this.selectedStage),
       onNext: () => this.startStage(this.getNextStageId()),
-      onHome: () => this.showHome()
+      onHome: () => this.showHome(),
+      evolutionStore: this.evolutionStore,
+      onEvolve: () => this.evolve()
     });
 
     this.bindHome();
@@ -465,7 +470,10 @@ export class Game {
 
   ensurePlayerAsset() {
     if (this.playerAssetPromise) return this.playerAssetPromise;
-    this.playerAssetPromise = loadImageWithFallback(ASSET_PATHS.player, {
+    const sources = this.evolutionStore.state.evolved
+      ? ASSET_PATHS.player.slice(0, 4)
+      : ASSET_PATHS.player.slice(4);
+    this.playerAssetPromise = loadImageWithFallback(sources, {
       fetchPriority: 'high',
       assetName: 'Player sprite'
     }).then(async (worldJelly) => {
@@ -507,6 +515,24 @@ export class Game {
       return this.spriteImage;
     });
     return this.playerAssetPromise;
+  }
+
+  syncEvolution() {
+    const evolved = this.evolutionStore.state.evolved;
+    this.player.speed = 205 * (evolved ? EVOLVED_SPEED_MULTIPLIER : 1);
+    const source = evolved ? './reference/jelly-anthropomorphic-home.png' : './reference/runtime/jelly-home.webp';
+    document.querySelector('.home-character-crop source').srcset = source;
+    document.querySelector('.home-character-crop source').type = evolved ? 'image/png' : 'image/webp';
+    document.querySelector('.home-character-crop img').src = source;
+  }
+
+  async evolve() {
+    if (!['result', 'gameover'].includes(this.state)) return false;
+    if (!this.evolutionStore.consume()) return false;
+    this.syncEvolution();
+    this.playerAssetPromise = null;
+    await this.ensurePlayerAsset();
+    return true;
   }
 
   ensureNpcAsset() {
@@ -1073,7 +1099,7 @@ export class Game {
   tryAction() {
     if (this.state !== 'playing') return;
     const target = this.interactionSystem.currentTarget;
-    if (!target) {
+    if (!target || ![STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(target.state)) {
       this.hud.showActionFeedback();
       return;
     }
@@ -1087,6 +1113,10 @@ export class Game {
       const comboCount = this.combo.registerSuccess();
       const scored = this.scoreManager.recordRescue(responseTime, target.condition, this.combo.getMultiplier());
       target.rescue(this.stageManager.elapsed);
+      if (this.evolutionStore.award(this.selectedStage, this.scoreManager.rescuedCount)) {
+        this.hud.showToast('獲得 PNN+3 膠囊！', 'success', '結算時服用，進化成人型水母。');
+        this.addFloater(this.player.x, this.player.y - 145, 'PNN+3 膠囊 GET！', '#fff0b7', { duration: 3 });
+      }
       this.createRescueParticles(target, target.condition);
       const rating = responseTime <= 3 ? 'PERFECT' : responseTime <= 5 ? 'FAST' : 'GOOD';
       const comboText = comboCount >= 2 ? ` · ${comboCount} COMBO` : '';
