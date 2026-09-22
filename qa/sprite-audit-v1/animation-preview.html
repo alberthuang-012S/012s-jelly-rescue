@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Jelly player walk v2 preview</title>
+    <style>
+      :root { color-scheme: light; font-family: system-ui, sans-serif; }
+      body { margin: 0; padding: 24px; color: #102244; background: #eef4fb; }
+      main { max-width: 980px; margin: 0 auto; }
+      h1 { margin: 0 0 8px; font-size: 24px; }
+      p { margin: 0 0 18px; color: #50617d; }
+      .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+      button { border: 1px solid #8da7cd; border-radius: 8px; padding: 8px 14px; color: #102244; background: #fff; cursor: pointer; }
+      button[aria-pressed="true"] { color: #fff; background: #2b76c9; }
+      .panels { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+      figure { margin: 0; padding: 10px; border: 1px solid #b3c6e3; border-radius: 12px; background: #fff; }
+      figcaption { margin-bottom: 8px; font-weight: 700; }
+      canvas { display: block; width: 100%; aspect-ratio: 1; border-radius: 8px; border: 1px solid #d0dbea; }
+      .meta { margin-top: 8px; color: #657692; font: 12px ui-monospace, monospace; }
+      @media (max-width: 780px) { .panels { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Jelly player walk · Sprite v2</h1>
+      <p>Exact runtime cells: 374×352. Every panel cycles frames 0–2 from its direction row.</p>
+      <div class="toolbar" aria-label="播放控制">
+        <button type="button" data-speed="900">慢速</button>
+        <button type="button" data-speed="260" aria-pressed="true">正常速度</button>
+        <button type="button" data-pause="true">暫停</button>
+        <button type="button" data-reset="true">重設</button>
+      </div>
+      <section class="panels" id="panels"></section>
+    </main>
+    <script>
+      const manifest = {
+        frameWidth: 374,
+        frameHeight: 352,
+        directionRows: { down: 0, left: 1, right: 2, up: 3 }
+      };
+      const directions = ['down', 'left', 'right', 'up'];
+      const sheet = new Image();
+      sheet.src = '../../reference/runtime/jelly-anthropomorphic-player-walk-v2.png';
+      let speed = 260;
+      let paused = false;
+      let frame = 1;
+      let lastFrameAt = 0;
+      const panels = document.querySelector('#panels');
+
+      function checker(ctx, width, height) {
+        const size = 12;
+        ctx.fillStyle = '#f7f9fd';
+        ctx.fillRect(0, 0, width, height);
+        for (let y = 0; y < height; y += size) {
+          for (let x = 0; x < width; x += size) {
+            if (((x / size) + (y / size)) % 2 === 0) {
+              ctx.fillStyle = '#dfe7f1';
+              ctx.fillRect(x, y, size, size);
+            }
+          }
+        }
+      }
+
+      const views = directions.map((direction) => {
+        const figure = document.createElement('figure');
+        const caption = document.createElement('figcaption');
+        caption.textContent = direction.toUpperCase();
+        const canvas = document.createElement('canvas');
+        canvas.width = 220;
+        canvas.height = 220;
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        figure.append(caption, canvas, meta);
+        panels.append(figure);
+        return { direction, canvas, context: canvas.getContext('2d'), meta };
+      });
+
+      function draw(view) {
+        const { canvas, context, direction, meta } = view;
+        checker(context, canvas.width, canvas.height);
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = 'high';
+        const destination = { x: 34, y: 24, width: 152, height: 143 };
+        context.drawImage(
+          sheet,
+          frame * manifest.frameWidth,
+          manifest.directionRows[direction] * manifest.frameHeight,
+          manifest.frameWidth,
+          manifest.frameHeight,
+          destination.x,
+          destination.y,
+          destination.width,
+          destination.height
+        );
+        meta.textContent = `frame ${frame} · source ${frame * manifest.frameWidth},${manifest.directionRows[direction] * manifest.frameHeight},374,352`;
+      }
+
+      function render(timestamp) {
+        if (!paused && sheet.complete && sheet.naturalWidth && timestamp - lastFrameAt >= speed) {
+          frame = (frame + 1) % 3;
+          lastFrameAt = timestamp;
+        }
+        views.forEach(draw);
+        requestAnimationFrame(render);
+      }
+
+      document.querySelectorAll('[data-speed]').forEach((button) => {
+        button.addEventListener('click', () => {
+          speed = Number(button.dataset.speed);
+          document.querySelectorAll('[data-speed]').forEach((item) => item.setAttribute('aria-pressed', item === button ? 'true' : 'false'));
+          paused = false;
+        });
+      });
+      document.querySelector('[data-pause]').addEventListener('click', (event) => {
+        paused = !paused;
+        event.currentTarget.textContent = paused ? '繼續' : '暫停';
+      });
+      document.querySelector('[data-reset]').addEventListener('click', () => {
+        frame = 0;
+        lastFrameAt = 0;
+        paused = false;
+      });
+      requestAnimationFrame(render);
+    </script>
+  </body>
+</html>

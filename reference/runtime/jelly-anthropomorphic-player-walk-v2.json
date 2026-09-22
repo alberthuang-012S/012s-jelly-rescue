@@ -1,0 +1,57 @@
+{
+  "manifestVersion": 2,
+  "spriteVersion": 2,
+  "asset": "./jelly-anthropomorphic-player-walk-v2.png",
+  "source": "../jelly-anthropomorphic-player-walk.png",
+  "layout": {
+    "type": "regular-grid",
+    "columns": 3,
+    "rows": 4,
+    "frameWidth": 374,
+    "frameHeight": 352,
+    "directionRows": {
+      "down": 0,
+      "left": 1,
+      "right": 2,
+      "up": 3
+    }
+  },
+  "frames": {
+    "down": [
+      { "frame": 0, "sourceX": 0, "sourceY": 0, "sourceWidth": 374, "sourceHeight": 352 },
+      { "frame": 1, "sourceX": 374, "sourceY": 0, "sourceWidth": 374, "sourceHeight": 352 },
+      { "frame": 2, "sourceX": 748, "sourceY": 0, "sourceWidth": 374, "sourceHeight": 352 }
+    ],
+    "left": [
+      { "frame": 0, "sourceX": 0, "sourceY": 352, "sourceWidth": 374, "sourceHeight": 352 },
+      { "frame": 1, "sourceX": 374, "sourceY": 352, "sourceWidth": 374, "sourceHeight": 352 },
+      { "frame": 2, "sourceX": 748, "sourceY": 352, "sourceWidth": 374, "sourceHeight": 352 }
+    ],
+    "right": [
+      { "frame": 0, "sourceX": 0, "sourceY": 704, "sourceWidth": 374, "sourceHeight": 352 },
+      { "frame": 1, "sourceX": 374, "sourceY": 704, "sourceWidth": 374, "sourceHeight": 352 },
+      { "frame": 2, "sourceX": 748, "sourceY": 704, "sourceWidth": 374, "sourceHeight": 352 }
+    ],
+    "up": [
+      { "frame": 0, "sourceX": 0, "sourceY": 1056, "sourceWidth": 374, "sourceHeight": 352 },
+      { "frame": 1, "sourceX": 374, "sourceY": 1056, "sourceWidth": 374, "sourceHeight": 352 },
+      { "frame": 2, "sourceX": 748, "sourceY": 1056, "sourceWidth": 374, "sourceHeight": 352 }
+    ]
+  },
+  "runtime": {
+    "destinationWidth": 84,
+    "destinationHeight": 92,
+    "anchorOffset": 58,
+    "frameCount": 3
+  },
+  "safety": {
+    "minimumTransparentPaddingPixels": {
+      "top": 20,
+      "bottom": 11,
+      "left": 42,
+      "right": 34
+    },
+    "edgeAlphaThreshold": 0,
+    "notes": "All 12 output cells were reviewed on checkerboard backgrounds. The original source remains unchanged. Confirmed row-overflow pieces were reunited with the front shoes or removed from the neighboring cell only after visual ownership checks. The outermost pixel ring of every output cell has exact alpha 0 after scaling."
+  }
+}

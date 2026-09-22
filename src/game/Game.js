@@ -16,6 +16,7 @@ import { clamp, drawText, formatClock, lerp } from './utils.js';
 
 const ASSET_PATHS = Object.freeze({
   player: [
+    './reference/runtime/jelly-anthropomorphic-player-walk-v2.png',
     './reference/jelly-anthropomorphic-player-walk.png',
     './reference/jelly-anthropomorphic-player.png',
     './reference/runtime/jelly-player.webp',
@@ -48,6 +49,78 @@ const ASSET_PATHS = Object.freeze({
     './reference/generated-mountain-open-portrait-hq.png'
   ]
 });
+
+// Player sprite layout is selected by the actual loaded asset path. Keep the
+// geometry explicit so a different image cannot silently inherit a guessed
+// row/column layout from its dimensions.
+const PLAYER_SPRITE_MANIFESTS = Object.freeze({
+  './reference/runtime/jelly-anthropomorphic-player-walk-v2.png': Object.freeze({
+    layout: 'direction-grid',
+    frameWidth: 374,
+    frameHeight: 352,
+    frameCount: 3,
+    directionRows: Object.freeze({ down: 0, left: 1, right: 2, up: 3 }),
+    sourceY: 0,
+    sourceHeight: 352,
+    destinationWidth: 84,
+    destinationHeight: 92,
+    anchorOffset: 58
+  }),
+  './reference/jelly-anthropomorphic-player-walk.png': Object.freeze({
+    layout: 'direction-grid',
+    frameWidth: 374,
+    frameHeight: 352,
+    frameCount: 3,
+    directionRows: Object.freeze({ down: 0, left: 1, right: 2, up: 3 }),
+    sourceY: 0,
+    sourceHeight: 352,
+    destinationWidth: 84,
+    destinationHeight: 92,
+    anchorOffset: 58
+  })
+});
+
+const PLAYER_DIRECTION_STRIP_MANIFESTS = Object.freeze({
+  './reference/jelly-anthropomorphic-player.png': Object.freeze({
+    columns: 4,
+    frameCount: 4,
+    directionFrames: Object.freeze({ down: 0, left: 1, right: 2, up: 3 }),
+    sourceYRatio: 0.06,
+    sourceHeightRatio: 0.88,
+    destinationWidth: 84,
+    destinationHeight: 92,
+    anchorOffset: 58
+  }),
+  './reference/runtime/jelly-player.webp': Object.freeze({
+    columns: 4,
+    frameCount: 4,
+    directionFrames: Object.freeze({ down: 0, left: 1, right: 2, up: 3 }),
+    sourceYRatio: 0.06,
+    sourceHeightRatio: 0.88,
+    destinationWidth: 84,
+    destinationHeight: 92,
+    anchorOffset: 58
+  }),
+  './reference/world-jelly-player-hq.png': Object.freeze({
+    columns: 4,
+    frameCount: 4,
+    directionFrames: Object.freeze({ down: 0, left: 1, right: 2, up: 3 }),
+    sourceYRatio: 0.06,
+    sourceHeightRatio: 0.88,
+    destinationWidth: 84,
+    destinationHeight: 92,
+    anchorOffset: 58
+  })
+});
+
+function findPlayerManifest(source, manifestTable) {
+  const normalizedSource = String(source || '').split('?')[0].replace(/\\/g, '/');
+  const match = Object.keys(manifestTable).find((candidate) => {
+    const normalizedCandidate = candidate.replace(/^\.\//, '');
+    return normalizedSource.endsWith(normalizedCandidate);
+  });
+  return match ? { assetPath: match, manifest: manifestTable[match] } : null;
+}
 
 const HOME_STAGE_CONTENT = Object.freeze({
   tutorial: {
@@ -383,28 +456,28 @@ export class Game {
     }).then(async (worldJelly) => {
       if (worldJelly?.naturalWidth) {
         this.spriteImage = worldJelly;
-        const isWalkingGrid = worldJelly.naturalHeight > worldJelly.naturalWidth;
-        this.playerSpriteSheet = isWalkingGrid
-          ? {
-            frameWidth: worldJelly.naturalWidth / 3,
-            frameHeight: worldJelly.naturalHeight / 4,
-            frameCount: 3,
-            directionRows: { down: 0, left: 1, right: 2, up: 3 },
-            destinationWidth: 84,
-            destinationHeight: 92,
-            anchorOffset: 58
-          }
-          : {
-            frameWidth: worldJelly.naturalWidth / 4,
-            frameHeight: worldJelly.naturalHeight,
-            frameCount: 4,
-            directionFrames: { down: 0, left: 1, right: 2, up: 3 },
-            sourceY: Math.round(worldJelly.naturalHeight * 0.06),
-            sourceHeight: Math.round(worldJelly.naturalHeight * 0.88),
-            destinationWidth: 84,
-            destinationHeight: 92,
-            anchorOffset: 58
+        const source = worldJelly.currentSrc || worldJelly.src || '';
+        const gridMatch = findPlayerManifest(source, PLAYER_SPRITE_MANIFESTS);
+        const stripMatch = findPlayerManifest(source, PLAYER_DIRECTION_STRIP_MANIFESTS);
+        if (gridMatch) {
+          this.playerSpriteSheet = {
+            ...gridMatch.manifest,
+            assetPath: gridMatch.assetPath
           };
+        } else if (stripMatch) {
+          const manifest = stripMatch.manifest;
+          this.playerSpriteSheet = {
+            ...manifest,
+            assetPath: stripMatch.assetPath,
+            frameWidth: worldJelly.naturalWidth / manifest.columns,
+            frameHeight: worldJelly.naturalHeight,
+            sourceY: Math.round(worldJelly.naturalHeight * manifest.sourceYRatio),
+            sourceHeight: Math.round(worldJelly.naturalHeight * manifest.sourceHeightRatio)
+          };
+        } else {
+          // An unregistered image is not safe to crop by a dimension heuristic.
+          this.playerSpriteSheet = null;
+        }
         this.player.spriteSheet = this.playerSpriteSheet;
       } else {
         const rawSprite = await loadImage(ASSET_PATHS.playerFallback, {

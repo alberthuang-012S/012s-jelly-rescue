@@ -1,0 +1,869 @@
+﻿{
+    "generatedAt":  "2026-09-22T04:49:11.5063008Z",
+    "layout":  {
+                   "columns":  3,
+                   "rows":  4,
+                   "frameWidth":  374,
+                   "frameHeight":  352,
+                   "directionRows":  {
+                                         "down":  0,
+                                         "left":  1,
+                                         "right":  2,
+                                         "up":  3
+                                     }
+               },
+    "before":  {
+                   "source":  "C:\\Users\\User\\Desktop\\Albert\\012s-jelly-rescue\\qa\\sprite-audit-v1\\..\\..\\reference\\jelly-anthropomorphic-player-walk.png",
+                   "frames":  [
+                                  {
+                                      "direction":  "down",
+                                      "frame":  0,
+                                      "sourceX":  0,
+                                      "sourceY":  0,
+                                      "sourceWidth":  374,
+                                      "sourceHeight":  352,
+                                      "metrics":  {
+                                                      "bbox":  [
+                                                                   88,
+                                                                   19,
+                                                                   342,
+                                                                   347
+                                                               ],
+                                                      "opaquePixels":  57543,
+                                                      "edgeAlpha":  {
+                                                                        "top":  0,
+                                                                        "bottom":  0,
+                                                                        "left":  0,
+                                                                        "right":  0
+                                                                    },
+                                                      "edgeAnyAlpha":  {
+                                                                           "top":  0,
+                                                                           "bottom":  0,
+                                                                           "left":  0,
+                                                                           "right":  0
+                                                                       },
+                                                      "padding":  {
+                                                                      "top":  19,
+                                                                      "bottom":  4,
+                                                                      "left":  88,
+                                                                      "right":  31
+                                                                  }
+                                                  }
+                                  },
+                                  {
+                                      "direction":  "down",
+                                      "frame":  1,
+                                      "sourceX":  374,
+                                      "sourceY":  0,
+                                      "sourceWidth":  374,
+                                      "sourceHeight":  352,
+                                      "metrics":  {
+                                                      "bbox":  [
+                                                                   64,
+                                                                   17,
+                                                                   306,
+                                                                   347
+                                                               ],
+                                                      "opaquePixels":  57206,
+                                                      "edgeAlpha":  {
+                                                                        "top":  0,
+                                                                        "bottom":  0,
+                                                                        "left":  0,
+                                                                        "right":  0
+                                                                    },
+                                                      "edgeAnyAlpha":  {
+                                                                           "top":  0,
+                                                                           "bottom":  0,
+                                                                           "left":  0,
+                                                                           "right":  0
+                                                                       },
+                                                      "padding":  {
+                                                                      "top":  17,
+                                                                      "bottom":  4,
+                                                                      "left":  64,
+                                                                      "right":  67
+                                                                  }
+                                                  }
+                                  },
+                                  {
+                                      "direction":  "down",
+                                      "frame":  2,
+                                      "sourceX":  748,
+                                      "sourceY":  0,
+                                      "sourceWidth":  374,
+                                      "sourceHeight":  352,
+                                      "metrics":  {
+                                                      "bbox":  [
+                                                                   31,
+                                                                   18,
+                                                                   283,
+                                                                   347
+                                                               ],
+                                                      "opaquePixels":  57786,
+                                                      "edgeAlpha":  {
+                                                                        "top":  0,
+                                                                        "bottom":  0,
+                                                                        "left":  0,
+                                                                        "right":  0
+                                                                    },
+                                                      "edgeAnyAlpha":  {
+                                                                           "top":  0,
+                                                                           "bottom":  0,
+                                                                           "left":  0,
+                                                                           "right":  0
+                                                                       },
+                                                      "padding":  {
+                                                                      "top":  18,
+                                                                      "bottom":  4,
+                                                                      "left":  31,
+                                                                      "right":  90
+                                                                  }
+                                                  }
+                                  },
+                                  {
+                                      "direction":  "left",
+                                      "frame":  0,
+                                      "sourceX":  0,
+                                      "sourceY":  352,
+                                      "sourceWidth":  374,
+                                      "sourceHeight":  352,
+                                      "metrics":  {
+                                                      "bbox":  [
+                                                                   89,
+                                                                   4,
+                                                                   347,
+                                                                   347
+                                                               ],
+                                                      "opaquePixels":  53677,
+                                                      "edgeAlpha":  {
+                                                                        "top":  0,
+                                                                        "bottom":  0,
+                                                                        "left":  0,
+                                                                        "right":  0
+                                                                    },
+                                                      "edgeAnyAlpha":  {
+                                                                           "top":  0,
+                                                                           "bottom":  0,
+                                                                           "left":  0,
+                                                                           "right":  0
+                                                                       },
+                                                      "padding":  {
+                                                                      "top":  4,
+                                                                      "bottom":  4,
+                                                                      "left":  89,
+                                                                      "right":  26
+                                                                  }
+                                                  }
+                                  },
+                                  {
+                                      "direction":  "left",
+                                      "frame":  1,
+                                      "sourceX":  374,
+                                      "sourceY":  352,
+                                      "sourceWidth":  374,
+                                      "sourceHeight":  352,
+                                      "metrics":  {
+                                                      "bbox":  [
+                                                                   86,
+                                                                   4,
+                                                                   344,
+                                                                   347
+                                                               ],
+                                                      "opaquePixels":  52596,
+                                                      "edgeAlpha":  {
+                                                                        "top":  0,
+                                                                        "bottom":  0,
+                                                                        "left":  0,
+                                                                        "right":  0
+                                                                    },
+                                                      "edgeAnyAlpha":  {
+                                                                           "top":  0,
+                                                                           "bottom":  0,
+                                                                           "left":  0,
+                                                                           "right":  0
+                                                                       },
+                                                      "padding":  {
+                                                                      "top":  4,
+                                                                      "bottom":  4,
+                                                                      "left":  86,
+                                                                      "right":  29
+                                                                  }
+                                                  }
+                                  },
+                                  {
+                                      "direction":  "left",
+                                      "frame":  2,
+                                      "sourceX":  748,
+                                      "sourceY":  352,
+                                      "sourceWidth":  374,
+                                      "sourceHeight":  352,
+                                      "metrics":  {
+                                                      "bbox":  [
+                                                                   65,
+                                                                   4,
+                                                                   315,
+                                                                   347
+                                                               ],
+                                                      "opaquePixels":  52890,
+                                                      "edgeAlpha":  {
+                                                                        "top":  0,
+                                                                        "bottom":  0,
+                                                                        "left":  0,
+                                                                        "right":  0
+                                                                    },
+                                                      "edgeAnyAlpha":  {
+                                                                           "top":  0,
+                                                                           "bottom":  0,
+                                                                           "left":  0,
+                                                                           "right":  0
+                                                                       },
+                                                      "padding":  {
+                                                                      "top":  4,
+                                                                      "bottom":  4,
+                                                                      "left":  65,
+                                                                      "right":  58
+                                                                  }
+                                                  }
+                                  },
+                                  {
+                                      "direction":  "right",
+                                      "frame":  0,
+                                      "sourceX":  0,
+                                      "sourceY":  704,
+                                      "sourceWidth":  374,
+                                      "sourceHeight":  352,
+                                      "metrics":  {
+                                                      "bbox":  [
+                                                                   58,
+                                                                   4,
+                                                                   312,
+                                                                   347
+                                                               ],
+                                                      "opaquePixels":  53239,
+                                                      "edgeAlpha":  {
+                                                                        "top":  0,
+                                                                        "bottom":  0,
+                                                                        "left":  0,
+                                                                        "right":  0
+                                                                    },
+                                                      "edgeAnyAlpha":  {
+                                                                           "top":  0,
+                                                                           "bottom":  0,
+                                                                           "left":  0,
+                                                                           "right":  0
+                                                                       },
+                                                      "padding":  {
+                                                                      "top":  4,
+                                                                      "bottom":  4,
+                                                                      "left":  58,
+                                                                      "right":  61
+                                                                  }
+                                                  }
+                                  },
+                                  {
+                                      "direction":  "right",
+                                      "frame":  1,
+                                      "sourceX":  374,
+                                      "sourceY":  704,
+                                      "sourceWidth":  374,
+                                      "sourceHeight":  352,
+                                      "metrics":  {
+                                                      "bbox":  [
+                                                                   47,
+                                                                   4,
+                                                                   290,
+                                                                   347
+                                                               ],
+                                                      "opaquePixels":  51714,
+                                                      "edgeAlpha":  {
+                                                                        "top":  0,
+                                                                        "bottom":  0,
+                                                                        "left":  0,
+                                                                        "right":  0
+                                                                    },
+                                                      "edgeAnyAlpha":  {
+                                                                           "top":  0,
+                                                                           "bottom":  0,
+                                                                           "left":  0,
+                                                                           "right":  0
+                                                                       },
+                                                      "padding":  {
+                                                                      "top":  4,
+                                                                      "bottom":  4,
+                                                                      "left":  47,
+                                                                      "right":  83
+                                                                  }
+                                                  }
+                                  },
+                                  {
+                                      "direction":  "right",
+                                      "frame":  2,
+                                      "sourceX":  748,
+                                      "sourceY":  704,
+                                      "sourceWidth":  374,
+                                      "sourceHeight":  352,
+                                      "metrics":  {
+                                                      "bbox":  [
+                                                                   35,
+                                                                   4,
+                                                                   276,
+                                                                   347
+                                                               ],
+                                                      "opaquePixels":  51753,
+                                                      "edgeAlpha":  {
+                                                                        "top":  0,
+                                                                        "bottom":  0,
+                                                                        "left":  0,
+                                                                        "right":  0
+                                                                    },
+                                                      "edgeAnyAlpha":  {
+                                                                           "top":  0,
+                                                                           "bottom":  0,
+                                                                           "left":  0,
+                                                                           "right":  0
+                                                                       },
+                                                      "padding":  {
+                                                                      "top":  4,
+                                                                      "bottom":  4,
+                                                                      "left":  35,
+                                                                      "right":  97
+                                                                  }
+                                                  }
+                                  },
+                                  {
+                                      "direction":  "up",
+                                      "frame":  0,
+                                      "sourceX":  0,
+                                      "sourceY":  1056,
+                                      "sourceWidth":  374,
+                                      "sourceHeight":  352,
+                                      "metrics":  {
+                                                      "bbox":  [
+                                                                   87,
+                                                                   4,
+                                                                   336,
+                                                                   334
+                                                               ],
+                                                      "opaquePixels":  55276,
+                                                      "edgeAlpha":  {
+                                                                        "top":  0,
+                                                                        "bottom":  0,
+                                                                        "left":  0,
+                                                                        "right":  0
+                                                                    },
+                                                      "edgeAnyAlpha":  {
+                                                                           "top":  0,
+                                                                           "bottom":  0,
+                                                                           "left":  0,
+                                                                           "right":  0
+                                                                       },
+                                                      "padding":  {
+                                                                      "top":  4,
+                                                                      "bottom":  17,
+                                                                      "left":  87,
+                                                                      "right":  37
+                                                                  }
+                                                  }
+                                  },
+                                  {
+                                      "direction":  "up",
+                                      "frame":  1,
+                                      "sourceX":  374,
+                                      "sourceY":  1056,
+                                      "sourceWidth":  374,
+                                      "sourceHeight":  352,
+                                      "metrics":  {
+                                                      "bbox":  [
+                                                                   63,
+                                                                   4,
+                                                                   308,
+                                                                   335
+                                                               ],
+                                                      "opaquePixels":  53901,
+                                                      "edgeAlpha":  {
+                                                                        "top":  0,
+                                                                        "bottom":  0,
+                                                                        "left":  0,
+                                                                        "right":  0
+                                                                    },
+                                                      "edgeAnyAlpha":  {
+                                                                           "top":  0,
+                                                                           "bottom":  0,
+                                                                           "left":  0,
+                                                                           "right":  0
+                                                                       },
+                                                      "padding":  {
+                                                                      "top":  4,
+                                                                      "bottom":  16,
+                                                                      "left":  63,
+                                                                      "right":  65
+                                                                  }
+                                                  }
+                                  },
+                                  {
+                                      "direction":  "up",
+                                      "frame":  2,
+                                      "sourceX":  748,
+                                      "sourceY":  1056,
+                                      "sourceWidth":  374,
+                                      "sourceHeight":  352,
+                                      "metrics":  {
+                                                      "bbox":  [
+                                                                   40,
+                                                                   4,
+                                                                   286,
+                                                                   335
+                                                               ],
+                                                      "opaquePixels":  55244,
+                                                      "edgeAlpha":  {
+                                                                        "top":  0,
+                                                                        "bottom":  0,
+                                                                        "left":  0,
+                                                                        "right":  0
+                                                                    },
+                                                      "edgeAnyAlpha":  {
+                                                                           "top":  0,
+                                                                           "bottom":  0,
+                                                                           "left":  0,
+                                                                           "right":  0
+                                                                       },
+                                                      "padding":  {
+                                                                      "top":  4,
+                                                                      "bottom":  16,
+                                                                      "left":  40,
+                                                                      "right":  87
+                                                                  }
+                                                  }
+                                  }
+                              ]
+               },
+    "after":  {
+                  "source":  "C:\\Users\\User\\Desktop\\Albert\\012s-jelly-rescue\\qa\\sprite-audit-v1\\..\\..\\reference\\runtime\\jelly-anthropomorphic-player-walk-v2.png",
+                  "frames":  [
+                                 {
+                                     "direction":  "down",
+                                     "frame":  0,
+                                     "sourceX":  0,
+                                     "sourceY":  0,
+                                     "sourceWidth":  374,
+                                     "sourceHeight":  352,
+                                     "metrics":  {
+                                                     "bbox":  [
+                                                                  100,
+                                                                  25,
+                                                                  326,
+                                                                  339
+                                                              ],
+                                                     "opaquePixels":  50091,
+                                                     "edgeAlpha":  {
+                                                                       "top":  0,
+                                                                       "bottom":  0,
+                                                                       "left":  0,
+                                                                       "right":  0
+                                                                   },
+                                                     "edgeAnyAlpha":  {
+                                                                          "top":  0,
+                                                                          "bottom":  0,
+                                                                          "left":  0,
+                                                                          "right":  0
+                                                                      },
+                                                     "padding":  {
+                                                                     "top":  25,
+                                                                     "bottom":  12,
+                                                                     "left":  100,
+                                                                     "right":  47
+                                                                 }
+                                                 }
+                                 },
+                                 {
+                                     "direction":  "down",
+                                     "frame":  1,
+                                     "sourceX":  374,
+                                     "sourceY":  0,
+                                     "sourceWidth":  374,
+                                     "sourceHeight":  352,
+                                     "metrics":  {
+                                                     "bbox":  [
+                                                                  70,
+                                                                  20,
+                                                                  301,
+                                                                  339
+                                                              ],
+                                                     "opaquePixels":  52010,
+                                                     "edgeAlpha":  {
+                                                                       "top":  0,
+                                                                       "bottom":  0,
+                                                                       "left":  0,
+                                                                       "right":  0
+                                                                   },
+                                                     "edgeAnyAlpha":  {
+                                                                          "top":  0,
+                                                                          "bottom":  0,
+                                                                          "left":  0,
+                                                                          "right":  0
+                                                                      },
+                                                     "padding":  {
+                                                                     "top":  20,
+                                                                     "bottom":  12,
+                                                                     "left":  70,
+                                                                     "right":  72
+                                                                 }
+                                                 }
+                                 },
+                                 {
+                                     "direction":  "down",
+                                     "frame":  2,
+                                     "sourceX":  748,
+                                     "sourceY":  0,
+                                     "sourceWidth":  374,
+                                     "sourceHeight":  352,
+                                     "metrics":  {
+                                                     "bbox":  [
+                                                                  45,
+                                                                  21,
+                                                                  275,
+                                                                  340
+                                                              ],
+                                                     "opaquePixels":  51467,
+                                                     "edgeAlpha":  {
+                                                                       "top":  0,
+                                                                       "bottom":  0,
+                                                                       "left":  0,
+                                                                       "right":  0
+                                                                   },
+                                                     "edgeAnyAlpha":  {
+                                                                          "top":  0,
+                                                                          "bottom":  0,
+                                                                          "left":  0,
+                                                                          "right":  0
+                                                                      },
+                                                     "padding":  {
+                                                                     "top":  21,
+                                                                     "bottom":  11,
+                                                                     "left":  45,
+                                                                     "right":  98
+                                                                 }
+                                                 }
+                                 },
+                                 {
+                                     "direction":  "left",
+                                     "frame":  0,
+                                     "sourceX":  0,
+                                     "sourceY":  352,
+                                     "sourceWidth":  374,
+                                     "sourceHeight":  352,
+                                     "metrics":  {
+                                                     "bbox":  [
+                                                                  89,
+                                                                  32,
+                                                                  328,
+                                                                  339
+                                                              ],
+                                                     "opaquePixels":  47841,
+                                                     "edgeAlpha":  {
+                                                                       "top":  0,
+                                                                       "bottom":  0,
+                                                                       "left":  0,
+                                                                       "right":  0
+                                                                   },
+                                                     "edgeAnyAlpha":  {
+                                                                          "top":  0,
+                                                                          "bottom":  0,
+                                                                          "left":  0,
+                                                                          "right":  0
+                                                                      },
+                                                     "padding":  {
+                                                                     "top":  32,
+                                                                     "bottom":  12,
+                                                                     "left":  89,
+                                                                     "right":  45
+                                                                 }
+                                                 }
+                                 },
+                                 {
+                                     "direction":  "left",
+                                     "frame":  1,
+                                     "sourceX":  374,
+                                     "sourceY":  352,
+                                     "sourceWidth":  374,
+                                     "sourceHeight":  352,
+                                     "metrics":  {
+                                                     "bbox":  [
+                                                                  83,
+                                                                  31,
+                                                                  339,
+                                                                  339
+                                                              ],
+                                                     "opaquePixels":  48466,
+                                                     "edgeAlpha":  {
+                                                                       "top":  0,
+                                                                       "bottom":  0,
+                                                                       "left":  0,
+                                                                       "right":  0
+                                                                   },
+                                                     "edgeAnyAlpha":  {
+                                                                          "top":  0,
+                                                                          "bottom":  0,
+                                                                          "left":  0,
+                                                                          "right":  0
+                                                                      },
+                                                     "padding":  {
+                                                                     "top":  31,
+                                                                     "bottom":  12,
+                                                                     "left":  83,
+                                                                     "right":  34
+                                                                 }
+                                                 }
+                                 },
+                                 {
+                                     "direction":  "left",
+                                     "frame":  2,
+                                     "sourceX":  748,
+                                     "sourceY":  352,
+                                     "sourceWidth":  374,
+                                     "sourceHeight":  352,
+                                     "metrics":  {
+                                                     "bbox":  [
+                                                                  74,
+                                                                  33,
+                                                                  316,
+                                                                  339
+                                                              ],
+                                                     "opaquePixels":  47910,
+                                                     "edgeAlpha":  {
+                                                                       "top":  0,
+                                                                       "bottom":  0,
+                                                                       "left":  0,
+                                                                       "right":  0
+                                                                   },
+                                                     "edgeAnyAlpha":  {
+                                                                          "top":  0,
+                                                                          "bottom":  0,
+                                                                          "left":  0,
+                                                                          "right":  0
+                                                                      },
+                                                     "padding":  {
+                                                                     "top":  33,
+                                                                     "bottom":  12,
+                                                                     "left":  74,
+                                                                     "right":  57
+                                                                 }
+                                                 }
+                                 },
+                                 {
+                                     "direction":  "right",
+                                     "frame":  0,
+                                     "sourceX":  0,
+                                     "sourceY":  704,
+                                     "sourceWidth":  374,
+                                     "sourceHeight":  352,
+                                     "metrics":  {
+                                                     "bbox":  [
+                                                                  64,
+                                                                  29,
+                                                                  308,
+                                                                  339
+                                                              ],
+                                                     "opaquePixels":  48098,
+                                                     "edgeAlpha":  {
+                                                                       "top":  0,
+                                                                       "bottom":  0,
+                                                                       "left":  0,
+                                                                       "right":  0
+                                                                   },
+                                                     "edgeAnyAlpha":  {
+                                                                          "top":  0,
+                                                                          "bottom":  0,
+                                                                          "left":  0,
+                                                                          "right":  0
+                                                                      },
+                                                     "padding":  {
+                                                                     "top":  29,
+                                                                     "bottom":  12,
+                                                                     "left":  64,
+                                                                     "right":  65
+                                                                 }
+                                                 }
+                                 },
+                                 {
+                                     "direction":  "right",
+                                     "frame":  1,
+                                     "sourceX":  374,
+                                     "sourceY":  704,
+                                     "sourceWidth":  374,
+                                     "sourceHeight":  352,
+                                     "metrics":  {
+                                                     "bbox":  [
+                                                                  52,
+                                                                  30,
+                                                                  283,
+                                                                  339
+                                                              ],
+                                                     "opaquePixels":  47049,
+                                                     "edgeAlpha":  {
+                                                                       "top":  0,
+                                                                       "bottom":  0,
+                                                                       "left":  0,
+                                                                       "right":  0
+                                                                   },
+                                                     "edgeAnyAlpha":  {
+                                                                          "top":  0,
+                                                                          "bottom":  0,
+                                                                          "left":  0,
+                                                                          "right":  0
+                                                                      },
+                                                     "padding":  {
+                                                                     "top":  30,
+                                                                     "bottom":  12,
+                                                                     "left":  52,
+                                                                     "right":  90
+                                                                 }
+                                                 }
+                                 },
+                                 {
+                                     "direction":  "right",
+                                     "frame":  2,
+                                     "sourceX":  748,
+                                     "sourceY":  704,
+                                     "sourceWidth":  374,
+                                     "sourceHeight":  352,
+                                     "metrics":  {
+                                                     "bbox":  [
+                                                                  42,
+                                                                  30,
+                                                                  276,
+                                                                  339
+                                                              ],
+                                                     "opaquePixels":  46733,
+                                                     "edgeAlpha":  {
+                                                                       "top":  0,
+                                                                       "bottom":  0,
+                                                                       "left":  0,
+                                                                       "right":  0
+                                                                   },
+                                                     "edgeAnyAlpha":  {
+                                                                          "top":  0,
+                                                                          "bottom":  0,
+                                                                          "left":  0,
+                                                                          "right":  0
+                                                                      },
+                                                     "padding":  {
+                                                                     "top":  30,
+                                                                     "bottom":  12,
+                                                                     "left":  42,
+                                                                     "right":  97
+                                                                 }
+                                                 }
+                                 },
+                                 {
+                                     "direction":  "up",
+                                     "frame":  0,
+                                     "sourceX":  0,
+                                     "sourceY":  1056,
+                                     "sourceWidth":  374,
+                                     "sourceHeight":  352,
+                                     "metrics":  {
+                                                     "bbox":  [
+                                                                  85,
+                                                                  37,
+                                                                  323,
+                                                                  340
+                                                              ],
+                                                     "opaquePixels":  51103,
+                                                     "edgeAlpha":  {
+                                                                       "top":  0,
+                                                                       "bottom":  0,
+                                                                       "left":  0,
+                                                                       "right":  0
+                                                                   },
+                                                     "edgeAnyAlpha":  {
+                                                                          "top":  0,
+                                                                          "bottom":  0,
+                                                                          "left":  0,
+                                                                          "right":  0
+                                                                      },
+                                                     "padding":  {
+                                                                     "top":  37,
+                                                                     "bottom":  11,
+                                                                     "left":  85,
+                                                                     "right":  50
+                                                                 }
+                                                 }
+                                 },
+                                 {
+                                     "direction":  "up",
+                                     "frame":  1,
+                                     "sourceX":  374,
+                                     "sourceY":  1056,
+                                     "sourceWidth":  374,
+                                     "sourceHeight":  352,
+                                     "metrics":  {
+                                                     "bbox":  [
+                                                                  67,
+                                                                  37,
+                                                                  304,
+                                                                  340
+                                                              ],
+                                                     "opaquePixels":  50088,
+                                                     "edgeAlpha":  {
+                                                                       "top":  0,
+                                                                       "bottom":  0,
+                                                                       "left":  0,
+                                                                       "right":  0
+                                                                   },
+                                                     "edgeAnyAlpha":  {
+                                                                          "top":  0,
+                                                                          "bottom":  0,
+                                                                          "left":  0,
+                                                                          "right":  0
+                                                                      },
+                                                     "padding":  {
+                                                                     "top":  37,
+                                                                     "bottom":  11,
+                                                                     "left":  67,
+                                                                     "right":  69
+                                                                 }
+                                                 }
+                                 },
+                                 {
+                                     "direction":  "up",
+                                     "frame":  2,
+                                     "sourceX":  748,
+                                     "sourceY":  1056,
+                                     "sourceWidth":  374,
+                                     "sourceHeight":  352,
+                                     "metrics":  {
+                                                     "bbox":  [
+                                                                  45,
+                                                                  38,
+                                                                  279,
+                                                                  339
+                                                              ],
+                                                     "opaquePixels":  51257,
+                                                     "edgeAlpha":  {
+                                                                       "top":  0,
+                                                                       "bottom":  0,
+                                                                       "left":  0,
+                                                                       "right":  0
+                                                                   },
+                                                     "edgeAnyAlpha":  {
+                                                                          "top":  0,
+                                                                          "bottom":  0,
+                                                                          "left":  0,
+                                                                          "right":  0
+                                                                      },
+                                                     "padding":  {
+                                                                     "top":  38,
+                                                                     "bottom":  12,
+                                                                     "left":  45,
+                                                                     "right":  94
+                                                                 }
+                                                 }
+                                 }
+                             ]
+              },
+    "validation":  {
+                       "afterAllEdgesClear":  true,
+                       "afterAllFramesNonEmpty":  true
+                   }
+}
