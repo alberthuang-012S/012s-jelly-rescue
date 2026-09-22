@@ -65,7 +65,7 @@ export class Player {
   draw(ctx) {
     const stepWave = Math.sin(this.walkPhase * Math.PI * 2);
     const idleWave = Math.sin(this.idleTime * 2.4);
-    const bob = stepWave * 2.4 * this.walkBlend + idleWave * 1.1 * (1 - this.walkBlend);
+    const bob = stepWave * 0.35 * this.walkBlend + idleWave * 0.6 * (1 - this.walkBlend);
     const shadowWidth = 27 + Math.abs(stepWave) * this.walkBlend * 2;
     drawShadow(ctx, this.x, this.y + 29, shadowWidth, 8, 0.2);
     if (!this.spriteImage?.complete || !this.spriteImage.naturalWidth) {
@@ -77,11 +77,15 @@ export class Player {
       const frameCount = this.spriteSheet.frameCount || 1;
       const directionFrames = this.spriteSheet.directionFrames;
       const isWalking = this.walkBlend > 0.1;
+      const walkSequence = Array.isArray(this.spriteSheet.walkSequence) && this.spriteSheet.walkSequence.length
+        ? this.spriteSheet.walkSequence
+        : Array.from({ length: frameCount }, (_, index) => index);
+      const idleFrame = this.spriteSheet.idleFrame ?? Math.floor(frameCount / 2);
       const frame = directionFrames
         ? (directionFrames[this.direction] ?? directionFrames.down ?? 0)
         : isWalking
-          ? Math.floor(this.walkPhase * frameCount) % frameCount
-          : Math.floor(frameCount / 2);
+          ? walkSequence[Math.floor(this.walkPhase * walkSequence.length) % walkSequence.length] % frameCount
+          : idleFrame;
       const directionRows = this.spriteSheet.directionRows;
       const { frameWidth, frameHeight } = this.spriteSheet;
       const row = directionRows
@@ -92,9 +96,11 @@ export class Player {
       const destinationWidth = this.spriteSheet.destinationWidth || 72;
       const destinationHeight = this.spriteSheet.destinationHeight || 72;
       const anchorOffset = this.spriteSheet.anchorOffset || destinationHeight - 30;
-      const squash = Math.abs(stepWave) * this.walkBlend * 0.035;
-      const scaleX = 1 + squash * 0.35;
-      const scaleY = 1 - squash;
+      // The sprite sheet already contains the intended pose changes. Keep a
+      // fixed display scale so the head, shoes, and ground contact do not
+      // visibly stretch while the walk frames change.
+      const scaleX = 1;
+      const scaleY = 1;
       ctx.save();
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';

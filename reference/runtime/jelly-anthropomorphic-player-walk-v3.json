@@ -1,0 +1,77 @@
+{
+  "manifestVersion": 3,
+  "spriteVersion": "walk-v3",
+  "asset": "./jelly-anthropomorphic-player-walk-v3.png",
+  "sourceOriginal": "../jelly-anthropomorphic-player-walk.png",
+  "layout": {
+    "type": "direction-grid",
+    "columns": 3,
+    "rows": 4,
+    "frameWidth": 420,
+    "frameHeight": 400,
+    "directionRows": {
+      "down": 0,
+      "left": 1,
+      "right": 2,
+      "up": 3
+    }
+  },
+  "frames": [
+    { "direction": "down", "frame": 0, "sourceX": 0, "sourceY": 0, "sourceWidth": 420, "sourceHeight": 400 },
+    { "direction": "down", "frame": 1, "sourceX": 420, "sourceY": 0, "sourceWidth": 420, "sourceHeight": 400 },
+    { "direction": "down", "frame": 2, "sourceX": 840, "sourceY": 0, "sourceWidth": 420, "sourceHeight": 400 },
+    { "direction": "left", "frame": 0, "sourceX": 0, "sourceY": 400, "sourceWidth": 420, "sourceHeight": 400 },
+    { "direction": "left", "frame": 1, "sourceX": 420, "sourceY": 400, "sourceWidth": 420, "sourceHeight": 400 },
+    { "direction": "left", "frame": 2, "sourceX": 840, "sourceY": 400, "sourceWidth": 420, "sourceHeight": 400 },
+    { "direction": "right", "frame": 0, "sourceX": 0, "sourceY": 800, "sourceWidth": 420, "sourceHeight": 400 },
+    { "direction": "right", "frame": 1, "sourceX": 420, "sourceY": 800, "sourceWidth": 420, "sourceHeight": 400 },
+    { "direction": "right", "frame": 2, "sourceX": 840, "sourceY": 800, "sourceWidth": 420, "sourceHeight": 400 },
+    { "direction": "up", "frame": 0, "sourceX": 0, "sourceY": 1200, "sourceWidth": 420, "sourceHeight": 400 },
+    { "direction": "up", "frame": 1, "sourceX": 420, "sourceY": 1200, "sourceWidth": 420, "sourceHeight": 400 },
+    { "direction": "up", "frame": 2, "sourceX": 840, "sourceY": 1200, "sourceWidth": 420, "sourceHeight": 400 }
+  ],
+  "runtime": {
+    "destinationWidth": 84,
+    "destinationHeight": 92,
+    "anchorOffset": 58,
+    "frameCount": 3,
+    "walkSequence": [1, 0, 1, 2],
+    "idleFrame": 1,
+    "fixedDisplayScale": true,
+    "walkBob": 0.35,
+    "squashStretch": false
+  },
+  "reconstruction": {
+    "inputCellWidth": 374,
+    "inputCellHeight": 352,
+    "logicalCellWidth": 374,
+    "logicalCellHeight": 372,
+    "outputCellWidth": 420,
+    "outputCellHeight": 400,
+    "artScale": 1.06,
+    "groundBaseline": 392,
+    "copiedBeforeClearing": {
+      "downFromLeft": [
+        { "frame": 0, "sourceX": 192, "sourceY": 4, "sourceWidth": 46, "sourceHeight": 17 },
+        { "frame": 1, "sourceX": 542, "sourceY": 4, "sourceWidth": 46, "sourceHeight": 16 },
+        { "frame": 2, "sourceX": 888, "sourceY": 4, "sourceWidth": 55, "sourceHeight": 19 }
+      ],
+      "upFromRight": [
+        { "frame": 0, "sourceX": 189, "sourceY": 341, "sourceWidth": 39, "sourceHeight": 7, "targetY": 30 },
+        { "frame": 1, "sourceX": 543, "sourceY": 343, "sourceWidth": 33, "sourceHeight": 5, "targetY": 32 },
+        { "frame": 2, "sourceX": 896, "sourceY": 342, "sourceWidth": 34, "sourceHeight": 6, "targetY": 31 }
+      ]
+    },
+    "ambiguousOriginalPixelsPreserved": true
+  },
+  "safety": {
+    "outerBorderAlpha": 0,
+    "minimumPaddingPixels": {
+      "top": 23,
+      "bottom": 7,
+      "left": 45,
+      "right": 39
+    },
+    "note": "The original atlas is preserved. Only inspected DOWN continuations from LEFT and UP headwear continuations from RIGHT were reassigned; unverified accessory pixels were not deleted."
+  }
+}
