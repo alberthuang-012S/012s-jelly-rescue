@@ -8,7 +8,7 @@ import { InteractionSystem } from './InteractionSystem.js';
 import { ItemSystem } from './ItemSystem.js';
 import { Player } from './Player.js';
 import { PersonalBestStore } from './PersonalBestStore.js?result-best-v1';
-import { ResultScreen } from './ResultScreen.js?evolution-v1';
+import { ResultScreen } from './ResultScreen.js?evolution-v2';
 import { ScoreManager } from './ScoreManager.js';
 import { StageManager } from './StageManager.js?v=mountain-pavilion-dialogue-v2';
 import { TutorialDirector } from './TutorialDirector.js?mountain-pavilion-dialogue-v2';
@@ -528,7 +528,7 @@ export class Game {
 
   async evolve() {
     if (!['result', 'gameover'].includes(this.state)) return false;
-    if (!this.evolutionStore.consume()) return false;
+    if (!this.evolutionStore.consume() && !this.evolutionStore.state.evolved) return false;
     this.syncEvolution();
     this.playerAssetPromise = null;
     await this.ensurePlayerAsset();
@@ -681,6 +681,7 @@ export class Game {
   }
 
   handleEscape() {
+    if (this.resultScreen.dialog.open) return;
     if (this.isExitConfirmOpen) {
       this.closeExitConfirmation();
       return;
@@ -1069,6 +1070,7 @@ export class Game {
   }
 
   update(dt) {
+    if (this.resultScreen.dialog.open) return;
     if (this.state !== 'playing') return;
     if (this.isTutorialModalOpen || this.isExitConfirmOpen) return;
     const stage = this.stageManager.getStage();
@@ -1097,6 +1099,7 @@ export class Game {
   }
 
   tryAction() {
+    if (this.resultScreen.dialog.open) return;
     if (this.state !== 'playing') return;
     const target = this.interactionSystem.currentTarget;
     if (!target || ![STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(target.state)) {
@@ -1114,7 +1117,10 @@ export class Game {
       const scored = this.scoreManager.recordRescue(responseTime, target.condition, this.combo.getMultiplier());
       target.rescue(this.stageManager.elapsed);
       if (this.evolutionStore.award(this.selectedStage, this.scoreManager.rescuedCount)) {
-        this.hud.showToast('獲得 PNN+3 膠囊！', 'success', '結算時服用，進化成人型水母。');
+        this.input.setEnabled(false);
+        this.resultScreen.showReward(() => {
+          if (this.state === 'playing') this.input.setEnabled(true);
+        });
         this.addFloater(this.player.x, this.player.y - 145, 'PNN+3 膠囊 GET！', '#fff0b7', { duration: 3 });
       }
       this.createRescueParticles(target, target.condition);

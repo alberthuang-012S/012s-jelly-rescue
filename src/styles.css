@@ -1248,3 +1248,19 @@ body { background: #deeff5; }
 @keyframes jelly-evolve { 0% { transform: scale(.65); filter: brightness(3) drop-shadow(0 0 20px #fff); opacity: .3; } 55% { transform: scale(1.12); filter: brightness(1.6) drop-shadow(0 0 14px #60dfec); opacity: 1; } 100% { transform: scale(1); filter: none; } }
 @media (prefers-reduced-motion: reduce) { .is-evolving .evolution-character { animation: none; } }
 @media (max-width: 420px) { .evolution-panel { gap: 10px; padding: 10px; } .evolution-character { flex-basis: 64px; width: 64px; height: 84px; } }
+
+/* Native modal keeps focus inside and blocks the result actions until evolution finishes. */
+.evolution-dialog { width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow: auto; box-sizing: border-box; padding: 32px 28px; border: 2px solid #d3edf2; border-radius: 26px; color: #23465c; background: radial-gradient(circle at 50% 10%, #fff8d8, transparent 48%), linear-gradient(145deg, #fafffb, #e3f0ff); box-shadow: 0 28px 90px #071d4370; text-align: center; }
+.evolution-dialog::backdrop { background: #092238bd; backdrop-filter: blur(6px); }
+.evolution-dialog h2 { margin: 12px 0; font-size: clamp(23px, 5vw, 30px); line-height: 1.3; }
+.evolution-dialog p { margin: 0 0 24px; font-size: 14px; line-height: 1.8; color: #56707e; }
+.evolution-dialog-kicker { font: 10px 'DM Mono', monospace; letter-spacing: .14em; color: #977442; }
+.evolution-dialog-art { position: relative; display: flex; justify-content: center; align-items: center; min-height: 170px; margin-bottom: 18px; }
+.evolution-dialog-art .evolution-character { width: 150px; height: 170px; flex-basis: 150px; z-index: 1; }
+.reward-rays { position: absolute; font-size: 220px; line-height: 1; color: #f8d976; opacity: .65; }
+.reward-capsule { position: relative; display: grid; place-items: center; width: 154px; height: 65px; border: 3px solid #ad803c; border-radius: 80px; background: linear-gradient(90deg, #ffcf60 50%, #fffdf0 50%); box-shadow: inset 0 7px 0 #ffffff8a, 0 12px 26px #c8943633; color: #77501e; font: 800 24px 'Space Grotesk', sans-serif; transform: rotate(-25deg); }
+.reward-capsule-small { position: absolute; right: 10px; bottom: 4px; width: 83px; height: 36px; font-size: 14px; z-index: 2; }
+.evolution-dialog-action { justify-content: center; }
+.evolution-dialog-action:disabled { opacity: .7; cursor: wait; }
+.evolution-dialog-action:focus-visible { outline: 3px solid #296b9b; outline-offset: 4px; }
+@media (max-height: 540px) { .evolution-dialog { padding: 18px 24px; } .evolution-dialog-art { min-height: 95px; margin-bottom: 10px; } .evolution-dialog-art .evolution-character { height: 100px; } .reward-rays { font-size: 130px; } .evolution-dialog p { margin-bottom: 14px; } }

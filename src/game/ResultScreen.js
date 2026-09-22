@@ -7,6 +7,18 @@ export class ResultScreen {
     this.onHome = onHome;
     this.evolutionStore = evolutionStore;
     this.onEvolve = onEvolve;
+    this.dialog = document.createElement('dialog');
+    this.dialog.className = 'evolution-dialog';
+    this.dialog.setAttribute('aria-labelledby', 'evolution-dialog-title');
+    this.dialog.setAttribute('aria-describedby', 'evolution-dialog-description');
+    this.dialog.addEventListener('cancel', (event) => event.preventDefault());
+    document.body.append(this.dialog);
+    const guard = (callback) => () => {
+      if (!this.dialog.open && !this.evolutionStore.state.capsule) callback?.();
+    };
+    this.onReplay = guard(onReplay);
+    this.onNext = guard(onNext);
+    this.onHome = guard(onHome);
     document.querySelector('#result-replay').addEventListener('click', () => this.onReplay?.());
     document.querySelector('#result-next').addEventListener('click', () => this.onNext?.());
     document.querySelector('#result-home').addEventListener('click', () => this.onHome?.());
@@ -15,8 +27,73 @@ export class ResultScreen {
   }
 
   hide() {
+    this.dialog.close();
     this.screen.classList.add('is-hidden');
     this.gameover.classList.add('is-hidden');
+  }
+
+  openDialog({ title, description, visual, buttonText, onClick }) {
+    this.dialog.innerHTML = `
+      <div class="evolution-dialog-art">${visual}</div>
+      <span class="evolution-dialog-kicker">PNN+3 · JELLY EVOLUTION</span>
+      <h2 id="evolution-dialog-title">${title}</h2>
+      <p id="evolution-dialog-description" aria-live="polite">${description}</p>
+      <button class="primary-button evolution-dialog-action" type="button">${buttonText}</button>`;
+    const button = this.dialog.querySelector('button');
+    button.addEventListener('click', () => onClick(button));
+    if (!this.dialog.open) this.dialog.showModal();
+    button.focus();
+  }
+
+  showReward(onContinue) {
+    this.openDialog({
+      title: '獲得 PNN+3 膠囊！',
+      description: '成功救援第 2 位居民！<br>膠囊已收好，巡邏結算時就能進化成人型水母。',
+      visual: '<span class="reward-rays" aria-hidden="true">✦</span><span class="reward-capsule" aria-label="PNN+3 膠囊">PNN+3</span>',
+      buttonText: '收下膠囊，繼續救援',
+      onClick: () => { this.dialog.close(); onContinue(); }
+    });
+  }
+
+  requireEvolution(screen) {
+    this.openDialog({
+      title: '小水母，準備進化！',
+      description: '服用 PNN+3 膠囊，進化成人型水母。<br>移動速度永久提升 25%，完成進化後即可繼續。',
+      visual: '<img class="evolution-character" src="./reference/runtime/jelly-home.webp" alt="小水母"><span class="reward-capsule reward-capsule-small" aria-hidden="true">PNN+3</span>',
+      buttonText: '服用 PNN+3・開始進化',
+      onClick: async (button) => {
+        if (button.disabled) return;
+        button.disabled = true;
+        button.textContent = '正在進化…';
+        try {
+          if (!await this.onEvolve()) throw new Error('Evolution incomplete');
+          const image = this.dialog.querySelector('img');
+          image.src = './reference/jelly-anthropomorphic-home.png';
+          image.alt = '人型水母';
+          await image.decode().catch(() => {});
+          this.dialog.querySelector('.reward-capsule').remove();
+          this.dialog.querySelector('.evolution-dialog-art').classList.add('is-evolving');
+          this.dialog.querySelector('h2').textContent = '進化成功！人型水母';
+          this.dialog.querySelector('p').textContent = '移動速度永久 +25%，一起展開下一次救援！';
+          await new Promise(resolve => setTimeout(resolve, 1200));
+          this.showEvolution(screen);
+          button.textContent = '太棒了，查看結算';
+          button.disabled = false;
+          // Replace the action so further clicks cannot consume another capsule.
+          const done = button.cloneNode(true);
+          button.replaceWith(done);
+          done.addEventListener('click', () => {
+            this.dialog.close();
+            screen.querySelector('.result-actions button:not(.is-hidden)')?.focus();
+          });
+          done.focus();
+        } catch {
+          button.disabled = false;
+          button.textContent = '重試進化';
+          this.dialog.querySelector('p').textContent = '進化尚未完成，請再試一次。膠囊進度已保留。';
+        }
+      }
+    });
   }
 
   showEvolution(screen) {
@@ -33,26 +110,8 @@ export class ResultScreen {
       <div class="evolution-copy" aria-live="polite">
         <strong>${evolved ? '人型水母' : capsule ? '獲得 PNN+3 膠囊' : '小水母'}</strong>
         <p>${evolved ? '移動速度永久 +25%' : capsule ? '服用膠囊，進化成人型水母，移動速度永久 +25%。' : '在山區成功救援第 2 位居民，即可獲得進化膠囊。'}</p>
-        ${capsule ? '<button class="secondary-button evolution-consume" type="button"><span class="capsule-icon" aria-hidden="true"></span>服用 PNN+3・進化</button>' : ''}
       </div>`;
-    panel.querySelector('.evolution-consume')?.addEventListener('click', async (event) => {
-      const button = event.currentTarget;
-      button.disabled = true;
-      button.textContent = '正在進化…';
-      const navigation = [...screen.querySelectorAll('.result-actions button')];
-      navigation.forEach((item) => { item.disabled = true; });
-      try {
-        if (await this.onEvolve()) {
-          this.showEvolution(screen);
-          panel.classList.remove('is-evolving');
-          void panel.offsetWidth;
-          panel.classList.add('is-evolving');
-          panel.querySelector('strong').textContent = '進化成功！人型水母';
-        }
-      } finally {
-        navigation.forEach((item) => { item.disabled = false; });
-      }
-    });
+    if (capsule) this.requireEvolution(screen);
   }
 
   showResult(result, stage, hasNext, nextLabel = '前往下一站') {

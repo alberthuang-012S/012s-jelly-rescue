@@ -1,4 +1,4 @@
-import { Game } from './game/Game.js?evolution-v1';
+import { Game } from './game/Game.js?evolution-v2';
 
 window.addEventListener('DOMContentLoaded', () => {
   new Game();
