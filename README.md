@@ -38,8 +38,8 @@ The core loop is split into focused modules:
 - `Jelly Park`: complete portrait-friendly loop with a compact full-map view, wide central route, open side loops, generous grass areas, a small pond, fountain, picnic area and playground.
 - `Jelly Mountain`: terraced alpine route with a trailhead, wide stepped paths, a central rest deck, two readable mid-route branches and a summit lookout.
 - `reference/generated-mountain-open-portrait-hq.png` is the approved portrait mountain concept rendered as the in-game background, with a spacious central meadow and sparse edge obstacles.
-- `reference/world-jelly-player-hq.png` is the polished four-frame player sprite sheet; `reference/generated-npcs-hiker-elder-child-hq.png` contains the updated hiker, elder and child sprites with transparent alpha.
-- `reference/world-jelly-front-hq.png` is the high-resolution home-hero master/fallback; the homepage loads the smaller `reference/runtime/jelly-home.webp` first.
+- `reference/jelly-anthropomorphic-player-walk.png` is the current 12-frame walking sprite sheet (four directions × three phases); `reference/jelly-anthropomorphic-player.png` remains the four-direction fallback. `reference/generated-npcs-hiker-elder-child-hq.png` contains the updated hiker, elder and child sprites with transparent alpha.
+- `reference/jelly-anthropomorphic-home.png` is the current transparent home-hero artwork; the previous `world-jelly-*` jelly assets remain available as fallbacks.
 - `reference/generated-park-open-portrait-hq.png` is the approved clean portrait park artwork, composited under gameplay entities and HUD.
 - Park gameplay uses a 768×1152 logical world mapped to the 1024×1536 portrait artwork, so the full map reads larger on phones while keeping the collision geometry aligned.
 - Camera strategy: portrait mobile uses a full-map fit; desktop and landscape use a clamped, smoothly-following RPG camera.

@@ -76,12 +76,19 @@ export class Player {
     if (this.spriteSheet?.frameWidth) {
       const frameCount = this.spriteSheet.frameCount || 1;
       const directionFrames = this.spriteSheet.directionFrames;
+      const isWalking = this.walkBlend > 0.1;
       const frame = directionFrames
         ? (directionFrames[this.direction] ?? directionFrames.down ?? 0)
-        : Math.floor(this.walkPhase * frameCount) % frameCount;
+        : isWalking
+          ? Math.floor(this.walkPhase * frameCount) % frameCount
+          : Math.floor(frameCount / 2);
+      const directionRows = this.spriteSheet.directionRows;
       const { frameWidth, frameHeight } = this.spriteSheet;
-      const sourceY = this.spriteSheet.sourceY || 0;
-      const sourceHeight = this.spriteSheet.sourceHeight || frameHeight;
+      const row = directionRows
+        ? (directionRows[this.direction] ?? directionRows.down ?? 0)
+        : 0;
+      const sourceY = (this.spriteSheet.sourceY ?? 0) + row * frameHeight;
+      const sourceHeight = this.spriteSheet.sourceHeight ?? frameHeight;
       const destinationWidth = this.spriteSheet.destinationWidth || 72;
       const destinationHeight = this.spriteSheet.destinationHeight || 72;
       const anchorOffset = this.spriteSheet.anchorOffset || destinationHeight - 30;

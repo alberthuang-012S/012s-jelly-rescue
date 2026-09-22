@@ -16,6 +16,8 @@ import { clamp, drawText, formatClock, lerp } from './utils.js';
 
 const ASSET_PATHS = Object.freeze({
   player: [
+    './reference/jelly-anthropomorphic-player-walk.png',
+    './reference/jelly-anthropomorphic-player.png',
     './reference/runtime/jelly-player.webp',
     './reference/world-jelly-player-hq.png'
   ],
@@ -33,6 +35,7 @@ const ASSET_PATHS = Object.freeze({
     './reference/nap-plus-one.png'
   ],
   home: [
+    './reference/jelly-anthropomorphic-home.png',
     './reference/runtime/jelly-home.webp',
     './reference/world-jelly-front-hq.png'
   ],
@@ -380,17 +383,28 @@ export class Game {
     }).then(async (worldJelly) => {
       if (worldJelly?.naturalWidth) {
         this.spriteImage = worldJelly;
-        this.playerSpriteSheet = {
-          frameWidth: worldJelly.naturalWidth / 4,
-          frameHeight: worldJelly.naturalHeight,
-          frameCount: 4,
-          directionFrames: { down: 0, left: 1, right: 2, up: 3 },
-          sourceY: Math.round(worldJelly.naturalHeight * 0.06),
-          sourceHeight: Math.round(worldJelly.naturalHeight * 0.88),
-          destinationWidth: 84,
-          destinationHeight: 92,
-          anchorOffset: 58
-        };
+        const isWalkingGrid = worldJelly.naturalHeight > worldJelly.naturalWidth;
+        this.playerSpriteSheet = isWalkingGrid
+          ? {
+            frameWidth: worldJelly.naturalWidth / 3,
+            frameHeight: worldJelly.naturalHeight / 4,
+            frameCount: 3,
+            directionRows: { down: 0, left: 1, right: 2, up: 3 },
+            destinationWidth: 84,
+            destinationHeight: 92,
+            anchorOffset: 58
+          }
+          : {
+            frameWidth: worldJelly.naturalWidth / 4,
+            frameHeight: worldJelly.naturalHeight,
+            frameCount: 4,
+            directionFrames: { down: 0, left: 1, right: 2, up: 3 },
+            sourceY: Math.round(worldJelly.naturalHeight * 0.06),
+            sourceHeight: Math.round(worldJelly.naturalHeight * 0.88),
+            destinationWidth: 84,
+            destinationHeight: 92,
+            anchorOffset: 58
+          };
         this.player.spriteSheet = this.playerSpriteSheet;
       } else {
         const rawSprite = await loadImage(ASSET_PATHS.playerFallback, {
