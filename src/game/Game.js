@@ -17,7 +17,7 @@ import { clamp, drawText, formatClock, lerp } from './utils.js';
 
 const ASSET_PATHS = Object.freeze({
   player: [
-    './reference/runtime/jelly-anthropomorphic-player-walk-v5.png',
+    './reference/runtime/jelly-anthropomorphic-player-walk-v9.png',
     './reference/runtime/jelly-anthropomorphic-player-walk-v3.png',
     './reference/runtime/jelly-anthropomorphic-player-walk-v2.png',
     './reference/jelly-anthropomorphic-player-walk.png',
@@ -57,7 +57,7 @@ const ASSET_PATHS = Object.freeze({
 // geometry explicit so a different image cannot silently inherit a guessed
 // row/column layout from its dimensions.
 export const PLAYER_SPRITE_MANIFESTS = Object.freeze({
-  './reference/runtime/jelly-anthropomorphic-player-walk-v5.png': Object.freeze({
+  './reference/runtime/jelly-anthropomorphic-player-walk-v9.png': Object.freeze({
     layout: 'direction-grid',
     frameWidth: 420,
     frameHeight: 400,

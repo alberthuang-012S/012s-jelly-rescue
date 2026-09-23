@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { Player } from '../src/game/Player.js';
 import { PLAYER_SPRITE_MANIFESTS } from '../src/game/Game.js';
 
-const manifest = PLAYER_SPRITE_MANIFESTS['./reference/runtime/jelly-anthropomorphic-player-walk-v5.png'];
+const manifest = PLAYER_SPRITE_MANIFESTS['./reference/runtime/jelly-anthropomorphic-player-walk-v9.png'];
 const stage = { world: { width: 2000, height: 2000 }, obstacles: [] };
 const input = (x, y) => ({ getMovementVector: () => ({ x, y }) });
 function player() {
@@ -61,7 +61,7 @@ test('legacy fallback frame registration keeps the crest in place', () => {
   }
 });
 
-test('both side directions render four distinct frames including the opposite stride', () => {
+test('both side directions render the four-cell cycle in the intended order', () => {
   const p = player();
   p.spriteImage = { complete: true, naturalWidth: 1680 };
   p.isMoving = true;

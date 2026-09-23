@@ -9,8 +9,8 @@ body{margin:0;padding:28px;background:#edf5fa;color:#23465c;font:15px system-ui}
 <script type="module">
 import { Player } from '../src/game/Player.js?walk-v4';
 import { PLAYER_SPRITE_MANIFESTS } from '../src/game/Game.js';
-const sheet = new Image(); sheet.src='../reference/runtime/jelly-anthropomorphic-player-walk-v5.png'; await sheet.decode();
-const manifest=PLAYER_SPRITE_MANIFESTS['./reference/runtime/jelly-anthropomorphic-player-walk-v5.png'];
+const sheet = new Image(); sheet.src='../reference/runtime/jelly-anthropomorphic-player-walk-v9.png'; await sheet.decode();
+const manifest=PLAYER_SPRITE_MANIFESTS['./reference/runtime/jelly-anthropomorphic-player-walk-v9.png'];
 let moving=true, speed=256.25, auto=false, time=0, last=0, manualFrame=-1;
 const views=Object.entries({down:['正面',0,1],left:['向左',-1,0],right:['向右',1,0],up:['背面',0,-1]}).map(([direction,[label,x,y]])=>{
  const figure=document.createElement('figure'), caption=document.createElement('figcaption'), canvas=document.createElement('canvas');
