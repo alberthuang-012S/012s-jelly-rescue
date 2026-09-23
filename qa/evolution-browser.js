@@ -46,7 +46,7 @@ const originalEvolve = game.resultScreen.onEvolve;
 game.resultScreen.onEvolve = async () => {
   const result = await originalEvolve();
   check(game.player.speed === 256.25, '進化速度 +25%');
-  check(game.player.spriteImage.src.includes('walk-v9'), '進化後使用人型行走素材');
+  check(game.player.spriteImage.src.includes('walk-v12'), '進化後使用人型行走素材');
   check(document.querySelector('.home-character-crop img').src.includes('anthropomorphic'), '主選單同步人型');
   check(new EvolutionStore(memory).state.evolved, '重載保留進化');
   check(!game.evolutionStore.award('mountain', 2), '進化後不再發放');

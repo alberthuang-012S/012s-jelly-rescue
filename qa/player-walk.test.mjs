@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { Player } from '../src/game/Player.js';
 import { PLAYER_SPRITE_MANIFESTS } from '../src/game/Game.js';
 
-const manifest = PLAYER_SPRITE_MANIFESTS['./reference/runtime/jelly-anthropomorphic-player-walk-v9.png'];
+const manifest = PLAYER_SPRITE_MANIFESTS['./reference/runtime/jelly-anthropomorphic-player-walk-v12.png'];
 const stage = { world: { width: 2000, height: 2000 }, obstacles: [] };
 const input = (x, y) => ({ getMovementVector: () => ({ x, y }) });
 function player() {
