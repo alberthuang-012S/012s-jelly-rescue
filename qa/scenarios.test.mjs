@@ -142,11 +142,12 @@ test('Tutorial remains untimed, practice never fails and legacy events keep move
   assert.equal(manager.status, 'playing'); assert.equal(manager.getRemaining(), null);
   const tutorial = new TutorialDirector(manager.getStage()); const npcs = [];
   tutorial.step = 'first-rescue'; const npc = tutorial.beginRescue(5, npcs, { ...manager.getStage().start, direction: 'up' });
+  assert.equal(npc.stageId,'tutorial');
   npc.update(1000, manager.getStage(), 1005); assert.equal(npc.state, STATES.HELP);
   assert.equal(npc.scenarioType, null);
   for (const id of ['park', 'mountain']) {
     manager.start(id); const stage = manager.getStage(); const director = new EventDirector(stage); const npcs = [];
-    director.seed(npcs); assert.equal(npcs.length, 5);
+    director.seed(npcs); assert.equal(npcs.length, 5); assert.ok(npcs.every((npc)=>npc.stageId===id));
     assert.equal(director.triggerEvent(5, npcs, CONDITIONS.ITCH), true);
     const target = npcs.find((npc) => npc.condition); assert.equal(target.condition, CONDITIONS.ITCH); assert.equal(target.scenarioType, null);
     target.rescue(6); target.update(1.3, stage, 7.3); assert.equal(target.state, STATES.NORMAL);

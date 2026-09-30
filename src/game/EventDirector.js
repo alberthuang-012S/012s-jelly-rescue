@@ -38,7 +38,8 @@ export class EventDirector {
       x: point.x,
       y: point.y,
       zone: point.zone,
-      path: route
+      path: route,
+      stageId: this.stage.id
     });
     npc.onFailure = this.callbacks.onFailure;
     npc.onStateChange = this.callbacks.onStateChange;

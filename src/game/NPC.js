@@ -7,7 +7,7 @@ export const LIFESTYLE_SPRITE_FRAMES = Object.freeze({
 });
 import { NPCStateMachine } from './NPCStateMachine.js';
 import { NPC_ROLE_DEFS } from './NPCRoleDefinitions.js';
-import { resolveScenario, scenarioDialogue } from './ScenarioDefinitions.js';
+import { legacyConditionDialogue, resolveScenario, scenarioDialogue } from './ScenarioDefinitions.js';
 import { injuryPose } from './InjuryAnimation.js';
 import { INJURY_TOP_OFFSETS } from './InjurySpriteLayout.js';
 
@@ -19,7 +19,7 @@ function normalizeCondition(condition) {
 }
 
 export class NPC {
-  constructor({ id, role, x, y, zone, path = [], name, isPractice = false }) {
+  constructor({ id, role, x, y, zone, path = [], name, isPractice = false, stageId = null }) {
     this.id = id;
     this.role = role;
     this.name = name || NPC_ROLE_DEFS[role]?.label || '遊客';
@@ -27,6 +27,7 @@ export class NPC {
     this.y = y;
     this.radius = NPC_ROLE_DEFS[role]?.radius || 20;
     this.zone = zone || 'park';
+    this.stageId = stageId;
     this.path = path;
     this.pathIndex = 0;
     this.wanderTarget = null;
@@ -456,7 +457,11 @@ export class NPC {
     const isCritical = this.state === STATES.CRITICAL;
     const isRescued = this.state === STATES.RESCUED;
     const isFailed = this.state === STATES.FAILED;
-    const label = this.dialogueOverride || scenarioDialogue(this.role, this.scenarioType, this.state) || (isRescued
+    const stageDialogue = scenarioDialogue(this.role, this.scenarioType, this.state, this.stageId);
+    const legacyDialogue = ['park', 'mountain'].includes(this.stageId)
+      ? legacyConditionDialogue(conditionKey, this.state)
+      : null;
+    const fallbackDialogue = isRescued
       ? condition.rescuedTitle
       : isFailed
         ? '我先回去了……'
@@ -464,7 +469,8 @@ export class NPC {
           ? condition.warningTitle
           : isCritical
             ? condition.criticalTitle
-            : condition.title);
+            : condition.title;
+    const label = this.dialogueOverride || stageDialogue || legacyDialogue || fallbackDialogue;
     const scale = Math.max(0.25, cameraScale);
     const screenFontSize = compactStatusBubble ? (isCritical ? 16 : 14) : (isCritical ? 19 : 17);
     const screenPadding = compactStatusBubble ? 24 : 30;

@@ -7,12 +7,67 @@ const define = (condition, reaction, warning, help, critical, rescued = '好多�
 });
 
 export const SCENARIO_DEFS = Object.freeze({
-  SKINCARE: define(CONDITIONS.ITCH, 'skin', '皮膚乾乾的，好癢！', '皮膚還是好癢……', '皮膚癢得受不了！', '不癢了，謝謝你！'),
-  OUTDOOR_SKIN: define(CONDITIONS.ITCH, 'skin', '待在外面，皮膚好癢！', '皮膚還是好癢……', '皮膚癢得受不了！', '不癢了，謝謝你！'),
-  GRASS_SKIN: define(CONDITIONS.ITCH, 'skin', '碰到草，皮膚好癢！', '皮膚還是好癢……', '皮膚癢得受不了！', '不癢了，謝謝你！'),
-  FALL: define(CONDITIONS.SORENESS, 'fall', '跌倒了，膝蓋好痛！', '膝蓋還是好痛……', '膝蓋痛得受不了！', '膝蓋好多了，謝謝！'),
+  SKINCARE: define(CONDITIONS.ITCH, 'skin', '皮膚有點乾乾的……', '皮膚感覺不太舒服……', '皮膚越來越不舒服了……', '舒服多了，謝謝你！'),
+  OUTDOOR_SKIN: define(CONDITIONS.ITCH, 'skin', '在外面一整天，皮膚有點乾……', '皮膚感覺不太舒服……', '皮膚越來越不舒服了……', '舒服多了，謝謝你！'),
+  GRASS_SKIN: define(CONDITIONS.ITCH, 'skin', '剛剛碰到草，感覺怪怪的……', '皮膚開始有點癢癢的……', '真的越來越癢了！', '不癢了，謝謝！'),
+  FALL: define(CONDITIONS.SORENESS, 'fall', '啊！', '膝蓋還是好痛……', '膝蓋痛得受不了！', '膝蓋好多了，謝謝！'),
   SPORT_SORE: define(CONDITIONS.SORENESS, 'sore', '運動後，肌肉好痠！', '肌肉還是好痠……', '肌肉痠得受不了！', '肌肉舒服多了，謝謝！'),
   LONG_WALK: define(CONDITIONS.SORENESS, 'sore', '走久了，雙腿好痠！', '雙腿還是好痠……', '雙腿痠得受不了！', '雙腿舒服多了，謝謝！')
+});
+
+const dialogue = (WARNING, HELP, CRITICAL, RESCUED) => Object.freeze({ WARNING, HELP, CRITICAL, RESCUED });
+
+// Role lines are scoped by stage and scenario so they cannot bleed into the
+// condition-based Park and Mountain events or contradict the selected item.
+const ROLE_SCENARIO_DIALOGUE = Object.freeze({
+  city: Object.freeze({
+    youngWoman: Object.freeze({
+      SKINCARE: dialogue('今天皮膚感覺有點乾乾的……', '想好好照顧一下皮膚。', '皮膚越來越不舒服了……', '舒服多了，謝謝你！'),
+      OUTDOOR_SKIN: dialogue('今天皮膚感覺有點乾乾的……', '想好好照顧一下皮膚。', '皮膚越來越不舒服了……', '舒服多了，謝謝你！')
+    }),
+    shopper: Object.freeze({
+      SKINCARE: dialogue('逛了一整天，皮膚有點乾……', '想讓皮膚舒服一點。', '皮膚真的有點受不了了……', '好多了，謝謝！'),
+      LONG_WALK: Object.freeze({ WARNING: '逛久了，雙腿好痠！' })
+    }),
+    cafeVisitor: Object.freeze({
+      SKINCARE: dialogue('冷氣吹久了，皮膚乾乾的……', '感覺皮膚需要照顧一下。', '越來越不舒服了……', '現在舒服多了！'),
+      OUTDOOR_SKIN: dialogue('冷氣吹久了，皮膚乾乾的……', '感覺皮膚需要照顧一下。', '越來越不舒服了……', '現在舒服多了！')
+    }),
+    photographerGirl: Object.freeze({
+      SKINCARE: dialogue('今天在外面跑了一整天……', '皮膚感覺有點不舒服。', '好想趕快照顧一下皮膚……', '舒服多了，謝謝你！')
+    }),
+    grassVisitor: Object.freeze({
+      GRASS_SKIN: dialogue('剛剛碰到草，感覺怪怪的……', '皮膚開始有點癢癢的……', '真的越來越癢了！', '不癢了，謝謝！')
+    }),
+    deliveryWorker: Object.freeze({
+      SPORT_SORE: dialogue('今天跑了一整天，肩膀好痠……', '肩膀還是好痠……', '痠得快背不動了！', '肩膀舒服多了，謝謝！'),
+      LONG_WALK: dialogue('今天跑了一整天，肩膀好痠……', '肩膀還是好痠……', '痠得快背不動了！', '肩膀舒服多了，謝謝！')
+    })
+  }),
+  sports: Object.freeze({
+    skateboarder: Object.freeze({
+      FALL: dialogue('啊！', '膝蓋好痛……', '膝蓋痛得受不了！', '膝蓋好多了，謝謝！')
+    }),
+    basketballPlayer: Object.freeze({
+      FALL: dialogue('啊！', '腳好痛……', '腳痛得受不了！', '腳好多了，謝謝！')
+    }),
+    runner: Object.freeze({
+      SPORT_SORE: dialogue('跑完這圈，雙腿好痠！', '雙腿還是好痠……', '雙腿痠得受不了！', '雙腿舒服多了，謝謝！')
+    }),
+    fitnessGuy: Object.freeze({
+      SPORT_SORE: dialogue('剛練完，肩膀好痠……', '手臂也開始痠了……', '肌肉痠得受不了！', '肌肉舒服多了！')
+    }),
+    sportsGirl: Object.freeze({
+      SPORT_SORE: dialogue('運動完，腿有點痠……', '雙腿還是好痠……', '腿真的痠得受不了！', '現在輕鬆多了，謝謝！')
+    }),
+    grassVisitor: Object.freeze({
+      GRASS_SKIN: dialogue('剛剛碰到草，感覺怪怪的……', '皮膚開始有點癢癢的……', '真的越來越癢了！', '不癢了，謝謝！')
+    }),
+    deliveryWorker: Object.freeze({
+      SPORT_SORE: dialogue('今天跑了一整天，肩膀好痠……', '肩膀還是好痠……', '痠得快背不動了！', '肩膀舒服多了，謝謝！'),
+      LONG_WALK: dialogue('今天跑了一整天，肩膀好痠……', '肩膀還是好痠……', '痠得快背不動了！', '肩膀舒服多了，謝謝！')
+    })
+  })
 });
 
 export function resolveScenario(type) {
@@ -21,18 +76,21 @@ export function resolveScenario(type) {
   return definition;
 }
 
-const ROLE_SORE_DIALOGUE = Object.freeze({
-  runner: Object.freeze({ WARNING: '跑完，雙腿好痠！', HELP: '雙腿還是好痠……', CRITICAL: '雙腿痠得受不了！', RESCUED: '雙腿舒服多了，謝謝！' }),
-  fitnessGuy: Object.freeze({ WARNING: '練完，肌肉好痠！' }),
-  basketballPlayer: Object.freeze({ WARNING: '打完球，肌肉好痠！' }),
-  sportsGirl: Object.freeze({ WARNING: '運動後，雙腿好痠！', HELP: '雙腿還是好痠……', CRITICAL: '雙腿痠得受不了！', RESCUED: '雙腿舒服多了，謝謝！' }),
-  deliveryWorker: Object.freeze({ WARNING: '送貨跑久了，肌肉好痠！', HELP: '肌肉還是好痠……', CRITICAL: '肌肉痠得背不動！', RESCUED: '肌肉舒服多了，謝謝！' })
+export function scenarioDialogue(role, type, state, stageId = null) {
+  if (!type) return null;
+  const definition = SCENARIO_DEFS[type];
+  if (!definition) return null;
+  if (stageId && stageId !== 'city' && stageId !== 'sports') return null;
+  return ROLE_SCENARIO_DIALOGUE[stageId]?.[role]?.[type]?.[state] || definition.dialogue[state] || null;
+}
+
+const LEGACY_CONDITION_DIALOGUE = Object.freeze({
+  [CONDITIONS.ITCH]: dialogue('好像有點癢……', '好癢！', '快受不了了！', '好多了！'),
+  [CONDITIONS.SORENESS]: dialogue('好像有點痠痛……', '痠痛不太舒服……', '快受不了了！', '好多了！')
 });
 
-export function scenarioDialogue(role, type, state) {
-  if (type === 'SPORT_SORE') return ROLE_SORE_DIALOGUE[role]?.[state] || SCENARIO_DEFS[type]?.dialogue[state];
-  if (role === 'shopper' && type === 'LONG_WALK' && state === 'WARNING') return '逛久了，雙腿好痠！';
-  return SCENARIO_DEFS[type]?.dialogue[state];
+export function legacyConditionDialogue(condition, state) {
+  return LEGACY_CONDITION_DIALOGUE[condition]?.[state] || null;
 }
 
 export function requiredItem(condition) {

@@ -221,7 +221,8 @@ export class TutorialDirector {
       zone: 'training',
       path: [],
       name: '練習居民',
-      isPractice: true
+      isPractice: true,
+      stageId: this.stage.id
     });
     npc.onFailure = this.callbacks.onFailure || null;
     npc.onStateChange = this.callbacks.onStateChange || null;

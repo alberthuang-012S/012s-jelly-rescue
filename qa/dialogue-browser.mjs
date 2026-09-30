@@ -39,7 +39,7 @@ try{
           const y=point==='top'?20:point==='bottom'?def.world.height-20:def.world.height*.62;
           const roles=stage==='city'?['youngWoman','deliveryWorker']:stage==='sports'?['grassVisitor','runner']:['elder','visitor'];
           game.npcs=roles.map((role,id)=>{
-            const npc=new NPC({id,role,x:x+id*3,y:y+id*3});npc.spriteImage=game.npcSpriteImage;npc.spriteSheet=game.npcSpriteSheet;
+            const npc=new NPC({id,role,x:x+id*3,y:y+id*3,stageId:stage});npc.spriteImage=game.npcSpriteImage;npc.spriteSheet=game.npcSpriteSheet;
             if(['city','sports'].includes(stage))npc.startScenario(id?'SPORT_SORE':stage==='sports'?'GRASS_SKIN':'SKINCARE',999,3);
             else npc.startEvent(id?'SORENESS':'ITCH',999,3);
             npc.state=id?'CRITICAL':'HELP';npc.reactionTimer=0;npc.tolerance=id?2:600;return npc;
@@ -61,12 +61,18 @@ try{
         const overlaps=(a,b)=>a.x<b.x+b.width-.5&&a.x+a.width>b.x+.5&&a.y<b.y+b.height-.5&&a.y+a.height>b.y+.5;
         assert.equal(result.rects.length,2,`${name} ${stage} ${point}: drawn pair`);
         assert.deepEqual(result.after,result.before,`${name} ${stage} ${point}: player movement must not relocate bubbles`);
-        for(const rect of result.rects){
+        const expectedLabels={
+          park:['好癢！','快受不了了！'],
+          mountain:['好癢！','快受不了了！'],
+          city:['想好好照顧一下皮膚。','痠得快背不動了！'],
+          sports:['皮膚開始有點癢癢的……','雙腿痠得受不了！']
+        }[stage];
+        for(const [index,rect] of result.rects.entries()){
           assert.ok(rect.x>=0&&rect.y>=0&&rect.x+rect.width<=result.width+.1&&rect.y+rect.height<=result.height+.1,`${name} ${stage} ${point}: clipping`);
           assert.equal(rect.texts[0].color,rect.condition==='ITCH'?'#173a76':'#a83d67');
-          assert.match(rect.label,rect.condition==='ITCH'?/癢/:/痠/);
+          assert.equal(rect.label,expectedLabels[index],`${name} ${stage} ${point}: stage-specific dialogue`);
         }
-        report.checks.push(`${name}/${stage}/${point}: stable owner position, symptoms, state-only palette and viewport`);
+        report.checks.push(`${name}/${stage}/${point}: stable owner position, routed dialogue, state-only palette and viewport`);
         if(point==='center'||(name==='small'&&point==='bottom'))await page.screenshot({path:`qa/scenarios/dialogue-v1-${name}-${stage}-${point}.png`});
       }
       if(name==='desktop'){

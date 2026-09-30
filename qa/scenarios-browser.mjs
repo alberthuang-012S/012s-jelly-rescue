@@ -119,7 +119,7 @@ try {
           const dialogueStates = ['WARNING', 'HELP', 'CRITICAL'];
           const game = window.__qaGame; game.npcs.forEach((npc) => npc.clearEvent());
           const stage = game.stageManager.getStage(); const npc = game.npcs[0];
-          const labels = new Set(Object.keys(SCENARIO_DEFS).flatMap(type => dialogueStates.map(state => scenarioDialogue(npc.role, type, state))));
+          const labels = new Set(Object.keys(SCENARIO_DEFS).flatMap(type => dialogueStates.map(state => scenarioDialogue(npc.role, type, state, stage.id))));
           const errors = []; let checked = 0; const ctx = game.ctx; const original = ctx.fillText;
           ctx.fillText = function(text, x, y, ...rest) {
             if (labels.has(text)) {
