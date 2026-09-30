@@ -114,12 +114,16 @@ try {
       if (types.length > 2) {
         // Validate screen-space text at all four map edges using real canvas
         // transforms and text metrics, not only the model coordinates.
-        const clipped = await page.evaluate(() => {
+        const clipped = await page.evaluate(async () => {
+          const { SCENARIO_DEFS } = await import('/src/game/ScenarioDefinitions.js');
+          const dialogueStates = ['WARNING', 'HELP', 'CRITICAL'];
+          const labels = new Set(Object.values(SCENARIO_DEFS).flatMap((definition) => dialogueStates.map((state) => definition.dialogue[state])));
           const game = window.__qaGame; game.npcs.forEach((npc) => npc.clearEvent());
           const stage = game.stageManager.getStage(); const npc = game.npcs[0];
-          const errors = []; const ctx = game.ctx; const original = ctx.fillText;
+          const errors = []; let checked = 0; const ctx = game.ctx; const original = ctx.fillText;
           ctx.fillText = function(text, x, y, ...rest) {
-            if (text === '皮膚越來越不舒服了……') {
+            if (labels.has(text)) {
+              checked += 1;
               const matrix = this.getTransform(); const point = matrix.transformPoint({ x, y });
               const width = this.measureText(text).width * matrix.a;
               const left = (point.x - width / 2) / game.pixelRatio;
@@ -128,11 +132,13 @@ try {
             }
             return original.call(this, text, x, y, ...rest);
           };
-          for (const point of [{ x: 30, y: 30 }, { x: stage.world.width - 30, y: 30 }, { x: 30, y: stage.world.height - 30 }, { x: stage.world.width - 30, y: stage.world.height - 30 }]) {
-            npc.clearEvent(); npc.x = point.x; npc.y = point.y; npc.startScenario('SKINCARE', 10, 3); npc.state = 'CRITICAL';
-            game.player.x = point.x; game.player.y = point.y; game.cameraState = null; game.render(performance.now());
-          }
+          for (const type of Object.keys(SCENARIO_DEFS)) for (const state of dialogueStates)
+            for (const point of [{ x: 30, y: 30 }, { x: stage.world.width - 30, y: 30 }, { x: 30, y: stage.world.height - 30 }, { x: stage.world.width - 30, y: stage.world.height - 30 }]) {
+              npc.clearEvent(); npc.x = point.x; npc.y = point.y; npc.startScenario(type, 10, 3); npc.state = state;
+              game.player.x = point.x; game.player.y = point.y; game.cameraState = null; game.render(performance.now());
+            }
           ctx.fillText = original; npc.clearEvent(); game.player.reset(stage.start);
+          if (checked !== 72) errors.push({ expectedDialogueDraws: 72, actual: checked });
           return errors;
         });
         assert.deepEqual(clipped, []);

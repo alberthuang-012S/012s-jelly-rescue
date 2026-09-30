@@ -7,12 +7,12 @@ const define = (condition, reaction, warning, help, critical, rescued = '好多�
 });
 
 export const SCENARIO_DEFS = Object.freeze({
-  SKINCARE: define(CONDITIONS.ITCH, 'skin', '好像該照顧一下皮膚……', '皮膚想保養一下～', '皮膚越來越不舒服了……', '舒服多了，謝謝！'),
-  OUTDOOR_SKIN: define(CONDITIONS.ITCH, 'skin', '今天在外面待好久……', '皮膚有點不舒服……', '真的越來越難受了……'),
-  GRASS_SKIN: define(CONDITIONS.ITCH, 'skin', '好像哪裡怪怪的……', '皮膚有點癢……', '真的好癢！'),
-  FALL: define(CONDITIONS.SORENESS, 'fall', '啊！', '摔得有點痛……', '真的好痛……'),
-  SPORT_SORE: define(CONDITIONS.SORENESS, 'sore', '好像有點不對勁……', '腿有點痠……', '越來越痠痛了……'),
-  LONG_WALK: define(CONDITIONS.SORENESS, 'sore', '走好久了……', '腿開始痠了……', '走不太動了……')
+  SKINCARE: define(CONDITIONS.ITCH, 'skin', '皮膚乾癢，想保養一下！', '皮膚乾乾癢癢的……', '皮膚癢得受不了了！', '皮膚舒服多了，謝謝！'),
+  OUTDOOR_SKIN: define(CONDITIONS.ITCH, 'skin', '在外面待久，皮膚好癢！', '皮膚一直癢，好不舒服……', '皮膚越來越癢了！', '皮膚舒服多了，謝謝！'),
+  GRASS_SKIN: define(CONDITIONS.ITCH, 'skin', '碰到草，皮膚好癢！', '皮膚癢癢的，想抓……', '皮膚癢得受不了了！', '皮膚不癢了，謝謝！'),
+  FALL: define(CONDITIONS.SORENESS, 'fall', '跌倒了，膝蓋好痛！', '摔到膝蓋，還在痛……', '膝蓋越來越痛了！', '膝蓋好多了，謝謝！'),
+  SPORT_SORE: define(CONDITIONS.SORENESS, 'sore', '運動後，肌肉好痠！', '肌肉痠痛，想休息……', '肌肉痠得受不了了！', '肌肉沒那麼痠了，謝謝！'),
+  LONG_WALK: define(CONDITIONS.SORENESS, 'sore', '走太久，雙腿好痠！', '雙腿痠痛，想休息……', '雙腿痠得走不動了！', '雙腿輕鬆多了，謝謝！')
 });
 
 export function resolveScenario(type) {
