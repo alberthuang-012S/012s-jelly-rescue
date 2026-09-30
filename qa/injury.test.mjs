@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { injuryPose } from '../src/game/InjuryAnimation.js';
 import { NPC } from '../src/game/NPC.js';
-import { STATES } from '../src/game/constants.js';
+import { STATES, CONDITIONS } from '../src/game/constants.js';
+import { NPC_ROLE_DEFS } from '../src/game/NPCRoleDefinitions.js';
 
 const cases = [['basketballPlayer', 'FALL', 0], ['skateboarder', 'FALL', 1],
   ['runner', 'SPORT_SORE', 2], ['fitnessGuy', 'SPORT_SORE', 3]];
@@ -21,7 +22,7 @@ test('injury poses progress through distinct frames, hold after onset and stop o
     npc.reactionTimer = 0;
     assert.equal(injuryPose(npc, 650).frame, 2);
     npc.state = STATES.CRITICAL;
-    assert.equal(injuryPose(npc, 1300).frame, scenario === 'FALL' ? 2 : 1);
+    assert.equal(injuryPose(npc, 1300).frame, 2);
     npc.rescue(1); assert.equal(injuryPose(npc), null);
     npc.clearEvent(2); assert.equal(injuryPose(npc), null);
     npc.startScenario(scenario, 10, 3); assert.equal(injuryPose(npc).frame, 0);
@@ -67,5 +68,49 @@ test('dialogue-only scenarios draw the normal sprite without extra gestures or s
     assert.equal(npc.drawWorldSprite(ctx, 0, 650), true);
     assert.equal(calls.length, 1); assert.equal(calls[0][0], base);
     assert.equal(npc.hasStatusBubble(), true);
+  }
+});
+
+test('static concerned expressions follow active scenarios, restore after rescue and fall back when unavailable', () => {
+  for (const [role, scenario] of [['youngWoman', 'SKINCARE'], ['deliveryWorker', 'LONG_WALK'],
+    ['sportsGirl', 'SPORT_SORE'], ['runner', 'OUTDOOR_SKIN'], ['basketballPlayer', 'SPORT_SORE']]) {
+    const npc = npcFor(role, scenario);
+    const base = { complete: true, naturalWidth: 768 };
+    const concerned = { complete: true, naturalWidth: 768 };
+    npc.spriteImage = base;
+    npc.spriteSheet = { lifestyle: true, columns: 3, frameWidth: 256, frameHeight: 384, conditionImage: concerned };
+    let drawn;
+    const ctx = { save() {}, restore() {}, drawImage(image) { drawn = image; } };
+    for (const state of [STATES.WARNING, STATES.HELP, STATES.CRITICAL]) {
+      npc.state = state; npc.drawWorldSprite(ctx, 0, 0); assert.equal(drawn, concerned);
+    }
+    concerned.naturalWidth = 0;
+    npc.drawWorldSprite(ctx, 0, 0); assert.equal(drawn, base);
+    concerned.naturalWidth = 768;
+    npc.rescue(1); npc.drawWorldSprite(ctx, 0, 0); assert.equal(drawn, base);
+    npc.clearEvent(); npc.drawWorldSprite(ctx, 0, 0); assert.equal(drawn, base);
+  }
+});
+
+test('Park and Mountain generic events select concerned sprites for each role and restore the normal sprite', () => {
+  const roles = ['jogger', 'picnic', 'elder', 'visitor', 'dogWalker', 'hiker', 'trailRunner', 'photographer', 'family'];
+  for (const role of roles) for (const condition of Object.values(CONDITIONS)) {
+    const npc = new NPC({ id: role, role, x: 200, y: 200 });
+    const base = { complete: true, naturalWidth: 960 };
+    const concerned = { complete: true, naturalWidth: 960 };
+    npc.spriteImage = base;
+    npc.spriteSheet = { lifestyle: false, columns: 3, frameWidth: 320, frameHeight: 640, conditionImage: concerned };
+    npc.startEvent(condition, 10, 3);
+    assert.equal(npc.scenarioType, null);
+    let drawn;
+    const ctx = { save() {}, restore() {}, drawImage(...args) { drawn = args; } };
+    for (const state of [STATES.WARNING, STATES.HELP, STATES.CRITICAL]) {
+      npc.state = state; npc.drawWorldSprite(ctx, 0, 0);
+      assert.equal(drawn[0], concerned);
+      assert.equal(drawn[1], NPC_ROLE_DEFS[role].spriteVariant * 320);
+    }
+    concerned.complete = false; npc.drawWorldSprite(ctx, 0, 0); assert.equal(drawn[0], base);
+    concerned.complete = true; npc.rescue(1); npc.drawWorldSprite(ctx, 0, 0); assert.equal(drawn[0], base);
+    npc.clearEvent(); npc.drawWorldSprite(ctx, 0, 0); assert.equal(drawn[0], base);
   }
 });

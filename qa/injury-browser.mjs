@@ -18,7 +18,7 @@ try {
   await page.goto('http://localhost:4178', { waitUntil: 'networkidle' });
   await page.evaluate(() => window.__qaGame.startStage('sports'));
   assert.equal(await page.evaluate(() => window.__qaGame.npcSpriteSheet.injuryImage.naturalHeight), 1536);
-  assert.ok(await page.evaluate(() => window.__qaGame.npcSpriteSheet.injuryImage.src.endsWith('sports-injury-v1.webp')));
+  assert.ok(await page.evaluate(() => window.__qaGame.npcSpriteSheet.injuryImage.src.endsWith('sports-injury-v3.webp')));
   await page.evaluate(() => window.__qaGame.startStage('city'));
   assert.equal(await page.evaluate(() => window.__qaGame.npcSpriteSheet.injuryImage), null);
   await page.goto('http://localhost:4178/qa/injury-preview.html', { waitUntil: 'networkidle' });

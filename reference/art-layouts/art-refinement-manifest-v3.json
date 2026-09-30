@@ -1,0 +1,327 @@
+{
+  "conditions": [
+    {
+      "stage": "city",
+      "source": "reference/generated-city-condition-v2.png",
+      "registration": [
+        {
+          "frame": 0,
+          "width": 222,
+          "height": 377,
+          "left": 17,
+          "top": 7,
+          "target": {
+            "left": 17,
+            "top": 0,
+            "width": 222,
+            "height": 384
+          },
+          "source": {
+            "left": 132,
+            "top": 22,
+            "width": 289,
+            "height": 491
+          }
+        },
+        {
+          "frame": 1,
+          "width": 240,
+          "height": 381,
+          "left": 8,
+          "top": 3,
+          "target": {
+            "left": 8,
+            "top": 0,
+            "width": 240,
+            "height": 384
+          },
+          "source": {
+            "left": 91,
+            "top": 17,
+            "width": 314,
+            "height": 498
+          }
+        },
+        {
+          "frame": 2,
+          "width": 213,
+          "height": 383,
+          "left": 21,
+          "top": 1,
+          "target": {
+            "left": 21,
+            "top": 0,
+            "width": 213,
+            "height": 384
+          },
+          "source": {
+            "left": 85,
+            "top": 25,
+            "width": 274,
+            "height": 493
+          }
+        },
+        {
+          "frame": 3,
+          "width": 217,
+          "height": 381,
+          "left": 19,
+          "top": 3,
+          "target": {
+            "left": 19,
+            "top": 0,
+            "width": 217,
+            "height": 384
+          },
+          "source": {
+            "left": 155,
+            "top": 0,
+            "width": 280,
+            "height": 491
+          }
+        },
+        {
+          "frame": 4,
+          "width": 186,
+          "height": 382,
+          "left": 35,
+          "top": 2,
+          "target": {
+            "left": 35,
+            "top": 0,
+            "width": 186,
+            "height": 384
+          },
+          "source": {
+            "left": 131,
+            "top": 5,
+            "width": 237,
+            "height": 487
+          }
+        }
+      ]
+    },
+    {
+      "stage": "sports",
+      "source": "reference/generated-sports-condition-v2.png",
+      "registration": [
+        {
+          "frame": 0,
+          "width": 195,
+          "height": 382,
+          "left": 30,
+          "top": 2,
+          "target": {
+            "left": 30,
+            "top": 0,
+            "width": 195,
+            "height": 384
+          },
+          "source": {
+            "left": 170,
+            "top": 10,
+            "width": 255,
+            "height": 499
+          }
+        },
+        {
+          "frame": 1,
+          "width": 168,
+          "height": 380,
+          "left": 44,
+          "top": 4,
+          "target": {
+            "left": 44,
+            "top": 0,
+            "width": 168,
+            "height": 384
+          },
+          "source": {
+            "left": 149,
+            "top": 9,
+            "width": 221,
+            "height": 500
+          }
+        },
+        {
+          "frame": 2,
+          "width": 205,
+          "height": 382,
+          "left": 25,
+          "top": 2,
+          "target": {
+            "left": 25,
+            "top": 0,
+            "width": 205,
+            "height": 384
+          },
+          "source": {
+            "left": 70,
+            "top": 25,
+            "width": 259,
+            "height": 483
+          }
+        },
+        {
+          "frame": 3,
+          "width": 228,
+          "height": 381,
+          "left": 14,
+          "top": 3,
+          "target": {
+            "left": 14,
+            "top": 0,
+            "width": 228,
+            "height": 384
+          },
+          "source": {
+            "left": 158,
+            "top": 4,
+            "width": 298,
+            "height": 498
+          }
+        },
+        {
+          "frame": 4,
+          "width": 193,
+          "height": 381,
+          "left": 31,
+          "top": 3,
+          "target": {
+            "left": 31,
+            "top": 0,
+            "width": 193,
+            "height": 384
+          },
+          "source": {
+            "left": 139,
+            "top": 1,
+            "width": 254,
+            "height": 501
+          }
+        },
+        {
+          "frame": 5,
+          "width": 205,
+          "height": 379,
+          "left": 25,
+          "top": 5,
+          "target": {
+            "left": 25,
+            "top": 0,
+            "width": 205,
+            "height": 384
+          },
+          "source": {
+            "left": 69,
+            "top": 8,
+            "width": 267,
+            "height": 494
+          }
+        }
+      ]
+    }
+  ],
+  "injury": [
+    {
+      "row": 2,
+      "scale": 0.6024096385542169,
+      "registration": [
+        {
+          "col": 0,
+          "width": 184,
+          "height": 300,
+          "source": {
+            "left": 136,
+            "top": 12,
+            "width": 306,
+            "height": 498
+          }
+        },
+        {
+          "col": 1,
+          "width": 179,
+          "height": 301,
+          "source": {
+            "left": 108,
+            "top": 10,
+            "width": 297,
+            "height": 500
+          }
+        },
+        {
+          "col": 2,
+          "width": 187,
+          "height": 300,
+          "source": {
+            "left": 78,
+            "top": 11,
+            "width": 310,
+            "height": 498
+          }
+        }
+      ]
+    },
+    {
+      "row": 3,
+      "scale": 0.6024096385542169,
+      "registration": [
+        {
+          "col": 0,
+          "width": 183,
+          "height": 300,
+          "source": {
+            "left": 151,
+            "top": 1,
+            "width": 304,
+            "height": 498
+          }
+        },
+        {
+          "col": 1,
+          "width": 193,
+          "height": 298,
+          "source": {
+            "left": 101,
+            "top": 4,
+            "width": 321,
+            "height": 495
+          }
+        },
+        {
+          "col": 2,
+          "width": 196,
+          "height": 298,
+          "source": {
+            "left": 74,
+            "top": 5,
+            "width": 325,
+            "height": 494
+          }
+        }
+      ]
+    }
+  ],
+  "injuryTopOffsets": [
+    [
+      79.23,
+      71.81,
+      51.89
+    ],
+    [
+      77.28,
+      60.09,
+      63.61
+    ],
+    [
+      82.75,
+      83.14,
+      82.75
+    ],
+    [
+      82.75,
+      81.97,
+      81.97
+    ]
+  ]
+}

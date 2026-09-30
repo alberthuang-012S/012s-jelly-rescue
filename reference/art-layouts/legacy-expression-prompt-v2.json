@@ -1,0 +1,6 @@
+{
+  "tool": "built-in image_gen",
+  "reference": "reference/generated-npcs-hiker-elder-child-hq.png",
+  "output": "reference/generated-legacy-condition-v2.png",
+  "prompt": "Use case: precise-object-edit. Asset type: transparent game sprite sheet, exactly THREE equal columns in ONE row. Edit the supplied hiker/elder/child reference. Preserve every identity, full body standing pose, exact clothing, backpack, cane, glasses, hats, colors, pixel edged chibi illustration style, same composition and relative body sizes. Change ONLY the three faces to a concerned mildly uncomfortable expression suitable for itch or sore legs: eyebrows raised inward and small closed downturned mouth, no smiles. Elder keeps round glasses and closed eyes but no smiling mouth. Left purple cap female hiker with purple jacket yellow backpack tan shorts black leggings brown boots; middle grey-haired elder with glasses mustard cardigan green pants brown cane shoes; right blue cap boy mint hoodie coral shorts yellow shoes. Exactly two legs two shoes per character. Full body uncropped, transparent gutters between equal columns. No sweat drops, stars, pain symbols, motion lines, tears, extra objects, labels, backgrounds or shadows. True alpha transparent background."
+}

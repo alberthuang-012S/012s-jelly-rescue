@@ -21,6 +21,18 @@ export function resolveScenario(type) {
   return definition;
 }
 
+const DELIVERY_SORE_DIALOGUE = Object.freeze({
+  WARNING: '送貨跑久了，肌肉好痠！',
+  HELP: '送貨後，肌肉還是好痠……',
+  CRITICAL: '肌肉痠得背不動了！',
+  RESCUED: '肌肉輕鬆多了，謝謝！'
+});
+
+export function scenarioDialogue(role, type, state) {
+  return role === 'deliveryWorker' && type === 'SPORT_SORE'
+    ? DELIVERY_SORE_DIALOGUE[state] : SCENARIO_DEFS[type]?.dialogue[state];
+}
+
 export function requiredItem(condition) {
   return Object.values(ITEMS).find((item) => item.condition === condition)?.id || null;
 }

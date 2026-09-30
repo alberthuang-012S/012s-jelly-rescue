@@ -10,7 +10,14 @@
         "frameHeight": 384,
         "frameCount": 5,
         "columns": 3,
-        "lifestyle": true
+        "lifestyle": true,
+        "injuryImage": null,
+        "conditionImage": "ref: <Node>"
+      },
+      "condition": {
+        "src": "http://localhost:4176/reference/runtime/city-condition-v2.webp",
+        "width": 768,
+        "height": 768
       },
       "roles": [
         "youngWoman",
@@ -29,7 +36,14 @@
         "frameHeight": 384,
         "frameCount": 6,
         "columns": 3,
-        "lifestyle": true
+        "lifestyle": true,
+        "injuryImage": "ref: <Node>",
+        "conditionImage": "ref: <Node>"
+      },
+      "condition": {
+        "src": "http://localhost:4176/reference/runtime/sports-condition-v2.webp",
+        "width": 768,
+        "height": 768
       },
       "roles": [
         "basketballPlayer",
@@ -48,8 +62,11 @@
         "frameHeight": 640,
         "frameCount": 3,
         "columns": 3,
-        "lifestyle": false
+        "lifestyle": false,
+        "injuryImage": null,
+        "conditionImage": null
       },
+      "condition": null,
       "roles": [
         "jogger",
         "picnic",
@@ -67,7 +84,14 @@
         "frameHeight": 384,
         "frameCount": 5,
         "columns": 3,
-        "lifestyle": true
+        "lifestyle": true,
+        "injuryImage": null,
+        "conditionImage": "ref: <Node>"
+      },
+      "condition": {
+        "src": "http://localhost:4176/reference/runtime/city-condition-v2.webp",
+        "width": 768,
+        "height": 768
       },
       "roles": [
         "youngWoman",

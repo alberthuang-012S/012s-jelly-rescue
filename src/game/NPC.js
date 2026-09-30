@@ -7,8 +7,9 @@ export const LIFESTYLE_SPRITE_FRAMES = Object.freeze({
 });
 import { NPCStateMachine } from './NPCStateMachine.js';
 import { NPC_ROLE_DEFS } from './NPCRoleDefinitions.js';
-import { SCENARIO_DEFS, resolveScenario } from './ScenarioDefinitions.js';
+import { resolveScenario, scenarioDialogue } from './ScenarioDefinitions.js';
 import { injuryPose } from './InjuryAnimation.js';
+import { INJURY_TOP_OFFSETS } from './InjurySpriteLayout.js';
 
 function normalizeCondition(condition) {
   // Keep the visual dialogue aligned with the two supported rescue conditions.
@@ -305,7 +306,9 @@ export class NPC {
     if (!this.active) return;
     const bob = this.state === STATES.RESCUED ? Math.sin(now * 0.012 + this.phase) * 4 : Math.sin(now * 0.004 + this.phase) * 1.3;
     const style = NPC_ROLE_DEFS[this.role] || NPC_ROLE_DEFS.visitor;
-    drawShadow(ctx, this.x, this.y + 43, 23, 7, this.state === STATES.FAILED ? 0.06 : 0.16);
+    const footOffset = this.spriteSheet?.lifestyle ? 37
+      : this.spriteSheet?.footOffsets?.[style.spriteVariant] ?? 43;
+    drawShadow(ctx, this.x, this.y + footOffset, 23, 7, this.state === STATES.FAILED ? 0.06 : 0.16);
     if (this.highlighted) {
       ctx.save();
       ctx.fillStyle = 'rgba(255, 224, 154, .2)';
@@ -398,11 +401,14 @@ export class NPC {
     const destinationWidth = lifestyle ? 80 : 72;
     const destinationHeight = lifestyle ? 120 : 132;
     const columns = this.spriteSheet.columns || this.spriteSheet.frameCount;
+    const concerned = [CONDITIONS.ITCH, CONDITIONS.SORENESS].includes(this.condition)
+      && [STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(this.state)
+      && this.spriteSheet.conditionImage?.complete && this.spriteSheet.conditionImage.naturalWidth;
     ctx.save();
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(
-      this.spriteImage,
+      concerned ? this.spriteSheet.conditionImage : this.spriteImage,
       (frame % columns) * frameWidth,
       Math.floor(frame / columns) * frameHeight,
       frameWidth,
@@ -450,7 +456,7 @@ export class NPC {
     const isCritical = this.state === STATES.CRITICAL;
     const isRescued = this.state === STATES.RESCUED;
     const isFailed = this.state === STATES.FAILED;
-    const label = this.dialogueOverride || SCENARIO_DEFS[this.scenarioType]?.dialogue[this.state] || (isRescued
+    const label = this.dialogueOverride || scenarioDialogue(this.role, this.scenarioType, this.state) || (isRescued
       ? '好多了！'
       : isFailed
         ? '我先回去了……'
@@ -473,7 +479,11 @@ export class NPC {
     const bubbleWidth = screenBubbleWidth / scale;
     const bubbleHeight = screenBubbleHeight / scale;
     const pointerHeight = screenPointerHeight / scale;
-    const spriteTopOffset = this.spriteSheet && (NPC_ROLE_DEFS[this.role]?.spriteVariant !== null || this.spriteSheet.lifestyle) ? 84 : 52;
+    const injury = this.getInjuryPose(now);
+    const frame = this.spriteSheet?.lifestyle ? LIFESTYLE_SPRITE_FRAMES[this.role] : NPC_ROLE_DEFS[this.role]?.spriteVariant;
+    const spriteTopOffset = injury ? INJURY_TOP_OFFSETS[injury.row][injury.frame]
+      : this.spriteSheet && (NPC_ROLE_DEFS[this.role]?.spriteVariant !== null || this.spriteSheet.lifestyle)
+        ? this.spriteSheet.topOffsets?.[frame] ?? 84 : 52;
     const gap = (compactStatusBubble ? 7 : 9) / scale;
     const pulse = isCritical ? (Math.sin(now * 0.02) * (compactStatusBubble ? 1.5 : 2)) / scale : 0;
     const bubbleBottom = this.y - spriteTopOffset - gap;

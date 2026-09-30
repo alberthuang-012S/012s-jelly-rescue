@@ -1,0 +1,54 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "park",
+      "condition": "ITCH",
+      "concerned": true,
+      "restored": true,
+      "x": 384,
+      "y": 820
+    },
+    {
+      "id": "park",
+      "condition": "SORENESS",
+      "concerned": true,
+      "restored": true,
+      "x": 384,
+      "y": 820
+    },
+    {
+      "id": "mountain",
+      "condition": "ITCH",
+      "concerned": true,
+      "restored": true,
+      "x": 512,
+      "y": 832
+    },
+    {
+      "id": "mountain",
+      "condition": "SORENESS",
+      "concerned": true,
+      "restored": true,
+      "x": 512,
+      "y": 832
+    },
+    {
+      "id": "park",
+      "condition": "ITCH",
+      "concerned": true,
+      "restored": true,
+      "x": 384,
+      "y": 820
+    },
+    {
+      "id": "park",
+      "condition": "SORENESS",
+      "concerned": true,
+      "restored": true,
+      "x": 384,
+      "y": 820
+    }
+  ],
+  "errors": []
+}

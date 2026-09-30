@@ -1,0 +1,6 @@
+{
+  "useCase": "precise-object-edit",
+  "reference": "reference/generated-sports-injury-v1.png",
+  "output": "reference/generated-skateboard-fall-v2.png",
+  "prompt": "Use case: precise-object-edit. Asset type: transparent game sprite strip, 3 equal columns, one row. Input image is identity/style reference; extract ONLY the purple helmet skateboard girl in its second row and redraw her three fall poses correctly. Output ONLY this girl in three separated full-body poses left to right: 1 losing balance beside purple skateboard, 2 kneeling after fall with both hands on ground beside board, 3 sitting holding one bent injured knee while the OTHER leg extends forward. Exactly TWO legs and TWO purple shoes in each pose, each visibly connected to the pelvis via anatomically coherent joints. In the last pose do NOT add a third knee or extra dark leg sticking out sideways. Purple helmet, brown bob hair, lavender shirt, charcoal shorts, black knee pads and wrist guards, purple sneakers, purple skateboard, match existing chibi linework and shading. Consistent head size across poses, all body parts fully inside their own equal-width column, generous transparent gutters, bottoms aligned, no text, no grid, no sparkles, no stars, no motion marks, no shadows. True transparent background. Output landscape 1536x1024 if possible."
+}

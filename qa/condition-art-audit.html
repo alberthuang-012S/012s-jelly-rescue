@@ -1,0 +1,36 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8">
+<title>癢與痠畫面檢查</title>
+<style>body{margin:0;padding:20px;background:#e5f1e8;color:#24324a;font:16px system-ui}h1{font-size:22px}.grid{display:grid;grid-template-columns:repeat(3,380px);gap:16px}article{background:#fff9e9;border-radius:12px;padding:12px}h2{margin:0;font-size:17px}canvas{width:380px;height:260px;display:block}</style>
+<h1 id="title"></h1><div class="grid"></div>
+<script type="module">
+import {NPC} from '../src/game/NPC.js';
+import {NPC_ROLE_DEFS} from '../src/game/NPCRoleDefinitions.js';
+import {SCENARIO_DEFS} from '../src/game/ScenarioDefinitions.js';
+import {STAGE_DEFS} from '../src/game/StageManager.js';
+import {LEGACY_NPC_LAYOUT} from '../src/game/NPCSpriteLayout.js';
+const load=src=>new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=reject;image.src=src;});
+const group=new URLSearchParams(location.search).get('group')||'sports-sore';
+const [stage,condition]=group.split('-');
+const lifestyle=['city','sports'].includes(stage);
+const base=await load(lifestyle?`../reference/runtime/${stage}-npcs-v1.webp`:'../reference/runtime/npc-sprites.webp');
+const injury=stage==='sports'?await load('../reference/runtime/sports-injury-v3.webp'):null;
+const conditionImage=await load(lifestyle?`../reference/runtime/${stage}-condition-v2.webp`:'../reference/runtime/npc-condition-v2.webp');
+const roles=STAGE_DEFS[stage].npcTypes;
+const names={park:'城市公園',mountain:'山林步道',city:'城市生活廣場',sports:'活力運動公園'};
+document.querySelector('#title').textContent=`${names[stage]} · ${condition==='itch'?'癢':'痠'}（原尺寸渲染）`;
+let count=0;
+for(const role of roles)for(const scenario of lifestyle?Object.keys(NPC_ROLE_DEFS[role].scenarioWeights):[condition==='itch'?'ITCH':'SORENESS']){
+  if(lifestyle&&(SCENARIO_DEFS[scenario].condition!==(condition==='itch'?'ITCH':'SORENESS')||scenario==='FALL'))continue;
+  for(const state of ['WARNING','HELP','CRITICAL']){
+    const article=document.createElement('article');const label=document.createElement('h2');label.textContent=`${NPC_ROLE_DEFS[role].label} · ${scenario} · ${state}`;
+    const canvas=document.createElement('canvas');canvas.width=760;canvas.height=520;article.append(label,canvas);document.querySelector('.grid').append(article);
+    const ctx=canvas.getContext('2d');ctx.scale(2,2);
+    const npc=new NPC({id:count++,role,x:190,y:176});npc.spriteImage=base;npc.spriteSheet={lifestyle,columns:3,frameWidth:lifestyle?256:320,frameHeight:lifestyle?384:640,injuryImage:injury,conditionImage,
+      topOffsets:lifestyle?null:LEGACY_NPC_LAYOUT.topOffsets,footOffsets:lifestyle?null:LEGACY_NPC_LAYOUT.footOffsets};
+    if(lifestyle)npc.startScenario(scenario,10,3);else npc.startEvent(scenario,10,3);
+    npc.state=state;npc.reactionTimer=state==='WARNING'?npc.reactionDuration:0;npc.tolerance=state==='WARNING'?10:state==='HELP'?6:2;
+    npc.draw(ctx,state==='WARNING'?0:state==='HELP'?1300:1950);
+  }
+}
+window.__auditReady={count};
+</script></html>

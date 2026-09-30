@@ -13,6 +13,7 @@ import { ScoreManager } from './ScoreManager.js';
 import { StageManager, STAGE_DEFS, STAGE_ORDER } from './StageManager.js';
 import { SCENARIO_DEFS, requiredItem } from './ScenarioDefinitions.js';
 import { NPC_ROLE_DEFS } from './NPCRoleDefinitions.js';
+import { LEGACY_NPC_LAYOUT } from './NPCSpriteLayout.js';
 import { TutorialDirector } from './TutorialDirector.js?mountain-pavilion-dialogue-v2';
 import { WorldRenderer } from './WorldRenderer.js?v=mountain-pavilion-dialogue-v2';
 import { clamp, drawText, formatClock, lerp } from './utils.js';
@@ -45,6 +46,10 @@ const ASSET_PATHS = Object.freeze({
     './reference/runtime/jelly-home.webp',
     './reference/world-jelly-front-hq.png'
   ],
+  npcCondition: [
+    './reference/runtime/npc-condition-v2.webp',
+    './reference/runtime/npc-condition-v2.png'
+  ],
   park: [
     './reference/generated-park-open-portrait-hq.webp',
     './reference/generated-park-open-portrait-hq.png'
@@ -69,9 +74,17 @@ const ASSET_PATHS = Object.freeze({
     './reference/runtime/sports-npcs-v1.webp',
     './reference/runtime/sports-npcs-v1.png'
   ],
+  cityCondition: [
+    './reference/runtime/city-condition-v2.webp',
+    './reference/runtime/city-condition-v2.png'
+  ],
+  sportsCondition: [
+    './reference/runtime/sports-condition-v2.webp',
+    './reference/runtime/sports-condition-v2.png'
+  ],
   sportsInjury: [
-    './reference/runtime/sports-injury-v1.webp',
-    './reference/runtime/sports-injury-v1.png'
+    './reference/runtime/sports-injury-v3.webp',
+    './reference/runtime/sports-injury-v3.png'
   ]
 });
 
@@ -613,9 +626,16 @@ export class Game {
         fetchPriority: 'high', assetName: 'Sports injury animation'
       }));
     }
+    const conditionId = lifestyle ? `${stageId}Condition` : 'npcCondition';
+    if (conditionId && !this.npcAssetPromises.has(conditionId)) {
+      this.npcAssetPromises.set(conditionId, loadImageWithFallback(ASSET_PATHS[conditionId], {
+        fetchPriority: 'high', assetName: `${stageId} concerned expressions`
+      }));
+    }
     return Promise.all([this.npcAssetPromises.get(assetId),
-      stageId === 'sports' ? this.npcAssetPromises.get('sportsInjury') : null
-    ]).then(([npcSprite, injuryImage]) => {
+      stageId === 'sports' ? this.npcAssetPromises.get('sportsInjury') : null,
+      conditionId ? this.npcAssetPromises.get(conditionId) : null
+    ]).then(([npcSprite, injuryImage, conditionImage]) => {
       this.npcSpriteImage = npcSprite?.naturalWidth ? npcSprite : null;
       this.npcSpriteSheet = this.npcSpriteImage ? {
         frameWidth: this.npcSpriteImage.naturalWidth / 3,
@@ -623,7 +643,10 @@ export class Game {
         frameCount: lifestyle ? (stageId === 'city' ? 5 : 6) : 3,
         columns: 3,
         lifestyle,
-        injuryImage: injuryImage?.naturalWidth ? injuryImage : null
+        topOffsets: lifestyle ? null : LEGACY_NPC_LAYOUT.topOffsets,
+        footOffsets: lifestyle ? null : LEGACY_NPC_LAYOUT.footOffsets,
+        injuryImage: injuryImage?.naturalWidth ? injuryImage : null,
+        conditionImage: conditionImage?.naturalWidth ? conditionImage : null
       } : null;
       this.npcs.forEach((npc) => {
         npc.spriteImage = this.npcSpriteImage;

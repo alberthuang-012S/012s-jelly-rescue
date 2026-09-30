@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "jobs": [
+    {
+      "key": "cityCondition",
+      "prompt": "Use case: precise-object-edit. Asset type: transparent 3-column by 2-row game sprite atlas. Edit the supplied reference sheet, preserve all identities, hairstyle, exact clothes, props, same standing poses and order. Change ONLY the faces to mild discomfort: brows raised inward, small downturned closed mouth, concerned eyes. No happy smiles, no tears, no sweat, no symbols, no stars, no motion lines. Same full body proportions and scale as reference, each person fully contained in one equal cell with clear transparent gutters. True transparent background. No text, no ground shadows. Exactly FIVE people: top row lavender young woman, orange-jacket shopper with bags, mint shirt coffee woman; bottom row pink camera girl, blue delivery worker, last cell EMPTY. Do not alter any pose or accessory.",
+      "ref": "generated-city-npcs-v1.png"
+    },
+    {
+      "key": "sportsCondition",
+      "prompt": "Use case: precise-object-edit. Asset type: transparent 3-column by 2-row game sprite atlas. Edit the supplied reference sheet, preserve all identities, hairstyle, exact clothes, props, same standing poses and order. Change ONLY the faces to mild discomfort: brows raised inward, small downturned closed mouth, concerned eyes. No happy smiles, no tears, no sweat, no symbols, no stars, no motion lines. Same full body proportions and scale as reference, each person fully contained in one equal cell with clear transparent gutters. True transparent background. No text, no ground shadows. Exactly SIX people: top row orange basketball boy with ball, mint runner boy with headband, purple helmet skateboard girl with board; bottom row blue fitness boy holding two dumbbells, pink sport girl, yellow shirt girl wearing sunhat. Do not alter any pose or accessory.",
+      "ref": "generated-sports-npcs-v1.png"
+    },
+    {
+      "key": "soreRefinement",
+      "prompt": "Use case: precise-object-edit. Transparent game sprite sheet, exactly 3 columns x2 rows, SIX full-body poses. Reference image for identity/style ONLY: extract mint runner boy from row3 and blue fitness boy from row4. Output ONLY these two people, runner across top row, fitness across bottom. Three closely matched bracing poses each: first mild concern with knees slightly bent and hands resting on thighs; second lean forward slightly bracing sore thigh; third same stable stance, concerned closed mouth and eyes slightly squinting. Runner has mint headband, mint shirt, navy shorts over black leggings, teal shoes, watch. Fitness wears blue sleeveless top, navy shorts, blue shoes and wrist guards, holds one sore thigh with one hand and lower back with the other. Fitness holds NO dumbbells in any of the three frames and there are NO dumbbells on ground. Both keep both feet planted in same locations across all frames, identical head size, two legs two feet and two arms per person. Reference chibi linework and warm shaded style exactly. No stars, no sparkles, no sweat, no pain marks, no shadows, no labels. Full uncropped hair and feet, generous transparent gutters, perfectly transparent background.",
+      "ref": "generated-sports-injury-v1.png"
+    }
+  ]
+}

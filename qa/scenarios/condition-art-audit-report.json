@@ -1,0 +1,37 @@
+{
+  "groups": [
+    {
+      "group": "park-itch",
+      "count": 15
+    },
+    {
+      "group": "park-sore",
+      "count": 15
+    },
+    {
+      "group": "mountain-itch",
+      "count": 15
+    },
+    {
+      "group": "mountain-sore",
+      "count": 15
+    },
+    {
+      "group": "city-itch",
+      "count": 18
+    },
+    {
+      "group": "city-sore",
+      "count": 15
+    },
+    {
+      "group": "sports-itch",
+      "count": 9
+    },
+    {
+      "group": "sports-sore",
+      "count": 12
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,68 @@
+{
+  "source": "reference/generated-skateboard-fall-v2.png",
+  "columns": 3,
+  "frameWidth": 256,
+  "frameHeight": 384,
+  "footBaseline": 380,
+  "registration": [
+    {
+      "col": 0,
+      "region": {
+        "left": 0,
+        "top": 0,
+        "width": 536,
+        "height": 1024
+      },
+      "bounds": {
+        "left": 13,
+        "top": 222,
+        "width": 523,
+        "height": 613
+      },
+      "scale": 0.4665391969407266,
+      "width": 244,
+      "height": 286
+    },
+    {
+      "col": 1,
+      "region": {
+        "left": 536,
+        "top": 0,
+        "width": 531,
+        "height": 1024
+      },
+      "bounds": {
+        "left": 0,
+        "top": 309,
+        "width": 523,
+        "height": 519
+      },
+      "scale": 0.4665391969407266,
+      "width": 244,
+      "height": 242
+    },
+    {
+      "col": 2,
+      "region": {
+        "left": 1067,
+        "top": 0,
+        "width": 469,
+        "height": 1024
+      },
+      "bounds": {
+        "left": 11,
+        "top": 310,
+        "width": 443,
+        "height": 539
+      },
+      "scale": 0.4665391969407266,
+      "width": 207,
+      "height": 251
+    }
+  ],
+  "preservedRows": [
+    0,
+    2,
+    3
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "source": "reference/generated-legacy-condition-v2.png",
+  "base": "reference/runtime/npc-sprites.webp",
+  "frameWidth": 320,
+  "frameHeight": 640,
+  "registration": [
+    {
+      "frame": 0,
+      "target": {
+        "left": 50,
+        "top": 45,
+        "width": 242,
+        "height": 562
+      },
+      "source": {
+        "left": 80,
+        "top": 71,
+        "width": 390,
+        "height": 901
+      },
+      "width": 242,
+      "height": 559,
+      "left": 50,
+      "top": 48
+    },
+    {
+      "frame": 1,
+      "target": {
+        "left": 46,
+        "top": 72,
+        "width": 238,
+        "height": 535
+      },
+      "source": {
+        "left": 72,
+        "top": 115,
+        "width": 384,
+        "height": 857
+      },
+      "width": 238,
+      "height": 531,
+      "left": 46,
+      "top": 76
+    },
+    {
+      "frame": 2,
+      "target": {
+        "left": 53,
+        "top": 131,
+        "width": 206,
+        "height": 474
+      },
+      "source": {
+        "left": 80,
+        "top": 209,
+        "width": 339,
+        "height": 758
+      },
+      "width": 206,
+      "height": 461,
+      "left": 53,
+      "top": 144
+    }
+  ],
+  "topOffsets": [
+    74.72,
+    69.15,
+    56.98
+  ],
+  "footOffsets": [
+    41.19,
+    41.19,
+    40.78
+  ]
+}

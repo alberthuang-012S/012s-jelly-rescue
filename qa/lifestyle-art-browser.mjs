@@ -33,6 +33,11 @@ try {
       }
       return { id, map: game.worldRenderer.lifestyleImages.get(id)?.src,
         npc: game.npcSpriteImage.src, manifest: game.npcSpriteSheet,
+        condition: game.npcSpriteSheet.conditionImage ? {
+          src: game.npcSpriteSheet.conditionImage.src,
+          width: game.npcSpriteSheet.conditionImage.naturalWidth,
+          height: game.npcSpriteSheet.conditionImage.naturalHeight
+        } : null,
         roles: game.npcs.map((npc) => npc.role) };
     }, id);
     assert.equal(result.manifest.lifestyle, id !== 'park');
@@ -40,7 +45,26 @@ try {
       assert.ok(result.map.endsWith(`${id}-map-v1.webp`));
       assert.ok(result.npc.endsWith(`${id}-npcs-v1.webp`));
       assert.equal(result.manifest.frameWidth, 256); assert.equal(result.manifest.frameHeight, 384);
+      assert.ok(result.condition.src.endsWith(`${id}-condition-v2.webp`));
+      assert.equal(result.condition.width, 768); assert.equal(result.condition.height, 768);
       await page.screenshot({ path: `qa/scenarios/art-v1-${id}-portrait.png` });
+      await page.evaluate((id) => {
+        const game = window.__qaGame;
+        game.npcs.forEach(npc => { npc.active = false; });
+        const roles = id === 'city' ? ['youngWoman', 'deliveryWorker'] : ['runner', 'sportsGirl'];
+        roles.forEach((role, i) => {
+          const npc = game.npcs.find(npc => npc.role === role);
+          npc.active = true; npc.x = i ? 525 : 245; npc.y = i ? 800 : 610;
+          npc.startScenario(id === 'city' && i === 0 ? 'SKINCARE' : 'SPORT_SORE', 999, 3);
+          npc.reactionTimer = 0; npc.state = 'HELP';
+        });
+        game.player.x = 384; game.player.y = 760; game.cameraState = null;
+        game.render(performance.now());
+      }, id);
+      await page.screenshot({ path: `qa/scenarios/art-v2-${id}-conditions-portrait.png` });
+    } else {
+      assert.ok(result.condition.src.endsWith('npc-condition-v2.webp'));
+      assert.equal(result.condition.width, 960); assert.equal(result.condition.height, 640);
     }
     report.push(result);
   }

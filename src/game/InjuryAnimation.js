@@ -15,6 +15,6 @@ export function injuryPose(npc, now = 0) {
     || ![STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(npc.state)) return null;
   const progress = npc.reactionDuration > 0 ? 1 - npc.reactionTimer / npc.reactionDuration : 1;
   const frame = progress < .32 ? 0 : progress < .72 ? 1
-    : role.reaction === 'fall' ? 2 : (Math.floor(now / 650) % 2 ? 2 : 1);
+    : 2;
   return { row: role.row, frame, settled: progress >= .72 };
 }
