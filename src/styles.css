@@ -646,7 +646,7 @@ body { background: #deeff5; }
 .stage-featured-card[data-stage='mountain'] .stage-featured-art img { object-position: center 58%; }
 .stage-tabs {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 7px;
   margin-top: 12px;
 }
@@ -1284,3 +1284,21 @@ body { background: #deeff5; }
 .evolution-dialog-action:disabled { opacity: .7; cursor: wait; }
 .evolution-dialog-action:focus-visible { outline: 3px solid #296b9b; outline-offset: 4px; }
 @media (max-height: 540px) { .evolution-dialog { padding: 18px 24px; } .evolution-dialog-art { min-height: 95px; margin-bottom: 10px; } .evolution-dialog-art .evolution-character { height: 100px; } .reward-rays { font-size: 130px; } .evolution-dialog p { margin-bottom: 14px; } }
+/* Scenario expansion: preserve the existing cards and dock geometry. */
+.home-screen[data-stage-tone='city'] { --home-accent: #e4b9d4; }
+.home-screen[data-stage-tone='sports'] { --home-accent: #a4d9bf; }
+.stage-tab-copy b { font-size: 11px; }
+.rescue-statistics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin: 12px 0; padding: 12px; border-radius: 12px; background: rgba(222, 239, 231, .55); }
+.rescue-statistics span, .rescue-statistics b { display: block; }
+.rescue-statistics span { font-size: 10px; color: #71858b; }
+.rescue-statistics b { margin-top: 4px; font-size: 15px; color: #274d64; }
+.debug-panel { max-height: calc(100% - 130px); overflow-y: auto; }
+#debug-scenario-info { margin: 12px 0 0; font: 10px/1.6 monospace; white-space: pre-wrap; overflow-wrap: anywhere; color: #315b8e; }
+.debug-toggle { right: 90px; }
+@media (max-width: 600px) {
+  .debug-toggle { right: 9px; }
+  .stage-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .stage-tab-copy b { font-size: 10px; }
+  .rescue-statistics { gap: 7px; margin: 8px 0; padding: 9px; }
+  .rescue-statistics b { font-size: 13px; }
+}

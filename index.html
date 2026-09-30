@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#10253c" />
-    <link rel="stylesheet" href="./src/styles.css?v=evolution-v2" />
+    <link rel="stylesheet" href="./src/styles.css?v=scenarios-v1" />
     <title>Jelly Rescue</title>
   </head>
   <body>
@@ -31,7 +31,7 @@
             </div>
             <div class="stage-featured-art" aria-hidden="true">
               <picture>
-                <source id="home-stage-preview-source" srcset="./reference/runtime/generated-park-open-portrait-hq.webp" type="image/webp" />
+                <source id="home-stage-preview-source" srcset="./reference/generated-park-open-portrait-hq.webp" type="image/webp" />
                 <img id="home-stage-preview" src="./reference/generated-park-open-portrait-hq.png" alt="" loading="eager" decoding="async" fetchpriority="high" />
               </picture>
               <span class="stage-featured-art-wash"></span>
@@ -48,6 +48,12 @@
             </button>
             <button class="stage-tab" data-stage-select="mountain" role="tab" aria-selected="false" aria-controls="home-featured-stage">
               <span class="stage-tab-number">03</span><span class="stage-tab-copy"><b>山區</b><small>1 分鐘</small></span>
+            </button>
+            <button class="stage-tab" data-stage-select="city" role="tab" aria-selected="false" aria-controls="home-featured-stage">
+              <span class="stage-tab-number">04</span><span class="stage-tab-copy"><b>生活廣場</b><small>1 分鐘</small></span>
+            </button>
+            <button class="stage-tab" data-stage-select="sports" role="tab" aria-selected="false" aria-controls="home-featured-stage">
+              <span class="stage-tab-number">05</span><span class="stage-tab-copy"><b>運動公園</b><small>1 分鐘</small></span>
             </button>
           </div>
 
@@ -116,11 +122,11 @@
             <span id="item-toggle-hint" class="item-toggle-hint" aria-hidden="true">Q 切換</span>
             <button class="item-card is-selected" data-item="PPA" type="button">
               <span class="item-img-wrap"><picture><source srcset="./reference/runtime/ppa-plus-one.webp" type="image/webp" /><img src="./reference/ppa-plus-one.png" alt="PPA+1" loading="lazy" decoding="async" /></picture></span>
-              <span class="item-info"><b>PPA+1</b><small>癢 · ITCH</small></span><span class="item-compact-label">PPA</span><span class="item-status">SELECTED</span>
+              <span class="item-info"><b>PPA+1</b><small>皮膚照顧</small></span><span class="item-compact-label">PPA+1</span><span class="item-status">SELECTED</span>
             </button>
             <button class="item-card" data-item="NAP" type="button">
               <span class="item-img-wrap"><picture><source srcset="./reference/runtime/nap-plus-one.webp" type="image/webp" /><img src="./reference/nap-plus-one.png" alt="NAP+1" loading="lazy" decoding="async" /></picture></span>
-              <span class="item-info"><b>NAP+1</b><small>痠痛 · SORE</small></span><span class="item-compact-label">NAP</span><span class="item-status">READY</span>
+              <span class="item-info"><b>NAP+1</b><small>痠痛舒緩</small></span><span class="item-compact-label">NAP+1</span><span class="item-status">READY</span>
             </button>
           </div>
 
@@ -152,11 +158,15 @@
           <aside id="debug-panel" class="debug-panel is-hidden" aria-label="開發測試面板">
             <div class="debug-title">DEV CONSOLE <button id="debug-close" type="button">×</button></div>
             <div class="debug-grid">
+              <button data-debug="scenario:SKINCARE" type="button">SKINCARE</button><button data-debug="scenario:OUTDOOR_SKIN" type="button">OUTDOOR_SKIN</button>
+              <button data-debug="scenario:GRASS_SKIN" type="button">GRASS_SKIN</button><button data-debug="scenario:FALL" type="button">FALL</button>
+              <button data-debug="scenario:SPORT_SORE" type="button">SPORT_SORE</button><button data-debug="scenario:LONG_WALK" type="button">LONG_WALK</button>
               <button data-debug="itch" type="button">觸發 ITCH</button><button data-debug="soreness" type="button">觸發 SORENESS</button>
               <button data-debug="clear" type="button">清除事件</button><button data-debug="tolerance" type="button">耐受值設為 3s</button>
               <button data-debug="life" type="button">無限生命：OFF</button>
               <button data-debug="radius" type="button">互動半徑：OFF</button><button data-debug="stage" type="button">切換關卡</button>
             </div>
+            <pre id="debug-scenario-info" aria-live="polite">目前沒有進行中的事件</pre>
           </aside>
         </div>
       </section>

@@ -3,3 +3,4 @@ npm-debug.log*
 .env
 .env.*
 .DS_Store
+qa/scenarios/*.png

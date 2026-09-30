@@ -1,4 +1,5 @@
 import { drawText } from './utils.js';
+import { drawLifestyleMap } from './LifestyleRenderer.js';
 
 const PARK_DESIGN_WIDTH = 1024;
 const PARK_DESIGN_HEIGHT = 1536;
@@ -30,6 +31,7 @@ export class WorldRenderer {
   constructor() {
     this.parkImage = null;
     this.mountainImage = null;
+    this.lifestyleMaps = new Map();
   }
 
   setParkImage(image) {
@@ -43,8 +45,19 @@ export class WorldRenderer {
   draw(ctx, stage, now) {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    if (stage.id === 'mountain') this.drawMountainBackground(ctx, stage, now);
+    if (stage.renderer === 'lifestyle') ctx.drawImage(this.getLifestyleMap(stage), 0, 0);
+    else if (stage.id === 'mountain') this.drawMountainBackground(ctx, stage, now);
     else this.drawPark(ctx, stage, now);
+  }
+
+  getLifestyleMap(stage) {
+    if (!this.lifestyleMaps.has(stage.id)) {
+      const canvas = document.createElement('canvas');
+      canvas.width = stage.world.width; canvas.height = stage.world.height;
+      drawLifestyleMap(canvas.getContext('2d'), stage);
+      this.lifestyleMaps.set(stage.id, canvas);
+    }
+    return this.lifestyleMaps.get(stage.id);
   }
 
   drawPark(ctx, stage, now) {

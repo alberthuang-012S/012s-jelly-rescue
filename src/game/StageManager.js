@@ -1,4 +1,7 @@
 import { clamp } from './utils.js';
+import { LIFESTYLE_STAGES } from './LifestyleStages.js';
+
+export const STAGE_ORDER = Object.freeze(['tutorial', 'park', 'mountain', 'city', 'sports']);
 
 const PARK_DESIGN_WIDTH = 1024;
 const PARK_DESIGN_HEIGHT = 1536;
@@ -178,6 +181,7 @@ const mountainObstacles = [
 ];
 
 export const STAGE_DEFS = Object.freeze({
+  ...LIFESTYLE_STAGES,
   park: {
     id: 'park',
     name: 'Jelly Park',
@@ -312,6 +316,7 @@ export class StageManager {
   }
 
   getPhase() {
+    if (this.getStage().phases) return this.getStage().phases.find((phase) => this.elapsed < phase.until)?.name || 'pressure';
     if (this.currentStageId === 'tutorial') {
       if (this.elapsed < 8) return 'intro';
       if (this.elapsed < 28) return 'normal';

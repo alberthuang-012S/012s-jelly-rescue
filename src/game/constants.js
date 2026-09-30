@@ -1,3 +1,5 @@
+import { NPC_ROLE_DEFS } from './NPCRoleDefinitions.js';
+
 export const VIEWPORT = { width: 960, height: 540 };
 
 export const STATES = Object.freeze({
@@ -24,17 +26,7 @@ export const CONDITION_LABELS = Object.freeze({
   [CONDITIONS.SORENESS]: { warningTitle: '好像有點痠痛……', title: '痠痛不太舒服……', short: '痠痛', english: 'SORE', icon: '↯', color: '#86c8ff' }
 });
 
-export const ROLE_LABELS = Object.freeze({
-  jogger: '慢跑者',
-  picnic: '野餐遊客',
-  elder: '長椅居民',
-  visitor: '公園遊客',
-  dogWalker: '遛狗路人',
-  hiker: '登山客',
-  trailRunner: '跑山者',
-  photographer: '攝影遊客',
-  family: '親子遊客'
-});
+export const ROLE_LABELS = Object.freeze(Object.fromEntries(Object.entries(NPC_ROLE_DEFS).map(([id, role]) => [id, role.label])));
 
 export const PALETTE = Object.freeze({
   ink: '#14283d',

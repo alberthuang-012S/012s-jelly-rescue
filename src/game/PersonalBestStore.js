@@ -1,12 +1,10 @@
 const STORAGE_KEY = 'jellyRescue.personalBest.v1';
-const STAGE_IDS = Object.freeze(['park', 'mountain']);
+import { STAGE_ORDER } from './StageManager.js';
+const STAGE_IDS = STAGE_ORDER.filter((id) => id !== 'tutorial');
 
-const createEmptyRecords = () => ({ park: null, mountain: null });
+const createEmptyRecords = () => Object.fromEntries(STAGE_IDS.map((id) => [id, null]));
 
-const cloneRecords = (records) => ({
-  park: records.park ? { score: records.park.score } : null,
-  mountain: records.mountain ? { score: records.mountain.score } : null
-});
+const cloneRecords = (records) => Object.fromEntries(STAGE_IDS.map((id) => [id, records[id] ? { score: records[id].score } : null]));
 
 function normalizeRecord(value) {
   const score = Number(value?.score);
@@ -43,10 +41,7 @@ export class PersonalBestStore {
 
     try {
       const parsed = JSON.parse(raw);
-      const records = {
-        park: normalizeRecord(parsed?.park),
-        mountain: normalizeRecord(parsed?.mountain)
-      };
+      const records = Object.fromEntries(STAGE_IDS.map((id) => [id, normalizeRecord(parsed?.[id])]));
       this.memoryRecords = records;
       return cloneRecords(records);
     } catch {

@@ -1,0 +1,20 @@
+{
+  "city": {
+    "rounds": 200,
+    "events": 1991,
+    "ppa": 1354,
+    "nap": 637,
+    "simultaneousRounds": 33,
+    "illegalPositions": 0,
+    "ppaRatio": 0.6801
+  },
+  "sports": {
+    "rounds": 200,
+    "events": 2200,
+    "ppa": 694,
+    "nap": 1506,
+    "simultaneousRounds": 108,
+    "illegalPositions": 0,
+    "ppaRatio": 0.3155
+  }
+}

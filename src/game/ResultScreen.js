@@ -151,6 +151,7 @@ export class ResultScreen {
       : `道具準確率 ${Math.round(result.toolAccuracy * 100)}%`;
     document.querySelector('#result-rescued').textContent = `${result.rescuedCount} 人`;
     document.querySelector('#result-max-combo').textContent = result.maxCombo;
+    this.showRescueStatistics(this.screen, result, isTutorial);
     const next = document.querySelector('#result-next');
     const nextText = next.querySelector('span');
     if (nextText) nextText.textContent = nextLabel;
@@ -164,7 +165,25 @@ export class ResultScreen {
     document.querySelector('#gameover-score').textContent = result.score.toLocaleString();
     document.querySelector('#gameover-rescued').textContent = `${result.rescuedCount} 人`;
     document.querySelector('#gameover-max-combo').textContent = result.maxCombo;
+    this.showRescueStatistics(this.gameover, result);
     this.gameover.classList.remove('is-hidden');
     this.showEvolution(this.gameover);
+  }
+
+  showRescueStatistics(screen, result, isTutorial = false) {
+    let stats = screen.querySelector('.rescue-statistics');
+    if (!stats) {
+      stats = document.createElement('div'); stats.className = 'rescue-statistics';
+      for (const label of ['PPA+1 正確使用', 'NAP+1 正確使用', '平均反應時間', '救援成功率']) {
+        const cell = document.createElement('div'); const name = document.createElement('span'); const value = document.createElement('b');
+        name.textContent = label; cell.append(name, value); stats.append(cell);
+      }
+      screen.querySelector('.result-stat-grid').after(stats);
+    }
+    stats.classList.toggle('is-hidden', isTutorial);
+    const values = [result.ppaSuccess, result.napSuccess,
+      result.rescuedCount ? `${result.averageResponseTime.toFixed(1)} 秒` : '—',
+      result.rescuedCount + result.failedCount ? `${Math.round(result.rescueRate * 100)}%` : '—'];
+    stats.querySelectorAll('b').forEach((element, index) => { element.textContent = values[index]; });
   }
 }

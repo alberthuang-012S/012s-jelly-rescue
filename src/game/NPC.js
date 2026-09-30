@@ -1,30 +1,8 @@
-import { CONDITION_LABELS, CONDITIONS, ROLE_LABELS, STATES } from './constants.js';
-import { choose, clamp, circleHitsRect, drawShadow, drawText, distance, moveWithCollision, roundedRect } from './utils.js';
+import { CONDITION_LABELS, CONDITIONS, STATES } from './constants.js';
+import { clamp, circleHitsRect, drawShadow, drawText, distance, moveWithCollision, roundedRect } from './utils.js';
 import { NPCStateMachine } from './NPCStateMachine.js';
-
-const ROLE_STYLE = {
-  jogger: { shirt: '#f47c8d', hair: '#24324a', accent: '#ffd687', speed: 78, radius: 20, movement: 'runner' },
-  picnic: { shirt: '#f47ca4', hair: '#5d3e70', accent: '#ffd687', speed: 14, radius: 20, movement: 'sit' },
-  elder: { shirt: '#8272db', hair: '#e8e5d7', accent: '#f3c997', speed: 8, radius: 19, movement: 'sit' },
-  visitor: { shirt: '#ffd687', hair: '#503e4a', accent: '#96c981', speed: 32, radius: 19, movement: 'wander' },
-  dogWalker: { shirt: '#72d6ff', hair: '#24324a', accent: '#f3c997', speed: 58, radius: 21, movement: 'patrol' },
-  hiker: { shirt: '#f3a66b', hair: '#24324a', accent: '#75d2dc', speed: 35, radius: 20, movement: 'patrol' },
-  trailRunner: { shirt: '#f47c8d', hair: '#24324a', accent: '#ffd687', speed: 82, radius: 20, movement: 'runner' },
-  photographer: { shirt: '#bca9f4', hair: '#24324a', accent: '#75d2dc', speed: 24, radius: 19, movement: 'wander' },
-  family: { shirt: '#78c98a', hair: '#754b4d', accent: '#ffd687', speed: 25, radius: 20, movement: 'wander' }
-};
-
-const NPC_SPRITE_VARIANTS = Object.freeze({
-  jogger: 0,
-  picnic: 1,
-  elder: 1,
-  visitor: 2,
-  dogWalker: 0,
-  hiker: 0,
-  trailRunner: 0,
-  photographer: 2,
-  family: 2
-});
+import { NPC_ROLE_DEFS } from './NPCRoleDefinitions.js';
+import { SCENARIO_DEFS, resolveScenario } from './ScenarioDefinitions.js';
 
 function normalizeCondition(condition) {
   // Keep the visual dialogue aligned with the two supported rescue conditions.
@@ -37,10 +15,10 @@ export class NPC {
   constructor({ id, role, x, y, zone, path = [], name, isPractice = false }) {
     this.id = id;
     this.role = role;
-    this.name = name || ROLE_LABELS[role] || '遊客';
+    this.name = name || NPC_ROLE_DEFS[role]?.label || '遊客';
     this.x = x;
     this.y = y;
-    this.radius = ROLE_STYLE[role]?.radius || 20;
+    this.radius = NPC_ROLE_DEFS[role]?.radius || 20;
     this.zone = zone || 'park';
     this.path = path;
     this.pathIndex = 0;
@@ -49,6 +27,10 @@ export class NPC {
     this.blockedTime = 0;
     this.state = STATES.NORMAL;
     this.condition = null;
+    this.scenarioType = null;
+    this.reactionType = null;
+    this.reactionTimer = 0;
+    this.reactionDuration = 0;
     this.tolerance = 0;
     this.maxTolerance = 0;
     this.warningTimer = 0;
@@ -78,6 +60,7 @@ export class NPC {
 
   startEvent(condition, maxTolerance, warningDuration, stageTime = 0) {
     if (this.state !== STATES.NORMAL) return false;
+    this.resetScenario();
     this.state = STATES.WARNING;
     this.condition = normalizeCondition(condition);
     this.maxTolerance = maxTolerance;
@@ -87,6 +70,38 @@ export class NPC {
     this.eventStartedAt = stageTime;
     this.isRescued = false;
     return true;
+  }
+
+  startScenario(type, maxTolerance, warningDuration, stageTime = 0) {
+    const definition = resolveScenario(type);
+    if (!this.startEvent(definition.condition, maxTolerance, warningDuration, stageTime)) return false;
+    this.scenarioType = type;
+    this.reactionType = definition.reaction;
+    this.reactionDuration = Math.min(definition.reactionDuration, warningDuration);
+    this.reactionTimer = this.reactionDuration;
+    return true;
+  }
+
+  resetScenario() {
+    this.scenarioType = null;
+    this.reactionType = null;
+    this.reactionTimer = 0;
+    this.reactionDuration = 0;
+    this.dialogueOverride = '';
+    this.dialogueOverrideTimer = 0;
+  }
+
+  clearEvent(stageTime = 0) {
+    this.state = STATES.NORMAL;
+    this.condition = null;
+    this.tolerance = this.maxTolerance = this.warningTimer = this.conditionTimer = 0;
+    this.isRescued = false;
+    this.resetScenario();
+    this.nextEventAt = stageTime + 2;
+  }
+
+  get visualState() {
+    return this.reactionTimer > 0 ? 'EVENT_REACTION' : this.state;
   }
 
   enterHelp(stageTime) {
@@ -99,6 +114,7 @@ export class NPC {
   }
 
   rescue(stageTime) {
+    this.reactionTimer = 0;
     this.state = STATES.RESCUED;
     this.rescueTimer = 1.2;
     this.tolerance = this.maxTolerance;
@@ -110,6 +126,7 @@ export class NPC {
   }
 
   finishRescue() {
+    this.resetScenario();
     this.state = STATES.NORMAL;
     this.condition = null;
     this.isRescued = false;
@@ -119,6 +136,7 @@ export class NPC {
   fail() {
     if (this.state === STATES.FAILED) return;
     this.state = STATES.FAILED;
+    this.reactionTimer = 0;
     this.removeTimer = 1.25;
     this.isRescued = false;
     this.dialogueOverride = '';
@@ -145,14 +163,19 @@ export class NPC {
       return;
     }
     this.updateMovement(dt, stage, stageTime);
+    this.reactionTimer = Math.max(0, this.reactionTimer - dt);
     this.stateMachine.update(dt, stageTime);
   }
 
   updateMovement(dt, stage, stageTime) {
-    const style = ROLE_STYLE[this.role] || ROLE_STYLE.visitor;
+    const style = NPC_ROLE_DEFS[this.role] || NPC_ROLE_DEFS.visitor;
     if (this.state === STATES.RESCUED || style.movement === 'sit') return;
+    const scenarioActive = this.scenarioType && [STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(this.state);
+    const reactionProgress = this.reactionDuration ? 1 - this.reactionTimer / this.reactionDuration : 1;
+    if (scenarioActive && (this.reactionTimer <= 0 || this.reactionType === 'skin' || reactionProgress > .7)) return;
+    const reactionSpeed = scenarioActive ? Math.max(0, 1 - reactionProgress / .7) : 1;
     if (style.movement === 'runner' || style.movement === 'patrol') {
-      this.moveAlongPath(dt, style.speed, stage);
+      this.moveAlongPath(dt, style.speed * reactionSpeed, stage);
       return;
     }
     this.wanderWait -= dt;
@@ -166,7 +189,7 @@ export class NPC {
     const dx = this.wanderTarget.x - this.x;
     const dy = this.wanderTarget.y - this.y;
     const length = Math.hypot(dx, dy) || 1;
-    const speed = style.speed * (this.state === STATES.CRITICAL ? 1.15 : 1);
+    const speed = style.speed * reactionSpeed * (this.state === STATES.CRITICAL ? 1.15 : 1);
     const moved = this.moveByVector({ x: dx, y: dy }, speed, dt, stage);
     if (moved < 0.05) this.blockedTime += dt;
     else this.blockedTime = 0;
@@ -275,7 +298,7 @@ export class NPC {
   } = {}) {
     if (!this.active) return;
     const bob = this.state === STATES.RESCUED ? Math.sin(now * 0.012 + this.phase) * 4 : Math.sin(now * 0.004 + this.phase) * 1.3;
-    const style = ROLE_STYLE[this.role] || ROLE_STYLE.visitor;
+    const style = NPC_ROLE_DEFS[this.role] || NPC_ROLE_DEFS.visitor;
     drawShadow(ctx, this.x, this.y + 43, 23, 7, this.state === STATES.FAILED ? 0.06 : 0.16);
     if (this.highlighted) {
       ctx.save();
@@ -301,6 +324,7 @@ export class NPC {
       ctx.restore();
     }
     ctx.save();
+    this.applyReactionTransform(ctx, now);
     if (this.state === STATES.RESCUED) {
       ctx.fillStyle = 'rgba(255, 231, 155, 0.35)';
       ctx.beginPath();
@@ -309,6 +333,7 @@ export class NPC {
     }
     if (!this.drawWorldSprite(ctx, bob)) {
       ctx.translate(this.x, this.y - 10 + bob);
+      if (style.spriteVariant === null) ctx.scale(1.6, 1.6);
       ctx.lineJoin = 'miter';
       ctx.fillStyle = style.shirt;
       ctx.strokeStyle = '#24324a';
@@ -331,6 +356,8 @@ export class NPC {
       ctx.beginPath(); ctx.moveTo(-12, 5); ctx.lineTo(-19, 12); ctx.moveTo(12, 5); ctx.lineTo(19, 12); ctx.stroke();
       ctx.strokeStyle = '#24324a'; ctx.lineWidth = 4;
       ctx.beginPath(); ctx.moveTo(-7, 24); ctx.lineTo(-8, 30); ctx.moveTo(7, 24); ctx.lineTo(8, 30); ctx.stroke();
+      this.drawAccessory(ctx, style.accessory);
+      this.drawReactionCue(ctx, now);
       if (this.role === 'dogWalker') {
         ctx.fillStyle = '#b57e63'; ctx.beginPath(); ctx.arc(27, 15, 7, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = '#dca78a'; ctx.beginPath(); ctx.arc(31, 10, 3, 0, Math.PI * 2); ctx.fill();
@@ -349,8 +376,9 @@ export class NPC {
   }
 
   drawWorldSprite(ctx, bob) {
+    if (NPC_ROLE_DEFS[this.role]?.spriteVariant === null) return false;
     if (!this.spriteImage?.complete || !this.spriteImage.naturalWidth || !this.spriteSheet) return false;
-    const frame = NPC_SPRITE_VARIANTS[this.role] ?? 0;
+    const frame = NPC_ROLE_DEFS[this.role]?.spriteVariant ?? 0;
     const frameWidth = this.spriteSheet.frameWidth;
     const frameHeight = this.spriteSheet.frameHeight;
     const destinationWidth = 72;
@@ -373,6 +401,55 @@ export class NPC {
     return true;
   }
 
+  applyReactionTransform(ctx, now) {
+    if (!this.scenarioType || ![STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(this.state)) return;
+    const progress = this.reactionDuration ? 1 - this.reactionTimer / this.reactionDuration : 1;
+    let angle = 0; let offset = 0; let squash = 1;
+    if (this.reactionType === 'fall') {
+      angle = this.reactionTimer > 0 ? Math.sin(progress * Math.PI * 3) * .24 + progress * .25 : .25;
+      offset = progress * 16; squash = 1 - progress * .16;
+    } else if (this.reactionType === 'sore') {
+      angle = .09 + Math.sin(now * .005) * .025; offset = 4; squash = .96;
+    } else angle = -.06;
+    ctx.translate(this.x, this.y + offset);
+    ctx.rotate(angle); ctx.scale(1, squash); ctx.translate(-this.x, -this.y);
+  }
+
+  drawReactionCue(ctx, now) {
+    if (!this.scenarioType || ![STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(this.state)) return;
+    ctx.save();
+    // Hand across the arm or thigh makes the intent readable without injury art.
+    ctx.strokeStyle = NPC_ROLE_DEFS[this.role]?.accent || '#ffdabd';
+    ctx.lineWidth = 5; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(13, 4);
+    ctx.lineTo(this.reactionType === 'skin' ? -8 : 6, this.reactionType === 'skin' ? 10 : 23); ctx.stroke();
+    if (this.reactionType === 'skin') drawText(ctx, '✦', -24, 7 + Math.sin(now * .004), { size: 15, color: '#9785c9' });
+    else drawText(ctx, '〰', 22, 24, { size: 15, color: '#668bb8' });
+    ctx.restore();
+  }
+
+  drawAccessory(ctx, accessory) {
+    if (!accessory) return;
+    ctx.save(); ctx.strokeStyle = '#24324a'; ctx.lineWidth = 2;
+    const box = (x, y, width, height, color) => {
+      ctx.fillStyle = color; roundedRect(ctx, x, y, width, height, 3); ctx.fill(); ctx.stroke();
+    };
+    switch (accessory) {
+      case 'ribbon':
+        ctx.fillStyle = '#e6a5c6'; ctx.beginPath(); ctx.moveTo(-15, -23); ctx.lineTo(-5, -19); ctx.lineTo(-15, -14); ctx.fill(); break;
+      case 'bags': box(-27, 11, 13, 18, '#ead6b1'); box(16, 11, 12, 16, '#c0b4e5'); break;
+      case 'cup': box(15, 6, 10, 13, '#fff5df'); break;
+      case 'camera': box(-9, 7, 18, 12, '#6789a4'); ctx.fillStyle = '#d6eced'; ctx.beginPath(); ctx.arc(0, 13, 4, 0, Math.PI * 2); ctx.fill(); break;
+      case 'delivery': box(12, -6, 16, 28, '#e6c28c'); box(-15, -26, 30, 6, '#8ccddd'); break;
+      case 'ball': ctx.fillStyle = '#e7a96b'; ctx.beginPath(); ctx.arc(22, 12, 9, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.moveTo(13, 12); ctx.lineTo(31, 12); ctx.moveTo(22, 3); ctx.lineTo(22, 21); ctx.stroke(); break;
+      case 'board': box(-22, 30, 44, 5, '#aca1d9'); ctx.fillStyle = '#24324a'; ctx.fillRect(-14, 35, 5, 4); ctx.fillRect(10, 35, 5, 4); break;
+      case 'weights': box(-27, 8, 8, 15, '#7898b1'); box(19, 8, 8, 15, '#7898b1'); break;
+      case 'headband': box(-12, -23, 24, 4, '#fff5df'); break;
+      case 'hat': box(-14, -29, 28, 9, '#dfc48c'); box(-20, -21, 40, 4, '#dfc48c'); break;
+    }
+    ctx.restore();
+  }
+
   drawStatus(ctx, now, { cameraScale = 1, compactStatusBubble = false, visibleBounds = null } = {}) {
     const conditionKey = this.condition === CONDITIONS.ITCH ? CONDITIONS.ITCH : CONDITIONS.SORENESS;
     const condition = CONDITION_LABELS[conditionKey];
@@ -380,7 +457,7 @@ export class NPC {
     const isCritical = this.state === STATES.CRITICAL;
     const isRescued = this.state === STATES.RESCUED;
     const isFailed = this.state === STATES.FAILED;
-    const label = this.dialogueOverride || (isRescued
+    const label = this.dialogueOverride || SCENARIO_DEFS[this.scenarioType]?.dialogue[this.state] || (isRescued
       ? '好多了！'
       : isFailed
         ? '我先回去了……'
@@ -403,7 +480,7 @@ export class NPC {
     const bubbleWidth = screenBubbleWidth / scale;
     const bubbleHeight = screenBubbleHeight / scale;
     const pointerHeight = screenPointerHeight / scale;
-    const spriteTopOffset = this.spriteSheet ? 84 : 52;
+    const spriteTopOffset = this.spriteSheet && NPC_ROLE_DEFS[this.role]?.spriteVariant !== null ? 84 : 52;
     const gap = (compactStatusBubble ? 7 : 9) / scale;
     const pulse = isCritical ? (Math.sin(now * 0.02) * (compactStatusBubble ? 1.5 : 2)) / scale : 0;
     const bubbleBottom = this.y - spriteTopOffset - gap;
@@ -447,9 +524,10 @@ export class NPC {
     const pointerX = canClampToViewport
       ? clamp(this.x, bubbleX + pointerSafeInset, bubbleX + bubbleWidth - pointerSafeInset)
       : this.x;
-    const fill = isCritical ? '#ffe1ea' : isRescued ? '#def5e8' : isFailed ? '#eef3f5' : '#fff5df';
-    const stroke = isCritical ? '#e77fa2' : isRescued ? '#65ae91' : isFailed ? '#95a9b4' : '#5686c5';
-    const textColor = isCritical ? '#a83d67' : isRescued ? '#287b64' : isFailed ? '#566d7b' : '#173a76';
+    const softSkin = Boolean(this.scenarioType && this.condition === CONDITIONS.ITCH);
+    const fill = isCritical ? (softSkin ? '#eee7fa' : '#ffe1ea') : isRescued ? '#def5e8' : isFailed ? '#eef3f5' : '#fff5df';
+    const stroke = isCritical ? (softSkin ? '#9b87c7' : '#e77fa2') : isRescued ? '#65ae91' : isFailed ? '#95a9b4' : '#5686c5';
+    const textColor = isCritical ? (softSkin ? '#65508f' : '#a83d67') : isRescued ? '#287b64' : isFailed ? '#566d7b' : '#173a76';
     ctx.save();
     ctx.fillStyle = fill;
     ctx.strokeStyle = stroke;

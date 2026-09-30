@@ -52,6 +52,7 @@ export class HUD {
   }
 
   update(game) {
+    game.updateDebugInfo?.();
     const stage = game.stageManager.getStage();
     const { score, combo } = game;
     this.mobileMode = game.layoutMode !== 'desktop'

@@ -10,7 +10,9 @@ import { Player } from './Player.js?walk-v4';
 import { PersonalBestStore } from './PersonalBestStore.js?result-best-v1';
 import { ResultScreen } from './ResultScreen.js?evolution-v2';
 import { ScoreManager } from './ScoreManager.js';
-import { StageManager } from './StageManager.js?v=mountain-pavilion-dialogue-v2';
+import { StageManager, STAGE_DEFS, STAGE_ORDER } from './StageManager.js';
+import { SCENARIO_DEFS, requiredItem } from './ScenarioDefinitions.js';
+import { NPC_ROLE_DEFS } from './NPCRoleDefinitions.js';
 import { TutorialDirector } from './TutorialDirector.js?mountain-pavilion-dialogue-v2';
 import { WorldRenderer } from './WorldRenderer.js?v=mountain-pavilion-dialogue-v2';
 import { clamp, drawText, formatClock, lerp } from './utils.js';
@@ -164,6 +166,16 @@ function findPlayerManifest(source, manifestTable) {
 }
 
 const HOME_STAGE_CONTENT = Object.freeze({
+  city: {
+    tone: 'city', kicker: '城市生活廣場', title: 'JELLY CITY PLAZA',
+    description: '漫步咖啡露台與購物街，觀察皮膚照顧和走路痠痛的日常情境。',
+    meta: ['1 分鐘', '生活判斷'], artLabel: 'CITY PLAZA', alt: '城市生活廣場地圖預覽'
+  },
+  sports: {
+    tone: 'sports', kicker: '活力運動公園', title: 'JELLY SPORTS PARK',
+    description: '留意跌倒、運動痠痛與草地活動的訊號，及時幫助運動中的居民。',
+    meta: ['1 分鐘', '反應救援'], artLabel: 'SPORTS PARK', alt: '活力運動公園地圖預覽'
+  },
   tutorial: {
     tone: 'tutorial',
     kicker: '新手教學',
@@ -441,15 +453,11 @@ export class Game {
   }
 
   getNextStageId() {
-    if (this.selectedStage === 'tutorial') return 'park';
-    if (this.selectedStage === 'park') return 'mountain';
-    return 'park';
+    return STAGE_ORDER[STAGE_ORDER.indexOf(this.selectedStage) + 1] || 'park';
   }
 
   getNextStageLabel() {
-    if (this.selectedStage === 'tutorial') return '開始 Jelly Park';
-    if (this.selectedStage === 'park') return '前往 Jelly Mountain';
-    return '回到 Jelly Park';
+    return `前往${STAGE_DEFS[this.getNextStageId()].displayName}`;
   }
 
   updateHomeSelection() {
@@ -482,9 +490,14 @@ export class Game {
       }));
     }
     if (this.homeStageArtLabel) this.homeStageArtLabel.textContent = content.artLabel;
-    if (this.homeStagePreviewSource) this.homeStagePreviewSource.srcset = content.preview;
+    const stage = STAGE_DEFS[this.selectedStage];
+    const preview = stage?.renderer === 'lifestyle' ? this.worldRenderer.getLifestyleMap(stage).toDataURL('image/png') : content.preview;
+    if (this.homeStagePreviewSource) {
+      this.homeStagePreviewSource.type = stage?.renderer === 'lifestyle' ? 'image/png' : 'image/webp';
+      this.homeStagePreviewSource.srcset = preview;
+    }
     if (this.homeStagePreview) {
-      this.homeStagePreview.src = content.fallback;
+      this.homeStagePreview.src = stage?.renderer === 'lifestyle' ? preview : content.fallback;
       this.homeStagePreview.alt = content.alt;
       this.homeStagePreview.loading = this.selectedStage === 'mountain' ? 'lazy' : 'eager';
       this.homeStagePreview.fetchPriority = this.selectedStage === 'mountain' ? 'low' : 'high';
@@ -632,7 +645,8 @@ export class Game {
   }
 
   scheduleNextStagePreload(stageId) {
-    const nextStageId = stageId === 'park' ? 'mountain' : 'park';
+    const nextStageId = STAGE_ORDER[STAGE_ORDER.indexOf(stageId) + 1];
+    if (!nextStageId) return;
     const preload = () => {
       if (this.state === 'playing' && this.selectedStage === stageId) {
         this.ensureStageMap(nextStageId, { fetchPriority: 'low' });
@@ -646,6 +660,7 @@ export class Game {
   }
 
   ensureStageMap(stageId, { fetchPriority = 'high' } = {}) {
+    if (STAGE_DEFS[stageId]?.renderer === 'lifestyle') return Promise.resolve(this.worldRenderer.getLifestyleMap(STAGE_DEFS[stageId]));
     const mapId = stageId === 'mountain' ? 'mountain' : 'park';
     if (this.stageMapPromises.has(mapId)) return this.stageMapPromises.get(mapId);
     const mapPromise = loadImageWithFallback(ASSET_PATHS[mapId], {
@@ -1126,7 +1141,8 @@ export class Game {
   tryAction() {
     if (this.resultScreen.dialog.open) return;
     if (this.state !== 'playing') return;
-    const target = this.interactionSystem.currentTarget;
+    if (this.isTutorialModalOpen || this.isExitConfirmOpen) return;
+    const target = this.interactionSystem.findTarget(this.player, this.npcs);
     if (!target || ![STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(target.state)) {
       this.hud.showActionFeedback();
       return;
@@ -1177,7 +1193,7 @@ export class Game {
       this.scoreManager.recordWrongItem();
       this.combo.break();
       this.createMistakeParticles(target);
-      target.showDialogue('好像不是這個……', 1.15);
+      target.showDialogue(SCENARIO_DEFS[target.scenarioType]?.wrongItem || '好像不是這個……', 1.15);
       const correctItemId = target.condition === CONDITIONS.ITCH ? ITEMS.PPA.id : ITEMS.NAP.id;
       this.hud.flashItemFeedback(this.itemSystem.selectedId, correctItemId);
     }
@@ -1249,7 +1265,7 @@ export class Game {
     this.resultScreen.showResult(
       result,
       this.stageManager.getStage(),
-      this.selectedStage !== 'mountain',
+      this.selectedStage !== STAGE_ORDER.at(-1),
       this.getNextStageLabel()
     );
     this.updateOrientation?.();
@@ -1272,6 +1288,21 @@ export class Game {
   handleDebug(action, button) {
     if (this.state !== 'playing') return;
     if (this.isTutorial() && ['itch', 'soreness', 'clear', 'tolerance'].includes(action)) return;
+    if (action.startsWith('scenario:')) {
+      if (this.isTutorial()) return;
+      const scenarioType = action.slice('scenario:'.length);
+      if (!SCENARIO_DEFS[scenarioType]) return;
+      const stage = this.stageManager.getStage();
+      const available = this.npcs.filter((npc) => npc.canReceiveEvent(this.stageManager.elapsed));
+      let npc = available.find((candidate) => NPC_ROLE_DEFS[candidate.role]?.scenarioWeights[scenarioType]) || available[0];
+      if (!npc && this.npcs.filter((candidate) => candidate.active).length < stage.maxNpcs) npc = this.eventDirector.spawn(this.npcs);
+      if (!npc) { this.hud.showToast('請先清除事件，再試一次', 'info'); return; }
+      if (!npc.placeAt(this.player, stage)) { this.hud.showToast('附近沒有安全位置', 'info'); return; }
+      npc.wanderTarget = null;
+      npc.startScenario(scenarioType, this.eventDirector.getTolerance(this.stageManager.elapsed), this.eventDirector.getWarningDuration(this.stageManager.elapsed), this.stageManager.elapsed);
+      this.eventDirector.callbacks.onEvent?.(npc, npc.condition);
+      this.updateDebugInfo();
+    }
     if (action === 'itch' || action === 'soreness') {
       const condition = action === 'itch' ? CONDITIONS.ITCH : CONDITIONS.SORENESS;
       const stage = this.stageManager.getStage();
@@ -1289,7 +1320,7 @@ export class Game {
     if (action === 'clear') {
       this.npcs.forEach((npc) => {
         if ([STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(npc.state)) {
-          npc.state = STATES.NORMAL; npc.condition = null; npc.tolerance = 0; npc.nextEventAt = this.stageManager.elapsed + 2;
+          npc.clearEvent(this.stageManager.elapsed);
         }
       });
       this.hud.showToast('事件已清除', 'info');
@@ -1312,7 +1343,15 @@ export class Game {
       this.debug.showRadius = !this.debug.showRadius;
       button.textContent = `互動半徑：${this.debug.showRadius ? 'ON' : 'OFF'}`;
     }
-    if (action === 'stage') this.startStage(this.selectedStage === 'park' ? 'mountain' : 'park');
+    if (action === 'stage') this.startStage(this.getNextStageId());
+  }
+
+  updateDebugInfo() {
+    const info = document.querySelector('#debug-scenario-info');
+    if (!info || !this.debug.open) return;
+    info.textContent = this.npcs.filter((npc) => npc.active && npc.condition).map((npc) =>
+      `${npc.id} · ${npc.role}\n${npc.scenarioType || 'legacy'} → ${npc.condition} → ${ITEMS[requiredItem(npc.condition)]?.label}\n${npc.visualState} · ${npc.tolerance.toFixed(1)}s`
+    ).join('\n\n') || '目前沒有進行中的事件';
   }
 
   createRescueParticles(npc, condition) {
@@ -1385,14 +1424,16 @@ export class Game {
 
   getCamera(stage) {
     if (this.cameraMode === 'fit') {
+      const padding = stage.cameraPadding || { top: 0, bottom: 0 };
+      const availableHeight = Math.max(160, this.viewport.height - padding.top - padding.bottom);
       const scale = Math.min(
         this.viewport.width / stage.world.width,
-        this.viewport.height / stage.world.height
+        availableHeight / stage.world.height
       );
       return {
         mode: 'fit',
         x: (this.viewport.width - stage.world.width * scale) / 2,
-        y: (this.viewport.height - stage.world.height * scale) / 2,
+        y: padding.top + (availableHeight - stage.world.height * scale) / 2,
         scale
       };
     }

@@ -1,6 +1,9 @@
 import { CONDITIONS, STATES } from './constants.js';
 import { NPC } from './NPC.js?mountain-pavilion-dialogue-v2';
 import { choose, distance } from './utils.js';
+import { NPC_ROLE_DEFS } from './NPCRoleDefinitions.js';
+import { SCENARIO_DEFS, weightedChoice } from './ScenarioDefinitions.js';
+import { TravelPlanner } from './TravelPlanner.js';
 
 const ACTIVE_STATES = [STATES.WARNING, STATES.HELP, STATES.CRITICAL];
 
@@ -16,10 +19,11 @@ export class EventDirector {
     this.nextSpawnAt = 0.8;
     this.nextEventAt = stage.event.initialDelay;
     this.lastCondition = null;
+    this.travelPlanner = null;
   }
 
   seed(npcs) {
-    const seedCount = this.stage.id === 'mountain' ? 5 : 5;
+    const seedCount = this.stage.seedCount || 5;
     for (let index = 0; index < seedCount; index += 1) this.spawn(npcs, index);
   }
 
@@ -58,10 +62,22 @@ export class EventDirector {
   triggerEvent(stageTime, npcs, forcedCondition = null) {
     const events = npcs.filter((npc) => npc.active && ACTIVE_STATES.includes(npc.state));
     if (events.length >= this.getMaxSimultaneous(stageTime)) return false;
-    const candidates = npcs.filter((npc) => npc.canReceiveEvent(stageTime));
+    let candidates = npcs.filter((npc) => npc.canReceiveEvent(stageTime));
     if (!candidates.length) return false;
     const baseTolerance = this.getTolerance(stageTime);
     const warningDuration = this.getWarningDuration(stageTime);
+    if (this.stage.scenarioPool) {
+      candidates = candidates.filter((npc) => this.isScheduleFeasible(npc, events, baseTolerance, warningDuration, stageTime));
+      const selection = this.pickScenario(candidates, stageTime, forcedCondition);
+      if (!selection) return false;
+      const { npc, scenarioType } = selection;
+      const player = this.callbacks.getPlayer?.();
+      const tolerance = Math.max(baseTolerance, (player ? this.routeTime(player, npc) : 0) + 1.5 - warningDuration);
+      if (!npc.startScenario(scenarioType, tolerance, warningDuration, stageTime)) return false;
+      this.lastCondition = npc.condition;
+      this.callbacks.onEvent?.(npc, npc.condition);
+      return true;
+    }
     const reachableCandidates = this.getReachableCandidates(candidates, baseTolerance, warningDuration);
     const npc = this.selectCandidate(
       reachableCandidates.length ? reachableCandidates : candidates,
@@ -129,6 +145,59 @@ export class EventDirector {
     return Math.max(0, distance(player, npc) - rescueRange) / Math.max(1, player.speed || 205);
   }
 
+  getPhaseConfig(stageTime) {
+    return this.stage.phases?.find((phase) => stageTime < phase.until) || this.stage.phases?.at(-1);
+  }
+
+  pickScenario(candidates, stageTime, forcedCondition = null) {
+    const phase = this.getPhaseConfig(stageTime);
+    const pool = phase?.scenarioPool || this.stage.scenarioPool || [];
+    const options = candidates.flatMap((npc) => pool.map((scenarioType) => ({
+      npc, scenarioType,
+      weight: (this.stage.scenarioWeights[scenarioType] || 0) * (NPC_ROLE_DEFS[npc.role]?.scenarioWeights[scenarioType] || 0)
+    })).filter((option) => option.weight > 0));
+    const conditions = [...new Set(options.map((option) => SCENARIO_DEFS[option.scenarioType].condition))];
+    if (!conditions.length || (forcedCondition && !conditions.includes(forcedCondition))) return null;
+    // Choose the product family first so role count/weights cannot skew the
+    // stage ratio. A temporary missing family defers rather than substituting.
+    const stageFamilies = [...new Set(pool.map((type) => SCENARIO_DEFS[type].condition))];
+    const condition = forcedCondition || (stageFamilies.length === 1 ? stageFamilies[0]
+      : Math.random() < phase.ppaRatio ? CONDITIONS.ITCH : CONDITIONS.SORENESS);
+    const eligible = options.filter((option) => SCENARIO_DEFS[option.scenarioType].condition === condition);
+    const scenarioType = weightedChoice([...new Set(eligible.map((option) => option.scenarioType))]
+      .map((type) => [type, this.stage.scenarioWeights[type]]));
+    if (!scenarioType) return null;
+    const roleCandidates = eligible.filter((option) => option.scenarioType === scenarioType);
+    const npcId = weightedChoice(roleCandidates.map((option) => [option.npc.id, NPC_ROLE_DEFS[option.npc.role].scenarioWeights[scenarioType]]));
+    return { scenarioType, npc: candidates.find((npc) => npc.id === npcId) };
+  }
+
+  routeTime(from, to) {
+    const player = this.callbacks.getPlayer?.();
+    if (!player) return 0;
+    if (!this.travelPlanner) this.travelPlanner = new TravelPlanner(this.stage, player.radius || 25);
+    // Center-to-center is conservative: the actual Use range is more generous.
+    return this.travelPlanner.pathDistance(from, to) / Math.max(1, player.speed || 205);
+  }
+
+  isScheduleFeasible(candidate, events, tolerance, warningDuration, stageTime) {
+    const player = this.callbacks.getPlayer?.();
+    if (!player) return true;
+    const travel = this.routeTime(player, candidate);
+    const newDeadline = Math.max(tolerance + warningDuration, travel + 1.5);
+    if (!Number.isFinite(travel) || newDeadline > this.stage.duration - stageTime) return false;
+    if (!events.length) return travel + 1.5 <= newDeadline;
+    // Current stages cap simultaneous events at two. Test both visit orders,
+    // including time to use/switch items, against each resident's own deadline.
+    return events.every((event) => {
+      const deadline = (event.state === STATES.WARNING ? event.warningTimer : 0) + event.tolerance;
+      const toExisting = this.routeTime(player, event);
+      const between = this.routeTime(event, candidate);
+      return (toExisting + .75 <= deadline && toExisting + between + 1.5 <= newDeadline)
+        || (travel + .75 <= newDeadline && travel + between + 1.5 <= deadline);
+    });
+  }
+
   getReachableCandidates(candidates, tolerance, warningDuration) {
     const player = this.callbacks.getPlayer?.();
     if (!player) return candidates;
@@ -149,6 +218,7 @@ export class EventDirector {
   }
 
   getTolerance(stageTime) {
+    if (this.stage.phases) return this.getPhaseConfig(stageTime).tolerance;
     if (this.stage.id === 'park') {
       if (stageTime < 12) return 11;
       if (stageTime < 20) return 10.2;
@@ -161,6 +231,7 @@ export class EventDirector {
   }
 
   getWarningDuration(stageTime) {
+    if (this.stage.phases) return this.getPhaseConfig(stageTime).warningDuration;
     if (this.stage.id === 'park') {
       if (stageTime < 12) return 3.8;
       if (stageTime < 20) return 3.5;
@@ -173,6 +244,7 @@ export class EventDirector {
   }
 
   getMaxSimultaneous(stageTime) {
+    if (this.stage.phases) return this.getPhaseConfig(stageTime).maxSimultaneous;
     if (this.stage.id === 'park') {
       if (stageTime < 20) return 1;
       if (stageTime < 45) return 2;
@@ -184,6 +256,7 @@ export class EventDirector {
   }
 
   getSpawnCooldown(stageTime) {
+    if (this.stage.phases) return this.getPhaseConfig(stageTime).spawnCooldown;
     if (this.stage.id === 'park') {
       if (stageTime < 12) return 6.2;
       if (stageTime < 20) return 5.3;
@@ -196,6 +269,7 @@ export class EventDirector {
   }
 
   getEventCooldown(stageTime) {
+    if (this.stage.phases) return this.getPhaseConfig(stageTime).eventCooldown;
     if (this.stage.id === 'park') {
       if (stageTime < 12) return 5.6;
       if (stageTime < 20) return 4.7;

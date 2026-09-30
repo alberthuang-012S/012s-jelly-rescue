@@ -1,0 +1,39 @@
+{
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "name": "portrait",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "small-portrait",
+      "width": 375,
+      "height": 667
+    }
+  ],
+  "errors": [],
+  "checks": [
+    "desktop: tutorial movement, three rescues, untimed completion",
+    "desktop: park start/end, items, wrong feedback, controls, result, restart, next-stage, exit/pause, game-over",
+    "desktop: mountain start/end, items, wrong feedback, controls, result, restart, next-stage, exit/pause, game-over",
+    "desktop: city start/end, items, wrong feedback, controls, result, restart, next-stage, exit/pause, game-over, all scenario force, bubbles, simultaneous",
+    "desktop: sports start/end, items, wrong feedback, controls, result, restart, next-stage, exit/pause, game-over, all scenario force, bubbles, simultaneous",
+    "desktop: Mountain reward/evolution modal, consumption, permanent speed and City continuation",
+    "portrait: tutorial movement, three rescues, untimed completion",
+    "portrait: park start/end, items, wrong feedback, controls, result, restart, next-stage, exit/pause, game-over",
+    "portrait: mountain start/end, items, wrong feedback, controls, result, restart, next-stage, exit/pause, game-over",
+    "portrait: city start/end, items, wrong feedback, controls, result, restart, next-stage, exit/pause, game-over, all scenario force, bubbles, simultaneous",
+    "portrait: sports start/end, items, wrong feedback, controls, result, restart, next-stage, exit/pause, game-over, all scenario force, bubbles, simultaneous",
+    "small-portrait: tutorial movement, three rescues, untimed completion",
+    "small-portrait: park start/end, items, wrong feedback, controls, result, restart, next-stage, exit/pause, game-over",
+    "small-portrait: mountain start/end, items, wrong feedback, controls, result, restart, next-stage, exit/pause, game-over",
+    "small-portrait: city start/end, items, wrong feedback, controls, result, restart, next-stage, exit/pause, game-over, all scenario force, bubbles, simultaneous",
+    "small-portrait: sports start/end, items, wrong feedback, controls, result, restart, next-stage, exit/pause, game-over, all scenario force, bubbles, simultaneous"
+  ],
+  "status": "PASS"
+}
