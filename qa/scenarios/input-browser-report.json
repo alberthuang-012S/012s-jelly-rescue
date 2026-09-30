@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "checks": [
+    "Use Space/Enter exactly once including repeat; item keyboard activation never rescues; other buttons retain native activation",
+    "Blur/hidden clears keyboard and touch state; clock/position freeze; visible remains paused until explicit resume",
+    "390×844 and 375×667 essential text sizes and result overflow"
+  ],
+  "errors": []
+}

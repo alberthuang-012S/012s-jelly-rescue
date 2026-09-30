@@ -10,11 +10,11 @@
   },
   "sports": {
     "rounds": 200,
-    "events": 2182,
-    "ppa": 674,
-    "nap": 1508,
-    "simultaneousRounds": 106,
+    "events": 2180,
+    "ppa": 349,
+    "nap": 1831,
+    "simultaneousRounds": 110,
     "illegalPositions": 0,
-    "ppaRatio": 0.3089
+    "ppaRatio": 0.1601
   }
 }

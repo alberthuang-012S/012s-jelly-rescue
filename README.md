@@ -16,6 +16,8 @@ Open `http://localhost:4173`.
 - `Q`: toggle between PPA+1 and NAP+1
 - Click or tap an item card: select that treatment
 - `E` / `Space` / the mobile 使用 button: rescue when close to an NPC
+- Focus a treatment card with Tab, then press Enter/Space to select it; focused Use supports Enter/Space once per press, including key-repeat suppression.
+- Switching windows or hiding the page clears held movement/touch directions and pauses the round. Returning shows a Continue button; the timer and NPC events resume only after confirmation.
 - Mobile portrait: full-screen vertical play with virtual D-pad, fixed item dock and large 使用 button
 - Visual direction: bright pixel-town palette, deep navy outlines and enamel UI panels inspired by the sibling `012s-jelly-world` project
 - Debug panel: click `DEBUG` or press `F2`
@@ -71,13 +73,13 @@ The rescue items are still exactly **PPA+1** and **NAP+1**. Scenario describes t
 | LONG_WALK | SORENESS | NAP+1 |
 
 - **城市生活廣場 / Jelly City Plaza**: 60 seconds; café terrace, flower/clothing shops, photo garden and broad pedestrian plaza. Its first 15 seconds randomly introduce SKINCARE/OUTDOOR_SKIN. Later phases add walking/work soreness and allow two simultaneous residents after 40 seconds. Whole-round PPA target is 65–70%; the introduction is intentionally PPA-only, so later phases use lower PPA weights.
-- **活力運動公園 / Jelly Sports Park**: 60 seconds; basketball court, running track, fitness/skate areas, grass, rest and water stations. NAP target is about 70%, with outdoor/grass skin situations still available. Two simultaneous residents are allowed after 15 seconds and event cooldown tightens after 35 seconds.
+- **活力運動公園 / Jelly Sports Park**: 60 seconds; basketball court, running track, fitness/skate areas, grass, rest and water stations. Falls and sports soreness target 85% of events (NAP); outdoor/grass skin situations share the remaining 15%. Two simultaneous residents are allowed after 15 seconds and event cooldown tightens after 35 seconds.
 - City roles: `youngWoman`, `shopper`, `cafeVisitor`, `photographerGirl`, `deliveryWorker`.
 - Sports roles: `basketballPlayer`, `runner`, `skateboarder`, `fitnessGuy`, `sportsGirl`, `grassVisitor`. Role weights determine eligible stories; gender never determines the product. For example, `runner` can receive OUTDOOR_SKIN and `sportsGirl` can receive SPORT_SORE.
 
 The original `NPC.startEvent(condition, ...)` API and Tutorial/Park/Mountain scheduling remain compatible. New stages use `startScenario(type, ...)`, resolving to a supported condition before entering the existing WARNING → HELP → CRITICAL → FAILED/RESCUED state machine. `visualState` reports EVENT_REACTION while a reaction timer runs inside WARNING. WARNING remains rescuable; reactions do not add a hidden penalty or change score/combo rules.
 
-FALL briefly stumbles, tilts/squashes/downshifts and stops, then keeps a hand near the leg. SPORT_SORE/LONG_WALK slow down and pause with a gentle lean/leg cue. Skin scenarios pause with an arm gesture and soft ✦ cue; their critical bubble stays lavender. Successful rescue, failure, clearing and replay stop/reset the reaction. New characters use dedicated transparent chibi sprite atlases with readable clothing and accessories (bags, camera, delivery pack, ball, board, weights). Scenario transforms and arm/leg cues apply to these sprites. The atlases contain standing poses; movement uses the existing bob animation.
+Completed injury pose sequences are used only for the supported role/scenario combinations. Other scenarios keep the normal character sprite and communicate through explicit symptom dialogue; generic rotation/squash, overlaid hand gestures and ✦/〰 reaction symbols are removed. Movement still slows or stops according to the existing event rules. Successful rescue, failure, clearing and replay stop/reset the reaction. New characters use dedicated transparent chibi sprite atlases with readable clothing and accessories (bags, camera, delivery pack, ball, board, weights); normal movement uses the existing bob animation.
 
 Scenario stages select the condition family first, then an eligible weighted scenario and role. Temporarily unavailable families defer the event instead of silently changing its product. Stage `phases`, `scenarioPool` and `scenarioWeights` control timing and content; `NPC_ROLE_DEFS` holds movement, speed, appearance and scenario eligibility.
 
@@ -96,11 +98,13 @@ npm test
 node qa/scenarios-simulation.mjs
 ```
 
-`npm test` runs 17 Node tests covering scenario mapping, correct/wrong items, reaction lifecycle, targeting, spawn/routes, obstacle detours, disconnected targets, deadline fairness, seeded weighting, Tutorial/Park/Mountain compatibility, result metrics, old/new personal-best records, evolution and walking.
+`npm test` runs 20 Node tests covering scenario mapping, correct/wrong items, reaction and injury-pose lifecycle, dialogue-only rendering, targeting, spawn/routes, obstacle detours, disconnected targets, deadline fairness, seeded weighting, Tutorial/Park/Mountain compatibility, result metrics, old/new personal-best records, evolution and walking.
 
-The simulation runs 200 complete rounds per new stage, alternating normal/evolved speeds with a virtual rescuer that pays planned travel time. With the v1 art footprints and checked-in seed it emitted 1,992 City events (68.02% PPA) and 2,182 Sports events (69.11% NAP), with no NPC collision violations and simultaneous events observed in both stages. It is a scheduling stress test, not a human difficulty assessment.
+The simulation runs 200 complete rounds per new stage, alternating normal/evolved speeds with a virtual rescuer that pays planned travel time. With the v1 art footprints and checked-in seed it emitted 1,992 City events (68.02% PPA) and 2,180 Sports events (83.99% NAP), with no NPC collision violations and simultaneous events observed in both stages. It is a scheduling stress test, not a human difficulty assessment.
 
 Browser QA is optional and requires an available Playwright package and installed Edge (or a channel selected by `JELLY_BROWSER_CHANNEL`). It starts/stops its own server on port 4174; override with `JELLY_QA_PORT` if necessary.
+
+`node qa/input-reliability-browser.mjs` uses the same Playwright module configuration to check single action dispatch, focused item activation, native buttons, blur/visibility suspension, cleared touch input, explicit resume, essential mobile font sizes and result-page scrolling at 390×844 and 375×667. Reports and screenshots are saved under `qa/scenarios/`. These are emulated-browser checks; physical-phone touch and lock-screen behavior still need device acceptance testing.
 
 ```powershell
 # Omit this variable if Playwright is already installed in the project.
@@ -112,7 +116,7 @@ The browser runner checks all five stages at desktop 1280×900, portrait 390×84
 
 ## Remaining art and tuning
 
-Sports injury animation v1 adds three poses each for `basketballPlayer`/`skateboarder` FALL and `runner`/`fitnessGuy` soreness scenarios. Onset follows the existing reaction timer, then falls hold a seated knee pose while soreness alternates bracing poses with subtle breathing. Rescue, failure and clearing immediately stop the animation. Collision, movement, item correctness and event deadlines retain their existing rules. Other roles and scenarios retain the general reaction animation. The transparent 3×4 runtime atlas is `reference/runtime/sports-injury-v1.webp` (PNG fallback); the generated source, prompt and crop manifest are retained in `reference/`. `qa/build-injury-art.mjs` packages the twelve poses with a consistent scale per character and common foot baseline. Open `/qa/injury-preview.html` on the local server for replay/recovery controls; `qa/injury-browser.mjs` checks asset decode, pose progression, recovery and replay.
+Sports injury animation v1 adds three poses each for `basketballPlayer`/`skateboarder` FALL and `runner`/`fitnessGuy` soreness scenarios. Onset follows the existing reaction timer, then falls hold a seated knee pose while soreness alternates bracing poses with subtle breathing. Rescue, failure and clearing immediately stop the animation. Collision, movement, item correctness and event deadlines retain their existing rules. Other roles and scenarios use dialogue with the normal character pose. The transparent 3×4 runtime atlas is `reference/runtime/sports-injury-v1.webp` (PNG fallback); the generated source, prompt and crop manifest are retained in `reference/`. `qa/build-injury-art.mjs` packages the twelve poses with a consistent scale per character and common foot baseline. Open `/qa/injury-preview.html` on the local server for replay/recovery controls; `qa/injury-browser.mjs` checks asset decode, pose progression, recovery and replay.
 
 City/Sports v1 scene artwork and all eleven character sprites are integrated. Source layout guides, built-in ImageGen prompts and runtime crop registration are saved under `reference/art-layouts/`. `qa/build-lifestyle-art.mjs` packages the PNG masters into WebP maps and normalized 3×2 character atlases (set `JELLY_SHARP_MODULE` to an available Sharp package). `qa/lifestyle-art-browser.mjs` checks decoded map/atlas selection, all eleven roles, portrait rendering, legacy-stage switching and cached return; it uses the same Playwright configuration as the browser runner. Dedicated directional walking and fall/exercise pose sheets remain future animation polish. Human playtesting on physical phones is still useful for subjective difficulty and art polish; browser mobile validation uses emulated viewports/pointer input.
 

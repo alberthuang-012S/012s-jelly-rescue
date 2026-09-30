@@ -330,7 +330,6 @@ export class NPC {
       ctx.restore();
     }
     ctx.save();
-    if (!this.getInjuryPose(now)) this.applyReactionTransform(ctx, now);
     if (this.state === STATES.RESCUED) {
       ctx.fillStyle = 'rgba(255, 231, 155, 0.35)';
       ctx.beginPath();
@@ -363,7 +362,6 @@ export class NPC {
       ctx.strokeStyle = '#24324a'; ctx.lineWidth = 4;
       ctx.beginPath(); ctx.moveTo(-7, 24); ctx.lineTo(-8, 30); ctx.moveTo(7, 24); ctx.lineTo(8, 30); ctx.stroke();
       this.drawAccessory(ctx, style.accessory);
-      this.drawReactionCue(ctx, now);
       if (this.role === 'dogWalker') {
         ctx.fillStyle = '#b57e63'; ctx.beginPath(); ctx.arc(27, 15, 7, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = '#dca78a'; ctx.beginPath(); ctx.arc(31, 10, 3, 0, Math.PI * 2); ctx.fill();
@@ -414,11 +412,6 @@ export class NPC {
       destinationWidth,
       destinationHeight
     );
-    if (lifestyle) {
-      ctx.translate(this.x, this.y - 10 + bob);
-      ctx.scale(1.6, 1.6);
-      this.drawReactionCue(ctx, now);
-    }
     ctx.restore();
     return true;
   }
@@ -426,33 +419,6 @@ export class NPC {
   getInjuryPose(now = 0) {
     const image = this.spriteSheet?.injuryImage;
     return image?.complete && image.naturalWidth ? injuryPose(this, now) : null;
-  }
-
-  applyReactionTransform(ctx, now) {
-    if (!this.scenarioType || ![STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(this.state)) return;
-    const progress = this.reactionDuration ? 1 - this.reactionTimer / this.reactionDuration : 1;
-    let angle = 0; let offset = 0; let squash = 1;
-    if (this.reactionType === 'fall') {
-      angle = this.reactionTimer > 0 ? Math.sin(progress * Math.PI * 3) * .24 + progress * .25 : .25;
-      offset = progress * 16; squash = 1 - progress * .16;
-    } else if (this.reactionType === 'sore') {
-      angle = .09 + Math.sin(now * .005) * .025; offset = 4; squash = .96;
-    } else angle = -.06;
-    ctx.translate(this.x, this.y + offset);
-    ctx.rotate(angle); ctx.scale(1, squash); ctx.translate(-this.x, -this.y);
-  }
-
-  drawReactionCue(ctx, now) {
-    if (!this.scenarioType || ![STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(this.state)) return;
-    ctx.save();
-    // Hand across the arm or thigh makes the intent readable without injury art.
-    ctx.strokeStyle = NPC_ROLE_DEFS[this.role]?.accent || '#ffdabd';
-    ctx.lineWidth = 5; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(13, 4);
-    ctx.lineTo(this.reactionType === 'skin' ? -8 : 6, this.reactionType === 'skin' ? 10 : 23); ctx.stroke();
-    if (this.reactionType === 'skin') drawText(ctx, '✦', -24, 7 + Math.sin(now * .004), { size: 15, color: '#9785c9' });
-    else drawText(ctx, '〰', 22, 24, { size: 15, color: '#668bb8' });
-    ctx.restore();
   }
 
   drawAccessory(ctx, accessory) {

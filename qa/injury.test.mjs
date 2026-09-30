@@ -50,3 +50,22 @@ test('injury sprite uses the correct row/frame and safely falls back when the at
     assert.equal(npc.drawWorldSprite(ctx, 0, 650), false);
   }
 });
+
+test('dialogue-only scenarios draw the normal sprite without extra gestures or symbols', () => {
+  for (const [role, scenario] of [['youngWoman', 'SKINCARE'], ['grassVisitor', 'GRASS_SKIN'],
+    ['sportsGirl', 'SPORT_SORE'], ['runner', 'FALL'], ['basketballPlayer', 'SPORT_SORE']]) {
+    const npc = npcFor(role, scenario);
+    const base = { complete: true, naturalWidth: 768 };
+    npc.spriteImage = base;
+    npc.spriteSheet = { lifestyle: true, columns: 3, frameWidth: 256, frameHeight: 384,
+      injuryImage: { complete: true, naturalWidth: 768 } };
+    const calls = [];
+    // Only sprite operations are permitted. Drawing an extra cue/transform
+    // would require a missing context method and fail this check.
+    const ctx = { save() {}, restore() {}, drawImage(...args) { calls.push(args); } };
+    assert.equal(npc.getInjuryPose(650), null);
+    assert.equal(npc.drawWorldSprite(ctx, 0, 650), true);
+    assert.equal(calls.length, 1); assert.equal(calls[0][0], base);
+    assert.equal(npc.hasStatusBubble(), true);
+  }
+});

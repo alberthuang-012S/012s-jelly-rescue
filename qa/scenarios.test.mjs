@@ -123,7 +123,7 @@ test('two-event fairness tests both deadlines and stops dispatch before stage en
 });
 
 test('seeded scenario sampling respects family ratios, city introduction and role compatibility', () => withRandom(() => {
-  for (const [id, expected] of [['city', .56], ['sports', .3]]) {
+  for (const [id, expected] of [['city', .56], ['sports', .15]]) {
     const director = new EventDirector(STAGE_DEFS[id]); const npcs = []; director.seed(npcs);
     let ppa = 0; const observed = new Set();
     for (let sample = 0; sample < 12000; sample += 1) {

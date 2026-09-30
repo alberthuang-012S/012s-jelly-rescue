@@ -12,36 +12,53 @@ const KEY_VECTORS = {
 };
 
 export class InputController {
-  constructor({ onAction, onItemSelect, onItemToggle, onEscape }) {
+  constructor({ onAction, onItemSelect, onItemToggle, onEscape, onSuspend }) {
     this.keys = new Set();
     this.activeDirectionPointers = new Map();
     this.onAction = onAction;
     this.onItemSelect = onItemSelect;
     this.onItemToggle = onItemToggle;
     this.onEscape = onEscape;
+    this.onSuspend = onSuspend;
     this.enabled = true;
     this.boundKeyDown = (event) => this.handleKeyDown(event);
     this.boundKeyUp = (event) => this.handleKeyUp(event);
     window.addEventListener('keydown', this.boundKeyDown, { passive: false });
     window.addEventListener('keyup', this.boundKeyUp, { passive: false });
+    this.boundSuspend = () => { this.reset(); this.onSuspend?.(); };
+    this.boundVisibility = () => { if (document.hidden) this.boundSuspend(); };
+    window.addEventListener('blur', this.boundSuspend);
+    document.addEventListener('visibilitychange', this.boundVisibility);
     this.bindTouchControls();
   }
 
   setEnabled(enabled) {
     this.enabled = enabled;
     if (!enabled) {
-      this.keys.clear();
-      this.clearDirectionPointers();
+      this.reset();
     }
   }
 
   handleKeyDown(event) {
+    if (event.defaultPrevented) return;
+    const target = event.target?.closest?.('button, [role="button"], a, input, textarea, select, [contenteditable]');
+    if (target?.matches('input, textarea, select, [contenteditable]')) return;
     if (event.code === 'Escape') {
       event.preventDefault();
-      this.onEscape?.();
+      if (!event.repeat) this.onEscape?.();
       return;
     }
     if (!this.enabled) return;
+    if (target && (event.code === 'Enter' || event.code === 'Space')) {
+      if (target.matches('[data-action="use"], [data-item]')) {
+        event.preventDefault();
+        if (!event.repeat) {
+          if (target.dataset.item) this.onItemSelect?.(target.dataset.item);
+          else this.onAction?.();
+        }
+      }
+      return;
+    }
     if (KEY_VECTORS[event.code]) {
       event.preventDefault();
       this.keys.add(event.code);
@@ -94,14 +111,14 @@ export class InputController {
         event.preventDefault();
         if (this.enabled) this.onAction?.();
       }, { passive: false });
-      button.addEventListener('keydown', (event) => {
-        if ((event.code === 'Enter' || event.code === 'Space') && this.enabled) {
-          event.preventDefault();
-          this.onAction?.();
-        }
+      button.addEventListener('click', (event) => {
+        if (event.detail === 0 && this.enabled) this.onAction?.();
       });
     });
     document.querySelectorAll('[data-item]').forEach((button) => {
+      button.addEventListener('click', (event) => {
+        if (event.detail === 0 && this.enabled) this.onItemSelect?.(button.dataset.item);
+      });
       button.addEventListener('pointerdown', (event) => {
         event.preventDefault();
         if (this.enabled) this.onItemSelect?.(button.dataset.item);
@@ -129,6 +146,11 @@ export class InputController {
     directions.forEach((direction) => this.updateDirectionButtonState(direction));
   }
 
+  reset() {
+    this.keys.clear();
+    this.clearDirectionPointers();
+  }
+
   getMovementVector() {
     if (!this.enabled) return { x: 0, y: 0 };
     let x = 0;
@@ -152,5 +174,7 @@ export class InputController {
   dispose() {
     window.removeEventListener('keydown', this.boundKeyDown);
     window.removeEventListener('keyup', this.boundKeyUp);
+    window.removeEventListener('blur', this.boundSuspend);
+    document.removeEventListener('visibilitychange', this.boundVisibility);
   }
 }

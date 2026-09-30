@@ -445,7 +445,8 @@ export class Game {
       onAction: () => this.tryAction(),
       onItemSelect: (itemId) => this.selectItem(itemId),
       onItemToggle: () => this.toggleItem(),
-      onEscape: () => this.handleEscape()
+      onEscape: () => this.handleEscape(),
+      onSuspend: () => this.pauseForBackground()
     });
     this.evolutionStore = new EvolutionStore();
     this.player = new Player(null);
@@ -463,6 +464,13 @@ export class Game {
     this.bindDebug();
     this.bindTutorialModal();
     this.bindExitConfirmation();
+    this.backgroundPaused = false;
+    this.backgroundPause = document.querySelector('#background-pause');
+    this.backgroundResume = document.querySelector('#background-resume');
+    this.backgroundResume.addEventListener('click', () => this.resumeFromBackground());
+    this.backgroundPause.addEventListener('keydown', (event) => {
+      if (event.code === 'Tab') { event.preventDefault(); this.backgroundResume.focus(); }
+    });
     this.bindResponsiveLayout();
     this.loop = this.loop.bind(this);
     requestAnimationFrame(this.loop);
@@ -754,6 +762,7 @@ export class Game {
   }
 
   handleEscape() {
+    if (this.backgroundPaused) return;
     if (this.resultScreen.dialog.open) return;
     if (this.isExitConfirmOpen) {
       this.closeExitConfirmation();
@@ -798,7 +807,7 @@ export class Game {
       this.tutorialModal?.classList.remove('is-hidden');
       this.tutorialModal?.setAttribute('aria-hidden', 'false');
       this.input.setEnabled(false);
-    } else if (resume && this.state === 'playing') {
+    } else if (resume && this.state === 'playing' && !this.backgroundPaused) {
       this.input.setEnabled(true);
     }
     this.exitPreviousTutorialMode = '';
@@ -813,6 +822,34 @@ export class Game {
     if (!this.isExitConfirmOpen) return;
     this.closeExitConfirmation({ resume: false });
     this.showHome();
+  }
+
+  pauseForBackground() {
+    if (!['playing', 'loading'].includes(this.state) || this.backgroundPaused) return;
+    this.backgroundPaused = true;
+    this.input.setEnabled(false);
+    this.backgroundPause.classList.remove('is-hidden');
+    this.backgroundPause.setAttribute('aria-hidden', 'false');
+    this.gameShell.classList.add('is-background-paused');
+    this.backgroundResume.focus();
+  }
+
+  clearBackgroundPause() {
+    this.backgroundPaused = false;
+    this.backgroundPause.classList.add('is-hidden');
+    this.backgroundPause.setAttribute('aria-hidden', 'true');
+    this.gameShell.classList.remove('is-background-paused');
+  }
+
+  resumeFromBackground() {
+    if (!this.backgroundPaused || this.state !== 'playing' || document.hidden) return;
+    this.clearBackgroundPause();
+    this.lastTimestamp = 0;
+    this.input.reset();
+    this.input.setEnabled(!this.isTutorialModalOpen && !this.isExitConfirmOpen);
+    if (this.isExitConfirmOpen) this.exitConfirmSecondary.focus();
+    else if (this.isTutorialModalOpen) this.tutorialModalPrimary.focus();
+    else this.backgroundResume.blur();
   }
 
   getTutorialModalCopy(mode) {
@@ -957,7 +994,7 @@ export class Game {
     this.gameShell.classList.remove('is-tutorial-modal-open');
     this.tutorialModal?.classList.add('is-hidden');
     this.tutorialModal?.setAttribute('aria-hidden', 'true');
-    if (enableInput && this.state === 'playing' && this.isTutorial()) this.input.setEnabled(true);
+    if (enableInput && this.state === 'playing' && this.isTutorial() && !this.backgroundPaused) this.input.setEnabled(true);
   }
 
   beginTutorialRescue() {
@@ -1037,6 +1074,7 @@ export class Game {
   }
 
   async startStage(stageId) {
+    this.clearBackgroundPause();
     window.clearTimeout(this.tutorialTransitionTimer);
     this.tutorialTransitionTimer = null;
     this.closeExitConfirmation({ resume: false });
@@ -1113,9 +1151,12 @@ export class Game {
       this.input.setEnabled(true);
     }
     this.scheduleNextStagePreload(stageId);
+    if (this.backgroundPaused) this.input.setEnabled(false);
+    else if (document.hidden) this.pauseForBackground();
   }
 
   showHome() {
+    this.clearBackgroundPause();
     this.loadingToken += 1;
     window.clearTimeout(this.tutorialTransitionTimer);
     this.tutorialTransitionTimer = null;
@@ -1132,17 +1173,20 @@ export class Game {
   }
 
   selectItem(itemId) {
+    if (this.backgroundPaused) return;
     this.itemSystem.select(itemId);
     this.hud.updateItems(this.itemSystem.selectedId);
   }
 
   toggleItem() {
+    if (this.backgroundPaused) return;
     if (this.state !== 'playing') return;
     this.itemSystem.toggle();
     this.hud.updateItems(this.itemSystem.selectedId);
   }
 
   update(dt) {
+    if (this.backgroundPaused || document.hidden) return;
     if (this.resultScreen.dialog.open) return;
     if (this.state !== 'playing') return;
     if (this.isTutorialModalOpen || this.isExitConfirmOpen) return;
@@ -1172,6 +1216,7 @@ export class Game {
   }
 
   tryAction() {
+    if (this.backgroundPaused || document.hidden) return;
     if (this.resultScreen.dialog.open) return;
     if (this.state !== 'playing') return;
     if (this.isTutorialModalOpen || this.isExitConfirmOpen) return;

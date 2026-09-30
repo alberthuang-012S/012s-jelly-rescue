@@ -52,7 +52,7 @@ try {
     summary[id] = result;
   }
   assert.ok(summary.city.ppaRatio >= .65 && summary.city.ppaRatio <= .7);
-  assert.ok(summary.sports.ppaRatio >= .27 && summary.sports.ppaRatio <= .33);
+  assert.ok(summary.sports.ppaRatio >= .12 && summary.sports.ppaRatio <= .18);
   await mkdir(new URL('./scenarios/', import.meta.url), { recursive: true });
   await writeFile(new URL('./scenarios/simulation-report.json', import.meta.url), JSON.stringify(summary, null, 2) + '\n');
   console.log(JSON.stringify(summary, null, 2));

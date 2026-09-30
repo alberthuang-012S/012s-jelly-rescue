@@ -1284,7 +1284,33 @@ body { background: #deeff5; }
 .evolution-dialog-action:disabled { opacity: .7; cursor: wait; }
 .evolution-dialog-action:focus-visible { outline: 3px solid #296b9b; outline-offset: 4px; }
 @media (max-height: 540px) { .evolution-dialog { padding: 18px 24px; } .evolution-dialog-art { min-height: 95px; margin-bottom: 10px; } .evolution-dialog-art .evolution-character { height: 100px; } .reward-rays { font-size: 130px; } .evolution-dialog p { margin-bottom: 14px; } }
+/* Readable essential information on phone layouts. */
+.result-glow { max-width: 100%; pointer-events: none; }
+@media (max-width: 680px), (max-height: 520px) and (orientation: landscape) and (max-width: 1100px) {
+  .metric-box small, .timer-box small { font-size: 11px; letter-spacing: 0; }
+  .metric-box strong, .timer-box strong { font-size: 17px; }
+  .combo-metric { min-width: 48px; }
+  .exit-stage-button { top: calc(max(6px, env(safe-area-inset-top)) + 54px); font-size: 12px; }
+  .objective-chip, .game-shell.is-tutorial-stage .objective-chip { font-size: 12px; }
+  .objective-chip, .tutorial-guide, .toast-region { top: calc(max(6px, env(safe-area-inset-top)) + 92px); }
+  .tutorial-guide-mobile-copy { font-size: 13px; line-height: 1.5; }
+  .toast b, .toast small, .action-feedback { font-size: 12px; }
+  .item-compact-label { font-size: 12px; }
+  .result-summary, .result-stat-grid span, .rescue-statistics span,
+  .result-performance-main > span, .result-performance-detail > small,
+  .result-score-hero small, .result-personal-best-row span, .result-new-best,
+  .result-badge, .result-kicker { font-size: 12px; letter-spacing: 0; }
+  .result-performance-card { flex-wrap: wrap; }
+  .result-performance-detail > small { white-space: normal; }
+  .result-stat-grid span { overflow-wrap: anywhere; }
+  .result-actions button { min-height: 44px; }
+}
 /* Scenario expansion: preserve the existing cards and dock geometry. */
+.background-pause { position: absolute; z-index: 60; inset: 0; display: grid; place-items: center; padding: 16px; background: #10243ebd; }
+.background-pause button { margin-top: 18px; min-height: 46px; font-size: 16px; }
+.game-shell.is-background-paused .mobile-dpad,
+.game-shell.is-background-paused .item-dock,
+.game-shell.is-background-paused #action-button { pointer-events: none; opacity: .35; }
 .home-screen[data-stage-tone='city'] { --home-accent: #e4b9d4; }
 .home-screen[data-stage-tone='sports'] { --home-accent: #a4d9bf; }
 .stage-tab-copy b { font-size: 11px; }
@@ -1301,4 +1327,8 @@ body { background: #deeff5; }
   .stage-tab-copy b { font-size: 10px; }
   .rescue-statistics { gap: 7px; margin: 8px 0; padding: 9px; }
   .rescue-statistics b { font-size: 13px; }
+  .rescue-statistics span { font-size: 12px; }
+  .result-grade, .result-grade small { font-size: 12px; }
+  .tutorial-modal-step, .tutorial-modal-product b, .tutorial-modal-product small,
+  .tutorial-modal-flow span { font-size: 12px; }
 }
