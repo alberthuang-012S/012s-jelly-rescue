@@ -14,7 +14,6 @@ import { StageManager, STAGE_DEFS, STAGE_ORDER } from './StageManager.js';
 import { SCENARIO_DEFS, requiredItem } from './ScenarioDefinitions.js';
 import { NPC_ROLE_DEFS } from './NPCRoleDefinitions.js';
 import { LEGACY_NPC_LAYOUT } from './NPCSpriteLayout.js';
-import { layoutStatusBubbles } from './StatusBubbleLayout.js';
 import { TutorialDirector } from './TutorialDirector.js?mountain-pavilion-dialogue-v2';
 import { WorldRenderer } from './WorldRenderer.js?v=mountain-pavilion-dialogue-v2';
 import { clamp, drawText, formatClock, lerp } from './utils.js';
@@ -1626,11 +1625,6 @@ export class Game {
       && npc.x + npc.radius >= visibleBounds.left && npc.x - npc.radius <= visibleBounds.right
       && npc.y + npc.radius >= visibleBounds.top && npc.y - npc.radius <= visibleBounds.bottom)
       .map(npc => ({ npc, layout: npc.getStatusLayout(ctx, now, statusOptions) }));
-    const bodies = statusEntries.map(({ layout }) => ({ x: layout.anchorX - 40,
-      y: layout.anchorY, width: 80, height: layout.footY - layout.anchorY }));
-    bodies.push({ x: this.player.x - 32, y: this.player.y - 48, width: 64, height: 90 });
-    bodies.push(...this.getStatusUiObstacles(camera));
-    const statusLayouts = layoutStatusBubbles(statusEntries, visibleBounds, bodies);
     const entities = [...drawableNpcs, this.player].sort((a, b) => a.y - b.y);
     for (const entity of entities) {
       if (entity === this.player) entity.draw(ctx);
@@ -1639,7 +1633,7 @@ export class Game {
         cameraScale: camera.scale,
         compactStatusBubble: this.layoutMode !== 'desktop',
         visibleBounds,
-        // Draw all dialogue above entities/foreground, after resolving overlaps.
+        // Keep dialogue above entities/foreground at its owner's original position.
         drawStatusBubble: false
       });
     }
@@ -1649,10 +1643,8 @@ export class Game {
     this.worldRenderer.drawMountainForeground(ctx, stage, now, {
       roofOpacity: this.pavilionRoofOpacity
     });
-    // Keep every connector behind every panel, including a neighboring panel.
-    for (const [npc, statusLayout] of statusLayouts) npc.drawStatusConnector(ctx, statusLayout);
-    for (const [npc, statusLayout] of statusLayouts) {
-      npc.drawStatus(ctx, now, { ...statusOptions, statusLayout, drawConnector: false });
+    for (const { npc, layout } of statusEntries) {
+      npc.drawStatus(ctx, now, { ...statusOptions, statusLayout: layout });
     }
     this.renderParticles(ctx);
     this.renderFloaters(ctx);
@@ -1667,21 +1659,6 @@ export class Game {
       } else { ctx.beginPath(); ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2); ctx.fill(); }
       ctx.restore();
     });
-  }
-
-  getStatusUiObstacles(camera) {
-    const key = `${this.viewport.width}/${this.viewport.height}/${this.selectedStage}/${this.hud.elements.action.className}/${this.hud.elements.exitButton.className}`;
-    if (this.statusUiCache?.key !== key) {
-      const canvasRect = this.canvas.getBoundingClientRect();
-      const rects = [...document.querySelectorAll('.game-hud, .mobile-dpad, .item-dock, #action-button, #exit-stage-button, #tutorial-guide')]
-        .map(element => element.getBoundingClientRect()).filter(rect => rect.width && rect.height)
-        .map(rect => ({ x: rect.left - canvasRect.left, y: rect.top - canvasRect.top, width: rect.width, height: rect.height }));
-      this.statusUiCache = { key, rects };
-    }
-    const offsetX = camera.mode === 'fit' ? -camera.x / camera.scale : camera.x;
-    const offsetY = camera.mode === 'fit' ? -camera.y / camera.scale : camera.y;
-    return this.statusUiCache.rects.map(rect => ({ x: rect.x / camera.scale + offsetX,
-      y: rect.y / camera.scale + offsetY, width: rect.width / camera.scale, height: rect.height / camera.scale, protected: true }));
   }
 
   renderFloaters(ctx) {

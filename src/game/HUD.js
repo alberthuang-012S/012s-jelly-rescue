@@ -1,4 +1,4 @@
-import { STATES, CONDITION_LABELS } from './constants.js';
+import { STATES } from './constants.js';
 import { clamp, formatClock, formatScore } from './utils.js';
 
 const ACTIVE_EVENT_STATES = [STATES.WARNING, STATES.HELP, STATES.CRITICAL];
@@ -238,17 +238,14 @@ export class HUD {
       const position = this.getIndicatorPosition(game, camera, npc, occupiedPositions);
       occupiedPositions.push(position);
       node.className = `rescue-indicator rescue-indicator-${npc.state.toLowerCase()}`;
-      node.dataset.condition = npc.condition;
       const dimensions = this.getIndicatorDimensions(game);
       node.style.width = `${dimensions.width}px`;
       node.style.height = `${dimensions.height}px`;
       node.style.left = `${position.x}px`;
       node.style.top = `${position.y}px`;
       node.querySelector('.rescue-indicator-arrow').textContent = INDICATOR_ARROWS[direction];
-      const symptom = CONDITION_LABELS[npc.condition]?.short || '';
-      const compactSymptom = symptom === '痠痛' ? '痠' : symptom;
-      node.querySelector('.rescue-indicator-label').textContent = `${compactSymptom}${INDICATOR_STATE_LABELS[npc.state]}`;
-      node.setAttribute('aria-label', `${symptom}${INDICATOR_STATE_LABELS[npc.state]}，方向${INDICATOR_DIRECTION_LABELS[direction]}`);
+      node.querySelector('.rescue-indicator-label').textContent = INDICATOR_STATE_LABELS[npc.state];
+      node.setAttribute('aria-label', `${INDICATOR_STATE_LABELS[npc.state]}，方向${INDICATOR_DIRECTION_LABELS[direction]}`);
     });
   }
 

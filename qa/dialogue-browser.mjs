@@ -15,10 +15,9 @@ try{
     await page.route('**/src/main.js*',async route=>{const response=await route.fetch();await route.fulfill({response,body:(await response.text()).replace('new Game();','window.__qaGame = new Game();')});});
     await page.goto('http://localhost:4182',{waitUntil:'networkidle'});
     await page.evaluate(async()=>{
-      const {NPC}=await import('/src/game/NPC.js');const {statusBounds}=await import('/src/game/StatusBubbleLayout.js');
+      const {NPC}=await import('/src/game/NPC.js');
+      const statusBounds=layout=>({x:layout.bubbleX,y:layout.bubbleY,width:layout.bubbleWidth,height:layout.bubbleHeight});
       const original=NPC.prototype.drawStatus;
-      const connector=NPC.prototype.drawStatusConnector;
-      NPC.prototype.drawStatusConnector=function(...args){window.__dialoguePaint.push('connector');return connector.apply(this,args);};
       NPC.prototype.drawStatus=function(ctx,now,options){
         window.__dialoguePaint.push('panel');
         const layout=options.statusLayout||this.getStatusLayout(ctx,now,options);const rect=statusBounds(layout),matrix=ctx.getTransform(),ratio=window.__qaGame.pixelRatio;
@@ -46,24 +45,28 @@ try{
             npc.state=id?'CRITICAL':'HELP';npc.reactionTimer=0;npc.tolerance=id?2:600;return npc;
           });
           game.player.x=x;game.player.y=Math.min(def.world.height-20,y+100);game.cameraState=null;
+          const getCamera=game.getCamera;
+          const camera=getCamera.call(game,def);game.getCamera=()=>camera;
           game.render(1300);
+          const before=window.__dialogueRects.map(rect=>({x:rect.x,y:rect.y}));
+          game.player.x+=15;game.render(1350);
+          const after=window.__dialogueRects.map(rect=>({x:rect.x,y:rect.y}));
+          game.getCamera=getCamera;
           const canvas=game.canvas.getBoundingClientRect();
           const controls=[...document.querySelectorAll('.game-hud,.mobile-dpad,.item-dock,#action-button,#exit-stage-button')]
             .map(element=>element.getBoundingClientRect()).filter(rect=>rect.width&&rect.height)
             .map(rect=>({x:rect.left-canvas.left,y:rect.top-canvas.top,width:rect.width,height:rect.height}));
-          return {rects:window.__dialogueRects,paint:window.__dialoguePaint,controls,width:game.viewport.width,height:game.viewport.height};
+          return {rects:window.__dialogueRects,before,after,controls,width:game.viewport.width,height:game.viewport.height};
         },{stage,point});
         const overlaps=(a,b)=>a.x<b.x+b.width-.5&&a.x+a.width>b.x+.5&&a.y<b.y+b.height-.5&&a.y+a.height>b.y+.5;
         assert.equal(result.rects.length,2,`${name} ${stage} ${point}: drawn pair`);
-        assert.ok(result.paint.lastIndexOf('connector')<result.paint.indexOf('panel'),'Connectors must remain behind all dialogue panels');
-        assert.equal(overlaps(...result.rects),false,`${name} ${stage} ${point}: overlapping bubbles`);
+        assert.deepEqual(result.after,result.before,`${name} ${stage} ${point}: player movement must not relocate bubbles`);
         for(const rect of result.rects){
           assert.ok(rect.x>=0&&rect.y>=0&&rect.x+rect.width<=result.width+.1&&rect.y+rect.height<=result.height+.1,`${name} ${stage} ${point}: clipping`);
-          assert.equal(result.controls.some(control=>overlaps(rect,control)),false,`${name} ${stage} ${point}: covered control`);
-          assert.equal(rect.texts[0].color,rect.condition==='ITCH'?'#60428a':'#204f7a');
+          assert.equal(rect.texts[0].color,rect.condition==='ITCH'?'#173a76':'#a83d67');
           assert.match(rect.label,rect.condition==='ITCH'?/癢/:/痠/);
         }
-        report.checks.push(`${name}/${stage}/${point}: pair, bars, symptoms, palette, viewport and controls`);
+        report.checks.push(`${name}/${stage}/${point}: stable owner position, symptoms, state-only palette and viewport`);
         if(point==='center'||(name==='small'&&point==='bottom'))await page.screenshot({path:`qa/scenarios/dialogue-v1-${name}-${stage}-${point}.png`});
       }
       if(name==='desktop'){
@@ -71,15 +74,16 @@ try{
           const game=window.__qaGame,stage=game.stageManager.getStage();
           game.npcs.forEach((npc,i)=>{npc.x=30+i*30;npc.y=30;});
           game.player.x=stage.world.width/2;game.player.y=stage.world.height-50;game.cameraState=null;game.render(1300);
-          return [...document.querySelectorAll('.rescue-indicator:not(.is-hidden)')].map(node=>({condition:node.dataset.condition,label:node.textContent,background:getComputedStyle(node).backgroundColor,overflow:node.scrollWidth>node.clientWidth}));
+          return [...document.querySelectorAll('.rescue-indicator:not(.is-hidden)')].map(node=>({critical:node.classList.contains('rescue-indicator-critical'),label:node.textContent,background:getComputedStyle(node).backgroundColor,overflow:node.scrollWidth>node.clientWidth}));
         });
         assert.equal(indicators.length,2);
         for(const indicator of indicators){
-          assert.match(indicator.label,indicator.condition==='ITCH'?/癢/:/痠/);
+          assert.match(indicator.label,indicator.critical?/緊急/:/求救/);
+          assert.doesNotMatch(indicator.label,/癢|痠/);
           assert.equal(indicator.overflow,false);
-          assert.equal(indicator.background,indicator.condition==='ITCH'?'rgb(243, 237, 252)':'rgb(214, 233, 251)');
+          assert.equal(indicator.background,indicator.critical?'rgb(255, 227, 232)':'rgb(255, 242, 206)');
         }
-        report.checks.push(`${name}/${stage}/offscreen: symptom and palette`);
+        report.checks.push(`${name}/${stage}/offscreen: original help labels and state-only palette`);
       }
     }
     await page.close();

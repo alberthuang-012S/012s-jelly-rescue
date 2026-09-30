@@ -485,9 +485,8 @@ export class NPC {
       : this.spriteSheet && (NPC_ROLE_DEFS[this.role]?.spriteVariant !== null || this.spriteSheet.lifestyle)
         ? this.spriteSheet.topOffsets?.[frame] ?? 84 : 52;
     const gap = (compactStatusBubble ? 7 : 9) / scale;
-    const pulse = isCritical ? (Math.sin(now * 0.02) * (compactStatusBubble ? 1.5 : 2)) / scale : 0;
     const bubbleBottom = this.y - spriteTopOffset - gap;
-    const normalBubbleY = bubbleBottom - bubbleHeight - pulse;
+    const normalBubbleY = bubbleBottom - bubbleHeight;
     const canClampToViewport = Boolean(
       visibleBounds
       && this.x + this.radius >= visibleBounds.left
@@ -545,7 +544,6 @@ export class NPC {
       bubbleCenterX, bubbleX, bubbleY, pointerPointsUp, pointerX,
       isCritical, isRescued, isFailed, showBar, barWidth, barHeight, barGap } = layout;
     const { fill, stroke, textColor } = this.getStatusColors(layout);
-    if (options.drawConnector !== false) this.drawStatusConnector(ctx, layout);
     ctx.save();
     ctx.fillStyle = fill;
     ctx.strokeStyle = stroke;
@@ -595,22 +593,12 @@ export class NPC {
   }
 
   getStatusColors({ isCritical, isRescued, isFailed }) {
-    const skin = this.condition === CONDITIONS.ITCH;
     return {
       fill: isRescued ? '#def5e8' : isFailed ? '#eef3f5'
-        : skin ? (isCritical ? '#e5d9f8' : '#f3edfc') : (isCritical ? '#d6e9fb' : '#edf6ff'),
+        : isCritical ? '#ffe1ea' : '#fff5df',
       stroke: isRescued ? '#65ae91' : isFailed ? '#95a9b4'
-        : skin ? (isCritical ? '#7651ad' : '#aa8acb') : (isCritical ? '#326da6' : '#79a6cf'),
-      textColor: isRescued ? '#287b64' : isFailed ? '#566d7b' : skin ? '#60428a' : '#204f7a'
+        : isCritical ? '#e77fa2' : '#5686c5',
+      textColor: isRescued ? '#287b64' : isFailed ? '#566d7b' : isCritical ? '#a83d67' : '#173a76'
     };
-  }
-
-  drawStatusConnector(ctx, layout) {
-    const { bubbleY, bubbleHeight, pointerHeight, pointerPointsUp, pointerX, scale } = layout;
-    const tipY = pointerPointsUp ? bubbleY - pointerHeight : bubbleY + bubbleHeight + pointerHeight;
-    const anchorY = pointerPointsUp ? layout.footY : layout.anchorY;
-    if (Math.hypot(pointerX - layout.anchorX, tipY - anchorY) <= 14 / scale) return;
-    ctx.save(); ctx.strokeStyle = this.getStatusColors(layout).stroke; ctx.lineWidth = 1.5 / scale;
-    ctx.beginPath(); ctx.moveTo(pointerX, tipY); ctx.lineTo(layout.anchorX, anchorY); ctx.stroke(); ctx.restore();
   }
 }
