@@ -16,7 +16,7 @@ const sportsZones = [
 ];
 const routes = {
   mainTrail: [{ x: 384, y: 1040 }, { x: 384, y: 840 }, { x: 384, y: 600 }, { x: 384, y: 360 }, { x: 384, y: 180 }, { x: 384, y: 600 }],
-  leftLoop: [{ x: 180, y: 790 }, { x: 180, y: 630 }, { x: 320, y: 575 }, { x: 320, y: 890 }],
+  leftLoop: [{ x: 160, y: 790 }, { x: 180, y: 630 }, { x: 320, y: 575 }, { x: 320, y: 890 }],
   rightLoop: [{ x: 580, y: 790 }, { x: 580, y: 630 }, { x: 450, y: 575 }, { x: 450, y: 890 }],
   upperLoop: [{ x: 384, y: 180 }, { x: 280, y: 220 }, { x: 320, y: 540 }, { x: 450, y: 540 }, { x: 485, y: 220 }]
 };
@@ -45,11 +45,40 @@ const makeStage = (id, name, displayName, subtitle, npcTypes, zones, landmarks, 
   world: { width: 768, height: 1152 }, fitToScreen: true, cameraPadding: { top: 110, bottom: 145 },
   start: { x: 384, y: 1055 }, maxNpcs: 9, seedCount: npcTypes.length,
   event: { initialDelay: 2.4, spawnCooldown: 5, initialTolerance: 11, warningDuration: 3.6 },
-  routes, npcTypes, zones, landmarks, phases,
+  routes, npcTypes, zones, landmarks: alignSolidLandmarks(id, landmarks), phases,
   renderer: 'lifestyle', theme: id, scenarioPool: Object.keys(scenarioWeights), scenarioWeights,
-  obstacles: landmarks.filter((landmark) => landmark.solid).map(({ x, y, width, height, kind }) => ({ x, y, width, height, kind })),
+  obstacles: ART_OBSTACLES[id],
   spawnPoints
 });
+
+// Measured solid footprints in the v1 artwork (1024×1536 pixels / 4/3).
+// Flat courts, track paint, picnic blanket and low flower edging stay walkable.
+const ART_OBSTACLES = {
+  city: [
+    { x: 50, y: 407, width: 218, height: 157, kind: 'cafe' },
+    { x: 511, y: 303, width: 224, height: 157, kind: 'flowerShop' },
+    { x: 513, y: 874, width: 220, height: 157, kind: 'clothes' },
+    { x: 74, y: 659, width: 83, height: 54, kind: 'table' },
+    { x: 195, y: 757, width: 76, height: 54, kind: 'table' }
+  ],
+  sports: [
+    { x: 91, y: 245, width: 62, height: 70, kind: 'equipment' },
+    { x: 233, y: 365, width: 48, height: 67, kind: 'equipment' },
+    { x: 75, y: 931, width: 150, height: 42, kind: 'bench' },
+    { x: 548, y: 941, width: 119, height: 45, kind: 'water' }
+  ]
+};
+
+function alignSolidLandmarks(id, landmarks) {
+  const used = {};
+  return landmarks.map((landmark) => {
+    if (!landmark.solid) return landmark;
+    const index = used[landmark.kind] || 0;
+    used[landmark.kind] = index + 1;
+    const footprint = ART_OBSTACLES[id].filter((obstacle) => obstacle.kind === landmark.kind)[index];
+    return { ...landmark, ...footprint };
+  });
+}
 
 export const LIFESTYLE_STAGES = {
   city: makeStage('city', 'Jelly City Plaza', '城市生活廣場', '城市日常 · 皮膚照顧',
@@ -58,7 +87,7 @@ export const LIFESTYLE_STAGES = {
       phase(40, 'mixed', .56, 9.5, 3.4, 4.5, 1), phase(60, 'pressure', .55, 8.5, 3, 3.7, 2)],
     { SKINCARE: .65, OUTDOOR_SKIN: .35, LONG_WALK: .75, SPORT_SORE: .25 },
     [{ x: 350, y: 930, zone: 'entrance', route: 'mainTrail' }, { x: 580, y: 760, zone: 'shops', route: 'rightLoop' },
-      { x: 175, y: 725, zone: 'cafe', route: 'leftLoop' }, { x: 380, y: 270, zone: 'photo', route: 'upperLoop' },
+      { x: 185, y: 725, zone: 'cafe', route: 'leftLoop' }, { x: 380, y: 270, zone: 'photo', route: 'upperLoop' },
       { x: 415, y: 870, zone: 'plaza', route: 'mainTrail' }]),
   sports: makeStage('sports', 'Jelly Sports Park', '活力運動公園', '運動日常 · 反應救援',
     ['basketballPlayer', 'runner', 'skateboarder', 'fitnessGuy', 'sportsGirl', 'grassVisitor'], sportsZones, sportsLandmarks,

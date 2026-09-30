@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "checks": [
+    "Sports decoded injury atlas",
+    "City uses normal atlas",
+    "Four onset poses",
+    "Fall holds final pose",
+    "Rescue returns to normal",
+    "Replay restarts from onset"
+  ],
+  "errors": []
+}

@@ -28,7 +28,7 @@ The core loop is split into focused modules:
 - `NPC`, `NPCStateMachine`: NORMAL → WARNING → HELP → CRITICAL → FAILED/RESCUED
 - `EventDirector`: stage-aware event timing, conditions, simultaneous-event pressure and spawn cooldown
 - `ScenarioDefinitions`, `NPCRoleDefinitions`: life-situation dialogue/reactions, condition mapping and data-driven role appearance/movement/probabilities
-- `LifestyleStages`, `LifestyleRenderer`, `TravelPlanner`: new stage data, cached procedural scenery and collision-aware rescue scheduling
+- `LifestyleStages`, `LifestyleRenderer`, `TravelPlanner`: stage data, procedural map fallbacks and collision-aware rescue scheduling
 - `ItemSystem`, `InteractionSystem`: fixed items and close-range rescue validation
 - `StageManager`, `WorldRenderer`: stage data, responsive camera rendering and scenery
 - `ScoreManager`, `ComboManager`: rescue bonuses, response metrics and combo multipliers
@@ -77,13 +77,13 @@ The rescue items are still exactly **PPA+1** and **NAP+1**. Scenario describes t
 
 The original `NPC.startEvent(condition, ...)` API and Tutorial/Park/Mountain scheduling remain compatible. New stages use `startScenario(type, ...)`, resolving to a supported condition before entering the existing WARNING → HELP → CRITICAL → FAILED/RESCUED state machine. `visualState` reports EVENT_REACTION while a reaction timer runs inside WARNING. WARNING remains rescuable; reactions do not add a hidden penalty or change score/combo rules.
 
-FALL briefly stumbles, tilts/squashes/downshifts and stops, then keeps a hand near the leg. SPORT_SORE/LONG_WALK slow down and pause with a gentle lean/leg cue. Skin scenarios pause with an arm gesture and soft ✦ cue; their critical bubble stays lavender. Successful rescue, failure, clearing and replay stop/reset the reaction. New characters use outlined procedural bodies and readable accessories (bags, camera, delivery pack, ball, board, weights), without adding generated portraits or new raster assets.
+FALL briefly stumbles, tilts/squashes/downshifts and stops, then keeps a hand near the leg. SPORT_SORE/LONG_WALK slow down and pause with a gentle lean/leg cue. Skin scenarios pause with an arm gesture and soft ✦ cue; their critical bubble stays lavender. Successful rescue, failure, clearing and replay stop/reset the reaction. New characters use dedicated transparent chibi sprite atlases with readable clothing and accessories (bags, camera, delivery pack, ball, board, weights). Scenario transforms and arm/leg cues apply to these sprites. The atlases contain standing poses; movement uses the existing bob animation.
 
 Scenario stages select the condition family first, then an eligible weighted scenario and role. Temporarily unavailable families defer the event instead of silently changing its product. Stage `phases`, `scenarioPool` and `scenarioWeights` control timing and content; `NPC_ROLE_DEFS` holds movement, speed, appearance and scenario eligibility.
 
 New-stage fairness uses a cached visibility graph around collision rectangles expanded by player radius. The planner counts actual detours and current player speed, tests both rescue orders against each resident's deadline, caps simultaneous events at two, and defers disconnected/impossible events. No new event is dispatched when its complete lifetime would extend past 60 seconds. This is conservative scheduling, not player autopilot. Park/Mountain retain their original distance-based guard and difficulty curve.
 
-Maps are cached Canvas scenery generated from the same landmark coordinates used for collision. Buildings, seating and equipment are solid; courts, grass and activity surfaces stay walkable. Home previews use the same generated map. Portrait camera padding reserves room for HUD and controls. Formal item labels show PPA+1/NAP+1 without internal condition/scenario codes.
+City/Sports use dedicated 1024×1536 pixel illustration maps, matching the existing Park art style. WebP runtime maps and lossless transparent NPC atlases live in `reference/runtime/`; `reference/generated-city-*-v1.png` and `reference/generated-sports-*-v1.png` retain the PNG masters. Home previews use the same map assets. Gameplay waits for map and character decode before starting, and switches back to the original NPC atlas for Park/Mountain. Cached procedural maps and outlined bodies remain loading-failure fallbacks. Collision footprints are measured from the artwork; buildings, seating and fitness equipment are solid, while courts, grass, track, picnic blanket and skate surfaces stay walkable. Portrait camera padding reserves room for HUD and controls. Formal item labels show PPA+1/NAP+1 without internal condition/scenario codes.
 
 Debug can force all six scenarios at a safe nearby position and lists role, scenario, resolved condition, required item, visual state and tolerance. Debug forcing intentionally bypasses normal scheduling/probability checks; it is disabled in Tutorial. Stage order is Tutorial → Park → Mountain → City → Sports. Personal-best records now support all four timed stages while preserving existing saved scores.
 
@@ -98,7 +98,7 @@ node qa/scenarios-simulation.mjs
 
 `npm test` runs 17 Node tests covering scenario mapping, correct/wrong items, reaction lifecycle, targeting, spawn/routes, obstacle detours, disconnected targets, deadline fairness, seeded weighting, Tutorial/Park/Mountain compatibility, result metrics, old/new personal-best records, evolution and walking.
 
-The simulation runs 200 complete rounds per new stage, alternating normal/evolved speeds with a virtual rescuer that pays planned travel time. With the checked-in seed it emitted 1,991 City events (68.01% PPA) and 2,200 Sports events (68.45% NAP), with no NPC collision violations and simultaneous events observed in both stages. It is a scheduling stress test, not a human difficulty assessment.
+The simulation runs 200 complete rounds per new stage, alternating normal/evolved speeds with a virtual rescuer that pays planned travel time. With the v1 art footprints and checked-in seed it emitted 1,992 City events (68.02% PPA) and 2,182 Sports events (69.11% NAP), with no NPC collision violations and simultaneous events observed in both stages. It is a scheduling stress test, not a human difficulty assessment.
 
 Browser QA is optional and requires an available Playwright package and installed Edge (or a channel selected by `JELLY_BROWSER_CHANNEL`). It starts/stops its own server on port 4174; override with `JELLY_QA_PORT` if necessary.
 
@@ -112,7 +112,9 @@ The browser runner checks all five stages at desktop 1280×900, portrait 390×84
 
 ## Remaining art and tuning
 
-City/Sports maps and characters are complete procedural placeholders suitable for gameplay verification. Bespoke sprite sheets, dedicated fall/exercise animations and final scene artwork can replace them later without changing item correctness or scenario definitions. Human playtesting on physical phones is still useful for subjective difficulty and art polish; browser mobile validation uses emulated viewports/pointer input.
+Sports injury animation v1 adds three poses each for `basketballPlayer`/`skateboarder` FALL and `runner`/`fitnessGuy` soreness scenarios. Onset follows the existing reaction timer, then falls hold a seated knee pose while soreness alternates bracing poses with subtle breathing. Rescue, failure and clearing immediately stop the animation. Collision, movement, item correctness and event deadlines retain their existing rules. Other roles and scenarios retain the general reaction animation. The transparent 3×4 runtime atlas is `reference/runtime/sports-injury-v1.webp` (PNG fallback); the generated source, prompt and crop manifest are retained in `reference/`. `qa/build-injury-art.mjs` packages the twelve poses with a consistent scale per character and common foot baseline. Open `/qa/injury-preview.html` on the local server for replay/recovery controls; `qa/injury-browser.mjs` checks asset decode, pose progression, recovery and replay.
+
+City/Sports v1 scene artwork and all eleven character sprites are integrated. Source layout guides, built-in ImageGen prompts and runtime crop registration are saved under `reference/art-layouts/`. `qa/build-lifestyle-art.mjs` packages the PNG masters into WebP maps and normalized 3×2 character atlases (set `JELLY_SHARP_MODULE` to an available Sharp package). `qa/lifestyle-art-browser.mjs` checks decoded map/atlas selection, all eleven roles, portrait rendering, legacy-stage switching and cached return; it uses the same Playwright configuration as the browser runner. Dedicated directional walking and fall/exercise pose sheets remain future animation polish. Human playtesting on physical phones is still useful for subjective difficulty and art polish; browser mobile validation uses emulated viewports/pointer input.
 
 ## Intentional scope limits
 

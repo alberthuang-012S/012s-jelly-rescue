@@ -1,0 +1,243 @@
+{
+  "columns": 3,
+  "rows": 4,
+  "frameWidth": 256,
+  "frameHeight": 384,
+  "footBaseline": 380,
+  "roles": [
+    "basketballPlayer",
+    "skateboarder",
+    "runner",
+    "fitnessGuy"
+  ],
+  "registration": [
+    {
+      "row": 0,
+      "col": 0,
+      "region": {
+        "left": 0,
+        "top": 0,
+        "width": 362,
+        "height": 380
+      },
+      "bounds": {
+        "left": 48,
+        "top": 9,
+        "width": 304,
+        "height": 362
+      },
+      "scale": 0.8026315789473685,
+      "width": 244,
+      "height": 291
+    },
+    {
+      "row": 0,
+      "col": 1,
+      "region": {
+        "left": 362,
+        "top": 0,
+        "width": 362,
+        "height": 380
+      },
+      "bounds": {
+        "left": 89,
+        "top": 40,
+        "width": 202,
+        "height": 339
+      },
+      "scale": 0.8026315789473685,
+      "width": 162,
+      "height": 272
+    },
+    {
+      "row": 0,
+      "col": 2,
+      "region": {
+        "left": 724,
+        "top": 0,
+        "width": 362,
+        "height": 380
+      },
+      "bounds": {
+        "left": 42,
+        "top": 104,
+        "width": 281,
+        "height": 275
+      },
+      "scale": 0.8026315789473685,
+      "width": 226,
+      "height": 221
+    },
+    {
+      "row": 1,
+      "col": 0,
+      "region": {
+        "left": 0,
+        "top": 380,
+        "width": 362,
+        "height": 338
+      },
+      "bounds": {
+        "left": 17,
+        "top": 0,
+        "width": 331,
+        "height": 338
+      },
+      "scale": 0.7371601208459214,
+      "width": 244,
+      "height": 249
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "region": {
+        "left": 362,
+        "top": 380,
+        "width": 384,
+        "height": 340
+      },
+      "bounds": {
+        "left": 55,
+        "top": 39,
+        "width": 310,
+        "height": 294
+      },
+      "scale": 0.7371601208459214,
+      "width": 229,
+      "height": 217
+    },
+    {
+      "row": 1,
+      "col": 2,
+      "region": {
+        "left": 746,
+        "top": 380,
+        "width": 340,
+        "height": 340
+      },
+      "bounds": {
+        "left": 8,
+        "top": 31,
+        "width": 302,
+        "height": 307
+      },
+      "scale": 0.7371601208459214,
+      "width": 223,
+      "height": 226
+    },
+    {
+      "row": 2,
+      "col": 0,
+      "region": {
+        "left": 0,
+        "top": 718,
+        "width": 362,
+        "height": 350
+      },
+      "bounds": {
+        "left": 81,
+        "top": 0,
+        "width": 240,
+        "height": 350
+      },
+      "scale": 0.8771428571428571,
+      "width": 211,
+      "height": 307
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "region": {
+        "left": 362,
+        "top": 720,
+        "width": 362,
+        "height": 358
+      },
+      "bounds": {
+        "left": 79,
+        "top": 3,
+        "width": 214,
+        "height": 346
+      },
+      "scale": 0.8771428571428571,
+      "width": 188,
+      "height": 303
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "region": {
+        "left": 724,
+        "top": 720,
+        "width": 362,
+        "height": 358
+      },
+      "bounds": {
+        "left": 77,
+        "top": 3,
+        "width": 213,
+        "height": 345
+      },
+      "scale": 0.8771428571428571,
+      "width": 187,
+      "height": 303
+    },
+    {
+      "row": 3,
+      "col": 0,
+      "region": {
+        "left": 0,
+        "top": 1068,
+        "width": 362,
+        "height": 380
+      },
+      "bounds": {
+        "left": 69,
+        "top": 0,
+        "width": 245,
+        "height": 375
+      },
+      "scale": 0.7746031746031746,
+      "width": 190,
+      "height": 290
+    },
+    {
+      "row": 3,
+      "col": 1,
+      "region": {
+        "left": 362,
+        "top": 1078,
+        "width": 362,
+        "height": 370
+      },
+      "bounds": {
+        "left": 20,
+        "top": 0,
+        "width": 315,
+        "height": 364
+      },
+      "scale": 0.7746031746031746,
+      "width": 244,
+      "height": 282
+    },
+    {
+      "row": 3,
+      "col": 2,
+      "region": {
+        "left": 724,
+        "top": 1078,
+        "width": 362,
+        "height": 370
+      },
+      "bounds": {
+        "left": 30,
+        "top": 3,
+        "width": 306,
+        "height": 360
+      },
+      "scale": 0.7746031746031746,
+      "width": 237,
+      "height": 279
+    }
+  ]
+}

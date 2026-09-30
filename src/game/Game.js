@@ -52,6 +52,26 @@ const ASSET_PATHS = Object.freeze({
   mountain: [
     './reference/generated-mountain-open-portrait-hq.webp',
     './reference/generated-mountain-open-portrait-hq.png'
+  ],
+  city: [
+    './reference/runtime/city-map-v1.webp',
+    './reference/generated-city-map-v1.png'
+  ],
+  sports: [
+    './reference/runtime/sports-map-v1.webp',
+    './reference/generated-sports-map-v1.png'
+  ],
+  cityNpc: [
+    './reference/runtime/city-npcs-v1.webp',
+    './reference/runtime/city-npcs-v1.png'
+  ],
+  sportsNpc: [
+    './reference/runtime/sports-npcs-v1.webp',
+    './reference/runtime/sports-npcs-v1.png'
+  ],
+  sportsInjury: [
+    './reference/runtime/sports-injury-v1.webp',
+    './reference/runtime/sports-injury-v1.png'
   ]
 });
 
@@ -386,6 +406,7 @@ export class Game {
     this.playerSpriteSheet = null;
     this.npcSpriteImage = null;
     this.npcSpriteSheet = null;
+    this.npcAssetPromises = new Map();
     this.viewport = { ...VIEWPORT };
     this.displaySize = { ...VIEWPORT };
     this.pixelRatio = 1;
@@ -394,7 +415,6 @@ export class Game {
     this.cameraState = null;
     this.pavilionRoofOpacity = 1;
     this.playerAssetPromise = null;
-    this.npcAssetPromise = null;
     this.itemAssetPromises = new Map();
     this.stageMapPromises = new Map();
     this.loadingToken = 0;
@@ -491,13 +511,13 @@ export class Game {
     }
     if (this.homeStageArtLabel) this.homeStageArtLabel.textContent = content.artLabel;
     const stage = STAGE_DEFS[this.selectedStage];
-    const preview = stage?.renderer === 'lifestyle' ? this.worldRenderer.getLifestyleMap(stage).toDataURL('image/png') : content.preview;
+    const preview = stage?.renderer === 'lifestyle' ? ASSET_PATHS[stage.id][0] : content.preview;
     if (this.homeStagePreviewSource) {
-      this.homeStagePreviewSource.type = stage?.renderer === 'lifestyle' ? 'image/png' : 'image/webp';
+      this.homeStagePreviewSource.type = 'image/webp';
       this.homeStagePreviewSource.srcset = preview;
     }
     if (this.homeStagePreview) {
-      this.homeStagePreview.src = stage?.renderer === 'lifestyle' ? preview : content.fallback;
+      this.homeStagePreview.src = stage?.renderer === 'lifestyle' ? ASSET_PATHS[stage.id][1] : content.fallback;
       this.homeStagePreview.alt = content.alt;
       this.homeStagePreview.loading = this.selectedStage === 'mountain' ? 'lazy' : 'eager';
       this.homeStagePreview.fetchPriority = this.selectedStage === 'mountain' ? 'low' : 'high';
@@ -573,17 +593,29 @@ export class Game {
     return true;
   }
 
-  ensureNpcAsset() {
-    if (this.npcAssetPromise) return this.npcAssetPromise;
-    this.npcAssetPromise = loadImageWithFallback(ASSET_PATHS.npc, {
+  ensureNpcAsset(stageId = this.selectedStage) {
+    const lifestyle = STAGE_DEFS[stageId]?.renderer === 'lifestyle';
+    const assetId = lifestyle ? `${stageId}Npc` : 'npc';
+    if (!this.npcAssetPromises.has(assetId)) this.npcAssetPromises.set(assetId, loadImageWithFallback(ASSET_PATHS[assetId], {
       fetchPriority: 'high',
-      assetName: 'NPC sprite'
-    }).then((npcSprite) => {
+      assetName: `${assetId} sprite`
+    }));
+    if (stageId === 'sports' && !this.npcAssetPromises.has('sportsInjury')) {
+      this.npcAssetPromises.set('sportsInjury', loadImageWithFallback(ASSET_PATHS.sportsInjury, {
+        fetchPriority: 'high', assetName: 'Sports injury animation'
+      }));
+    }
+    return Promise.all([this.npcAssetPromises.get(assetId),
+      stageId === 'sports' ? this.npcAssetPromises.get('sportsInjury') : null
+    ]).then(([npcSprite, injuryImage]) => {
       this.npcSpriteImage = npcSprite?.naturalWidth ? npcSprite : null;
       this.npcSpriteSheet = this.npcSpriteImage ? {
         frameWidth: this.npcSpriteImage.naturalWidth / 3,
-        frameHeight: this.npcSpriteImage.naturalHeight,
-        frameCount: 3
+        frameHeight: this.npcSpriteImage.naturalHeight / (lifestyle ? 2 : 1),
+        frameCount: lifestyle ? (stageId === 'city' ? 5 : 6) : 3,
+        columns: 3,
+        lifestyle,
+        injuryImage: injuryImage?.naturalWidth ? injuryImage : null
       } : null;
       this.npcs.forEach((npc) => {
         npc.spriteImage = this.npcSpriteImage;
@@ -591,7 +623,6 @@ export class Game {
       });
       return this.npcSpriteImage;
     });
-    return this.npcAssetPromise;
   }
 
   ensureItemAsset(itemId) {
@@ -609,7 +640,7 @@ export class Game {
     const criticalTasks = [
       ['Stage map', this.ensureStageMap(stageId, { fetchPriority: 'high' })],
       ['Player', this.ensurePlayerAsset()],
-      ['NPC', this.ensureNpcAsset()],
+      ['NPC', this.ensureNpcAsset(stageId)],
       ['PPA+1', this.ensureItemAsset('PPA')],
       ['NAP+1', this.ensureItemAsset('NAP')]
     ];
@@ -660,15 +691,17 @@ export class Game {
   }
 
   ensureStageMap(stageId, { fetchPriority = 'high' } = {}) {
-    if (STAGE_DEFS[stageId]?.renderer === 'lifestyle') return Promise.resolve(this.worldRenderer.getLifestyleMap(STAGE_DEFS[stageId]));
-    const mapId = stageId === 'mountain' ? 'mountain' : 'park';
+    const lifestyle = STAGE_DEFS[stageId]?.renderer === 'lifestyle';
+    const mapId = lifestyle ? stageId : stageId === 'mountain' ? 'mountain' : 'park';
     if (this.stageMapPromises.has(mapId)) return this.stageMapPromises.get(mapId);
     const mapPromise = loadImageWithFallback(ASSET_PATHS[mapId], {
       fetchPriority,
       assetName: `${mapId} map`
     }).then((mapImage) => {
-      if (!mapImage.naturalWidth) return mapImage;
-      if (mapId === 'mountain') {
+      if (!mapImage.naturalWidth) return lifestyle ? this.worldRenderer.getLifestyleMap(STAGE_DEFS[stageId]) : mapImage;
+      if (lifestyle) {
+        this.worldRenderer.setLifestyleImage(stageId, mapImage);
+      } else if (mapId === 'mountain') {
         this.worldRenderer.setMountainImage(mapImage);
       } else {
         this.worldRenderer.setParkImage(mapImage);

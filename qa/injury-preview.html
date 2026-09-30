@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-Hant"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>受傷動畫預覽</title>
+<style>
+  body{margin:0;background:#e5f1e8;color:#24324a;font:16px system-ui;text-align:center}
+  main{max-width:840px;margin:auto;padding:24px}h1{font-size:24px}p{line-height:1.6}
+  canvas{width:100%;background:#fff9e9;border:3px solid #24324a;border-radius:20px}
+  button{padding:12px 22px;border:2px solid #24324a;border-radius:12px;background:#c2e9dd;color:#24324a;font:inherit;margin:8px;cursor:pointer}
+</style>
+<main><h1>受傷動畫 · 四位角色</h1><p>失衡／停下 → 蹲下／彎身 → 扶膝／扶腰。按「救援成功」查看恢復姿勢。</p>
+<canvas id="preview" width="840" height="400"></canvas><div><button id="replay">重播受傷動畫</button><button id="rescue">救援成功</button></div></main>
+<script type="module">
+import { NPC } from '../src/game/NPC.js';
+import { injuryPose } from '../src/game/InjuryAnimation.js';
+const load = (src) => new Promise((resolve, reject) => { const image = new Image(); image.onload = async () => { await image.decode(); resolve(image); }; image.onerror = reject; image.src = src; });
+const [base, injury] = await Promise.all([load('../reference/runtime/sports-npcs-v1.webp'), load('../reference/runtime/sports-injury-v1.webp')]);
+const roles = [['basketballPlayer', 'FALL', '籃球員 · 跌倒'], ['skateboarder', 'FALL', '滑板玩家 · 跌倒'],
+  ['runner', 'SPORT_SORE', '跑者 · 扶腿'], ['fitnessGuy', 'SPORT_SORE', '健身者 · 扶腰']];
+const stage = { world: { width: 840, height: 400 }, obstacles: [] };
+const npcs = roles.map(([role], i) => { const npc = new NPC({ id: i, role, x: 105 + i * 210, y: 242 });
+  npc.spriteImage = base; npc.spriteSheet = { lifestyle: true, columns: 3, frameWidth: 256, frameHeight: 384, injuryImage: injury }; return npc; });
+let elapsed = 0, last = 0, onset = performance.now();
+function replay() { elapsed = 0; onset = performance.now(); npcs.forEach((npc, i) => { npc.active = true; npc.clearEvent(); npc.startScenario(roles[i][1], 3600, 3600); }); }
+replay();
+document.querySelector('#replay').onclick = replay;
+document.querySelector('#rescue').onclick = () => npcs.forEach((npc) => npc.rescue(elapsed));
+const ctx = document.querySelector('canvas').getContext('2d');
+function render(now) {
+  const dt = last ? Math.min((now - last) / 1000, .05) : 0; last = now; elapsed += dt;
+  ctx.clearRect(0, 0, 840, 400);
+  npcs.forEach((npc, i) => { npc.update(dt, stage, elapsed);
+    ctx.fillStyle = '#e5efd9'; ctx.beginPath(); ctx.ellipse(npc.x, 284, 70, 14, 0, 0, Math.PI * 2); ctx.fill();
+    npc.draw(ctx, now - onset, { drawStatusBubble: false });
+    ctx.fillStyle = '#24324a'; ctx.textAlign = 'center'; ctx.font = 'bold 17px system-ui'; ctx.fillText(roles[i][2], npc.x, 330);
+    const pose = injuryPose(npc, now - onset); ctx.font = '14px system-ui';
+    ctx.fillText(pose ? ['失衡／停下', '蹲下／彎身', '扶膝／扶腰'][pose.frame] : '正常姿勢', npc.x, 360);
+  });
+  requestAnimationFrame(render);
+}
+window.__injuryPreview = { npcs, replay, injuryPose }; requestAnimationFrame(render);
+</script></html>

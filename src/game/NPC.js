@@ -1,8 +1,14 @@
 import { CONDITION_LABELS, CONDITIONS, STATES } from './constants.js';
 import { clamp, circleHitsRect, drawShadow, drawText, distance, moveWithCollision, roundedRect } from './utils.js';
+
+export const LIFESTYLE_SPRITE_FRAMES = Object.freeze({
+  youngWoman: 0, shopper: 1, cafeVisitor: 2, photographerGirl: 3, deliveryWorker: 4,
+  basketballPlayer: 0, runner: 1, skateboarder: 2, fitnessGuy: 3, sportsGirl: 4, grassVisitor: 5
+});
 import { NPCStateMachine } from './NPCStateMachine.js';
 import { NPC_ROLE_DEFS } from './NPCRoleDefinitions.js';
 import { SCENARIO_DEFS, resolveScenario } from './ScenarioDefinitions.js';
+import { injuryPose } from './InjuryAnimation.js';
 
 function normalizeCondition(condition) {
   // Keep the visual dialogue aligned with the two supported rescue conditions.
@@ -324,14 +330,14 @@ export class NPC {
       ctx.restore();
     }
     ctx.save();
-    this.applyReactionTransform(ctx, now);
+    if (!this.getInjuryPose(now)) this.applyReactionTransform(ctx, now);
     if (this.state === STATES.RESCUED) {
       ctx.fillStyle = 'rgba(255, 231, 155, 0.35)';
       ctx.beginPath();
       ctx.arc(this.x, this.y - 14 + bob, 35 + Math.sin(now * 0.01) * 3, 0, Math.PI * 2);
       ctx.fill();
     }
-    if (!this.drawWorldSprite(ctx, bob)) {
+    if (!this.drawWorldSprite(ctx, bob, now)) {
       ctx.translate(this.x, this.y - 10 + bob);
       if (style.spriteVariant === null) ctx.scale(1.6, 1.6);
       ctx.lineJoin = 'miter';
@@ -375,21 +381,32 @@ export class NPC {
     }
   }
 
-  drawWorldSprite(ctx, bob) {
-    if (NPC_ROLE_DEFS[this.role]?.spriteVariant === null) return false;
+  drawWorldSprite(ctx, bob, now = 0) {
+    const lifestyle = this.spriteSheet?.lifestyle && LIFESTYLE_SPRITE_FRAMES[this.role] !== undefined;
+    if (NPC_ROLE_DEFS[this.role]?.spriteVariant === null && !lifestyle) return false;
     if (!this.spriteImage?.complete || !this.spriteImage.naturalWidth || !this.spriteSheet) return false;
-    const frame = NPC_ROLE_DEFS[this.role]?.spriteVariant ?? 0;
+    const injury = this.getInjuryPose(now);
+    if (injury) {
+      ctx.save();
+      const breath = injury.settled ? Math.sin(now * .005) * .8 : 0;
+      ctx.drawImage(this.spriteSheet.injuryImage, injury.frame * 256, injury.row * 384,
+        256, 384, this.x - 50, this.y - 114 + breath, 100, 150);
+      ctx.restore();
+      return true;
+    }
+    const frame = lifestyle ? LIFESTYLE_SPRITE_FRAMES[this.role] : NPC_ROLE_DEFS[this.role]?.spriteVariant ?? 0;
     const frameWidth = this.spriteSheet.frameWidth;
     const frameHeight = this.spriteSheet.frameHeight;
-    const destinationWidth = 72;
-    const destinationHeight = 132;
+    const destinationWidth = lifestyle ? 80 : 72;
+    const destinationHeight = lifestyle ? 120 : 132;
+    const columns = this.spriteSheet.columns || this.spriteSheet.frameCount;
     ctx.save();
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(
       this.spriteImage,
-      frame * frameWidth,
-      0,
+      (frame % columns) * frameWidth,
+      Math.floor(frame / columns) * frameHeight,
       frameWidth,
       frameHeight,
       this.x - destinationWidth / 2,
@@ -397,8 +414,18 @@ export class NPC {
       destinationWidth,
       destinationHeight
     );
+    if (lifestyle) {
+      ctx.translate(this.x, this.y - 10 + bob);
+      ctx.scale(1.6, 1.6);
+      this.drawReactionCue(ctx, now);
+    }
     ctx.restore();
     return true;
+  }
+
+  getInjuryPose(now = 0) {
+    const image = this.spriteSheet?.injuryImage;
+    return image?.complete && image.naturalWidth ? injuryPose(this, now) : null;
   }
 
   applyReactionTransform(ctx, now) {
@@ -480,7 +507,7 @@ export class NPC {
     const bubbleWidth = screenBubbleWidth / scale;
     const bubbleHeight = screenBubbleHeight / scale;
     const pointerHeight = screenPointerHeight / scale;
-    const spriteTopOffset = this.spriteSheet && NPC_ROLE_DEFS[this.role]?.spriteVariant !== null ? 84 : 52;
+    const spriteTopOffset = this.spriteSheet && (NPC_ROLE_DEFS[this.role]?.spriteVariant !== null || this.spriteSheet.lifestyle) ? 84 : 52;
     const gap = (compactStatusBubble ? 7 : 9) / scale;
     const pulse = isCritical ? (Math.sin(now * 0.02) * (compactStatusBubble ? 1.5 : 2)) / scale : 0;
     const bubbleBottom = this.y - spriteTopOffset - gap;

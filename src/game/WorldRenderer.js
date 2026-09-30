@@ -32,6 +32,7 @@ export class WorldRenderer {
     this.parkImage = null;
     this.mountainImage = null;
     this.lifestyleMaps = new Map();
+    this.lifestyleImages = new Map();
   }
 
   setParkImage(image) {
@@ -42,10 +43,14 @@ export class WorldRenderer {
     this.mountainImage = image;
   }
 
+  setLifestyleImage(stageId, image) {
+    this.lifestyleImages.set(stageId, image);
+  }
+
   draw(ctx, stage, now) {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    if (stage.renderer === 'lifestyle') ctx.drawImage(this.getLifestyleMap(stage), 0, 0);
+    if (stage.renderer === 'lifestyle') ctx.drawImage(this.lifestyleImages.get(stage.id) || this.getLifestyleMap(stage), 0, 0, stage.world.width, stage.world.height);
     else if (stage.id === 'mountain') this.drawMountainBackground(ctx, stage, now);
     else this.drawPark(ctx, stage, now);
   }

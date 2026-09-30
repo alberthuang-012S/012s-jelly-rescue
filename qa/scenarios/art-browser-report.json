@@ -1,0 +1,81 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "city",
+      "map": "http://localhost:4176/reference/runtime/city-map-v1.webp",
+      "npc": "http://localhost:4176/reference/runtime/city-npcs-v1.webp",
+      "manifest": {
+        "frameWidth": 256,
+        "frameHeight": 384,
+        "frameCount": 5,
+        "columns": 3,
+        "lifestyle": true
+      },
+      "roles": [
+        "youngWoman",
+        "shopper",
+        "cafeVisitor",
+        "photographerGirl",
+        "deliveryWorker"
+      ]
+    },
+    {
+      "id": "sports",
+      "map": "http://localhost:4176/reference/runtime/sports-map-v1.webp",
+      "npc": "http://localhost:4176/reference/runtime/sports-npcs-v1.webp",
+      "manifest": {
+        "frameWidth": 256,
+        "frameHeight": 384,
+        "frameCount": 6,
+        "columns": 3,
+        "lifestyle": true
+      },
+      "roles": [
+        "basketballPlayer",
+        "runner",
+        "skateboarder",
+        "fitnessGuy",
+        "sportsGirl",
+        "grassVisitor"
+      ]
+    },
+    {
+      "id": "park",
+      "npc": "http://localhost:4176/reference/runtime/npc-sprites.webp",
+      "manifest": {
+        "frameWidth": 320,
+        "frameHeight": 640,
+        "frameCount": 3,
+        "columns": 3,
+        "lifestyle": false
+      },
+      "roles": [
+        "jogger",
+        "picnic",
+        "elder",
+        "visitor",
+        "dogWalker"
+      ]
+    },
+    {
+      "id": "city",
+      "map": "http://localhost:4176/reference/runtime/city-map-v1.webp",
+      "npc": "http://localhost:4176/reference/runtime/city-npcs-v1.webp",
+      "manifest": {
+        "frameWidth": 256,
+        "frameHeight": 384,
+        "frameCount": 5,
+        "columns": 3,
+        "lifestyle": true
+      },
+      "roles": [
+        "youngWoman",
+        "shopper",
+        "cafeVisitor",
+        "photographerGirl",
+        "deliveryWorker"
+      ]
+    }
+  ]
+}
