@@ -449,7 +449,7 @@ export class NPC {
     ctx.restore();
   }
 
-  drawStatus(ctx, now, { cameraScale = 1, compactStatusBubble = false, visibleBounds = null } = {}) {
+  getStatusLayout(ctx, now, { cameraScale = 1, compactStatusBubble = false, visibleBounds = null } = {}) {
     const conditionKey = this.condition === CONDITIONS.ITCH ? CONDITIONS.ITCH : CONDITIONS.SORENESS;
     const condition = CONDITION_LABELS[conditionKey];
     const isWarning = this.state === STATES.WARNING;
@@ -457,13 +457,13 @@ export class NPC {
     const isRescued = this.state === STATES.RESCUED;
     const isFailed = this.state === STATES.FAILED;
     const label = this.dialogueOverride || scenarioDialogue(this.role, this.scenarioType, this.state) || (isRescued
-      ? '好多了！'
+      ? condition.rescuedTitle
       : isFailed
         ? '我先回去了……'
         : isWarning
           ? condition.warningTitle
           : isCritical
-            ? '快受不了了！'
+            ? condition.criticalTitle
             : condition.title);
     const scale = Math.max(0.25, cameraScale);
     const screenFontSize = compactStatusBubble ? (isCritical ? 16 : 14) : (isCritical ? 19 : 17);
@@ -527,14 +527,29 @@ export class NPC {
     const pointerX = canClampToViewport
       ? clamp(this.x, bubbleX + pointerSafeInset, bubbleX + bubbleWidth - pointerSafeInset)
       : this.x;
-    const softSkin = Boolean(this.scenarioType && this.condition === CONDITIONS.ITCH);
-    const fill = isCritical ? (softSkin ? '#eee7fa' : '#ffe1ea') : isRescued ? '#def5e8' : isFailed ? '#eef3f5' : '#fff5df';
-    const stroke = isCritical ? (softSkin ? '#9b87c7' : '#e77fa2') : isRescued ? '#65ae91' : isFailed ? '#95a9b4' : '#5686c5';
-    const textColor = isCritical ? (softSkin ? '#65508f' : '#a83d67') : isRescued ? '#287b64' : isFailed ? '#566d7b' : '#173a76';
+    const showBar = !this.isPractice && !isRescued && !isFailed;
+    return { label, scale, screenFontSize, bubbleWidth, bubbleHeight, pointerHeight,
+      bubbleCenterX, bubbleX, bubbleY, pointerPointsUp, pointerX, pointerSafeInset,
+      safePadding, isCritical, isRescued, isFailed, showBar,
+      barWidth: (compactStatusBubble ? 92 : 112) / scale,
+      barHeight: (compactStatusBubble ? 8 : 10) / scale,
+      barGap: (compactStatusBubble ? 8 : 10) / scale,
+      anchorX: this.x, anchorY: this.y - spriteTopOffset,
+      footY: this.y + (this.spriteSheet?.lifestyle ? 37 : this.spriteSheet?.footOffsets?.[frame] ?? 43)
+    };
+  }
+
+  drawStatus(ctx, now, options = {}) {
+    const layout = options.statusLayout || this.getStatusLayout(ctx, now, options);
+    const { label, scale, screenFontSize, bubbleWidth, bubbleHeight, pointerHeight,
+      bubbleCenterX, bubbleX, bubbleY, pointerPointsUp, pointerX,
+      isCritical, isRescued, isFailed, showBar, barWidth, barHeight, barGap } = layout;
+    const { fill, stroke, textColor } = this.getStatusColors(layout);
+    if (options.drawConnector !== false) this.drawStatusConnector(ctx, layout);
     ctx.save();
     ctx.fillStyle = fill;
     ctx.strokeStyle = stroke;
-    ctx.lineWidth = 2 / scale;
+    ctx.lineWidth = (isCritical ? 2.5 : 2) / scale;
     roundedRect(ctx, bubbleX, bubbleY, bubbleWidth, bubbleHeight, 7 / scale);
     ctx.fill(); ctx.stroke();
     ctx.fillStyle = fill;
@@ -560,18 +575,8 @@ export class NPC {
       font: "Manrope, 'Noto Sans TC', sans-serif"
     });
     ctx.restore();
-    if (!this.isPractice && !isRescued && !isFailed) {
-      const screenBarWidth = compactStatusBubble ? 92 : 112;
-      const screenBarHeight = compactStatusBubble ? 8 : 10;
-      const barWidth = screenBarWidth / scale;
-      const barHeight = screenBarHeight / scale;
-      let barY = bubbleY - (compactStatusBubble ? 8 : 10) / scale - barHeight;
-      if (canClampToViewport) {
-        const barSafeTop = visibleBounds.top + safePadding;
-        const barSafeBottom = visibleBounds.bottom - safePadding;
-        const maxBarY = Math.max(barSafeTop, barSafeBottom - barHeight);
-        barY = clamp(barY, barSafeTop, maxBarY);
-      }
+    if (showBar) {
+      const barY = bubbleY - barGap - barHeight;
       const ratio = clamp(this.tolerance / Math.max(0.1, this.maxTolerance), 0, 1);
       ctx.save();
       ctx.fillStyle = 'rgba(36, 50, 74, 0.52)';
@@ -587,5 +592,25 @@ export class NPC {
       roundedRect(ctx, bubbleCenterX - barWidth / 2, barY, barWidth * ratio, barHeight, 3 / scale); ctx.fill();
       ctx.restore();
     }
+  }
+
+  getStatusColors({ isCritical, isRescued, isFailed }) {
+    const skin = this.condition === CONDITIONS.ITCH;
+    return {
+      fill: isRescued ? '#def5e8' : isFailed ? '#eef3f5'
+        : skin ? (isCritical ? '#e5d9f8' : '#f3edfc') : (isCritical ? '#d6e9fb' : '#edf6ff'),
+      stroke: isRescued ? '#65ae91' : isFailed ? '#95a9b4'
+        : skin ? (isCritical ? '#7651ad' : '#aa8acb') : (isCritical ? '#326da6' : '#79a6cf'),
+      textColor: isRescued ? '#287b64' : isFailed ? '#566d7b' : skin ? '#60428a' : '#204f7a'
+    };
+  }
+
+  drawStatusConnector(ctx, layout) {
+    const { bubbleY, bubbleHeight, pointerHeight, pointerPointsUp, pointerX, scale } = layout;
+    const tipY = pointerPointsUp ? bubbleY - pointerHeight : bubbleY + bubbleHeight + pointerHeight;
+    const anchorY = pointerPointsUp ? layout.footY : layout.anchorY;
+    if (Math.hypot(pointerX - layout.anchorX, tipY - anchorY) <= 14 / scale) return;
+    ctx.save(); ctx.strokeStyle = this.getStatusColors(layout).stroke; ctx.lineWidth = 1.5 / scale;
+    ctx.beginPath(); ctx.moveTo(pointerX, tipY); ctx.lineTo(layout.anchorX, anchorY); ctx.stroke(); ctx.restore();
   }
 }

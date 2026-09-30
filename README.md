@@ -53,7 +53,7 @@ The core loop is split into focused modules:
 - Runtime gameplay assets live under `reference/runtime/`: `jelly-player.webp`, `npc-sprites.webp`, `ppa-plus-one.webp`, `nap-plus-one.webp` and `jelly-home.webp`; the original PNGs remain as source/master or compatibility fallbacks.
 - Starting a stage waits for the selected map, player, NPC, PPA+1 and NAP+1 assets to finish asynchronous decode before gameplay begins. A lightweight loading overlay prevents partially loaded entities from appearing.
 - Add `?assetReport=1` on localhost to expose `window.__jellyAssetReport` and log asset format, byte size, download time, decode time, total time and cache-hit information.
-- NPC status bubbles are screen-size compensated for camera zoom, with larger readable dialogue and tolerance bars; the transient location-name stamp is intentionally omitted.
+- NPC status bubbles are screen-size compensated for camera zoom, with readable dialogue and tolerance bars. All active lines retain the symptom, with short role-specific opening lines. Itch uses lavender and soreness uses light blue at every severity; urgency uses a stronger border and the countdown bar. `StatusBubbleLayout` staggers nearby bubbles and countdowns, clears character bodies and protected HUD/controls, and connects displaced bubbles back to their owner. Dialogue renders above characters and foreground across all stages. The transient location-name stamp is intentionally omitted.
 - Touch controls use visual pressed states only; no mobile haptic or vibration API is used.
 - Portrait layout keeps a tall camera viewport and uses the `012s-jelly-world` front-facing jelly artwork for the home character reference.
 - Map NPCs use the polished generated sprite sheet `reference/generated-npcs-hiker-elder-child-hq.png`: hiker, elder and child only; no robot or rescue-worker character.
@@ -98,7 +98,9 @@ npm test
 node qa/scenarios-simulation.mjs
 ```
 
-`npm test` runs 22 Node tests covering scenario mapping, correct/wrong items, reaction and injury-pose lifecycle, static concerned-expression selection/recovery/fallback (including generic Park/Mountain events for all nine roles), dialogue-only rendering, targeting, spawn/routes, obstacle detours, disconnected targets, deadline fairness, seeded weighting, Tutorial/Park/Mountain compatibility, result metrics, old/new personal-best records, evolution and walking.
+`npm test` runs 25 Node tests covering scenario mapping, symptom-preserving dialogue, paired-bubble placement/edge bounds/protected controls, correct/wrong items, reaction and injury-pose lifecycle, static concerned-expression selection/recovery/fallback (including generic Park/Mountain events for all nine roles), dialogue-only rendering, targeting, spawn/routes, obstacle detours, disconnected targets, deadline fairness, seeded weighting, Tutorial/Park/Mountain compatibility, result metrics, old/new personal-best records, evolution and walking.
+
+`qa/dialogue-browser.mjs` checks 60 close-pair cases across Park/Mountain/City/Sports, central/four-edge positions and desktop/390px/375px viewports. It verifies actual rendered symptom text/colors, bubble/countdown separation, viewport bounds and protected control rectangles. Screenshots and the report are saved in `qa/scenarios/`.
 
 The simulation runs 200 complete rounds per new stage, alternating normal/evolved speeds with a virtual rescuer that pays planned travel time. With the v1 art footprints and checked-in seed it emitted 1,992 City events (68.02% PPA) and 2,180 Sports events (83.99% NAP), with no NPC collision violations and simultaneous events observed in both stages. It is a scheduling stress test, not a human difficulty assessment.
 

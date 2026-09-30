@@ -22,8 +22,8 @@ export const ITEMS = Object.freeze({
 });
 
 export const CONDITION_LABELS = Object.freeze({
-  [CONDITIONS.ITCH]: { warningTitle: '好像有點癢……', title: '好癢！', short: '癢', english: 'ITCH', icon: '✦', color: '#f3bd70' },
-  [CONDITIONS.SORENESS]: { warningTitle: '好像有點痠痛……', title: '痠痛不太舒服……', short: '痠痛', english: 'SORE', icon: '↯', color: '#86c8ff' }
+  [CONDITIONS.ITCH]: { warningTitle: '皮膚有點癢……', title: '皮膚還是好癢……', criticalTitle: '皮膚癢得受不了！', rescuedTitle: '不癢了，謝謝你！', short: '癢', english: 'ITCH', icon: '✦', color: '#b58cff' },
+  [CONDITIONS.SORENESS]: { warningTitle: '雙腿有點痠……', title: '雙腿還是好痠……', criticalTitle: '雙腿痠得受不了！', rescuedTitle: '雙腿舒服多了，謝謝！', short: '痠痛', english: 'SORE', icon: '↯', color: '#77c8ff' }
 });
 
 export const ROLE_LABELS = Object.freeze(Object.fromEntries(Object.entries(NPC_ROLE_DEFS).map(([id, role]) => [id, role.label])));

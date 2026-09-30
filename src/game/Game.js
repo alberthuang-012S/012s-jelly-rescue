@@ -14,6 +14,7 @@ import { StageManager, STAGE_DEFS, STAGE_ORDER } from './StageManager.js';
 import { SCENARIO_DEFS, requiredItem } from './ScenarioDefinitions.js';
 import { NPC_ROLE_DEFS } from './NPCRoleDefinitions.js';
 import { LEGACY_NPC_LAYOUT } from './NPCSpriteLayout.js';
+import { layoutStatusBubbles } from './StatusBubbleLayout.js';
 import { TutorialDirector } from './TutorialDirector.js?mountain-pavilion-dialogue-v2';
 import { WorldRenderer } from './WorldRenderer.js?v=mountain-pavilion-dialogue-v2';
 import { clamp, drawText, formatClock, lerp } from './utils.js';
@@ -893,9 +894,9 @@ export class Game {
         step: 'STEP 2 / 4',
         title: '居民覺得癢',
         icon: '✦ 癢',
-        visual: '好癢！',
+        visual: '皮膚還是好癢……',
         item: 'PPA',
-        body: '癢 → PPA+1\n看到居民說「好癢！」時，選擇 PPA+1。',
+        body: '癢 → PPA+1\n看到居民說皮膚癢時，選擇 PPA+1。',
         flow: ['① 找到居民', '② 選擇 PPA+1', '③ 靠近並使用'],
         hint: isMobile
           ? '靠近後按下方「使用」。'
@@ -906,10 +907,10 @@ export class Game {
         step: 'STEP 3 / 4',
         title: '這次是痠痛',
         icon: '↯ 痠痛',
-        visual: '痠痛不太舒服……',
+        visual: '雙腿還是好痠……',
         item: 'NAP',
-        body: '痠痛 → NAP+1\n看到居民說「痠痛不太舒服……」時，改用 NAP+1。',
-        flow: ['① 觀察居民 Bubble', '② 切換 NAP+1', '③ 靠近並使用'],
+        body: '痠痛 → NAP+1\n看到居民說雙腿痠痛時，改用 NAP+1。',
+        flow: ['① 觀察居民對話', '② 切換 NAP+1', '③ 靠近並使用'],
         hint: isMobile
           ? '直接點選下方 NAP+1，再按「使用」。'
           : 'Q = 快速切換 · 點選 NAP+1 · 靠近後按 E / SPACE',
@@ -1619,6 +1620,17 @@ export class Game {
       ctx.save(); ctx.strokeStyle = 'rgba(255, 235, 163, .38)'; ctx.lineWidth = 2; ctx.setLineDash([5, 7]); ctx.beginPath(); ctx.moveTo(this.player.x, this.player.y - 4); ctx.lineTo(target.x, target.y - 4); ctx.stroke(); ctx.restore();
     }
     const drawableNpcs = this.npcs.filter((npc) => npc.active);
+    const statusOptions = { cameraScale: camera.scale,
+      compactStatusBubble: this.layoutMode !== 'desktop', visibleBounds };
+    const statusEntries = drawableNpcs.filter(npc => npc.hasStatusBubble()
+      && npc.x + npc.radius >= visibleBounds.left && npc.x - npc.radius <= visibleBounds.right
+      && npc.y + npc.radius >= visibleBounds.top && npc.y - npc.radius <= visibleBounds.bottom)
+      .map(npc => ({ npc, layout: npc.getStatusLayout(ctx, now, statusOptions) }));
+    const bodies = statusEntries.map(({ layout }) => ({ x: layout.anchorX - 40,
+      y: layout.anchorY, width: 80, height: layout.footY - layout.anchorY }));
+    bodies.push({ x: this.player.x - 32, y: this.player.y - 48, width: 64, height: 90 });
+    bodies.push(...this.getStatusUiObstacles(camera));
+    const statusLayouts = layoutStatusBubbles(statusEntries, visibleBounds, bodies);
     const entities = [...drawableNpcs, this.player].sort((a, b) => a.y - b.y);
     for (const entity of entities) {
       if (entity === this.player) entity.draw(ctx);
@@ -1627,10 +1639,8 @@ export class Game {
         cameraScale: camera.scale,
         compactStatusBubble: this.layoutMode !== 'desktop',
         visibleBounds,
-        // Mountain's pavilion roof is a foreground occluder. Keep NPC bodies
-        // behind it, but render their rescue dialogue in the dedicated layer
-        // below so the roof never hides the information needed to help them.
-        drawStatusBubble: stage.id !== 'mountain'
+        // Draw all dialogue above entities/foreground, after resolving overlaps.
+        drawStatusBubble: false
       });
     }
     if (this.debug.showRadius) {
@@ -1639,15 +1649,10 @@ export class Game {
     this.worldRenderer.drawMountainForeground(ctx, stage, now, {
       roofOpacity: this.pavilionRoofOpacity
     });
-    if (stage.id === 'mountain') {
-      for (const npc of drawableNpcs) {
-        if (!npc.hasStatusBubble()) continue;
-        npc.drawStatus(ctx, now, {
-          cameraScale: camera.scale,
-          compactStatusBubble: this.layoutMode !== 'desktop',
-          visibleBounds
-        });
-      }
+    // Keep every connector behind every panel, including a neighboring panel.
+    for (const [npc, statusLayout] of statusLayouts) npc.drawStatusConnector(ctx, statusLayout);
+    for (const [npc, statusLayout] of statusLayouts) {
+      npc.drawStatus(ctx, now, { ...statusOptions, statusLayout, drawConnector: false });
     }
     this.renderParticles(ctx);
     this.renderFloaters(ctx);
@@ -1662,6 +1667,21 @@ export class Game {
       } else { ctx.beginPath(); ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2); ctx.fill(); }
       ctx.restore();
     });
+  }
+
+  getStatusUiObstacles(camera) {
+    const key = `${this.viewport.width}/${this.viewport.height}/${this.selectedStage}/${this.hud.elements.action.className}/${this.hud.elements.exitButton.className}`;
+    if (this.statusUiCache?.key !== key) {
+      const canvasRect = this.canvas.getBoundingClientRect();
+      const rects = [...document.querySelectorAll('.game-hud, .mobile-dpad, .item-dock, #action-button, #exit-stage-button, #tutorial-guide')]
+        .map(element => element.getBoundingClientRect()).filter(rect => rect.width && rect.height)
+        .map(rect => ({ x: rect.left - canvasRect.left, y: rect.top - canvasRect.top, width: rect.width, height: rect.height }));
+      this.statusUiCache = { key, rects };
+    }
+    const offsetX = camera.mode === 'fit' ? -camera.x / camera.scale : camera.x;
+    const offsetY = camera.mode === 'fit' ? -camera.y / camera.scale : camera.y;
+    return this.statusUiCache.rects.map(rect => ({ x: rect.x / camera.scale + offsetX,
+      y: rect.y / camera.scale + offsetY, width: rect.width / camera.scale, height: rect.height / camera.scale, protected: true }));
   }
 
   renderFloaters(ctx) {

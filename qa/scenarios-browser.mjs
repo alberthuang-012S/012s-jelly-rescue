@@ -115,11 +115,11 @@ try {
         // Validate screen-space text at all four map edges using real canvas
         // transforms and text metrics, not only the model coordinates.
         const clipped = await page.evaluate(async () => {
-          const { SCENARIO_DEFS } = await import('/src/game/ScenarioDefinitions.js');
+          const { SCENARIO_DEFS, scenarioDialogue } = await import('/src/game/ScenarioDefinitions.js');
           const dialogueStates = ['WARNING', 'HELP', 'CRITICAL'];
-          const labels = new Set(Object.values(SCENARIO_DEFS).flatMap((definition) => dialogueStates.map((state) => definition.dialogue[state])));
           const game = window.__qaGame; game.npcs.forEach((npc) => npc.clearEvent());
           const stage = game.stageManager.getStage(); const npc = game.npcs[0];
+          const labels = new Set(Object.keys(SCENARIO_DEFS).flatMap(type => dialogueStates.map(state => scenarioDialogue(npc.role, type, state))));
           const errors = []; let checked = 0; const ctx = game.ctx; const original = ctx.fillText;
           ctx.fillText = function(text, x, y, ...rest) {
             if (labels.has(text)) {
