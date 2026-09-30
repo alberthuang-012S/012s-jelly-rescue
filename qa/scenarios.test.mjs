@@ -137,6 +137,14 @@ test('seeded scenario sampling respects family ratios, city introduction and rol
   }
 }));
 
+test('Sports runner can receive soreness scenarios but is never assigned FALL',()=>{
+  const runner=makeNpc('runner');
+  const director=new EventDirector(STAGE_DEFS.sports);
+  assert.equal(NPC_ROLE_DEFS.runner.scenarioWeights.FALL,undefined);
+  for(let sample=0;sample<50;sample+=1)
+    assert.equal(director.pickScenario([runner],25,CONDITIONS.SORENESS).scenarioType,'SPORT_SORE');
+});
+
 test('Tutorial remains untimed, practice never fails and legacy events keep movement/state behavior', () => {
   const manager = new StageManager(); manager.start('tutorial'); manager.update(600);
   assert.equal(manager.status, 'playing'); assert.equal(manager.getRemaining(), null);
