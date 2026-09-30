@@ -22,8 +22,8 @@ const dialogue = (WARNING, HELP, CRITICAL, RESCUED) => Object.freeze({ WARNING, 
 const ROLE_SCENARIO_DIALOGUE = Object.freeze({
   city: Object.freeze({
     youngWoman: Object.freeze({
-      SKINCARE: dialogue('今天皮膚感覺有點乾乾的……', '想好好照顧一下皮膚。', '皮膚越來越不舒服了……', '舒服多了，謝謝你！'),
-      OUTDOOR_SKIN: dialogue('今天皮膚感覺有點乾乾的……', '想好好照顧一下皮膚。', '皮膚越來越不舒服了……', '舒服多了，謝謝你！')
+      SKINCARE: dialogue('皮膚感覺有點乾乾的……', '想好好照顧一下皮膚。', '皮膚越來越不舒服了……', '舒服多了，謝謝你！'),
+      OUTDOOR_SKIN: dialogue('皮膚感覺有點乾乾的……', '想好好照顧一下皮膚。', '皮膚越來越不舒服了……', '舒服多了，謝謝你！')
     }),
     shopper: Object.freeze({
       SKINCARE: dialogue('逛了一整天，皮膚有點乾……', '想讓皮膚舒服一點。', '皮膚真的有點受不了了……', '好多了，謝謝！'),
@@ -34,7 +34,7 @@ const ROLE_SCENARIO_DIALOGUE = Object.freeze({
       OUTDOOR_SKIN: dialogue('冷氣吹久了，皮膚乾乾的……', '感覺皮膚需要照顧一下。', '越來越不舒服了……', '現在舒服多了！')
     }),
     photographerGirl: Object.freeze({
-      SKINCARE: dialogue('今天在外面跑了一整天……', '皮膚感覺有點不舒服。', '好想趕快照顧一下皮膚……', '舒服多了，謝謝你！')
+      SKINCARE: dialogue('皮膚感覺有點乾乾的……', '皮膚感覺有點不舒服。', '好想趕快照顧一下皮膚……', '舒服多了，謝謝你！')
     }),
     grassVisitor: Object.freeze({
       GRASS_SKIN: dialogue('剛剛碰到草，感覺怪怪的……', '皮膚開始有點癢癢的……', '真的越來越癢了！', '不癢了，謝謝！')
