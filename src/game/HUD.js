@@ -237,6 +237,9 @@ export class HUD {
       const position = this.getIndicatorPosition(game, camera, npc, occupiedPositions);
       occupiedPositions.push(position);
       node.className = `rescue-indicator rescue-indicator-${npc.state.toLowerCase()}`;
+      const dimensions = this.getIndicatorDimensions(game);
+      node.style.width = `${dimensions.width}px`;
+      node.style.height = `${dimensions.height}px`;
       node.style.left = `${position.x}px`;
       node.style.top = `${position.y}px`;
       node.querySelector('.rescue-indicator-arrow').textContent = INDICATOR_ARROWS[direction];
