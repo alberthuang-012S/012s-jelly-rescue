@@ -1,0 +1,19 @@
+{
+  "checks": [
+    "desktop/wave: correct rendered atlas frames",
+    "desktop/charge: correct rendered atlas frames",
+    "desktop/core: correct rendered atlas frames",
+    "desktop/dizzy: correct rendered atlas frames",
+    "portrait/wave: correct rendered atlas frames",
+    "portrait/charge: correct rendered atlas frames",
+    "portrait/core: correct rendered atlas frames",
+    "portrait/dizzy: correct rendered atlas frames",
+    "small/wave: correct rendered atlas frames",
+    "small/charge: correct rendered atlas frames",
+    "small/core: correct rendered atlas frames",
+    "small/dizzy: correct rendered atlas frames",
+    "Regular Park remains isolated; unavailable creature art renders fallback"
+  ],
+  "errors": [],
+  "status": "PASS"
+}

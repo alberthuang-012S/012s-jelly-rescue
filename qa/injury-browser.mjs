@@ -17,27 +17,27 @@ try {
   });
   await page.goto('http://localhost:4178', { waitUntil: 'networkidle' });
   await page.evaluate(() => window.__qaGame.startStage('sports'));
-  assert.equal(await page.evaluate(() => window.__qaGame.npcSpriteSheet.injuryImage.naturalHeight), 1536);
-  assert.ok(await page.evaluate(() => window.__qaGame.npcSpriteSheet.injuryImage.src.endsWith('sports-injury-v3.webp')));
+  assert.equal(await page.evaluate(() => window.__qaGame.npcSpriteSheet.injuryImage.naturalHeight), 1920);
+  assert.ok(await page.evaluate(() => window.__qaGame.npcSpriteSheet.injuryImage.src.endsWith('sports-injury-v4.webp')));
   await page.evaluate(() => window.__qaGame.startStage('city'));
   assert.equal(await page.evaluate(() => window.__qaGame.npcSpriteSheet.injuryImage), null);
   await page.goto('http://localhost:4178/qa/injury-preview.html', { waitUntil: 'networkidle' });
   await page.waitForFunction(() => Boolean(window.__injuryPreview));
   await page.locator('#replay').click();
   const before = await page.evaluate(() => window.__injuryPreview.npcs.map((npc) => window.__injuryPreview.injuryPose(npc).frame));
-  assert.deepEqual(before, [0, 0, 0, 0]);
+  assert.deepEqual(before, [0, 0, 0, 0, 0]);
   await page.waitForFunction(() => window.__injuryPreview.npcs.every((npc) => npc.reactionTimer === 0));
-  assert.deepEqual(await page.evaluate(() => window.__injuryPreview.npcs.slice(0, 2).map((npc) => window.__injuryPreview.injuryPose(npc).frame)), [2, 2]);
-  await page.locator('canvas').screenshot({ path: 'qa/scenarios/injury-v1-hold-preview.png' });
+  assert.deepEqual(await page.evaluate(() => window.__injuryPreview.npcs.map((npc) => window.__injuryPreview.injuryPose(npc).frame)), [2, 2, 2, 2, 2]);
+  await page.locator('canvas').screenshot({ path: 'qa/scenarios/injury-v4-hold-preview.png' });
   await page.locator('#rescue').click();
   assert.equal(await page.evaluate(() => window.__injuryPreview.npcs.every((npc) => window.__injuryPreview.injuryPose(npc) === null)), true);
   await page.waitForFunction(() => window.__injuryPreview.npcs.every((npc) => npc.state === 'NORMAL'));
-  await page.locator('canvas').screenshot({ path: 'qa/scenarios/injury-v1-recovered-preview.png' });
+  await page.locator('canvas').screenshot({ path: 'qa/scenarios/injury-v4-recovered-preview.png' });
   await page.locator('#replay').click();
-  assert.deepEqual(await page.evaluate(() => window.__injuryPreview.npcs.map((npc) => window.__injuryPreview.injuryPose(npc).frame)), [0, 0, 0, 0]);
+  assert.deepEqual(await page.evaluate(() => window.__injuryPreview.npcs.map((npc) => window.__injuryPreview.injuryPose(npc).frame)), [0, 0, 0, 0, 0]);
   assert.deepEqual(errors, []);
   await fs.writeFile('qa/scenarios/injury-browser-report.json', JSON.stringify({ status: 'PASS',
-    checks: ['Sports decoded injury atlas', 'City uses normal atlas', 'Four onset poses',
+    checks: ['Sports decoded injury atlas', 'City uses normal atlas', 'Five onset sequences including runner fall',
       'Fall holds final pose', 'Rescue returns to normal', 'Replay restarts from onset'], errors }, null, 2) + '\n');
-  console.log('PASS: injury loading, four character sequences, hold, rescue, recovery and replay.');
+  console.log('PASS: injury loading, five sequences including runner fall, hold, rescue, recovery and replay.');
 } finally { await browser?.close(); server.kill(); }

@@ -391,8 +391,12 @@ export class NPC {
     if (injury) {
       ctx.save();
       const breath = injury.settled ? Math.sin(now * .005) * .8 : 0;
+      // The wide runner fall poses need a larger cell draw size to keep the
+      // head/body at the same scale as the existing runner soreness poses.
+      const poseScale = injury.row === 4 ? 1.2 : 1;
+      const width = 100 * poseScale, height = 150 * poseScale;
       ctx.drawImage(this.spriteSheet.injuryImage, injury.frame * 256, injury.row * 384,
-        256, 384, this.x - 50, this.y - 114 + breath, 100, 150);
+        256, 384, this.x - width / 2, this.y + 36 - height + breath, width, height);
       ctx.restore();
       return true;
     }

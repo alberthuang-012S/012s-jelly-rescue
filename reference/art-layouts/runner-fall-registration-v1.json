@@ -1,0 +1,78 @@
+{
+  "source": "reference/generated-runner-fall-v1.png",
+  "seams": [
+    0,
+    747,
+    1448,
+    2172
+  ],
+  "scale": 0.37712519319938176,
+  "registration": [
+    {
+      "col": 0,
+      "width": 244,
+      "height": 263,
+      "left": 6,
+      "top": 117,
+      "source": {
+        "left": 100,
+        "top": 15,
+        "width": 647,
+        "height": 698
+      }
+    },
+    {
+      "col": 1,
+      "width": 219,
+      "height": 226,
+      "left": 274,
+      "top": 154,
+      "source": {
+        "left": 835,
+        "top": 111,
+        "width": 580,
+        "height": 599
+      }
+    },
+    {
+      "col": 2,
+      "width": 183,
+      "height": 206,
+      "left": 548,
+      "top": 174,
+      "source": {
+        "left": 1656,
+        "top": 166,
+        "width": 484,
+        "height": 547
+      }
+    }
+  ],
+  "injuryTopOffsets": [
+    [
+      79.23,
+      71.81,
+      51.89
+    ],
+    [
+      77.28,
+      60.09,
+      63.61
+    ],
+    [
+      82.75,
+      83.14,
+      82.75
+    ],
+    [
+      82.75,
+      81.97,
+      81.97
+    ],
+    [
+      89.16,
+      71.81,
+      62.44
+    ]
+  ]
+}

@@ -30,6 +30,7 @@ const MAP = Object.freeze({
 export class WorldRenderer {
   constructor() {
     this.parkImage = null;
+    this.alienImage = null;
     this.mountainImage = null;
     this.lifestyleMaps = new Map();
     this.lifestyleImages = new Map();
@@ -50,7 +51,9 @@ export class WorldRenderer {
   draw(ctx, stage, now) {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
-    if (stage.renderer === 'lifestyle') ctx.drawImage(this.lifestyleImages.get(stage.id) || this.getLifestyleMap(stage), 0, 0, stage.world.width, stage.world.height);
+    if (stage.id === 'alienMosquito' && this.alienImage?.complete && this.alienImage.naturalWidth)
+      ctx.drawImage(this.alienImage, 0, 0, stage.world.width, stage.world.height);
+    else if (stage.renderer === 'lifestyle') ctx.drawImage(this.lifestyleImages.get(stage.id) || this.getLifestyleMap(stage), 0, 0, stage.world.width, stage.world.height);
     else if (stage.id === 'mountain') this.drawMountainBackground(ctx, stage, now);
     else this.drawPark(ctx, stage, now);
   }

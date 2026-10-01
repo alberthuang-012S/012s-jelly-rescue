@@ -5,16 +5,18 @@ export class ItemSystem {
     this.selectedId = 'PPA';
   }
 
-  reset() {
+  reset({ ppaOnly = false } = {}) {
+    this.ppaOnly = ppaOnly;
     this.selectedId = 'PPA';
   }
 
   select(itemId) {
-    if (ITEMS[itemId]) this.selectedId = itemId;
+    if (ITEMS[itemId] && (!this.ppaOnly || itemId === 'PPA')) this.selectedId = itemId;
     return this.getSelected();
   }
 
   toggle() {
+    if (this.ppaOnly) return this.select('PPA');
     this.selectedId = this.selectedId === 'PPA' ? 'NAP' : 'PPA';
     return this.getSelected();
   }

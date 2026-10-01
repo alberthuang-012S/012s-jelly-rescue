@@ -3,7 +3,7 @@
   "checks": [
     "Sports decoded injury atlas",
     "City uses normal atlas",
-    "Four onset poses",
+    "Five onset sequences including runner fall",
     "Fall holds final pose",
     "Rescue returns to normal",
     "Replay restarts from onset"

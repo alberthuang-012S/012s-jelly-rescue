@@ -6,7 +6,7 @@ import { STATES, CONDITIONS } from '../src/game/constants.js';
 import { NPC_ROLE_DEFS } from '../src/game/NPCRoleDefinitions.js';
 
 const cases = [['basketballPlayer', 'FALL', 0], ['skateboarder', 'FALL', 1],
-  ['runner', 'SPORT_SORE', 2], ['fitnessGuy', 'SPORT_SORE', 3]];
+  ['runner', 'SPORT_SORE', 2], ['fitnessGuy', 'SPORT_SORE', 3], ['runner', 'FALL', 4]];
 const npcFor = (role, scenario) => {
   const npc = new NPC({ id: role, role, x: 200, y: 200 });
   npc.startScenario(scenario, 10, 3);
@@ -29,7 +29,6 @@ test('injury poses progress through distinct frames, hold after onset and stop o
     npc.fail(); assert.equal(injuryPose(npc), null);
   }
   assert.equal(injuryPose(npcFor('runner', 'OUTDOOR_SKIN')), null);
-  assert.equal(injuryPose(npcFor('runner', 'FALL')), null);
   assert.equal(injuryPose(npcFor('basketballPlayer', 'SPORT_SORE')), null);
   assert.equal(injuryPose(npcFor('sportsGirl', 'SPORT_SORE')), null);
 });
@@ -45,6 +44,9 @@ test('injury sprite uses the correct row/frame and safely falls back when the at
     const ctx = { save() {}, restore() {}, drawImage(...args) { calls.push(args); } };
     assert.equal(npc.drawWorldSprite(ctx, 0, 650), true);
     assert.deepEqual(calls[0].slice(0, 5), [injury, 512, row * 384, 256, 384]);
+    assert.equal(calls[0][7],row===4?120:100);
+    assert.equal(calls[0][8],row===4?180:150);
+    assert.ok(Math.abs(calls[0][6]+calls[0][8]-(npc.y+36))<=.8,'Feet stay registered across pose sizes');
     injury.naturalWidth = 0;
     assert.equal(npc.getInjuryPose(650), null);
     npc.spriteImage = null;
@@ -54,7 +56,7 @@ test('injury sprite uses the correct row/frame and safely falls back when the at
 
 test('dialogue-only scenarios draw the normal sprite without extra gestures or symbols', () => {
   for (const [role, scenario] of [['youngWoman', 'SKINCARE'], ['grassVisitor', 'GRASS_SKIN'],
-    ['sportsGirl', 'SPORT_SORE'], ['runner', 'FALL'], ['basketballPlayer', 'SPORT_SORE']]) {
+    ['sportsGirl', 'SPORT_SORE'], ['runner', 'OUTDOOR_SKIN'], ['basketballPlayer', 'SPORT_SORE']]) {
     const npc = npcFor(role, scenario);
     const base = { complete: true, naturalWidth: 768 };
     npc.spriteImage = base;

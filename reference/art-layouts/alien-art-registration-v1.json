@@ -1,0 +1,226 @@
+{
+  "enemies": {
+    "source": "reference/generated-alien-enemies-v1.png",
+    "size": 256,
+    "target": {
+      "x": 128,
+      "y": 128
+    },
+    "frames": [
+      {
+        "bounds": {
+          "left": 51,
+          "top": 35,
+          "width": 425,
+          "height": 438
+        },
+        "anchor": {
+          "x": 282,
+          "y": 273
+        },
+        "scale": 0.45849802371541504,
+        "width": 195,
+        "height": 201,
+        "left": 22,
+        "top": 19
+      },
+      {
+        "bounds": {
+          "left": 549,
+          "top": 48,
+          "width": 435,
+          "height": 420
+        },
+        "anchor": {
+          "x": 814,
+          "y": 296
+        },
+        "scale": 0.3841059602649007,
+        "width": 167,
+        "height": 161,
+        "left": 26,
+        "top": 33
+      },
+      {
+        "bounds": {
+          "left": 1067,
+          "top": 91,
+          "width": 417,
+          "height": 377
+        },
+        "anchor": {
+          "x": 1318,
+          "y": 285
+        },
+        "scale": 0.4496124031007752,
+        "width": 187,
+        "height": 170,
+        "left": 15,
+        "top": 41
+      },
+      {
+        "bounds": {
+          "left": 29,
+          "top": 543,
+          "width": 483,
+          "height": 438
+        },
+        "anchor": {
+          "x": 282,
+          "y": 785
+        },
+        "scale": 0.45849802371541504,
+        "width": 221,
+        "height": 201,
+        "left": 12,
+        "top": 17
+      },
+      {
+        "bounds": {
+          "left": 512,
+          "top": 563,
+          "width": 495,
+          "height": 413
+        },
+        "anchor": {
+          "x": 814,
+          "y": 810
+        },
+        "scale": 0.3841059602649007,
+        "width": 190,
+        "height": 159,
+        "left": 12,
+        "top": 33
+      },
+      {
+        "bounds": {
+          "left": 1060,
+          "top": 598,
+          "width": 449,
+          "height": 378
+        },
+        "anchor": {
+          "x": 1318,
+          "y": 797
+        },
+        "scale": 0.4496124031007752,
+        "width": 202,
+        "height": 170,
+        "left": 12,
+        "top": 39
+      }
+    ]
+  },
+  "boss": {
+    "source": "reference/generated-alien-boss-v1.png",
+    "size": 384,
+    "target": {
+      "x": 192,
+      "y": 302
+    },
+    "frames": [
+      {
+        "bounds": {
+          "left": 49,
+          "top": 78,
+          "width": 447,
+          "height": 433
+        },
+        "anchor": {
+          "x": 287,
+          "y": 424
+        },
+        "scale": 0.6185567010309279,
+        "width": 276,
+        "height": 268,
+        "left": 45,
+        "top": 88
+      },
+      {
+        "bounds": {
+          "left": 514,
+          "top": 135,
+          "width": 495,
+          "height": 376
+        },
+        "anchor": {
+          "x": 766,
+          "y": 442
+        },
+        "scale": 0.6185567010309279,
+        "width": 306,
+        "height": 233,
+        "left": 36,
+        "top": 112
+      },
+      {
+        "bounds": {
+          "left": 1054,
+          "top": 82,
+          "width": 441,
+          "height": 443
+        },
+        "anchor": {
+          "x": 1305,
+          "y": 479
+        },
+        "scale": 0.6185567010309279,
+        "width": 273,
+        "height": 274,
+        "left": 37,
+        "top": 56
+      },
+      {
+        "bounds": {
+          "left": 52,
+          "top": 606,
+          "width": 434,
+          "height": 333
+        },
+        "anchor": {
+          "x": 311,
+          "y": 861
+        },
+        "scale": 0.6185567010309279,
+        "width": 268,
+        "height": 206,
+        "left": 32,
+        "top": 144
+      },
+      {
+        "bounds": {
+          "left": 541,
+          "top": 627,
+          "width": 476,
+          "height": 316
+        },
+        "anchor": {
+          "x": 726,
+          "y": 868
+        },
+        "scale": 0.6185567010309279,
+        "width": 294,
+        "height": 195,
+        "left": 78,
+        "top": 153
+      },
+      {
+        "bounds": {
+          "left": 1050,
+          "top": 659,
+          "width": 448,
+          "height": 266
+        },
+        "anchor": {
+          "x": 1275,
+          "y": 804
+        },
+        "scale": 0.8,
+        "width": 358,
+        "height": 213,
+        "left": 12,
+        "top": 76
+      }
+    ]
+  }
+}

@@ -118,7 +118,7 @@ The browser runner checks all five stages at desktop 1280×900, portrait 390×84
 
 ## Remaining art and tuning
 
-Sports injury animation adds three poses each for `basketballPlayer`/`skateboarder` FALL and `runner`/`fitnessGuy` soreness scenarios. Onset follows the existing reaction timer, then holds the final pose with subtle breathing. Rescue, failure and clearing immediately stop the animation. Collision, movement, item correctness and event deadlines retain their existing rules. The transparent 3×4 runtime atlas is `reference/runtime/sports-injury-v3.webp` (PNG fallback): v2 corrects the skateboard girl's extra leg; v3 removes soreness stars/sweat, keeps both feet planted and removes the fitness dumbbell jump. The two fall rows remain pixel-identical to v2. `qa/build-injury-art.mjs`, `qa/build-skateboard-correction.mjs` and `qa/build-art-refinement.mjs` reproduce the successive revisions. Registered alpha bounds generate `src/game/InjurySpriteLayout.js` so dialogue pointers follow the actual pose height. Open `/qa/injury-preview.html` for replay/recovery controls; `qa/injury-browser.mjs` checks asset decode, pose progression, recovery and replay.
+Sports injury animation adds three poses each for `basketballPlayer`/`skateboarder` FALL and `runner`/`fitnessGuy` soreness scenarios, plus runner FALL (lose balance → land on one knee → sit holding the knee). Runner events now support FALL alongside soreness and outdoor skin events. Onset follows the existing reaction timer, then holds the final pose with subtle breathing. Rescue, failure and clearing immediately stop the animation. Collision, movement, item correctness and event deadlines retain their existing rules. The transparent 3×5 runtime atlas is `reference/runtime/sports-injury-v4.webp` (PNG fallback): v2 corrects the skateboard girl's extra leg; v3 refines soreness poses; v4 appends the runner fall row while preserving all twelve prior poses pixel-for-pixel. `qa/build-runner-fall.mjs` packages the built-in ImageGen source with a shared scale and foot baseline, after the existing injury build scripts. Source prompt and registration are saved in `reference/art-layouts/runner-fall-prompt-v1.json` and `runner-fall-registration-v1.json`. Registered alpha bounds generate `src/game/InjurySpriteLayout.js` so dialogue pointers follow actual pose height. Open `/qa/injury-preview.html` for replay/recovery controls; `qa/injury-browser.mjs` checks asset decode, all five sequences, recovery and replay.
 
 All eleven City/Sports roles now use static concerned expressions during active dialogue-only scenarios, with the same accessories, scale and foot registration as their normal sprites. These are `reference/runtime/city-condition-v2.webp` and `sports-condition-v2.webp` (PNG fallbacks). Successful rescue restores the normal smiling sprite; unavailable expression assets safely fall back to the normal sprite. Ground shadows meet the lifestyle characters' feet, and the delivery worker's soreness dialogue refers to delivery work. The built-in ImageGen prompts and crop registration are retained in `reference/art-layouts/art-refinement-prompts-v3.json` and `art-refinement-manifest-v3.json`.
 
@@ -128,4 +128,38 @@ City/Sports v1 scene artwork and all eleven character sprites are integrated. So
 
 ## Intentional scope limits
 
-No shop, equipment, progression tree, gacha, combat or inventory system is included in this phase.
+No shop, equipment, progression tree, gacha or inventory system is included. Combat is isolated to the optional special stage below.
+
+## Special stage: 異星蚊災 / Alien Mosquito Invasion
+
+Choose **SPECIAL STAGE → 開始挑戰** on the home screen. This separate `alienMosquito` mode is not in `STAGE_ORDER`; Tutorial → Park → Mountain → City → Sports is unchanged. It uses a dedicated teal/violet night version of Park, preserving its road and obstacle footprints and shared collision. The combat camera frames the player and enemies, reserving space for the HUD and controls on portrait screens.
+
+Art v1 uses `reference/runtime/alien-map-v1.webp`, `alien-enemies-v1.webp` (six wing frames for three species) and `alien-boss-v1.webp` (normal wing poses, charge, fatigue, dizzy and UFO). PNG fallbacks are included. King frames register the belly socket to one fixed point; the renderer adds the core glow only while vulnerable. Attack paths, HP dots, PPA pulses and slow bubble projectiles remain live gameplay overlays. Missing creature art uses the original procedural fallback. The home special card previews the King and night park. Built-in ImageGen prompts are in `reference/art-layouts/alien-art-prompts-v1.json`; `qa/build-alien-art.mjs` packages the sprites with transparent padding and recorded registration. `qa/alien-art-browser.mjs` verifies atlas frames in desktop/390px/375px combat, core/dizzy/UFO presentation, fallback and regular Park isolation.
+
+Move with WASD/arrows or the existing mobile D-pad. Press E/Space/使用 for **PPA ENERGY PULSE**. There is no aiming or extra attack button. PPA is locked for this round and NAP is hidden; returning to a rescue stage restores normal item selection. Pulses reach 115 world units, have a 0.52-second cooldown, damage the nearest unobstructed target once, and clear nearby bubbles. Empty pulses still give feedback.
+
+- Wave 1: 3 scouts. Wave 2: 2 scouts + 1 charger. Wave 3: 2 scouts + 1 charger + 1 bubble enemy. Scouts/chargers have 2 HP; bubble enemies have 3 HP. At most four small enemies and four bubbles are active.
+- After Wave 3, a protected warning/arrival/title sequence introduces **異星嗡嗡王 / MOSQUITO KING**, with 18 HP.
+- Phase 1: chase → telegraph → dash → recover → 2.3-second core opening.
+- Phase 2 at 12 HP: summon two scouts once, then double bubble → dash → recover → 2-second opening.
+- Phase 3 at 6 HP: +15% movement/dash speed, dash → double bubble → second dash → 2.3-second fatigue/opening.
+- Closed cores block PPA; each successful core hit removes 2 HP. Three hearts, 1.2-second damage invulnerability, and a dedicated Game Over complete the failure loop.
+- Victory clears threats immediately, shows a purple/white energy burst and a dizzy Mini Mosquito King escaping by UFO, then presents a dedicated result with time, enemies, damage, PPA hits, Boss hits and score. Replay and Home are the only result actions.
+
+Scoring is independent of rescue statistics/personal best: scout 100, charger 150, bubble enemy 200, successful Boss hit 50, Boss defeat 1500, clear 500, and no damage **during the Boss fight** 500. PPA HITS counts successful enemy and Boss hits; BOSS HITS is its Boss-only subset. Clear time includes waves and arrival, stopping on the final hit before the victory animation.
+
+`BossConfig` centralizes tuning; `CombatNavigation` reuses the collision visibility graph; `Enemy`/`EnemyDirector` own small enemies and spawning; `BossMosquito` owns the Boss state machine; `BossCombatSystem` owns combat, waves and projectiles; `BossScoreManager` keeps statistics separate; `BossRenderer` owns procedural art/camera; `BossStageUI` owns HUD/results. `Game` only routes mode-specific updates, actions and rendering. The procedural characters can be replaced without changing collision or gameplay dimensions.
+
+On localhost, the existing debug panel adds Wave 1/2/3, Spawn Boss, Phase 2/3, Core Open, HP -2 and Clear Enemies. Existing Infinite Life and radius controls work in combat. Boss debug controls are unavailable through the production UI. Blur/hidden, exit confirmation and Continue use the existing pause gates; combat uses simulation time only.
+
+Validation:
+
+```powershell
+npm test                         # 30 existing + 22 special-stage tests
+node qa/boss-simulation.mjs       # complete natural phase/wave flow with an automated mover
+node qa/boss-browser.mjs          # requires the same Playwright setup as other QA scripts
+node qa/scenarios-browser.mjs
+node qa/input-reliability-browser.mjs
+```
+
+The simulation uses normal movement speed and infinite life to isolate flow/score verification; it is not a human difficulty assessment. Browser QA covers desktop, 390×844 and 375×667, controls, PPA lock, four-enemy readability, Boss HUD, pause, phases, victory, Game Over, replay and result scrolling. Results are saved under `qa/boss/`; screenshots remain local/ignored. Physical-phone feel and human difficulty acceptance remain to be playtested.

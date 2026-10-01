@@ -13,7 +13,7 @@ const group=new URLSearchParams(location.search).get('group')||'sports-sore';
 const [stage,condition]=group.split('-');
 const lifestyle=['city','sports'].includes(stage);
 const base=await load(lifestyle?`../reference/runtime/${stage}-npcs-v1.webp`:'../reference/runtime/npc-sprites.webp');
-const injury=stage==='sports'?await load('../reference/runtime/sports-injury-v3.webp'):null;
+const injury=stage==='sports'?await load('../reference/runtime/sports-injury-v4.webp'):null;
 const conditionImage=await load(lifestyle?`../reference/runtime/${stage}-condition-v2.webp`:'../reference/runtime/npc-condition-v2.webp');
 const roles=STAGE_DEFS[stage].npcTypes;
 const names={park:'城市公園',mountain:'山林步道',city:'城市生活廣場',sports:'活力運動公園'};

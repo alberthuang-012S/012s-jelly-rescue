@@ -17,7 +17,7 @@ export const NPC_ROLE_DEFS = Object.freeze({
   photographerGirl: role('拍照遊客', 'wander', 28, '#e6a5c6', '#544256', '#ffdabd', null, { SKINCARE: .6, LONG_WALK: .4 }, 'camera'),
   deliveryWorker: role('外送員', 'patrol', 58, '#78bdd9', '#24324a', '#ffdabd', null, { SPORT_SORE: .35, LONG_WALK: .65 }, 'delivery'),
   basketballPlayer: role('籃球員', 'runner', 76, '#f3b779', '#24324a', '#e6b58d', null, { FALL: .55, SPORT_SORE: .45 }, 'ball'),
-  runner: role('跑者', 'runner', 82, '#89cbbd', '#554265', '#ffdabd', null, { SPORT_SORE: .6, OUTDOOR_SKIN: .15 }, 'headband'),
+  runner: role('跑者', 'runner', 82, '#89cbbd', '#554265', '#ffdabd', null, { SPORT_SORE: .6, OUTDOOR_SKIN: .15, FALL: .25 }, 'headband'),
   skateboarder: role('滑板玩家', 'runner', 68, '#b1ace5', '#544256', '#ffdabd', null, { FALL: 1 }, 'board'),
   fitnessGuy: role('健身者', 'patrol', 42, '#87b7dd', '#24324a', '#e6b58d', null, { SPORT_SORE: 1 }, 'weights'),
   sportsGirl: role('運動女孩', 'runner', 72, '#e9a8c0', '#554265', '#ffdabd', null, { SPORT_SORE: .7, OUTDOOR_SKIN: .3 }, 'headband'),

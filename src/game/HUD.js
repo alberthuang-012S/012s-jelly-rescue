@@ -120,6 +120,7 @@ export class HUD {
       this.elements.itemToggleHint.classList.toggle('is-hidden', tutorialStage ? !showTutorialToggle : false);
     }
     if (this.lastSelectedItem !== game.itemSystem.selectedId) this.updateItems(game.itemSystem.selectedId);
+    game.bossUI?.update();
   }
 
   updateTutorialGuide(game) {

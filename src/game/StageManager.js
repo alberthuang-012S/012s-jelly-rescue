@@ -1,5 +1,6 @@
 import { clamp } from './utils.js';
 import { LIFESTYLE_STAGES } from './LifestyleStages.js';
+import { SPECIAL_STAGE_ID } from './BossConfig.js';
 
 export const STAGE_ORDER = Object.freeze(['tutorial', 'park', 'mountain', 'city', 'sports']);
 
@@ -283,6 +284,13 @@ export const STAGE_DEFS = Object.freeze({
   }
 });
 
+export const SPECIAL_STAGE_DEFS = Object.freeze({
+  [SPECIAL_STAGE_ID]: Object.freeze({ ...STAGE_DEFS.park, id: SPECIAL_STAGE_ID,
+    mode: 'boss', name: 'Alien Mosquito Invasion', displayName: '異星蚊災',
+    timed: false, maxNpcs: 0, cameraPadding: { top: 160, bottom: 180 },
+    start: { x: 384, y: 760 } })
+});
+
 export class StageManager {
   constructor() {
     this.currentStageId = 'park';
@@ -291,7 +299,7 @@ export class StageManager {
   }
 
   start(stageId = 'park') {
-    this.currentStageId = STAGE_DEFS[stageId] ? stageId : 'park';
+    this.currentStageId = STAGE_DEFS[stageId] || SPECIAL_STAGE_DEFS[stageId] ? stageId : 'park';
     this.elapsed = 0;
     this.status = 'playing';
     return this.getStage();
@@ -307,7 +315,7 @@ export class StageManager {
   }
 
   getStage() {
-    return STAGE_DEFS[this.currentStageId];
+    return STAGE_DEFS[this.currentStageId] || SPECIAL_STAGE_DEFS[this.currentStageId];
   }
 
   getRemaining() {

@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-01",
+  "branch": "main",
+  "sha": "61a4370477201c65894eeff727918c844aa9568b",
+  "note": "Existing uncommitted changes were present before special-stage development and were preserved. No commit or push was requested.",
+  "modified": [
+    "README.md", "qa/condition-art-audit.html", "qa/injury-browser.mjs",
+    "qa/injury-preview.html", "qa/injury.test.mjs", "qa/scenarios.test.mjs",
+    "qa/scenarios/injury-browser-report.json", "src/game/Game.js",
+    "src/game/InjuryAnimation.js", "src/game/InjurySpriteLayout.js",
+    "src/game/NPC.js", "src/game/NPCRoleDefinitions.js"
+  ],
+  "untracked": [
+    "qa/build-runner-fall.mjs", "reference/art-layouts/runner-fall-prompt-v1.json",
+    "reference/art-layouts/runner-fall-registration-v1.json", "reference/generated-runner-fall-v1.png",
+    "reference/runtime/sports-injury-v4.png", "reference/runtime/sports-injury-v4.webp"
+  ]
+}

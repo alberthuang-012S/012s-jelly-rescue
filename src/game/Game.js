@@ -1,5 +1,8 @@
 import { CONDITIONS, ITEMS, STATES, VIEWPORT } from './constants.js';
 import { ComboManager } from './ComboManager.js';
+import { BossCombatSystem } from './BossCombatSystem.js';
+import { BossRenderer } from './BossRenderer.js';
+import { BossStageUI } from './BossStageUI.js';
 import { EvolutionStore, EVOLVED_SPEED_MULTIPLIER } from './EvolutionStore.js';
 import { EventDirector } from './EventDirector.js?mountain-pavilion-dialogue-v2';
 import { HUD } from './HUD.js';
@@ -54,6 +57,13 @@ const ASSET_PATHS = Object.freeze({
     './reference/generated-park-open-portrait-hq.webp',
     './reference/generated-park-open-portrait-hq.png'
   ],
+  alienMosquito: [
+    './reference/runtime/alien-map-v1.webp',
+    './reference/runtime/alien-map-v1.png',
+    './reference/generated-park-open-portrait-hq.webp'
+  ],
+  alienEnemies: ['./reference/runtime/alien-enemies-v1.webp', './reference/runtime/alien-enemies-v1.png'],
+  alienBoss: ['./reference/runtime/alien-boss-v1.webp', './reference/runtime/alien-boss-v1.png'],
   mountain: [
     './reference/generated-mountain-open-portrait-hq.webp',
     './reference/generated-mountain-open-portrait-hq.png'
@@ -83,8 +93,8 @@ const ASSET_PATHS = Object.freeze({
     './reference/runtime/sports-condition-v2.png'
   ],
   sportsInjury: [
-    './reference/runtime/sports-injury-v3.webp',
-    './reference/runtime/sports-injury-v3.png'
+    './reference/runtime/sports-injury-v4.webp',
+    './reference/runtime/sports-injury-v4.png'
   ]
 });
 
@@ -472,6 +482,9 @@ export class Game {
       onEvolve: () => this.evolve()
     });
 
+    this.bossCombat = null;
+    this.bossRenderer = new BossRenderer();
+    this.bossUI = new BossStageUI(this);
     this.bindHome();
     this.updateHomeSelection();
     this.bindDebug();
@@ -502,6 +515,7 @@ export class Game {
   }
 
   updateHomeSelection() {
+    if (this.selectedStage === 'alienMosquito') return;
     const content = HOME_STAGE_CONTENT[this.selectedStage] || HOME_STAGE_CONTENT.tutorial;
     const stageChanged = this.homeStageFeatured?.dataset.stage && this.homeStageFeatured.dataset.stage !== this.selectedStage;
     this.homeStageCards.forEach((item) => {
@@ -675,6 +689,7 @@ export class Game {
       ['PPA+1', this.ensureItemAsset('PPA')],
       ['NAP+1', this.ensureItemAsset('NAP')]
     ];
+    if (stageId === 'alienMosquito') criticalTasks.push(['Alien creatures', this.ensureBossArt()]);
     let completed = 0;
     onProgress(0, '準備巡邏素材');
     const result = Promise.all(criticalTasks.map(([label, task]) => task.then((value) => {
@@ -723,14 +738,17 @@ export class Game {
 
   ensureStageMap(stageId, { fetchPriority = 'high' } = {}) {
     const lifestyle = STAGE_DEFS[stageId]?.renderer === 'lifestyle';
-    const mapId = lifestyle ? stageId : stageId === 'mountain' ? 'mountain' : 'park';
+    const mapId = stageId === 'alienMosquito' ? stageId : lifestyle ? stageId : stageId === 'mountain' ? 'mountain' : 'park';
     if (this.stageMapPromises.has(mapId)) return this.stageMapPromises.get(mapId);
     const mapPromise = loadImageWithFallback(ASSET_PATHS[mapId], {
       fetchPriority,
       assetName: `${mapId} map`
     }).then((mapImage) => {
       if (!mapImage.naturalWidth) return lifestyle ? this.worldRenderer.getLifestyleMap(STAGE_DEFS[stageId]) : mapImage;
-      if (lifestyle) {
+      if (mapId === 'alienMosquito') {
+        this.worldRenderer.alienImage = mapImage;
+        this.bossRenderer.hasNightMap = /alien-map-v1/.test(mapImage.src);
+      } else if (lifestyle) {
         this.worldRenderer.setLifestyleImage(stageId, mapImage);
       } else if (mapId === 'mountain') {
         this.worldRenderer.setMountainImage(mapImage);
@@ -741,6 +759,14 @@ export class Game {
     });
     this.stageMapPromises.set(mapId, mapPromise);
     return mapPromise;
+  }
+
+  ensureBossArt() {
+    if (!this.bossArtPromise) this.bossArtPromise = Promise.all([
+      loadImageWithFallback(ASSET_PATHS.alienEnemies, { fetchPriority: 'high', assetName: 'Alien mosquito sprites' }),
+      loadImageWithFallback(ASSET_PATHS.alienBoss, { fetchPriority: 'high', assetName: 'Mosquito King and UFO sprites' })
+    ]).then(([enemies, boss]) => { this.bossRenderer.setArt({ enemies, boss }); });
+    return this.bossArtPromise;
   }
 
   bindHome() {
@@ -755,6 +781,7 @@ export class Game {
 
   bindDebug() {
     const toggle = () => {
+      if (this.bossCombat && !this.bossUI.development) return;
       this.debug.open = !this.debug.open;
       document.querySelector('#debug-panel').classList.toggle('is-hidden', !this.debug.open);
     };
@@ -1113,9 +1140,11 @@ export class Game {
     this.floaters = [];
     this.scoreManager.reset();
     this.combo.reset();
-    this.itemSystem.reset();
+    this.itemSystem.reset({ ppaOnly: stage.mode === 'boss' });
     this.interactionSystem.currentTarget = null;
     this.player.reset(stage.start);
+    this.bossCombat = stage.mode === 'boss' ? new BossCombatSystem(stage, this.player) : null;
+    this.bossUI.setMode(Boolean(this.bossCombat));
     this.cameraState = null;
     this.pavilionRoofOpacity = 1;
     this.lastDistanceSample = 0;
@@ -1137,7 +1166,7 @@ export class Game {
         getFinalCondition: () => this.tutorialDebugCondition,
         onStep: (step, npc) => this.handleTutorialStep(step, npc)
       });
-    } else {
+    } else if (!this.bossCombat) {
       this.eventDirector = new EventDirector(stage, directorCallbacks);
       this.eventDirector.seed(this.npcs);
     }
@@ -1179,6 +1208,9 @@ export class Game {
   }
 
   showHome() {
+    this.bossUI.setMode(false);
+    this.bossCombat = null;
+    if (this.selectedStage === 'alienMosquito') { this.selectedStage = 'tutorial'; this.updateHomeSelection(); }
     this.clearBackgroundPause();
     this.loadingToken += 1;
     window.clearTimeout(this.tutorialTransitionTimer);
@@ -1215,6 +1247,16 @@ export class Game {
     if (this.isTutorialModalOpen || this.isExitConfirmOpen) return;
     const stage = this.stageManager.getStage();
     this.stageManager.update(dt);
+    if (this.bossCombat) {
+      if (!this.bossCombat.frozen) this.player.update(dt, this.input, stage);
+      const oldLives = this.lives;
+      this.bossCombat.update(dt, { infiniteLife: this.debug.infiniteLife });
+      this.lives = this.bossCombat.lives;
+      if (this.lives < oldLives) this.hud.flashLifeLost();
+      this.hud.update(this);
+      if (['CLEAR', 'GAMEOVER'].includes(this.bossCombat.state)) this.finishBossStage();
+      return;
+    }
     this.player.update(dt, this.input, stage);
     if (!this.isTutorial()) {
       this.scoreManager.addDistance(Math.max(0, this.player.distanceTravelled - this.lastDistanceSample));
@@ -1243,6 +1285,7 @@ export class Game {
     if (this.resultScreen.dialog.open) return;
     if (this.state !== 'playing') return;
     if (this.isTutorialModalOpen || this.isExitConfirmOpen) return;
+    if (this.bossCombat) { this.bossCombat.tryAction(); this.hud.showActionFeedback(); return; }
     const target = this.interactionSystem.findTarget(this.player, this.npcs);
     if (!target || ![STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(target.state)) {
       this.hud.showActionFeedback();
@@ -1348,6 +1391,16 @@ export class Game {
     if (this.lives <= 0) this.finishGameOver();
   }
 
+  finishBossStage() {
+    const won = this.bossCombat.state === 'CLEAR';
+    this.state = won ? 'result' : 'gameover';
+    this.input.setEnabled(false);
+    this.gameShell.classList.add('is-hidden');
+    this.bossUI.showResult(won);
+    this.updateOrientation?.();
+    this.resetAppScroll();
+  }
+
   finishStage() {
     if (this.state !== 'playing') return;
     if (this.isTutorial()) {
@@ -1388,6 +1441,8 @@ export class Game {
 
   handleDebug(action, button) {
     if (this.state !== 'playing') return;
+    if (action.startsWith('boss:')) { if (this.bossUI.development) this.bossCombat?.debug(action.slice(5)); return; }
+    if (this.bossCombat && !['life', 'radius', 'stage'].includes(action)) return;
     if (this.isTutorial() && ['itch', 'soreness', 'clear', 'tolerance'].includes(action)) return;
     if (action.startsWith('scenario:')) {
       if (this.isTutorial()) return;
@@ -1524,6 +1579,7 @@ export class Game {
   }
 
   getCamera(stage) {
+    if (this.bossCombat) return this.bossRenderer.camera(this.viewport, this.bossCombat);
     if (this.cameraMode === 'fit') {
       const padding = stage.cameraPadding || { top: 0, bottom: 0 };
       const availableHeight = Math.max(160, this.viewport.height - padding.top - padding.bottom);
@@ -1603,9 +1659,10 @@ export class Game {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
     ctx.clearRect(0, 0, this.viewport.width, this.viewport.height);
-    ctx.fillStyle = stage.id === 'mountain' ? '#78ad83' : '#83c77f';
+    ctx.fillStyle = stage.mode === 'boss' ? '#25283f' : stage.id === 'mountain' ? '#78ad83' : '#83c77f';
     ctx.fillRect(0, 0, this.viewport.width, this.viewport.height);
     ctx.save();
+    if (camera.clip) { ctx.beginPath(); ctx.rect(camera.clip.x, camera.clip.y, camera.clip.width, camera.clip.height); ctx.clip(); }
     if (camera.mode === 'fit') {
       ctx.translate(camera.x, camera.y);
       ctx.scale(camera.scale, camera.scale);
@@ -1613,7 +1670,16 @@ export class Game {
       ctx.translate(-camera.x * camera.scale, -camera.y * camera.scale);
       ctx.scale(camera.scale, camera.scale);
     }
-    this.worldRenderer.draw(ctx, stage, now);
+    this.worldRenderer.draw(ctx, stage, this.bossCombat ? this.bossCombat.visualTime * 1000 : now);
+    if (this.bossCombat) {
+      this.bossRenderer.atmosphere(ctx, this.bossCombat);
+      ctx.save();
+      if (this.bossCombat.state === 'ARRIVAL' || this.bossCombat.boss?.state === 'SUMMON') {
+        ctx.translate(Math.sin(this.bossCombat.visualTime * 45) * 2, 0);
+      }
+      this.bossRenderer.draw(ctx, this.bossCombat, this.player, this.debug.showRadius);
+      ctx.restore(); ctx.restore(); return;
+    }
     const target = this.interactionSystem.currentTarget;
     if (target) {
       ctx.save(); ctx.strokeStyle = 'rgba(255, 235, 163, .38)'; ctx.lineWidth = 2; ctx.setLineDash([5, 7]); ctx.beginPath(); ctx.moveTo(this.player.x, this.player.y - 4); ctx.lineTo(target.x, target.y - 4); ctx.stroke(); ctx.restore();
