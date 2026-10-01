@@ -1,0 +1,5 @@
+{
+  "mode": "built-in image_gen",
+  "reference": "reference/runtime/alien-boss-v1.png",
+  "prompt": "Use case: illustration-story. Asset: one transparent collectible item icon named Itch Core for the existing cute Alien Mosquito Invasion chibi game. Input image is style and design reference: the mint-rimmed dark oval core socket on the mosquito king's lower belly. Draw ONLY the extracted purified CORE as a small jewel/orb collectible, no monster, legs, wings, crown, UFO or scene. Centered three-quarter view of a luminous pale mint/cyan oval crystal orb, thick lavender metal circular/oval housing, mint rim, a soft violet center containing one tiny bright white/gold four-point energy spark. Friendly rounded silhouette, thick dark navy outline, soft cel shading matching reference game sprites. One clearly readable icon that looks good at 64px, compact faint glow directly around orb, generous transparent margins; no text, labels, interface, pedestal, shadow, decorative loose stars or background. True transparent RGBA output."
+}

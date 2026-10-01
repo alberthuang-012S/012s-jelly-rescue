@@ -3,6 +3,8 @@ import { ComboManager } from './ComboManager.js';
 import { BossCombatSystem } from './BossCombatSystem.js';
 import { BossRenderer } from './BossRenderer.js';
 import { BossStageUI } from './BossStageUI.js';
+import { CoreCollectionStore } from './CoreCollectionStore.js';
+import { CoreCollectionUI } from './CoreCollectionUI.js';
 import { EvolutionStore, EVOLVED_SPEED_MULTIPLIER } from './EvolutionStore.js';
 import { EventDirector } from './EventDirector.js?mountain-pavilion-dialogue-v2';
 import { HUD } from './HUD.js';
@@ -485,6 +487,8 @@ export class Game {
     this.bossCombat = null;
     this.bossRenderer = new BossRenderer();
     this.bossUI = new BossStageUI(this);
+    this.coreCollectionStore = new CoreCollectionStore();
+    this.coreCollectionUI = new CoreCollectionUI(this.coreCollectionStore);
     this.bindHome();
     this.updateHomeSelection();
     this.bindDebug();
@@ -812,6 +816,10 @@ export class Game {
   }
 
   handleEscape() {
+    if (this.coreCollectionUI?.dialog.open) {
+      this.coreCollectionUI.dialog.close();
+      return;
+    }
     if (this.backgroundPaused) return;
     if (this.resultScreen.dialog.open) return;
     if (this.isExitConfirmOpen) {
@@ -1392,7 +1400,10 @@ export class Game {
   }
 
   finishBossStage() {
+    if (this.state !== 'playing' || !this.bossCombat) return;
     const won = this.bossCombat.state === 'CLEAR';
+    const reward = this.coreCollectionStore.awardClear(this.selectedStage,won);
+    this.coreCollectionUI.showReward(reward);
     this.state = won ? 'result' : 'gameover';
     this.input.setEnabled(false);
     this.gameShell.classList.add('is-hidden');

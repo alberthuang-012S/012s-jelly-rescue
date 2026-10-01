@@ -18,7 +18,7 @@ export class BossCombatSystem {
   get targets() { return [...this.director.enemies.filter(e => e.alive), ...(this.state === 'BOSS' && this.boss?.alive ? [this.boss] : [])]; }
   findTarget() {
     return this.targets.filter(e => distance(e, this.player) <= C.range
-      && this.navigation.planner(0).isClear(this.player, e))
+      && (e === this.boss || this.navigation.planner(0).isClear(this.player, e)))
       .sort((a, b) => distance(a, this.player) - distance(b, this.player))[0] || null;
   }
   fire = (source, target, count = 1) => {
@@ -97,7 +97,7 @@ export class BossCombatSystem {
         this.damage(infiniteLife); enemy.state = 'RECOVER'; enemy.timer = 1.1;
       }
     }
-    if (this.state === 'BOSS' && this.boss.state === 'DASH' && distance(this.boss, this.player) < this.boss.radius + this.player.radius) this.damage(infiniteLife);
+    if (this.state === 'BOSS' && this.boss.alive && distance(this.boss, this.player) < this.boss.radius + this.player.radius) this.damage(infiniteLife);
     if (this.state === 'WAVE' && this.director.cleared) {
       this.state = 'WAVE_CLEAR'; this.timer = this.wave === 3 ? C.arrivalDelay : C.waveDelay; this.projectiles = [];
     }

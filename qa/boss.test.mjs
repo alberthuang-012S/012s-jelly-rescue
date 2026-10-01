@@ -178,6 +178,38 @@ test('navigation routes around obstacles and dash substeps never tunnel', () => 
   for (let i = 0; i < 500; i++) nav.toward(e, { x: 500, y: 500 }, 3);
   assert.ok(Math.hypot(e.x - 500, e.y - 500) < 5);
 });
+
+test('King chase and dash fly through ground obstacles while remaining inside world bounds',()=>{
+  const stage={...arena,obstacles:[{x:400,y:0,width:20,height:1000}]};
+  const nav=new CombatNavigation(stage),target={x:600,y:500,radius:25};
+  for(const state of ['CHASE','DASH']){
+    const boss=new BossMosquito({x:300,y:500});boss.enter(state,100);boss.direction={x:1,y:0};
+    for(let i=0;i<60;i++)boss.update(.05,target,nav,noFire,noFire);
+    assert.ok(boss.x>420,`${state} crosses the full-height wall`);
+    assert.ok(boss.x<=stage.world.width-boss.radius);
+  }
+  const grounded={x:300,y:500,radius:25};nav.move(grounded,{x:1,y:0},400);assert.ok(grounded.x<=375);
+});
+
+test('King contact damages in all live combat poses with invulnerability and protected cinematics',()=>{
+  for(const state of ['CHASE','TELEGRAPH','DASH','RECOVER','CORE_OPEN','FATIGUE','CORE_CLOSE','BUBBLE','SUMMON']){
+    const c=bossCombat();Object.assign(c.boss,{x:550,y:500});c.boss.enter(state,10);
+    c.update(.02);assert.equal(c.lives,2,state);assert.equal(c.score.bossDamageTaken,1);
+    c.update(.02);assert.equal(c.lives,2,`${state} protects repeated contacts`);
+  }
+  const c=bossCombat();Object.assign(c.boss,{x:500,y:500});c.boss.enter('CORE_OPEN',10);
+  c.update(.02);tick(c,1.22);assert.equal(c.lives,1);
+  for(const state of ['ARRIVAL','VICTORY']){
+    const protectedCombat=bossCombat();Object.assign(protectedCombat.boss,{x:500,y:500});protectedCombat.state=state;protectedCombat.timer=10;
+    protectedCombat.update(.02);assert.equal(protectedCombat.lives,3);
+  }
+});
+
+test('PPA can reach the flying King core above terrain while grounded enemies retain cover rules',()=>{
+  const c=new BossCombatSystem({...arena,obstacles:[{x:530,y:400,width:20,height:200}]},player());
+  c.boss=new BossMosquito({x:550,y:500});c.boss.enter('CORE_OPEN',2);c.state='BOSS';c.director.clear();
+  assert.equal(c.findTarget(),c.boss);c.tryAction();assert.equal(c.boss.hp,16);
+});
 test('boss scoring is isolated, transparent, idempotent and no-damage bonus concerns boss combat', () => {
   const score = new BossScoreManager(); const rescue = new ScoreManager();
   score.damage(false);

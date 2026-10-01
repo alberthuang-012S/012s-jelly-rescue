@@ -68,6 +68,7 @@
             <div class="stage-featured-meta"><span>SPECIAL</span><span>BOSS BATTLE</span></div>
             <button id="special-start" class="secondary-button" type="button">開始挑戰 <span>→</span></button>
           </article>
+          <button class="collection-home-button" type="button" data-open-collection>核心圖鑑 <span id="core-collection-count">0 / 1</span></button>
         </div>
 
         <div class="home-character-wrap" aria-hidden="true">
@@ -249,10 +250,22 @@
             <div><span>BOSS HITS</span><b data-boss-stat>0</b></div>
           </div>
           <p id="boss-score-note" class="result-summary"></p>
+          <div id="boss-core-reward" class="core-reward is-hidden" aria-live="polite">
+            <picture><source srcset="./reference/runtime/itch-core-v1.webp" type="image/webp"><img src="./reference/runtime/itch-core-v1.png" alt="癢癢核心" width="80" height="80"></picture>
+            <div><strong>癢癢核心</strong><p id="boss-core-reward-status">新核心已收錄圖鑑</p></div>
+            <button type="button" data-open-collection>查看圖鑑 →</button>
+          </div>
           <div class="result-actions"><button id="boss-replay" class="primary-button" type="button">再挑戰一次</button><button id="boss-home" class="text-button" type="button">回主選單</button></div>
         </div>
       </section>
       <div id="rotate-overlay" class="rotate-overlay is-hidden"><div class="rotate-card"><span>↻</span><b>請將裝置轉為橫向</b><small>Jelly Rescue 需要一點寬度，才能看見整座地圖。</small></div></div>
+      <dialog id="core-collection-dialog" class="core-collection-dialog" aria-labelledby="core-collection-title">
+        <div class="core-collection-head"><div><h2 id="core-collection-title">核心圖鑑</h2><p id="core-collection-progress">已收集 0 / 1</p></div><button id="core-collection-close" type="button" aria-label="關閉圖鑑" autofocus>✕</button></div>
+        <article id="core-entry" class="core-entry is-locked">
+          <div class="core-entry-art"><picture id="core-entry-image" hidden><source srcset="./reference/runtime/itch-core-v1.webp" type="image/webp"><img src="./reference/runtime/itch-core-v1.png" alt="癢癢核心" width="112" height="112"></picture><span id="core-entry-unknown" aria-hidden="true">?</span></div>
+          <div><span class="core-entry-number">CORE 001</span><h3 id="core-entry-name">未發現的核心</h3><p id="core-entry-description">通過「異星蚊災」即可收錄這枚核心。</p><strong id="core-entry-status">尚未收集</strong></div>
+        </article>
+      </dialog>
     </main>
     <script type="module" src="./src/main.js?v=walk-v12"></script>
   </body>

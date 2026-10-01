@@ -1,5 +1,5 @@
 import { TravelPlanner } from './TravelPlanner.js';
-import { distance, normalize, moveWithCollision } from './utils.js';
+import { distance, normalize, moveWithCollision, clamp } from './utils.js';
 
 // Reuse the rescue visibility graph; combat owns its routing and cached paths.
 export class CombatNavigation {
@@ -13,6 +13,14 @@ export class CombatNavigation {
     const steps = Math.max(1, Math.ceil(amount / 8));
     for (let i = 0; i < steps; i++) Object.assign(entity,
       moveWithCollision(entity, entity.radius, vector, amount / steps, this.stage.world, this.stage.obstacles));
+  }
+  flyMove(entity, vector, amount) {
+    const {width,height}=this.stage.world;
+    entity.x=clamp(entity.x+vector.x*amount,entity.radius,width-entity.radius);
+    entity.y=clamp(entity.y+vector.y*amount,entity.radius,height-entity.radius);
+  }
+  flyToward(entity, target, amount) {
+    this.flyMove(entity,normalize(target.x-entity.x,target.y-entity.y),Math.min(amount,distance(entity,target)));
   }
   toward(entity, target, amount) {
     const planner = this.planner(entity.radius);

@@ -31,7 +31,7 @@ export class BossMosquito {
     this.hitFlash = Math.max(0, this.hitFlash - dt); this.timer -= dt;
     const multiplier = this.phase === 3 ? C.phase3Speed : 1;
     if (this.state === 'CHASE') {
-      navigation.toward(this, player, C.speed * multiplier * dt);
+      navigation.flyToward(this, player, C.speed * multiplier * dt);
       if (this.timer <= 0) this.telegraph(player);
     } else if (this.state === 'SUMMON') {
       if (this.summonPending && !this.summoned) { summon(); this.summoned = true; this.summonPending = false; }
@@ -40,7 +40,7 @@ export class BossMosquito {
       }
     } else if (this.state === 'TELEGRAPH' && this.timer <= 0) this.enter('DASH', C.dashTime);
     else if (this.state === 'DASH') {
-      navigation.move(this, this.direction, C.dashSpeed * multiplier * dt);
+      navigation.flyMove(this, this.direction, C.dashSpeed * multiplier * dt);
       if (this.timer <= 0) {
         if (this.phase === 3 && !this.secondDash) this.enter('BUBBLE', .65);
         else this.enter('RECOVER', C.recover);
