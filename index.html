@@ -236,26 +236,39 @@
       </section>
 
       <div id="toast-region" class="toast-region" aria-live="polite"></div>
-      <section id="boss-result" class="screen result-screen is-hidden" aria-labelledby="boss-result-title">
-        <div class="result-glow"></div><div class="result-inner">
-          <div class="result-badge">SPECIAL BOSS BATTLE <span>✦</span></div>
-          <p id="boss-result-kicker" class="result-kicker">SPECIAL STAGE CLEAR</p>
-          <h2 id="boss-result-title">異星蚊災討伐成功！</h2>
-          <div class="result-score-hero"><small>SCORE</small><strong id="boss-result-score">0</strong></div>
-          <div class="rescue-statistics boss-statistics">
-            <div><span id="boss-result-time-label">CLEAR TIME</span><b data-boss-stat>00:00</b></div>
-            <div><span>DEFEATED ENEMIES</span><b data-boss-stat>0</b></div>
-            <div><span>DAMAGE TAKEN</span><b data-boss-stat>0</b></div>
-            <div><span>PPA HITS</span><b data-boss-stat>0</b></div>
-            <div><span>BOSS HITS</span><b data-boss-stat>0</b></div>
-          </div>
-          <p id="boss-score-note" class="result-summary"></p>
+      <section id="boss-result" class="screen result-screen is-hidden" role="dialog" aria-modal="true" aria-labelledby="boss-result-title" aria-describedby="boss-result-description">
+        <div class="result-inner boss-result-card">
+          <div class="boss-result-body">
+          <p class="boss-result-stage">異星蚊災 <span>ALIEN MOSQUITO INVASION</span></p>
+          <p id="boss-result-kicker" class="result-kicker">討伐完成 · STAGE CLEAR</p>
+          <h2 id="boss-result-title">討伐成功！</h2>
+          <p id="boss-result-description" class="boss-result-description"></p>
           <div id="boss-core-reward" class="core-reward is-hidden" aria-live="polite">
             <picture><source srcset="./reference/runtime/itch-core-v1.webp" type="image/webp"><img src="./reference/runtime/itch-core-v1.png" alt="癢癢核心" width="80" height="80"></picture>
             <div><strong>癢癢核心</strong><p id="boss-core-reward-status">新核心已收錄圖鑑</p></div>
             <button type="button" data-open-collection>查看圖鑑 →</button>
           </div>
-          <div class="result-actions"><button id="boss-replay" class="primary-button" type="button">再挑戰一次</button><button id="boss-home" class="text-button" type="button">回主選單</button></div>
+          <div id="boss-failure-guide" class="boss-failure-guide is-hidden">
+            <strong id="boss-result-progress"></strong>
+            <p id="boss-result-tip"></p>
+            <small id="boss-result-core-note"></small>
+          </div>
+          <div class="result-score-hero"><small>本次得分</small><strong id="boss-result-score">0</strong></div>
+          <div class="rescue-statistics boss-statistics boss-main-statistics">
+            <div><span id="boss-result-time-label">討伐時間</span><b data-boss-stat>00:00</b></div>
+            <div><span>擊退蚊子</span><b data-boss-stat>0</b></div>
+          </div>
+          <details id="boss-result-details" class="boss-result-details">
+            <summary>查看戰鬥紀錄</summary>
+            <div class="rescue-statistics boss-statistics boss-detail-statistics">
+              <div><span>受傷次數</span><b data-boss-stat>0</b></div>
+              <div><span>PPA 命中</span><b data-boss-stat>0</b></div>
+              <div><span>Boss 命中</span><b data-boss-stat>0</b></div>
+            </div>
+            <p id="boss-score-note" class="result-summary"></p>
+          </details>
+          </div>
+          <div class="result-actions boss-result-actions"><button id="boss-replay" class="primary-button" type="button">再挑戰一次</button><button id="boss-home" class="secondary-button" type="button">回主選單</button></div>
         </div>
       </section>
       <div id="rotate-overlay" class="rotate-overlay is-hidden"><div class="rotate-card"><span>↻</span><b>請將裝置轉為橫向</b><small>Jelly Rescue 需要一點寬度，才能看見整座地圖。</small></div></div>

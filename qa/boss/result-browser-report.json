@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "wave1: correct result, progress, tip and core state; readable bounded card and persistent actions at five viewports; keyboard focus stays inside",
+    "wave3: correct result, progress, tip and core state; readable bounded card and persistent actions at five viewports; keyboard focus stays inside",
+    "phase3: correct result, progress, tip and core state; readable bounded card and persistent actions at five viewports; keyboard focus stays inside",
+    "success: correct result, progress, tip and core state; readable bounded card and persistent actions at five viewports; keyboard focus stays inside",
+    "repeat: correct result, progress, tip and core state; readable bounded card and persistent actions at five viewports; keyboard focus stays inside",
+    "collected-failure: correct result, progress, tip and core state; readable bounded card and persistent actions at five viewports; keyboard focus stays inside",
+    "Replay starts a fresh first wave; Home closes result"
+  ],
+  "errors": [],
+  "status": "PASS"
+}

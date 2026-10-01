@@ -12,6 +12,13 @@ export class BossStageUI {
     document.querySelector('#special-start').addEventListener('click', () => game.startStage('alienMosquito'));
     document.querySelector('#boss-replay').addEventListener('click', () => game.startStage('alienMosquito'));
     document.querySelector('#boss-home').addEventListener('click', () => game.showHome());
+    this.result.addEventListener('keydown', event => {
+      if (event.key !== 'Tab') return;
+      const controls = [...this.result.querySelectorAll('button, summary')].filter(node => node.getClientRects().length);
+      const first = controls[0], last = controls.at(-1);
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    });
   }
   setMode(active) {
     this.game.gameShell.classList.toggle('is-boss-stage', active);
@@ -70,16 +77,37 @@ export class BossStageUI {
   }
   showResult(won) {
     const c = this.game.bossCombat; const r = c.score.result(c.clearTime ?? c.elapsed);
-    document.querySelector('#boss-result-title').textContent = won ? '異星蚊災討伐成功！' : '休息一下，再來挑戰';
-    document.querySelector('#boss-result-kicker').textContent = won ? 'SPECIAL STAGE CLEAR' : 'SPECIAL STAGE · GAME OVER';
+    this.result.dataset.outcome = won ? 'success' : 'failure';
+    document.querySelector('#boss-result-title').textContent = won ? '討伐成功！' : '先休息一下吧';
+    document.querySelector('#boss-result-kicker').textContent = won ? '討伐完成 · STAGE CLEAR' : '挑戰結束 · GAME OVER';
+    document.querySelector('#boss-result-description').textContent = won
+      ? '異星嗡嗡王已退散，公園恢復平靜。'
+      : '小水母需要補充體力，再出發挑戰蚊災。';
+    document.querySelector('#boss-failure-guide').classList.toggle('is-hidden', won);
+    document.querySelector('#boss-result-progress').textContent = c.boss
+      ? `挑戰進度：Boss 第 ${c.boss.phase} 階段 · 剩餘 ${c.boss.hp} / ${B.hp} 生命`
+      : `挑戰進度：第 ${c.wave} / 3 波蚊群`;
+    document.querySelector('#boss-result-tip').textContent = c.boss
+      ? c.boss.phase === 3 ? '連續衝刺有兩次，等第二次結束、核心亮起再靠近。'
+        : c.boss.phase === 2 ? '避開泡泡與召喚蚊群，核心亮起時再靠近。'
+          : '先閃過衝刺，核心亮起時靠近使用 PPA。'
+      : c.wave === 3 ? '先處理靠近的蚊子，留意遠處飛來的泡泡。'
+        : c.wave === 2 ? '看到衝刺預告就先側移，停下後再靠近。'
+          : '靠近小蚊子使用 PPA，命中後拉開距離，等脈衝恢復。';
+    document.querySelector('#boss-result-core-note').textContent = this.game.coreCollectionStore.has('itchCore')
+      ? '本次未取得核心；圖鑑保留先前的收藏。'
+      : '本次未取得核心。擊敗 Boss 後，記得撿取掉落的核心。';
+    document.querySelector('#boss-replay').textContent = won ? '再玩一次' : '重新挑戰';
     document.querySelector('#boss-result-score').textContent = r.score.toLocaleString();
     const values = [formatClock(r.clearTime), r.defeatedEnemies, r.damageTaken, r.ppaHits, r.bossHits];
     this.result.querySelectorAll('[data-boss-stat]').forEach((node, i) => { node.textContent = values[i]; });
-    document.querySelector('#boss-result-time-label').textContent = won ? 'CLEAR TIME' : 'TIME SURVIVED';
+    document.querySelector('#boss-result-time-label').textContent = won ? '討伐時間' : '挑戰時間';
     document.querySelector('#boss-score-note').textContent = won
       ? `Boss 擊退 +1500 · 通關 +500${r.bossDamageTaken === 0 ? ' · Boss 戰無傷 +500' : ''}`
       : '閃過衝刺，再趁核心亮起時靠近使用 PPA。';
+    document.querySelector('#boss-result-details').open = false;
     this.result.classList.remove('is-hidden'); this.result.scrollTop = 0;
+    this.result.querySelector('.boss-result-body').scrollTop = 0;
     document.querySelector('#boss-replay').focus({ preventScroll: true });
   }
 }
