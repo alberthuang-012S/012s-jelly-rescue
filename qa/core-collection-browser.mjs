@@ -31,7 +31,41 @@ try{
   });
   assert.equal(await page.evaluate(()=>window.__qaGame.bossCombat.state),'VICTORY');
   assert.equal(await page.evaluate(()=>window.__qaGame.coreCollectionStore.has('itchCore')),false,'Victory cinematic has not awarded early');
+  await page.waitForFunction(()=>window.__qaGame.bossCombat.state==='COLLECT');
+  await page.waitForTimeout(750);
+  assert.equal(await page.evaluate(()=>window.__qaGame.state),'playing');
+  assert.equal(await page.evaluate(()=>localStorage.getItem('jellyRescue.coreCollection.v1')),null);
+  assert.equal(await page.evaluate(()=>window.__qaGame.bossCombat.coreDrop.collected),false);
+  assert.equal(await page.locator('#boss-health').isVisible(),false);
+  assert.equal(await page.locator('#action-button').isVisible(),false);
+  assert.equal(await page.locator('.mobile-dpad').isVisible(),true);
+  for(const [name,viewport]of [['small',{width:375,height:667}],['portrait',{width:390,height:844}],['desktop',{width:1280,height:900}]]){
+    await page.setViewportSize(viewport);
+    assert.match(await page.locator('#boss-core-hint').textContent(),/即可收集/);
+    await page.screenshot({path:`qa/boss/core-drop-${name}.png`});
+  }
+  await page.setViewportSize({width:375,height:667});
+  await page.evaluate(()=>window.dispatchEvent(new Event('blur')));
+  const paused=await page.evaluate(()=>JSON.stringify(window.__qaGame.bossCombat));
+  await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>JSON.stringify(window.__qaGame.bossCombat)),paused);
+  await page.locator('#background-resume').click();
+  await page.evaluate(()=>window.__qaGame.finishBossStage());
+  assert.equal(await page.evaluate(()=>window.__qaGame.state),'playing','Uncollected core cannot finish the stage');
+  await page.evaluate(()=>window.__qaGame.showHome());
+  assert.equal(await page.locator('#core-collection-count').textContent(),'0 / 1');
+  await page.reload({waitUntil:'networkidle'});
+  assert.equal(await page.locator('#core-collection-count').textContent(),'0 / 1');
+  report.checks.push('Pickup visible at three viewports; idle, pause, premature result and abandoning the drop never unlock collection');
+  await page.evaluate(async()=>{
+    const g=window.__qaGame;await g.startStage('alienMosquito');const c=g.bossCombat;c.startArrival();c.state='BOSS';
+    c.boss.x=g.player.x;c.boss.y=g.player.y;c.boss.hp=2;c.boss.enter('CORE_OPEN',10);
+    g.player.y+=85;c.tryAction();
+  });
+  await page.waitForFunction(()=>window.__qaGame.bossCombat.state==='COLLECT');
+  await page.locator('[data-dir="up"]').dispatchEvent('pointerdown',{pointerId:18,pointerType:'touch'});
   await page.waitForFunction(()=>window.__qaGame.state==='result');
+  await page.locator('[data-dir="up"]').dispatchEvent('pointerup',{pointerId:18,pointerType:'touch'});
+  assert.equal(await page.evaluate(()=>window.__qaGame.bossCombat.coreDrop.collected),true);
   assert.equal(await page.locator('#boss-core-reward-status').textContent(),'新核心已收錄圖鑑');
   assert.equal(await page.locator('#core-collection-count').textContent(),'1 / 1');
   for(const [name,viewport]of [['small',{width:375,height:667}],['portrait',{width:390,height:844}],['desktop',{width:1280,height:900}]]){
@@ -50,11 +84,16 @@ try{
   assert.equal(await page.locator('#core-collection-count').textContent(),'1 / 1');
   await page.locator('.collection-home-button').click();assert.equal(await page.locator('#core-entry-name').textContent(),'癢癢核心');
   await page.locator('#core-collection-close').click();
-  await page.evaluate(async()=>{const g=window.__qaGame;await g.startStage('alienMosquito');g.bossCombat.state='CLEAR';g.finishBossStage();});
+  await page.evaluate(async()=>{
+    const g=window.__qaGame;await g.startStage('alienMosquito');const c=g.bossCombat;c.startArrival();c.state='BOSS';
+    c.boss.x=g.player.x;c.boss.y=g.player.y;c.boss.hp=2;c.boss.enter('CORE_OPEN',10);g.player.y+=85;c.tryAction();
+  });
+  await page.waitForFunction(()=>window.__qaGame.bossCombat.state==='COLLECT');
+  await page.keyboard.down('ArrowUp');await page.waitForFunction(()=>window.__qaGame.state==='result');await page.keyboard.up('ArrowUp');
   assert.equal(await page.locator('#boss-core-reward-status').textContent(),'圖鑑中已收藏');
   await page.evaluate(async()=>{const g=window.__qaGame;await g.startStage('alienMosquito');g.bossCombat.state='GAMEOVER';g.finishBossStage();});
   assert.equal(await page.locator('#boss-core-reward').isVisible(),false);
-  report.checks.push('Reload persists; repeated clear is idempotent; failed run hides reward');
-  assert.deepEqual(report.errors,[]);report.status='PASS';console.log('PASS: contact HUD damage, clear unlock, locked/unlocked encyclopedia, three viewports, reload, repeat and failure.');
+  report.checks.push('Real touch/keyboard pickup unlocks once; reload persists; repeated pickup is idempotent; failed run hides reward');
+  assert.deepEqual(report.errors,[]);report.status='PASS';console.log('PASS: contact HUD damage, actual touch/keyboard pickup, no automatic award, locked/unlocked encyclopedia, three viewports, pause, abandon, reload, repeat and failure.');
 }catch(e){report.status='FAIL';report.failure=e.stack;process.exitCode=1;console.error(e);}
 finally{await fs.writeFile('qa/boss/core-collection-browser-report.json',JSON.stringify(report,null,2)+'\n');await browser?.close();server.kill();}

@@ -768,8 +768,9 @@ export class Game {
   ensureBossArt() {
     if (!this.bossArtPromise) this.bossArtPromise = Promise.all([
       loadImageWithFallback(ASSET_PATHS.alienEnemies, { fetchPriority: 'high', assetName: 'Alien mosquito sprites' }),
-      loadImageWithFallback(ASSET_PATHS.alienBoss, { fetchPriority: 'high', assetName: 'Mosquito King and UFO sprites' })
-    ]).then(([enemies, boss]) => { this.bossRenderer.setArt({ enemies, boss }); });
+      loadImageWithFallback(ASSET_PATHS.alienBoss, { fetchPriority: 'high', assetName: 'Mosquito King and UFO sprites' }),
+      loadImageWithFallback(['./reference/runtime/itch-core-v1.webp', './reference/runtime/itch-core-v1.png'], { fetchPriority: 'high', assetName: 'Itch core pickup' })
+    ]).then(([enemies, boss, core]) => { this.bossRenderer.setArt({ enemies, boss, core }); });
     return this.bossArtPromise;
   }
 
@@ -1400,9 +1401,9 @@ export class Game {
   }
 
   finishBossStage() {
-    if (this.state !== 'playing' || !this.bossCombat) return;
+    if (this.state !== 'playing' || !this.bossCombat || !['CLEAR', 'GAMEOVER'].includes(this.bossCombat.state)) return;
     const won = this.bossCombat.state === 'CLEAR';
-    const reward = this.coreCollectionStore.awardClear(this.selectedStage,won);
+    const reward = won ? this.coreCollectionStore.collect(this.selectedStage, this.bossCombat.coreDrop) : null;
     this.coreCollectionUI.showReward(reward);
     this.state = won ? 'result' : 'gameover';
     this.input.setEnabled(false);
@@ -1590,7 +1591,6 @@ export class Game {
   }
 
   getCamera(stage) {
-    if (this.bossCombat) return this.bossRenderer.camera(this.viewport, this.bossCombat);
     if (this.cameraMode === 'fit') {
       const padding = stage.cameraPadding || { top: 0, bottom: 0 };
       const availableHeight = Math.max(160, this.viewport.height - padding.top - padding.bottom);
@@ -1673,7 +1673,6 @@ export class Game {
     ctx.fillStyle = stage.mode === 'boss' ? '#25283f' : stage.id === 'mountain' ? '#78ad83' : '#83c77f';
     ctx.fillRect(0, 0, this.viewport.width, this.viewport.height);
     ctx.save();
-    if (camera.clip) { ctx.beginPath(); ctx.rect(camera.clip.x, camera.clip.y, camera.clip.width, camera.clip.height); ctx.clip(); }
     if (camera.mode === 'fit') {
       ctx.translate(camera.x, camera.y);
       ctx.scale(camera.scale, camera.scale);

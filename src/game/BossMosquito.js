@@ -31,6 +31,7 @@ export class BossMosquito {
     this.hitFlash = Math.max(0, this.hitFlash - dt); this.timer -= dt;
     const multiplier = this.phase === 3 ? C.phase3Speed : 1;
     if (this.state === 'CHASE') {
+      // King remains airborne in every phase. Ground routing is for other actors.
       navigation.flyToward(this, player, C.speed * multiplier * dt);
       if (this.timer <= 0) this.telegraph(player);
     } else if (this.state === 'SUMMON') {

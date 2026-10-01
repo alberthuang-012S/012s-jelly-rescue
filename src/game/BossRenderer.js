@@ -23,31 +23,6 @@ export class BossRenderer {
   sprite(ctx, image, frame, size, x, y, width, height) {
     ctx.drawImage(image, frame % 3 * size, Math.floor(frame / 3) * size, size, size, x, y, width, height);
   }
-  camera(viewport, combat) {
-    const padding = combat.stage.cameraPadding;
-    const area = { x: 8, y: padding.top, width: viewport.width - 16,
-      height: Math.max(150, viewport.height - padding.top - padding.bottom) };
-    const actors = [combat.player, ...combat.director.enemies.filter(e => e.alive), ...(combat.boss ? [combat.boss] : [])];
-    const world = combat.stage.world;
-    const left = Math.max(0, Math.min(...actors.map(e => e.x)) - 110);
-    const right = Math.min(world.width, Math.max(...actors.map(e => e.x)) + 110);
-    const top = Math.max(0, Math.min(...actors.map(e => e.y - (e === combat.boss ? 180 : 65))) - 70);
-    const bottom = Math.min(world.height, Math.max(...actors.map(e => e.y)) + 100);
-    // Frame all combatants, with a minimum area to keep zoom changes gentle.
-    // Cropping scenery is safe: world collision and movement remain unchanged.
-    const width = Math.max(480, right - left); const height = Math.max(500, bottom - top);
-    const scale = Math.min(area.width / width, area.height / height, 1.05);
-    const visibleWidth = area.width / scale; const visibleHeight = area.height / scale;
-    const cx = visibleWidth >= world.width ? world.width / 2 : clamp((left + right) / 2, visibleWidth / 2, world.width - visibleWidth / 2);
-    const cy = visibleHeight >= world.height ? world.height / 2 : clamp((top + bottom) / 2, visibleHeight / 2, world.height - visibleHeight / 2);
-    const desired = { scale, cx, cy };
-    if (this.cameraCombat !== combat) { this.cameraCombat = combat; this.cameraState = desired; }
-    else for (const key of ['scale', 'cx', 'cy']) this.cameraState[key] += (desired[key] - this.cameraState[key]) * .12;
-    const camera = this.cameraState;
-    return { mode: 'fit', scale: camera.scale, x: area.x + area.width / 2 - camera.cx * camera.scale,
-      y: area.y + area.height / 2 - camera.cy * camera.scale, clip: area };
-  }
-
   atmosphere(ctx, combat) {
     const { width, height } = combat.stage.world; const t = combat.visualTime;
     if (!this.hasNightMap) {
@@ -175,11 +150,23 @@ export class BossRenderer {
     ctx.beginPath(); ctx.moveTo(enemy.x, enemy.y); ctx.lineTo(end.x, end.y); ctx.stroke();
     ctx.strokeStyle = '#ffe4ad'; ctx.lineWidth = 3; ctx.setLineDash([9, 7]); ctx.stroke(); ctx.restore();
   }
+  corePickup(ctx, drop, t) {
+    ctx.save(); ctx.translate(drop.x, drop.y);
+    oval(ctx, 0, 9, 30, 10, 'rgba(173,244,229,.28)', '#c1fff0', 1.5);
+    ctx.shadowColor = '#debdff'; ctx.shadowBlur = 18;
+    const y = -30 + Math.sin(t * 3) * 4;
+    if (this.ready(this.art?.core)) ctx.drawImage(this.art.core, -36, y - 36, 72, 72);
+    else { oval(ctx, 0, y, 23, 25, '#b7a3ec', '#fff3d5', 3); star(ctx, 0, y, 14); }
+    ctx.shadowBlur = 0;
+    for (let i = 0; i < 3; i++) star(ctx, Math.cos(t + i * 2.1) * 38, y + Math.sin(t + i * 2.1) * 22, 4);
+    ctx.restore();
+  }
   draw(ctx, combat, player, showRadius) {
     const t = combat.visualTime;
     for (const e of combat.targets) this.telegraph(ctx, e);
     const entities = [...combat.director.enemies.filter(e => e.alive), player];
-    if (combat.boss && !['ARRIVAL', 'VICTORY'].includes(combat.state)) entities.push(combat.boss);
+    if (combat.state === 'BOSS' && combat.boss) entities.push(combat.boss);
+    if (combat.state === 'COLLECT' && combat.coreDrop && !combat.coreDrop.collected) this.corePickup(ctx, combat.coreDrop, t);
     entities.sort((a, b) => a.y - b.y).forEach(e => {
       if (e === player) {
         ctx.save(); if (combat.invulnerability > 0 && Math.floor(t * 12) % 2) ctx.globalAlpha = .4;

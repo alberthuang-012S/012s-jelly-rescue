@@ -24,8 +24,8 @@ export class CoreCollectionStore {
       return this.persisted = true;
     } catch { return this.persisted = false; }
   }
-  awardClear(stageId, won) {
-    const core = won && CORE_CATALOG.find(entry => entry.stageId === stageId);
+  collect(stageId, drop) {
+    const core = drop?.collected === true && CORE_CATALOG.find(entry => entry.stageId === stageId && entry.id === drop.id);
     if (!core) return null;
     const newlyUnlocked = !this.has(core.id);
     this.unlocked.add(core.id);

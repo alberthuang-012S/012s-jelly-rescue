@@ -7,6 +7,18 @@ const { chromium } = require(process.env.JELLY_PLAYWRIGHT_MODULE || 'playwright'
 const port = process.env.JELLY_QA_PORT || '4182';
 const server = spawn(process.execPath, ['server.mjs'], { env: { ...process.env, JELLY_PORT: port }, windowsHide: true });
 let browser; const checks = []; const errors = [];
+async function assertSharedCamera(page) {
+  const result = await page.evaluate(async () => {
+    const { STAGE_DEFS } = await import('/src/game/StageManager.js');
+    const g = window.__qaGame;
+    const boss = g.getCamera.call({ ...g, cameraState: null }, g.stageManager.getStage());
+    const park = g.getCamera.call({ ...g, bossCombat: null, cameraState: null }, STAGE_DEFS.park);
+    return { boss, park, mode: g.cameraMode };
+  });
+  assert.deepEqual(result.boss, result.park);
+  assert.equal(result.boss.mode, result.mode);
+  assert.equal(result.boss.clip, undefined);
+}
 await fs.mkdir('qa/boss', { recursive: true });
 try {
   await new Promise((resolve, reject) => { server.stdout.once('data', resolve); server.once('error', reject); });
@@ -23,6 +35,7 @@ try {
   await page.locator('#special-start').click();
   await page.waitForFunction(() => window.__qaGame.state === 'playing');
   await page.evaluate(() => { window.__qaGame.debug.infiniteLife = true; });
+  await assertSharedCamera(page);
   assert.equal(await page.locator('[data-item="NAP"]').isVisible(), false);
   await page.keyboard.press('q'); assert.equal(await page.evaluate(() => window.__qaGame.itemSystem.selectedId), 'PPA');
   const before = await page.evaluate(() => window.__qaGame.player.x);
@@ -56,12 +69,17 @@ try {
     await page.waitForFunction(() => window.__qaGame.bossCombat.state === 'BOSS');
     await page.evaluate(() => { const c = window.__qaGame.bossCombat; c.boss.enter('CORE_OPEN', 2.3); });
     await page.screenshot({ path: `qa/boss/core-${width}.png` });
-    const camera = await page.evaluate(() => { const g = window.__qaGame; const camera = g.getCamera(g.stageManager.getStage()); return { top: camera.clip.y, bottom: camera.clip.y + camera.clip.height }; });
-    const hudBottom = await page.locator('#boss-hud').evaluate(el => el.getBoundingClientRect().bottom);
-    assert.ok(camera.top >= hudBottom - 15, JSON.stringify({ camera, hudBottom }));
-    assert.ok(camera.bottom <= geometry.dpad.y + 10);
-    checks.push(`${width}×${height}: four enemies, D-pad, Use, PPA dock separation, Boss HP and map safe area`);
+    await assertSharedCamera(page);
+    assert.equal(await page.locator('#boss-health').isVisible(), true);
+    checks.push(`${width}×${height}: four enemies, D-pad, Use, PPA dock separation, visible Boss HP; full-map camera matches Park`);
   }
+
+  await page.setViewportSize({ width: 667, height: 375 });
+  await assertSharedCamera(page);
+  assert.equal(await page.evaluate(() => window.__qaGame.cameraMode), 'follow');
+  await page.screenshot({ path: 'qa/boss/camera-landscape.png' });
+  checks.push('Landscape uses the same player-follow camera and scale as Park');
+  await page.setViewportSize({ width: 375, height: 667 });
 
   await page.evaluate(() => {
     const c = window.__qaGame.bossCombat; c.boss.enter('BUBBLE', .2); c.fire(c.boss, c.player, 2);
@@ -90,6 +108,10 @@ try {
   });
   assert.equal(await page.evaluate(() => window.__qaGame.bossCombat.state), 'VICTORY');
   await page.waitForTimeout(2600); await page.screenshot({ path: 'qa/boss/mini-ufo.png' });
+  await page.waitForFunction(() => window.__qaGame.bossCombat.state === 'COLLECT');
+  await page.evaluate(() => {
+    const g = window.__qaGame; g.player.x = g.bossCombat.coreDrop.x; g.player.y = g.bossCombat.coreDrop.y;
+  });
   await page.waitForFunction(() => window.__qaGame.state === 'result');
   assert.equal(await page.locator('#boss-result').isVisible(), true);
   assert.equal(await page.locator('#result-screen').isVisible(), false);
@@ -101,7 +123,7 @@ try {
     assert.ok(await page.locator('#boss-result').evaluate(el => el.scrollWidth <= innerWidth));
     await page.screenshot({ path: `qa/boss/result-${width}.png` });
   }
-  checks.push('Phase 2/3, vulnerable-hit victory, mini UFO sequence, dedicated result, mobile result scroll');
+  checks.push('Phase 2/3, vulnerable-hit victory, mini UFO sequence, required core pickup, dedicated result, mobile result scroll');
   await page.locator('#boss-replay').click(); await page.waitForFunction(() => window.__qaGame.state === 'playing');
   assert.equal(await page.evaluate(() => window.__qaGame.bossCombat.wave), 1);
   await page.evaluate(() => {

@@ -4,7 +4,6 @@ import { StageManager, STAGE_ORDER, STAGE_DEFS, SPECIAL_STAGE_DEFS } from '../sr
 import { ItemSystem } from '../src/game/ItemSystem.js';
 import { InputController } from '../src/game/InputController.js';
 import { Game } from '../src/game/Game.js';
-import { BossRenderer } from '../src/game/BossRenderer.js';
 import { Enemy } from '../src/game/Enemy.js';
 import { BossMosquito } from '../src/game/BossMosquito.js';
 import { BossCombatSystem } from '../src/game/BossCombatSystem.js';
@@ -132,15 +131,21 @@ test('waves progress 3 / 3 / 4 and wave 3 transitions to a protected arrival', (
   assert.equal(c.state, 'ARRIVAL'); assert.equal(c.damage(), false); assert.equal(c.tryAction(), false);
   tick(c, 4.5); assert.equal(c.state, 'BOSS'); assert.equal(c.boss.hp, 18);
 });
-test('zero Boss HP clears threats immediately and finishes full victory before result', () => {
+test('zero Boss HP clears threats, plays victory, then waits for a physical core pickup before clear', () => {
   const c = bossCombat(); c.boss.hp = 2; c.boss.enter('CORE_OPEN', 2);
   Object.assign(c.boss, { x: 550, y: 500 }); c.fire({ x: 200, y: 200 }, player()); c.tryAction();
   assert.equal(c.state, 'VICTORY'); assert.equal(c.projectiles.length, 0); assert.equal(c.director.enemies.length, 0);
   assert.equal(c.damage(), false); const time = c.clearTime;
-  tick(c, 5); assert.equal(c.state, 'VICTORY'); tick(c, .6); assert.equal(c.state, 'CLEAR'); assert.equal(c.clearTime, time);
+  tick(c, 5); assert.equal(c.state, 'VICTORY'); assert.equal(c.coreDrop, null);
+  tick(c, .6); assert.equal(c.state, 'COLLECT'); assert.equal(c.coreDrop.collected, false);
+  assert.equal(c.frozen, false); assert.equal(c.tryAction(), false); assert.equal(c.damage(), false);
+  const elapsed = c.elapsed; tick(c, 10); assert.equal(c.state, 'COLLECT'); assert.equal(c.elapsed, elapsed);
+  Object.assign(c.player, { x: c.coreDrop.x, y: c.coreDrop.y }); c.update(.02);
+  assert.equal(c.state, 'CLEAR'); assert.equal(c.coreDrop.collected, true); assert.equal(c.clearTime, time);
+  const score = c.score.score; c.update(10); assert.equal(c.score.score, score);
 });
 test('pause freezes all combat clocks, enemies, projectiles, arrival and victory', () => {
-  for (const state of ['WAVE', 'ARRIVAL', 'BOSS', 'VICTORY']) {
+  for (const state of ['WAVE', 'ARRIVAL', 'BOSS', 'VICTORY', 'COLLECT']) {
     const c = state === 'WAVE' ? make() : bossCombat(); c.state = state;
     c.fire({ x: 200, y: 200 }, player()); const snapshot = JSON.stringify(c);
     c.update(30, { paused: true }); assert.equal(JSON.stringify(c), snapshot);
@@ -191,6 +196,64 @@ test('King chase and dash fly through ground obstacles while remaining inside wo
   const grounded={x:300,y:500,radius:25};nav.move(grounded,{x:1,y:0},400);assert.ok(grounded.x<=375);
 });
 
+test('King flight crosses every Park obstacle in all phases and clamps all four boundaries without ground routing', () => {
+  const stage = SPECIAL_STAGE_DEFS.alienMosquito;
+  for (const phase of [1, 2, 3]) for (const state of ['CHASE', 'DASH']) {
+    const nav = new CombatNavigation(stage);
+    nav.planner = nav.toward = nav.move = () => { throw Error('Flying King must never invoke ground routing'); };
+    for (const rect of stage.obstacles) {
+      const target = { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
+      const boss = new BossMosquito({ x: target.x - 80, y: target.y });
+      boss.phase = phase; boss.enter(state, 100); boss.direction = { x: 1, y: 0 };
+      for (let i = 0; i < 40; i++) boss.update(.05, target, nav, noFire, noFire);
+      assert.ok(boss.x >= target.x - .001, `${state} phase ${phase}: crosses ${rect.kind}`);
+    }
+    for (const vector of [{x:-1,y:0},{x:1,y:0},{x:0,y:-1},{x:0,y:1}]) {
+      const boss = new BossMosquito({x:384,y:760});
+      nav.flyMove(boss, vector, 10000);
+      assert.ok(boss.x >= boss.radius && boss.x <= stage.world.width - boss.radius);
+      assert.ok(boss.y >= boss.radius && boss.y <= stage.world.height - boss.radius);
+    }
+  }
+});
+
+test('core drops on reachable ground when King dies over every Park obstacle or across disconnected land', () => {
+  const stage = SPECIAL_STAGE_DEFS.alienMosquito, nav = new CombatNavigation(stage);
+  const p = { ...stage.start, radius: 25 };
+  for (const rect of stage.obstacles) {
+    const point = nav.findGroundDrop({x:rect.x+rect.width/2,y:rect.y+rect.height/2},p,C.corePickupRadius);
+    assert.ok(nav.planner(p.radius).canOccupy(point));
+    assert.ok(Number.isFinite(nav.planner(p.radius).pathDistance(p, point)));
+    assert.ok(Math.hypot(point.x-p.x,point.y-p.y)>p.radius+C.corePickupRadius);
+  }
+  const split = new CombatNavigation({...arena,obstacles:[{x:400,y:0,width:20,height:1000}]});
+  const point = split.findGroundDrop({x:600,y:500},{x:300,y:500,radius:25},C.corePickupRadius);
+  assert.ok(point.x <= 375, 'The pickup must land on the player-accessible side of the wall');
+});
+
+test('core cannot be collected through a ground wall and debug replay discards the old drop', () => {
+  const c = new BossCombatSystem({...arena,obstacles:[{x:500,y:0,width:1,height:1000}]},{x:481,y:500,radius:10});
+  c.state = 'COLLECT'; c.coreDrop = {id:'itchCore',x:521,y:500,radius:35,collected:false,playerStart:{x:480,y:500}};
+  c.update(.02); assert.equal(c.state, 'COLLECT'); assert.equal(c.coreDrop.collected, false);
+  c.player.x = 540; c.update(.02); assert.equal(c.state, 'CLEAR');
+  c.debug('wave1'); assert.equal(c.coreDrop, null);
+});
+
+test('pickup remains reachable from rounded collision corners and never auto-collects at the player fallback', () => {
+  const stage = SPECIAL_STAGE_DEFS.alienMosquito, nav = new CombatNavigation(stage);
+  for (const rect of stage.obstacles) {
+    const p = {x:rect.x-20,y:rect.y-20,radius:25};
+    assert.ok(nav.planner(p.radius).canOccupy(p));
+    const point = nav.findGroundDrop({x:rect.x+40,y:rect.y+40},p,C.corePickupRadius);
+    assert.ok(Math.hypot(point.x-p.x,point.y-p.y)>p.radius+C.corePickupRadius);
+    assert.ok(nav.planner(p.radius).isClear(point,point));
+  }
+  const c = make(); c.boss = new BossMosquito({x:500,y:500});
+  c.navigation.findGroundDrop = () => ({x:c.player.x,y:c.player.y}); c.dropCore();
+  tick(c, 1); assert.equal(c.state, 'COLLECT'); assert.equal(c.coreDrop.collected,false);
+  c.player.x += 2; c.update(.02); assert.equal(c.state, 'CLEAR');
+});
+
 test('King contact damages in all live combat poses with invulnerability and protected cinematics',()=>{
   for(const state of ['CHASE','TELEGRAPH','DASH','RECOVER','CORE_OPEN','FATIGUE','CORE_CLOSE','BUBBLE','SUMMON']){
     const c=bossCombat();Object.assign(c.boss,{x:550,y:500});c.boss.enter(state,10);
@@ -219,19 +282,25 @@ test('boss scoring is isolated, transparent, idempotent and no-damage bonus conc
   assert.equal(rescue.score, 0); assert.equal(rescue.ppaSuccess, 0);
 });
 
-test('portrait combat camera frames all actors with readable scale and reserves HUD/control regions', () => {
+test('Boss uses the Park camera scale, framing and smooth follow at every viewport', () => {
   const stage = SPECIAL_STAGE_DEFS.alienMosquito;
-  for (const [width, height] of [[390, 844], [375, 667], [1280, 900]]) {
+  for (const [width, height, cameraMode] of [[390, 844, 'fit'], [375, 667, 'fit'], [1240, 698, 'follow'], [655, 369, 'follow']]) {
     const c = new BossCombatSystem(stage, { ...stage.start, radius: 25 });
-    c.debug('wave3');
-    const renderer = new BossRenderer();
-    const camera = renderer.camera({ width, height }, c);
-    for (const e of [c.player, ...c.director.enemies]) {
-      const x = camera.x + e.x * camera.scale; const y = camera.y + e.y * camera.scale;
-      assert.ok(x >= camera.clip.x && x <= camera.clip.x + camera.clip.width);
-      assert.ok(y >= camera.clip.y && y <= camera.clip.y + camera.clip.height);
+    const bossGame = { viewport: { width, height }, cameraMode, player: c.player, bossCombat: c, cameraState: null };
+    const parkGame = { ...bossGame, bossCombat: null };
+    const initial = Game.prototype.getCamera.call(bossGame, stage);
+    assert.deepEqual(initial, Game.prototype.getCamera.call(parkGame, STAGE_DEFS.park));
+    assert.equal(initial.clip, undefined);
+    for (const action of ['wave3', 'phase2', 'phase3']) {
+      c.debug(action);
+      assert.deepEqual(Game.prototype.getCamera.call(bossGame, stage), initial, 'Enemies and Boss phases must not change zoom or framing');
     }
-    assert.ok(camera.scale >= .5); assert.equal(camera.clip.y, 160);
-    assert.equal(camera.clip.y + camera.clip.height, height - 180);
+    c.player.x = 580; c.player.y = 970;
+    assert.deepEqual(Game.prototype.getCamera.call(bossGame, stage), Game.prototype.getCamera.call(parkGame, STAGE_DEFS.park));
+    if (cameraMode === 'fit') {
+      assert.equal(initial.x, 0);
+      assert.equal(stage.world.width * initial.scale, width);
+      assert.ok(initial.y >= 0 && initial.y + stage.world.height * initial.scale <= height);
+    }
   }
 });

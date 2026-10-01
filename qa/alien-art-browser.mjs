@@ -40,7 +40,7 @@ try{
           c.boss.enter(mode==='core'?'CORE_OPEN':'TELEGRAPH',2);
           if(mode==='dizzy'){c.state='VICTORY';c.timer=2.7;}
         }
-        g.bossUI.update();g.bossRenderer.cameraCombat=null;window.__alienDraws=[];g.render(1000);return window.__alienDraws;
+        g.bossUI.update();g.cameraState=null;window.__alienDraws=[];g.render(1000);return window.__alienDraws;
       },mode);
       if(mode==='wave')assert.deepEqual(draws.filter(d=>/alien-enemies/.test(d.src)).map(d=>d.frame).sort(),[0,0,1,2]);
       else assert.ok(draws.some(d=>/alien-boss/.test(d.src)&&d.frame==={charge:2,core:3,dizzy:4}[mode]));

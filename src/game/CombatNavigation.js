@@ -15,12 +15,46 @@ export class CombatNavigation {
       moveWithCollision(entity, entity.radius, vector, amount / steps, this.stage.world, this.stage.obstacles));
   }
   flyMove(entity, vector, amount) {
+    // Flight ignores every ground obstacle; only the world boundary applies.
     const {width,height}=this.stage.world;
     entity.x=clamp(entity.x+vector.x*amount,entity.radius,width-entity.radius);
     entity.y=clamp(entity.y+vector.y*amount,entity.radius,height-entity.radius);
   }
   flyToward(entity, target, amount) {
     this.flyMove(entity,normalize(target.x-entity.x,target.y-entity.y),Math.min(amount,distance(entity,target)));
+  }
+  findGroundDrop(origin, player, radius) {
+    const planner = this.planner(player.radius);
+    const { width, height } = this.stage.world;
+    let routeStart = player;
+    // Player collision has round corners, while the route graph expands them
+    // into squares. Connect a player standing at a round corner to that graph
+    // through a short, physically walkable segment before checking reachability.
+    if (!planner.isClear(player, player)) {
+      corner: for (let step = 8; step <= player.radius * 3; step += 8) for (let i = 0; i < 16; i++) {
+        const angle = i * Math.PI / 8;
+        const point = { x: player.x + Math.cos(angle) * step, y: player.y + Math.sin(angle) * step };
+        if (!planner.isClear(point, point)) continue;
+        let walkable = true;
+        for (let length = 4; length <= step; length += 4) {
+          if (!planner.canOccupy({ x: player.x + Math.cos(angle) * length, y: player.y + Math.sin(angle) * length })) { walkable = false; break; }
+        }
+        if (!walkable) continue;
+        routeStart = point; break corner;
+      }
+    }
+    // A flying King's defeat point may lie over scenery or disconnected land.
+    // Land the core on nearby reachable ground, away from the player's feet.
+    for (let ring = 0; ring <= Math.hypot(width, height); ring += 24) {
+      const samples = ring === 0 ? 1 : Math.max(24, Math.ceil(2 * Math.PI * ring / 24));
+      for (let i = 0; i < samples; i++) {
+        const angle = -Math.PI / 2 + i * Math.PI * 2 / samples;
+        const point = { x: origin.x + Math.cos(angle) * ring, y: origin.y + Math.sin(angle) * ring };
+        if (distance(point, player) > player.radius + radius + 24
+          && planner.isClear(point, point) && Number.isFinite(planner.pathDistance(routeStart, point))) return point;
+      }
+    }
+    return { x: player.x, y: player.y };
   }
   toward(entity, target, amount) {
     const planner = this.planner(entity.radius);

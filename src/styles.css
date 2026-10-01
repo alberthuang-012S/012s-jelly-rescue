@@ -1361,6 +1361,7 @@ body { background: #deeff5; }
 .is-boss-stage .debug-grid > [data-debug^='scenario:'], .is-boss-stage [data-debug='itch'],
 .is-boss-stage [data-debug='soreness'], .is-boss-stage [data-debug='tolerance'], .is-boss-stage [data-debug='clear'] { display: none; }
 .is-boss-stage #action-button { opacity: .9; }
+.is-core-collecting .item-dock { display: none; }
 #boss-result { background: radial-gradient(circle at 75% 10%, #ddc5f0, transparent 50%), linear-gradient(135deg, #e8edf9, #f5eefa); }
 #boss-result .result-inner { margin-block: auto; }
 #boss-result .boss-statistics span { font-size: 12px; }

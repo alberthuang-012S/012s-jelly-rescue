@@ -9,7 +9,7 @@ export class BossCombatSystem {
   constructor(stage, player) {
     this.stage = stage; this.player = player; this.navigation = new CombatNavigation(stage);
     this.director = new EnemyDirector(this.navigation); this.score = new BossScoreManager();
-    this.boss = null; this.projectiles = []; this.pulses = []; this.wave = 1;
+    this.boss = null; this.coreDrop = null; this.projectiles = []; this.pulses = []; this.wave = 1;
     this.state = 'WAVE'; this.timer = 0; this.elapsed = 0; this.visualTime = 0;
     this.cooldown = 0; this.invulnerability = 0; this.lives = 3; this.hitPause = 0;
     this.blockedTime = 0; this.director.wave(1, player);
@@ -31,7 +31,7 @@ export class BossCombatSystem {
     }
   };
   tryAction() {
-    if (this.frozen || this.cooldown > 0) return false;
+    if (this.frozen || this.state === 'COLLECT' || this.cooldown > 0) return false;
     this.cooldown = C.cooldown;
     const target = this.findTarget();
     this.pulses.push({ x: this.player.x, y: this.player.y, life: .35, strong: Boolean(target) });
@@ -61,24 +61,40 @@ export class BossCombatSystem {
     this.state = 'ARRIVAL'; this.timer = C.arrivalDuration; return true;
   }
   victory() {
+    if (['VICTORY', 'COLLECT', 'CLEAR'].includes(this.state)) return;
     this.state = 'VICTORY'; this.timer = C.victoryDuration; this.clearTime = this.elapsed;
     this.projectiles = []; this.director.clear(); this.hitPause = 0; this.score.clear();
+  }
+  dropCore() {
+    const point = this.navigation.findGroundDrop(this.boss, this.player, C.corePickupRadius);
+    this.coreDrop = { id: 'itchCore', ...point, radius: C.corePickupRadius, collected: false,
+      playerStart: { x: this.player.x, y: this.player.y } };
+    this.state = 'COLLECT';
   }
   update(dt, { paused = false, infiniteLife = false } = {}) {
     if (paused || ['CLEAR', 'GAMEOVER'].includes(this.state)) return;
     dt = Math.max(0, Math.min(.05, dt));
     this.visualTime += dt;
-    if (this.state !== 'VICTORY') this.elapsed += dt;
+    if (!['VICTORY', 'COLLECT'].includes(this.state)) this.elapsed += dt;
     this.cooldown = Math.max(0, this.cooldown - dt);
     this.invulnerability = Math.max(0, this.invulnerability - dt);
     this.blockedTime = Math.max(0, this.blockedTime - dt);
     this.pulses.forEach(p => p.life -= dt); this.pulses = this.pulses.filter(p => p.life > 0);
     if (this.hitPause > 0) { this.hitPause = Math.max(0, this.hitPause - dt); return; }
+    if (this.state === 'COLLECT') {
+      if (this.coreDrop && !this.coreDrop.collected
+        && distance(this.player, this.coreDrop.playerStart) > 1
+        && distance(this.player, this.coreDrop) <= this.player.radius + this.coreDrop.radius
+        && this.navigation.planner(0).isClear(this.player, this.coreDrop)) {
+        this.coreDrop.collected = true; this.state = 'CLEAR';
+      }
+      return;
+    }
     if (['ARRIVAL', 'VICTORY', 'WAVE_CLEAR'].includes(this.state)) {
       this.timer -= dt;
       if (this.timer <= 0) {
         if (this.state === 'ARRIVAL') this.state = 'BOSS';
-        else if (this.state === 'VICTORY') this.state = 'CLEAR';
+        else if (this.state === 'VICTORY') this.dropCore();
         else if (this.wave < 3) { this.wave++; this.state = 'WAVE'; this.director.wave(this.wave, this.player); }
         else this.startArrival();
       }
@@ -104,7 +120,7 @@ export class BossCombatSystem {
   }
   debug(action) {
     if (action.startsWith('wave')) {
-      this.wave = Number(action.at(-1)); this.state = 'WAVE'; this.boss = null;
+      this.wave = Number(action.at(-1)); this.state = 'WAVE'; this.boss = null; this.coreDrop = null;
       this.projectiles = []; this.director.wave(this.wave, this.player);
     } else if (action === 'spawn') this.startArrival();
     else if (action === 'clear') this.director.clear();

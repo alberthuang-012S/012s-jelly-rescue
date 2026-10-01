@@ -13,6 +13,7 @@ const states = new Set(); const phases = new Set(); let seconds = 0;
 while (seconds < 360 && combat.state !== 'CLEAR') {
   const dt = .02; seconds += dt; states.add(combat.state); if (combat.boss) phases.add(combat.boss.phase);
   if (!combat.frozen) {
+    if (combat.state === 'COLLECT') combat.navigation.toward(player, combat.coreDrop, 205 * dt);
     const enemy = combat.director.enemies.filter(e => e.alive).sort((a, b) => distance(a, player) - distance(b, player))[0];
     const target = enemy || combat.boss;
     if (target?.alive) {
@@ -26,6 +27,7 @@ while (seconds < 360 && combat.state !== 'CLEAR') {
   combat.update(dt, { infiniteLife: true });
 }
 assert.equal(combat.state, 'CLEAR', JSON.stringify({ state: combat.state, hp: combat.boss?.hp, seconds }));
+assert.equal(combat.coreDrop.collected, true);
 assert.deepEqual([...phases], [1, 2, 3]);
 assert.equal(combat.score.bossHits, 9);
 assert.equal(combat.score.defeatedEnemies, 12);

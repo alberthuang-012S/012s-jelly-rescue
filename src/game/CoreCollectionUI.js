@@ -17,7 +17,7 @@ export class CoreCollectionUI {
     document.querySelector('#core-entry-image').hidden=!unlocked;
     document.querySelector('#core-entry-unknown').hidden=unlocked;
     document.querySelector('#core-entry-name').textContent=unlocked?core.name:'未發現的核心';
-    document.querySelector('#core-entry-description').textContent=unlocked?core.description:'通過「異星蚊災」即可收錄這枚核心。';
+    document.querySelector('#core-entry-description').textContent=unlocked?core.description:'擊敗「異星蚊災」Boss 後，靠近並撿取掉落的核心。';
     document.querySelector('#core-entry-status').textContent=unlocked
       ?this.store.persisted?'已收集':'已收集 · 本次遊玩':'尚未收集';
   }

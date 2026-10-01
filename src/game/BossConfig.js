@@ -1,7 +1,7 @@
 export const SPECIAL_STAGE_ID = 'alienMosquito';
 export const COMBAT_CONFIG = Object.freeze({ range: 115, cooldown: .52, invulnerability: 1.2,
   maxBubbles: 4, bubbleSpeed: 78, bubbleLife: 5, bubbleRadius: 15, waveDelay: 1.1,
-  arrivalDelay: 1.4, arrivalDuration: 4.4, victoryDuration: 5.5 });
+  arrivalDelay: 1.4, arrivalDuration: 4.4, victoryDuration: 5.5, corePickupRadius: 18 });
 export const ENEMY_DEFS = Object.freeze({
   mosquitoScout: { hp: 2, speed: 74, radius: 20, points: 100, telegraph: .65, dashSpeed: 175, dashTime: .28, recover: 1.1, trigger: 90 },
   mosquitoCharger: { hp: 2, speed: 88, radius: 22, points: 150, telegraph: .75, dashSpeed: 300, dashTime: .55, recover: 1.3, trigger: 230 },

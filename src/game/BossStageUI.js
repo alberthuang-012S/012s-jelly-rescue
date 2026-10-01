@@ -15,6 +15,7 @@ export class BossStageUI {
   }
   setMode(active) {
     this.game.gameShell.classList.toggle('is-boss-stage', active);
+    this.game.gameShell.classList.remove('is-core-collecting');
     this.hud.classList.toggle('is-hidden', !active);
     this.banner.classList.add('is-hidden'); this.result.classList.add('is-hidden');
     document.querySelector('[data-item="PPA"] .item-info small').textContent = active ? '能量脈衝' : '皮膚照顧';
@@ -22,20 +23,22 @@ export class BossStageUI {
   update() {
     const game = this.game; const c = game.bossCombat;
     if (!c) return;
+    const collecting = c.state === 'COLLECT';
+    game.gameShell.classList.toggle('is-core-collecting', collecting);
     this.hud.classList.toggle('is-hidden', c.state === 'VICTORY');
     const e = game.hud.elements;
     e.score.textContent = formatScore(c.score.score);
     e.timer.textContent = formatClock(c.elapsed); e.timerLabel.textContent = '挑戰時間';
     e.brandTitle.textContent = 'SPECIAL STAGE'; e.stageName.textContent = '異星蚊災';
-    e.action.classList.remove('is-hidden');
-    const paused = c.frozen || game.backgroundPaused || game.isExitConfirmOpen;
+    e.action.classList.toggle('is-hidden', collecting);
+    const paused = c.frozen || collecting || game.backgroundPaused || game.isExitConfirmOpen;
     const ready = !paused && c.cooldown <= 0 && Boolean(c.findTarget());
     e.action.classList.toggle('is-action-ready', ready);
     e.action.setAttribute('aria-disabled', paused ? 'true' : 'false');
     e.action.dataset.state = paused ? 'paused' : ready ? 'ready' : 'idle';
-    document.querySelector('#boss-wave').textContent = c.wave <= 3 && ['WAVE', 'WAVE_CLEAR'].includes(c.state) ? `WAVE ${c.wave} / 3` : 'BOSS';
+    document.querySelector('#boss-wave').textContent = collecting ? '討伐成功 · 收集癢癢核心' : c.wave <= 3 && ['WAVE', 'WAVE_CLEAR'].includes(c.state) ? `WAVE ${c.wave} / 3` : 'BOSS';
     const bar = document.querySelector('#boss-health');
-    bar.classList.toggle('is-hidden', !c.boss);
+    bar.classList.toggle('is-hidden', !c.boss || collecting);
     const hp = c.boss?.hp ?? B.hp;
     document.querySelector('#boss-health-fill').style.width = `${hp / B.hp * 100}%`;
     bar.setAttribute('aria-valuenow', hp);
@@ -43,6 +46,11 @@ export class BossStageUI {
     document.querySelector('#boss-core-hint').textContent = c.state === 'VICTORY' ? 'PPA 能量淨化完成！' : c.boss
       ? c.boss.coreOpen ? '核心亮起！靠近使用 PPA' : '閃避預告衝刺，等待核心亮起'
       : '靠近蚊群，按使用釋放 PPA 能量';
+    if (collecting) {
+      const dx = c.coreDrop.x - c.player.x, dy = c.coreDrop.y - c.player.y;
+      const direction = `${Math.abs(dx) > 25 ? dx > 0 ? '右' : '左' : ''}${Math.abs(dy) > 25 ? dy > 0 ? '下' : '上' : ''}`;
+      document.querySelector('#boss-core-hint').textContent = `往${direction || '前'}靠近發光核心，即可收集`;
+    }
     let title = ''; let subtitle = '';
     if (c.state === 'WAVE_CLEAR') title = 'WAVE CLEAR';
     if (c.state === 'ARRIVAL') {

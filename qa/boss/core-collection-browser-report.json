@@ -2,10 +2,11 @@
   "checks": [
     "Locked entry, keyboard close and focus restoration",
     "Live King contact drains HUD heart during core opening",
+    "Pickup visible at three viewports; idle, pause, premature result and abandoning the drop never unlock collection",
     "small: unlocked icon, readable bounded modal and return focus",
     "portrait: unlocked icon, readable bounded modal and return focus",
     "desktop: unlocked icon, readable bounded modal and return focus",
-    "Reload persists; repeated clear is idempotent; failed run hides reward"
+    "Real touch/keyboard pickup unlocks once; reload persists; repeated pickup is idempotent; failed run hides reward"
   ],
   "errors": [],
   "status": "PASS"

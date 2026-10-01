@@ -2,10 +2,11 @@
   "status": "PASS",
   "checks": [
     "Home special entry; desktop keyboard movement, PPA pulse, Q lock, NAP hidden",
-    "390×844: four enemies, D-pad, Use, PPA dock separation, Boss HP and map safe area",
-    "375×667: four enemies, D-pad, Use, PPA dock separation, Boss HP and map safe area",
+    "390×844: four enemies, D-pad, Use, PPA dock separation, visible Boss HP; full-map camera matches Park",
+    "375×667: four enemies, D-pad, Use, PPA dock separation, visible Boss HP; full-map camera matches Park",
+    "Landscape uses the same player-follow camera and scale as Park",
     "Blur and hidden freeze combat snapshots, explicit Continue required",
-    "Phase 2/3, vulnerable-hit victory, mini UFO sequence, dedicated result, mobile result scroll",
+    "Phase 2/3, vulnerable-hit victory, mini UFO sequence, required core pickup, dedicated result, mobile result scroll",
     "Replay resets wave; real life drain triggers Game Over; Home; rescue NAP/Q/NPC/HUD restoration in four stages"
   ],
   "errors": []

@@ -287,7 +287,7 @@ export const STAGE_DEFS = Object.freeze({
 export const SPECIAL_STAGE_DEFS = Object.freeze({
   [SPECIAL_STAGE_ID]: Object.freeze({ ...STAGE_DEFS.park, id: SPECIAL_STAGE_ID,
     mode: 'boss', name: 'Alien Mosquito Invasion', displayName: '異星蚊災',
-    timed: false, maxNpcs: 0, cameraPadding: { top: 160, bottom: 180 },
+    timed: false, maxNpcs: 0,
     start: { x: 384, y: 760 } })
 });
 
