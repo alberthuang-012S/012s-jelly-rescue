@@ -70,10 +70,11 @@ test('gravity mobs have distinct HP and fully warned attacks', () => {
   const stomper = new GravityEnemy('gravityStomper', { x: 350, y: 500 }, 2);
   stomper.state = 'CHASE'; stomper.update(.01, p, nav, ground);
   assert.equal(ground.zones[0].state, 'WARNING'); assert.equal(ground.zones[0].warning, .95);
+  assert.equal(ground.zones[0].radius, 85);
   const heavy = new GravityEnemy('gravityHeavy', { x: 300, y: 500 }, 3);
   heavy.state = 'CHASE'; heavy.update(1.61, p, nav, ground);
   assert.equal(ground.zones[1].kind, 'crystal');
-  for (const [enemy, hp] of [[stiff, 2], [stomper, 2], [heavy, 3]]) {
+  for (const [enemy, hp] of [[stiff, 2], [stomper, 3], [heavy, 3]]) {
     assert.equal(enemy.hp, hp); for (let i = 0; i < hp; i++) assert.ok(enemy.hit());
     assert.equal(enemy.alive, false); assert.equal(enemy.hit(), false);
   }
@@ -117,13 +118,25 @@ test('gravity victory clears threats and waits for physical pickup before awardi
   tick(c, 5.6); assert.equal(c.state, 'COLLECT'); assert.equal(c.coreDrop.id, 'gravityCore');
   const store = new CoreCollectionStore(null); assert.equal(store.collect('gravityOverload', c.coreDrop), null);
   assert.equal(c.navigation.planner(c.coreDrop.radius).canOccupy(c.coreDrop), true);
+  assert.deepEqual({ x: c.coreDrop.x, y: c.coreDrop.y }, c.devicePosition);
   tick(c, .3, { paused: true }); assert.equal(c.state, 'COLLECT');
   tick(c, .3); assert.equal(c.state, 'COLLECT'); assert.equal(c.tryAction(), false);
-  Object.assign(c.player, { x: c.coreDrop.x, y: c.coreDrop.y }); tick(c, .02);
+  Object.assign(c.player, { x: c.coreDrop.x + 2, y: c.coreDrop.y }); tick(c, .02);
   assert.equal(c.state, 'CLEAR'); assert.equal(c.coreDrop.collected, true);
   assert.equal(store.collect('gravityOverload', c.coreDrop).core.id, 'gravityCore');
   assert.equal(store.has('itchCore'), false);
   assert.equal(c.score.napHits, 1); assert.equal(c.score.ppaHits, 0);
+});
+
+test('central device releases the core at its own reachable position regardless of Boss defeat point', () => {
+  const stage = SPECIAL_STAGE_DEFS.gravityOverload;
+  const c = new GravityCombatSystem(stage, { ...stage.start, radius: 25 });
+  assert.deepEqual(c.devicePosition, { x: 384, y: 576 });
+  assert.ok(c.navigation.planner(25).canOccupy(c.devicePosition));
+  assert.ok(Number.isFinite(c.navigation.planner(25).pathDistance(c.player, c.devicePosition)));
+  c.boss = { x: 270, y: 1050, hp: 0 }; c.dropCore();
+  assert.equal(c.state, 'COLLECT'); assert.deepEqual({ x: c.coreDrop.x, y: c.coreDrop.y }, c.devicePosition);
+  assert.equal(c.coreDrop.collected, false); c.update(.02); assert.equal(c.state, 'COLLECT');
 });
 
 test('gravity Boss can be hit with ample contact clearance while mobs and cover keep their ranges', () => {

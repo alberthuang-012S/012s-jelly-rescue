@@ -1,4 +1,4 @@
-import { GRAVITY_CONFIG as C } from './GravityConfig.js';
+import { GRAVITY_CONFIG as C, gravityDevicePosition } from './GravityConfig.js';
 import { clamp, drawText } from './utils.js';
 import { GRAVITY_ART, GRAVITY_CORE_ANCHORS, gravityEnemyFrame, gravityBossFrame } from './GravityArt.js';
 
@@ -44,7 +44,7 @@ export class GravityRenderer {
     const moving = last?.time === t ? last.moving : last ? Math.hypot(entity.x - last.x, entity.y - last.y) > .01 : entity.type !== 'gravityHeavy';
     this.motion.set(entity, { x: entity.x, y: entity.y, time: t, moving });
     const frame = boss ? gravityBossFrame(entity, light) : gravityEnemyFrame({ ...entity, artState }, t, moving);
-    const width = boss ? 240 : 108, cell = boss ? 384 : 256, ratio = width / cell;
+    const width = boss ? 240 : entity.type === 'gravityStomper' ? 128 : 108, cell = boss ? 384 : 256, ratio = width / cell;
     ctx.save(); ctx.translate(entity.x, entity.y); ctx.scale(scale, scale);
     ellipse(ctx, 0, 10, boss ? 67 : 30, boss ? 14 : 8, '#1a34523d', null);
     // Frame 3 faces the opposite windup. Feet remain registered at y=0.
@@ -75,16 +75,30 @@ export class GravityRenderer {
   atmosphere(ctx, combat) {
     const { width, height } = combat.stage.world;
     if (!this.hasGravityMap) { ctx.fillStyle = 'rgba(39,58,110,.18)'; ctx.fillRect(0, 0, width, height); }
-    for (const [x, y] of [[width / 2, height / 2]]) {
-      const t = combat.visualTime;
-      ctx.save(); ctx.translate(x, y);
+    if (['COLLECT', 'CLEAR'].includes(combat.state)) return;
+    const position = combat.devicePosition || gravityDevicePosition(combat.stage), t = combat.visualTime;
+    const release = combat.state === 'VICTORY' ? clamp(1 - combat.timer / .9, 0, 1) : 0;
+    if (release < 1) this.device(ctx, position, t, { alpha: 1 - release, scale: 1 - release * .2 });
+    if (release > 0) {
+      ctx.save(); ctx.globalAlpha *= release;
+      this.corePickup(ctx, position, t); ctx.restore();
+    }
+  }
+  device(ctx, { x, y }, t, { alpha = 1, scale = 1 } = {}) {
+      ctx.save(); ctx.globalAlpha *= alpha; ctx.translate(x, y); ctx.scale(scale, scale);
+      if (this.ready(this.art?.device)) {
+        ellipse(ctx, 0, 6, 32, 10, '#283c6244', null);
+        ctx.drawImage(this.art.device, -68, -136 * .9, 136, 136);
+        ctx.strokeStyle = '#a6e6ff88'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.ellipse(0, 5, 39 + Math.sin(t * 2) * 3, 13, 0, 0, Math.PI * 2); ctx.stroke();
+        ctx.restore(); return;
+      }
       ellipse(ctx, 0, 12, 31, 10, '#8898d080', '#d2edff', 2);
       plate(ctx, -22, -5, 44, 18, 7, '#526787');
       ellipse(ctx, 0, -8, 21, 7, '#bcdce8', '#d5f8ff', 2);
       crystal(ctx, 0, -27 + Math.sin(t * 2 + x) * 4, 12, t);
       ctx.strokeStyle = '#a6e6ff77'; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.ellipse(0, 10, 45 + Math.sin(t) * 4, 15, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
-    }
   }
   creature(ctx, entity, t, boss = false, { scale = 1, light = false, artState = null } = {}) {
     if (this.drawArtCreature(ctx, entity, t, boss, { scale, light, artState })) return;

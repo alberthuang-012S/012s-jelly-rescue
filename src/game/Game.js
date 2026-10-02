@@ -70,10 +70,11 @@ const ASSET_PATHS = Object.freeze({
   alienBoss: ['./reference/runtime/alien-boss-v1.webp', './reference/runtime/alien-boss-v1.png'],
   gravityOverload: ['./reference/runtime/gravity-map-v1.webp', './reference/runtime/gravity-map-v1.png', './reference/runtime/sports-map-v1.webp'],
   gravityStiff: ['./reference/runtime/gravity-stiff-v2.webp', './reference/runtime/gravity-stiff-v2.png', './reference/runtime/gravity-stiff-v1.webp'],
-  gravityStomper: ['./reference/runtime/gravity-stomper-v2.webp', './reference/runtime/gravity-stomper-v2.png', './reference/runtime/gravity-stomper-v1.webp'],
+  gravityStomper: ['./reference/runtime/gravity-stomper-v3.webp', './reference/runtime/gravity-stomper-v3.png', './reference/runtime/gravity-stomper-v2.webp'],
   gravityHeavy: ['./reference/runtime/gravity-heavy-v2.webp', './reference/runtime/gravity-heavy-v2.png', './reference/runtime/gravity-heavy-v1.webp'],
   gravityBoss: ['./reference/runtime/gravity-boss-v1.webp', './reference/runtime/gravity-boss-v1.png'],
   gravityCore: ['./reference/runtime/gravity-core-v1.webp', './reference/runtime/gravity-core-v1.png'],
+  gravityDevice: ['./reference/runtime/gravity-device-v1.webp', './reference/runtime/gravity-device-v1.png'],
   mountain: [
     './reference/generated-mountain-open-portrait-hq.webp',
     './reference/generated-mountain-open-portrait-hq.png'
@@ -791,10 +792,10 @@ export class Game {
 
   ensureGravityArt(fetchPriority = 'high') {
     if (!this.gravityArtPromise) this.gravityArtPromise = Promise.all(
-      ['gravityStiff', 'gravityStomper', 'gravityHeavy', 'gravityBoss', 'gravityCore'].map(id =>
+      ['gravityStiff', 'gravityStomper', 'gravityHeavy', 'gravityBoss', 'gravityCore', 'gravityDevice'].map(id =>
         loadImageWithFallback(ASSET_PATHS[id], { fetchPriority, assetName: `${id} sprites` }))
-    ).then(([stiff, stomper, heavy, boss, core]) => {
-      this.gravityRenderer.setArt({ stiff, stomper, heavy, boss, core });
+    ).then(([stiff, stomper, heavy, boss, core, device]) => {
+      this.gravityRenderer.setArt({ stiff, stomper, heavy, boss, core, device });
       this.gravityRenderer.portrait(document.querySelector('#gravity-portrait'));
     });
     return this.gravityArtPromise;

@@ -15,7 +15,10 @@ while (seconds < 360 && combat.state !== 'CLEAR') {
   if (combat.boss) phases.add(combat.boss.phase);
   for (const zone of combat.ground.zones) patterns.add(zone.kind === 'crystal' ? 'crystal' : zone.shape);
   if (!combat.frozen) {
-    if (combat.state === 'COLLECT') combat.navigation.toward(player, combat.coreDrop, 205 * dt);
+    if (combat.state === 'COLLECT') {
+      const target = distance(player, combat.coreDrop) <= 1 ? { x: combat.coreDrop.x + 8, y: combat.coreDrop.y } : combat.coreDrop;
+      combat.navigation.toward(player, target, 205 * dt);
+    }
     const enemy = combat.director.enemies.filter(e => e.alive).sort((a, b) => distance(a, player) - distance(b, player))[0];
     const target = enemy || combat.boss;
     if (target?.alive) {
@@ -32,7 +35,7 @@ assert.equal(combat.state, 'CLEAR', JSON.stringify({ state: combat.state, hp: co
   enemies: combat.director.enemies, boss: combat.boss }));
 assert.deepEqual([...phases], [1, 2, 3]);
 assert.equal(combat.coreDrop.id, 'gravityCore'); assert.equal(combat.coreDrop.collected, true); assert.equal(combat.score.bossHits, 9);
-assert.equal(combat.score.defeatedEnemies, 11); assert.equal(combat.score.napHits, 32);
+assert.equal(combat.score.defeatedEnemies, 11); assert.equal(combat.score.napHits, 34);
 assert.equal(combat.score.score, 4250);
 assert.ok(patterns.has('circle')); assert.ok(patterns.has('fan')); assert.ok(patterns.has('crystal'));
 const report = { status: 'PASS', seconds: Math.round(seconds), states: [...states], phases: [...phases], patterns: [...patterns], ...combat.score,

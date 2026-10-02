@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "seconds": 42,
+  "seconds": 44,
   "states": [
     "WAVE",
     "WAVE_CLEAR",
@@ -26,7 +26,7 @@
   "ppaHits": 0,
   "bossHits": 9,
   "cleared": true,
-  "napHits": 32,
+  "napHits": 34,
   "crystalsCleared": 1,
   "note": "Normal-speed automated mover, infinite life; not a human difficulty assessment."
 }

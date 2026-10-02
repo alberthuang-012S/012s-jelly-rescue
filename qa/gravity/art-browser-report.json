@@ -1,6 +1,6 @@
 {
   "checks": [
-    "desktop: all three distinct v2 silhouettes; one central gravity device",
+    "desktop: armored v3 stomper, distinct mobs and illustrated central device",
     "desktop/wave: correct live atlas frames",
     "desktop/warning: correct live atlas frames",
     "desktop/attack: correct live atlas frames",
@@ -14,7 +14,8 @@
     "desktop/recoil: correct live atlas frames",
     "desktop/float: correct live atlas frames",
     "desktop: paused artwork stays pixel-identical",
-    "portrait: all three distinct v2 silhouettes; one central gravity device",
+    "desktop: paused device release; central pickup has no device; clear has neither object",
+    "portrait: armored v3 stomper, distinct mobs and illustrated central device",
     "portrait/wave: correct live atlas frames",
     "portrait/warning: correct live atlas frames",
     "portrait/attack: correct live atlas frames",
@@ -28,7 +29,8 @@
     "portrait/recoil: correct live atlas frames",
     "portrait/float: correct live atlas frames",
     "portrait: paused artwork stays pixel-identical",
-    "small: all three distinct v2 silhouettes; one central gravity device",
+    "portrait: paused device release; central pickup has no device; clear has neither object",
+    "small: armored v3 stomper, distinct mobs and illustrated central device",
     "small/wave: correct live atlas frames",
     "small/warning: correct live atlas frames",
     "small/attack: correct live atlas frames",
@@ -42,6 +44,7 @@
     "small/recoil: correct live atlas frames",
     "small/float: correct live atlas frames",
     "small: paused artwork stays pixel-identical",
+    "small: paused device release; central pickup has no device; clear has neither object",
     "Sports map remains original; missing creature atlas falls back safely",
     "Open/fatigue/recoil glow lands inside the registered belly socket"
   ],

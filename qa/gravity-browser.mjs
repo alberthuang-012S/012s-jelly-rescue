@@ -87,6 +87,7 @@ try {
   assert.equal(await page.locator('#boss-result').isVisible(), false);
   assert.match(await page.locator('#boss-wave').innerText(), /收集重力核心/);
   assert.equal(await page.evaluate(() => window.__qaGame.coreCollectionStore.has('gravityCore')), false);
+  assert.deepEqual(await page.evaluate(() => ({ x: window.__qaGame.bossCombat.coreDrop.x, y: window.__qaGame.bossCombat.coreDrop.y })), { x: 384, y: 576 });
   await page.screenshot({ path: 'qa/gravity/core-pickup-375.png' });
   await page.locator('[data-dir="up"]').dispatchEvent('pointerdown', { pointerId: 18, pointerType: 'touch' });
   await page.waitForFunction(() => window.__qaGame.state === 'result');

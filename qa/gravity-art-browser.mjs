@@ -38,12 +38,13 @@ try {
     const loaded = await page.evaluate(() => {
       const g = window.__qaGame, r = g.gravityRenderer;
       return { map: g.worldRenderer.gravityImage.src, themed: r.hasGravityMap,
-        paths: ['stiff', 'stomper', 'heavy'].map(id => r.art[id].src), core: r.art.core.naturalWidth,
+        paths: ['stiff', 'stomper', 'heavy'].map(id => r.art[id].src), core: r.art.core.naturalWidth, device: r.art.device.naturalWidth,
         widths: ['stiff', 'stomper', 'heavy', 'boss'].map(id => r.art[id].naturalWidth) };
     });
     assert.match(loaded.map, /gravity-map-v1/); assert.equal(loaded.themed, true);
     assert.deepEqual(loaded.widths, [768, 768, 768, 1152]);
-    assert.ok(loaded.paths.every(path => /-v2\.webp/.test(path))); assert.equal(loaded.core, 256);
+    assert.match(loaded.paths[0], /-v2\.webp/); assert.match(loaded.paths[1], /-v3\.webp/); assert.match(loaded.paths[2], /-v2\.webp/);
+    assert.equal(loaded.core, 256); assert.equal(loaded.device, 256);
     const devices = await page.evaluate(() => {
       const g = window.__qaGame, calls = [];
       const ctx = new Proxy(g.ctx, {
@@ -54,7 +55,7 @@ try {
       g.gravityRenderer.atmosphere(ctx, g.bossCombat); return calls;
     });
     assert.deepEqual(devices.filter(([x]) => x !== 0), [[384, 576]]);
-    report.checks.push(`${name}: all three distinct v2 silhouettes; one central gravity device`);
+    report.checks.push(`${name}: armored v3 stomper, distinct mobs and illustrated central device`);
     const expected = { wave: null, warning: [2, 2, 2], attack: [3, 3, 3], hit: [4, 4, 4], both: 1, right: 2, left: 3, impact: 4, core: 5, fatigue: 6, recoil: 7, float: 8 };
     for (const mode of Object.keys(expected)) {
       const draws = await page.evaluate(mode => {
@@ -82,8 +83,8 @@ try {
       }, mode);
       if (Array.isArray(expected[mode])) assert.deepEqual(draws.map(d => d.frame), expected[mode]);
       else if (expected[mode] !== null) assert.ok(draws.some(d => /gravity-boss/.test(d.src) && d.frame === expected[mode]), `${name}/${mode}: ${JSON.stringify(draws)}`);
-      if (['wave', 'warning', 'left', 'core', 'fatigue', 'float'].includes(mode)) await page.screenshot({ path: `qa/gravity/art-v2-${name}-${mode}.png` });
-      if (name === 'portrait' && mode === 'wave') await page.locator('#game-canvas').screenshot({ path: 'qa/gravity/art-v2-preview.png' });
+      if (['wave', 'warning', 'left', 'core', 'fatigue', 'float'].includes(mode)) await page.screenshot({ path: `qa/gravity/art-v3-${name}-${mode}.png` });
+      if (name === 'portrait' && mode === 'wave') await page.locator('#game-canvas').screenshot({ path: 'qa/gravity/art-v3-preview.png' });
       report.checks.push(`${name}/${mode}: correct live atlas frames`);
     }
     // Rendering a paused frame twice must produce identical canvas pixels.
@@ -92,6 +93,26 @@ try {
       return first === g.canvas.toDataURL();
     });
     assert.equal(frozen, true); report.checks.push(`${name}: paused artwork stays pixel-identical`);
+    for (const mode of ['release', 'collect', 'clear']) {
+      const props = await page.evaluate(mode => {
+        const g = window.__qaGame, c = g.bossCombat, r = g.gravityRenderer;
+        c.state = mode === 'release' ? 'VICTORY' : mode === 'collect' ? 'COLLECT' : 'CLEAR'; c.timer = .45;
+        if (mode === 'collect') c.dropCore();
+        const calls = [], device = r.device, pickup = r.corePickup;
+        r.device = function(ctx, p, time, options) { calls.push({ kind: 'device', ...p, alpha: options.alpha }); return device.call(this, ctx, p, time, options); };
+        r.corePickup = function(ctx, p, time) { calls.push({ kind: 'core', x: p.x, y: p.y }); return pickup.call(this, ctx, p, time); };
+        g.bossUI.update(); g.render(1000); r.device = device; r.corePickup = pickup; return calls;
+      }, mode);
+      if (mode === 'release') { assert.equal(props[0].alpha, .5); assert.deepEqual(props.map(p => p.kind), ['device', 'core']); }
+      if (mode === 'collect') assert.deepEqual(props, [{ kind: 'core', x: 384, y: 576 }]);
+      if (mode === 'clear') assert.deepEqual(props, []);
+      await page.screenshot({ path: `qa/gravity/art-v3-${name}-${mode}.png` });
+      if (mode === 'release') {
+        const same = await page.evaluate(() => { const g = window.__qaGame; const before = g.canvas.toDataURL(); g.render(1000); return before === g.canvas.toDataURL(); });
+        assert.equal(same, true);
+      }
+    }
+    report.checks.push(`${name}: paused device release; central pickup has no device; clear has neither object`);
   }
   await page.evaluate(async () => { const g = window.__qaGame; g.update = g.__originalUpdate; await g.startStage('sports'); });
   assert.match(await page.evaluate(() => window.__qaGame.worldRenderer.lifestyleImages.get('sports').src), /sports-map-v1/);

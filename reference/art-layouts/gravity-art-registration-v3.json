@@ -1,0 +1,97 @@
+{
+  "stomper": {
+    "source": "reference/generated-gravity-stomper-v3.png",
+    "size": 256,
+    "target": {
+      "x": 128,
+      "y": 230.4
+    },
+    "scale": 0.45472061657032753,
+    "frames": [
+      {
+        "bounds": {
+          "left": 19,
+          "top": 92,
+          "width": 499,
+          "height": 410
+        },
+        "width": 227,
+        "height": 186,
+        "left": 15,
+        "top": 44
+      },
+      {
+        "bounds": {
+          "left": 552,
+          "top": 107,
+          "width": 477,
+          "height": 400
+        },
+        "width": 217,
+        "height": 182,
+        "left": 20,
+        "top": 48
+      },
+      {
+        "bounds": {
+          "left": 1065,
+          "top": 89,
+          "width": 449,
+          "height": 423
+        },
+        "width": 204,
+        "height": 192,
+        "left": 26,
+        "top": 38
+      },
+      {
+        "bounds": {
+          "left": 24,
+          "top": 598,
+          "width": 519,
+          "height": 376
+        },
+        "width": 236,
+        "height": 171,
+        "left": 10,
+        "top": 59
+      },
+      {
+        "bounds": {
+          "left": 559,
+          "top": 571,
+          "width": 485,
+          "height": 387
+        },
+        "width": 221,
+        "height": 176,
+        "left": 18,
+        "top": 54
+      },
+      {
+        "bounds": {
+          "left": 1075,
+          "top": 618,
+          "width": 444,
+          "height": 344
+        },
+        "width": 202,
+        "height": 156,
+        "left": 27,
+        "top": 74
+      }
+    ]
+  },
+  "device": {
+    "source": "reference/generated-gravity-device-v1.png",
+    "size": 256,
+    "width": 147,
+    "height": 220,
+    "left": 55,
+    "top": 10,
+    "target": {
+      "x": 128,
+      "y": 230
+    }
+  }
+}

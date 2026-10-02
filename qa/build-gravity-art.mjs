@@ -5,7 +5,7 @@ import {GRAVITY_CORE_ANCHORS} from '../src/game/GravityArt.js';
 const sharp=createRequire(import.meta.url)(process.env.JELLY_SHARP_MODULE||'sharp');
 const clear={r:0,g:0,b:0,alpha:0};
 const registration={};
-const version=process.argv.includes('--v2')?'v2':'v1';
+const version=process.argv.includes('--v3')?'v3':process.argv.includes('--v2')?'v2':'v1';
 async function frames(source,rows){
   const {data,info}=await sharp(source).ensureAlpha().raw().toBuffer({resolveWithObject:true});
   let transparent=0;for(let i=3;i<data.length;i+=4)transparent+=data[i]===0;
@@ -64,16 +64,22 @@ async function pack(source,kind,size,rows){
   registration[kind]={source,size,target,scale,frames:cells};
   return atlas;
 }
-for(const type of ['stiff','stomper','heavy'])await pack(`reference/generated-gravity-${type}-${version}.png`,type,256,[0,.5,1]);
+for(const type of version==='v3'?['stomper']:['stiff','stomper','heavy'])await pack(`reference/generated-gravity-${type}-${version}.png`,type,256,[0,.5,1]);
 if(version==='v1'){
 const boss=await pack('reference/generated-gravity-boss-v1.png','boss',384,[0,.365,.67,1]);
 registration.boss.coreAnchors=GRAVITY_CORE_ANCHORS;
 await sharp(boss).extract({left:0,top:0,width:384,height:384}).webp({lossless:true}).toFile('reference/runtime/gravity-king-portrait-v1.webp');
 await sharp('reference/generated-gravity-map-v1.png').resize(1024,1536).png().toFile('reference/runtime/gravity-map-v1.png');
 await sharp('reference/runtime/gravity-map-v1.png').webp({quality:94}).toFile('reference/runtime/gravity-map-v1.webp');
-}else{
+}else if(version==='v2'){
   await sharp('reference/generated-gravity-core-v1.png').resize(256,256,{fit:'contain',background:clear}).png().toFile('reference/runtime/gravity-core-v1.png');
   await sharp('reference/runtime/gravity-core-v1.png').webp({lossless:true}).toFile('reference/runtime/gravity-core-v1.webp');
+}else{
+  const {data,info}=await sharp('reference/generated-gravity-device-v1.png').trim().resize(220,220,{fit:'inside'}).png().toBuffer({resolveWithObject:true});
+  const left=Math.round((256-info.width)/2),top=230-info.height;
+  await sharp({create:{width:256,height:256,channels:4,background:clear}}).composite([{input:data,left,top}]).png().toFile('reference/runtime/gravity-device-v1.png');
+  await sharp('reference/runtime/gravity-device-v1.png').webp({lossless:true}).toFile('reference/runtime/gravity-device-v1.webp');
+  registration.device={source:'reference/generated-gravity-device-v1.png',size:256,width:info.width,height:info.height,left,top,target:{x:128,y:230}};
 }
 await fs.writeFile(`reference/art-layouts/gravity-art-registration-${version}.json`,JSON.stringify(registration,null,2)+'\n');
 console.log(`PASS: ${version} gravity assets; real transparency and fixed foot registration.`);

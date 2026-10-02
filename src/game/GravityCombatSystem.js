@@ -3,7 +3,8 @@ import { BossScoreManager } from './BossScoreManager.js';
 import { BossGravity } from './BossGravity.js';
 import { GravityEnemy } from './GravityEnemy.js';
 import { GroundAttackSystem } from './GroundAttackSystem.js';
-import { GRAVITY_ENEMIES, GRAVITY_WAVES, GRAVITY_CONFIG as C } from './GravityConfig.js';
+import { GRAVITY_ENEMIES, GRAVITY_WAVES, GRAVITY_CONFIG as C, gravityDevicePosition } from './GravityConfig.js';
+import { COMBAT_CONFIG } from './BossConfig.js';
 import { distance } from './utils.js';
 
 export class GravityScoreManager extends BossScoreManager {
@@ -23,6 +24,7 @@ export class GravityCombatSystem extends BossCombatSystem {
       EnemyClass: GravityEnemy, summonType: 'gravityStiff' }, ScoreClass: GravityScoreManager,
       BossClass: BossGravity, bossIgnoresCover: false });
     this.ground = new GroundAttackSystem(this.navigation); this.attackContext = this.ground;
+    this.devicePosition = gravityDevicePosition(stage);
   }
   findTarget() {
     return this.targets.filter(e => distance(e, this.player) <= (e === this.boss ? C.bossRange : C.range)
@@ -50,8 +52,9 @@ export class GravityCombatSystem extends BossCombatSystem {
   startArrival() { const started = super.startArrival(); if (started) this.ground.clear(); return started; }
   victory() { super.victory(); this.ground.clear(); }
   dropCore() {
-    super.dropCore();
-    this.coreDrop.id = 'gravityCore';
+    this.coreDrop = { id: 'gravityCore', ...this.devicePosition, radius: COMBAT_CONFIG.corePickupRadius,
+      collected: false, playerStart: { x: this.player.x, y: this.player.y } };
+    this.state = 'COLLECT';
   }
   update(dt, options = {}) {
     const frozen = this.frozen;

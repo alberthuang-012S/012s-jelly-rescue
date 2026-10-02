@@ -1,9 +1,13 @@
 export const GRAVITY_STAGE_ID = 'gravityOverload';
 export const GRAVITY_ENEMIES = Object.freeze({
   gravityStiff: { hp: 2, radius: 22, speed: 72, points: 100, trigger: 95, telegraph: .7, pushSpeed: 165, pushTime: .3, recover: 1.2 },
-  gravityStomper: { hp: 2, radius: 24, speed: 63, points: 150, trigger: 175, telegraph: .95, attackRadius: 70, recover: 1.5 },
+  gravityStomper: { hp: 3, radius: 24, speed: 63, points: 150, trigger: 175, telegraph: .95, attackRadius: 85, recover: 1.5 },
   gravityHeavy: { hp: 3, radius: 25, speed: 58, points: 200, preferredDistance: 205, interval: 3.2 }
 });
+
+export function gravityDevicePosition(stage) {
+  return { x: stage.world.width / 2, y: stage.world.height / 2 };
+}
 export const GRAVITY_WAVES = Object.freeze([
   ['gravityStiff', 'gravityStiff', 'gravityStiff'],
   ['gravityStiff', 'gravityStiff', 'gravityStomper'],

@@ -7,10 +7,10 @@ Work began on clean `main` at `7fd6035eb3a9cd4779936506680db72334fbee42`, with 6
 - Sports Park collision with a dedicated cool-blue map variant, blue gravity devices and transparent illustrated creatures. Phone portrait fits the map with space for warnings/HUD and controls; desktop/landscape follows the player.
 - NAP only; E/Space/使用 dispatches a pulse every 0.52 seconds. Small mobs have a 115-unit range; Boss targeting and crystal clearing in the Boss fight reach 165, leaving 85 units beyond the 80-unit combined player/Boss contact radius. It hits the closest eligible target once and clears visible crystals in range. Q cannot switch items. Rescue stages restore both items.
 - Three hearts, 1.2-second damage invulnerability, untimed challenge. Obstacles shield both gravity enemies and the grounded Boss. Contact hurts even during core openings; stand within pulse range without overlapping the Boss.
-- Wave 1: three stiff mobs. Wave 2: two stiff mobs and one stomper. Wave 3: one stiff, one stomper and one heavy. HP 2/2/3; kill points 100/150/200.
+- Wave 1: three stiff mobs. Wave 2: two stiff mobs and one stomper. Wave 3: one stiff, one stomper and one heavy. HP 2/3/3; kill points 100/150/200. The green stomper's attack radius is 85, with its existing 0.95-second warning.
 - Stiff mobs warn before a short push; stompers lock a circular ground attack; heavy mobs drop removable gravity crystals. Warnings never follow the player after placement. At most two danger zones coexist; occupied slots delay further attacks.
 - Boss: 18 HP, closed core immune, each open-core hit removes 2 HP. Phase 1: single circular slam → 2.3-second opening. Phase 2 at 12 HP: summon two stiff mobs once, then double slam → 2.2-second opening. Phase 3 at 6 HP: faster approach, fan then circular slam → 2.5-second fatigue/opening. Boss attack warnings last 1.05 seconds.
-- Victory immediately clears threats and plays a 5.5-second shrinking/weight-release/float-away sequence. Then the reachable **重力核心 / gravityCore** must be physically collected before the result opens. Pickup is safe/untimed and does not change clear time or scoring. It unlocks CORE 002; the mosquito's itch core remains a separate CORE 001 entry. Replay restarts Gravity Overload.
+- Victory immediately clears threats and plays a 5.5-second shrinking/weight-release/float-away sequence. During the final 0.9 seconds the central device dissolves into its core. The device is absent in COLLECT/CLEAR; **重力核心 / gravityCore** stays at the original device point (384,576), regardless of where the Boss died, and must be physically collected before the result opens. Pickup is safe/untimed and does not change clear time or scoring. Standing on that point without moving cannot auto-collect. It unlocks CORE 002; the mosquito's itch core remains a separate CORE 001 entry. Replay restores the device and restarts Gravity Overload.
 - NAP hits, Boss hits, damage and enemy count are independent of rescue records. Full score with all eleven mobs defeated and an undamaged Boss fight: 4250 (1300 enemies + 450 Boss hits + 1500 defeat + 500 clear + 500 Boss no-damage). Defeating the Boss before its summoned mobs earns fewer enemy points; remaining threats are removed.
 
 ## Validation
@@ -25,11 +25,36 @@ node qa/boss-result-browser.mjs
 node qa/scenarios-browser.mjs
 ```
 
-`gravity.test.mjs` adds twelve behavioral tests. `simulation-report.json` records natural waves/phases and pickup, 32 actual NAP hits and all eleven enemies, with normal-speed movement and infinite life to isolate flow verification. It does not measure human difficulty. The browser script injects states only for visual/lifecycle coverage: keyboard, touch, item lock, warning/fan/crystal/core, pause, victory, physical touch pickup, persisted encyclopedia, Game Over, replay, Home, and switching back to mosquito/rescue. It covers 390×844 and 375×667 play, and results at those sizes plus 320×568, 667×375 and 1280×900. Screenshots are local and ignored by Git. Physical-phone input feel and human difficulty still need playtesting.
+`gravity.test.mjs` adds thirteen behavioral tests. `simulation-report.json` records natural waves/phases and pickup, 34 actual NAP hits and all eleven enemies, with normal-speed movement and infinite life to isolate flow verification. It does not measure human difficulty. The browser script injects states only for visual/lifecycle coverage: keyboard, touch, item lock, warning/fan/crystal/core, pause, victory, physical touch pickup, persisted encyclopedia, Game Over, replay, Home, and switching back to mosquito/rescue. It covers 390×844 and 375×667 play, and results at those sizes plus 320×568, 667×375 and 1280×900. Screenshots are local and ignored by Git. Physical-phone input feel and human difficulty still need playtesting.
 
 The existing rescue browser test's evolution selectors now specifically target `.evolution-dialog`; the prior generic `dialog` selector also matched the already-existing core encyclopedia.
 
-## Art/gameplay v2 (2026-10-02)
+## Current art/gameplay v3 (2026-10-02)
+
+The green stomper now has chunky forest-green shoulder armor, thick fists/boot soles and a clear raised-foot windup. Display width increases from 108 to 128 world units; collision radius remains 24. HP increases from 2 to 3 and the warned stomp radius from 70 to 85; warning, speed, recovery and kill score stay the same. This adds two NAP hits over the full eleven-mob run, leaving the full score at 4250.
+
+The central silver-blue gravity machine contains the same cyan gyroscope/crystal as the collectible. It has a transparent sprite, a low pedestal and a subtle live energy ring. It dissolves during the last 0.9 seconds of victory while its core becomes visible; no pedestal/device remains in COLLECT or CLEAR. The collectible stays at the same central point and cannot award a result/collection before actual movement/pickup. Both release opacity and energy animation follow simulation time, including pause. The device is visual and preserves walking routes.
+
+Assets made with built-in `image_gen`:
+
+| Asset | Source | Runtime |
+| --- | --- | --- |
+| Armored green stomper, six poses | `reference/generated-gravity-stomper-v3.png` | `reference/runtime/gravity-stomper-v3.webp` / `.png` (768×512) |
+| Central gravity apparatus | `reference/generated-gravity-device-v1.png` | `reference/runtime/gravity-device-v1.webp` / `.png` (256×256) |
+
+Prompt set: `reference/art-layouts/gravity-art-prompts-v3.json`; foot/device registration: `reference/art-layouts/gravity-art-registration-v3.json`. Repackage with `node qa/build-gravity-art.mjs --v3` and the bundled Sharp module. Other creature/map/King/core assets retain their prior versions.
+
+Validation: **81 unit tests passed**, natural battle/pickup simulation passed, gameplay browser QA passed real touch pickup at the device center, and art browser QA passed at desktop/390px/375px. Art checks cover the new atlas/device, paused release, absence of the device during pickup, removal of both objects on CLEAR, replay restoration, fallback and regular Sports isolation. Screenshots: `art-v3-preview.png`, `art-v3-{desktop,portrait,small}-{release,collect,clear}.png` (local/ignored). To reproduce:
+
+```powershell
+npm test
+node qa/gravity-simulation.mjs
+$env:JELLY_PLAYWRIGHT_MODULE = 'C:/Users/User/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright'
+node qa/gravity-art-browser.mjs
+node qa/gravity-browser.mjs
+```
+
+## Previous art/gameplay v2 (2026-10-02)
 
 Small mobs now use different silhouettes from the King and from one another: coral rectangular push-bot (`gravity-stiff-v2`), mint wide-booted stomp creature (`gravity-stomper-v2`), and lavender triangular crystal carrier (`gravity-heavy-v2`). Each keeps six poses and a fixed foot baseline. Runtime PNG/WebP atlases are 768×512 in `reference/runtime/`; PNG masters are `reference/generated-gravity-{stiff,stomper,heavy}-v2.png`. The map, King atlas and home portrait keep their v1 art.
 
