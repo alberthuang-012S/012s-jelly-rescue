@@ -128,7 +128,7 @@ City/Sports v1 scene artwork and all eleven character sprites are integrated. So
 
 ## Intentional scope limits
 
-No shop, equipment, progression tree, gacha or inventory system is included. Combat is isolated to the optional special stage below.
+No shop, equipment, progression tree, gacha or inventory system is included. Combat is isolated to the optional special stages below.
 
 ## Special stage: 異星蚊災 / Alien Mosquito Invasion
 
@@ -160,7 +160,7 @@ On localhost, the existing debug panel adds Wave 1/2/3, Spawn Boss, Phase 2/3, C
 Validation:
 
 ```powershell
-npm test                         # 30 existing + 22 special-stage tests
+npm test                         # rescue, evolution, collection and both special encounters
 node qa/boss-simulation.mjs       # complete natural phase/wave flow with an automated mover
 node qa/boss-browser.mjs          # requires the same Playwright setup as other QA scripts
 node qa/scenarios-browser.mjs
@@ -168,3 +168,9 @@ node qa/input-reliability-browser.mjs
 ```
 
 The simulation uses normal movement speed and infinite life to isolate flow/score verification; it is not a human difficulty assessment. Browser QA covers desktop, 390×844 and 375×667, controls, PPA lock, four-enemy readability, Boss HUD, pause, phases, victory, Game Over, replay and result scrolling. Results are saved under `qa/boss/`; screenshots remain local/ignored. Physical-phone feel and human difficulty acceptance remain to be playtested.
+
+## Special stage: 重力痠痛危機 / Gravity Overload
+
+The second home special card starts `gravityOverload`, a NAP-only encounter in Sports Park. Three waves introduce stiff, stomping and crystal-dropping gravity creatures. The 18-HP **重力咚咚王 / GRAVITY KING** progresses from a circular slam to double slams, then a fan attack followed by a targeted slam. Ground warnings lock their positions before damage; at most two danger zones coexist. Dodge outside the warning, then approach the glowing core and use NAP. Nearby gravity crystals can also be cleared with NAP.
+
+The encounter shares movement, pulse range/cooldown, lives and pause behavior with the first Boss stage. Its own creatures, ground attacks, blue HUD, floating mini-Boss victory and NAP results are separate. Art v1 includes a cool-blue Sports map variant, three transparent six-pose creature atlases and a nine-pose Gravity King atlas, using WebP with PNG fallbacks in `reference/runtime/gravity-*-v1.*`. It preserves Sports obstacle coordinates and keeps the regular Sports artwork separate. `GravityArt.js` maps gameplay states to poses; `GravityRenderer.js` registers feet, mirrors the second alternating windup, glows only a vulnerable core and briefly shows harmless defeated mobs. All animation uses paused simulation time. Missing assets retain the procedural fallback. Home and result backgrounds use the new map; this version does not add a collectible. Built-in ImageGen prompts, measured frame bounds and core anchors are in `reference/art-layouts/gravity-art-*-v1.json`. Rules, asset paths, reproducible QA commands and saved reports are in [qa/gravity/README.md](qa/gravity/README.md).

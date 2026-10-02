@@ -68,6 +68,14 @@
             <div class="stage-featured-meta"><span>SPECIAL</span><span>BOSS BATTLE</span></div>
             <button id="special-start" class="secondary-button" type="button">開始挑戰 <span>→</span></button>
           </article>
+          <article class="special-stage-card gravity-stage-card" aria-labelledby="gravity-title">
+            <div class="special-stage-art gravity-stage-art" aria-hidden="true"><canvas id="gravity-portrait" width="320" height="190"></canvas></div>
+            <span class="stage-featured-kicker">SPECIAL STAGE · NAP+1</span>
+            <h2 id="gravity-title">重力痠痛危機</h2><strong>GRAVITY OVERLOAD</strong>
+            <p>神秘的重力裝置降落運動公園！<br>使用 NAP+1 共鳴能量，解除重力咚咚王的過載裝置。</p>
+            <div class="stage-featured-meta"><span>SPECIAL</span><span>BOSS BATTLE</span></div>
+            <button id="gravity-start" class="secondary-button" type="button">開始挑戰 <span>→</span></button>
+          </article>
           <button class="collection-home-button" type="button" data-open-collection>核心圖鑑 <span id="core-collection-count">0 / 1</span></button>
         </div>
 
@@ -256,13 +264,13 @@
           <div class="result-score-hero"><small>本次得分</small><strong id="boss-result-score">0</strong></div>
           <div class="rescue-statistics boss-statistics boss-main-statistics">
             <div><span id="boss-result-time-label">討伐時間</span><b data-boss-stat>00:00</b></div>
-            <div><span>擊退蚊子</span><b data-boss-stat>0</b></div>
+            <div><span id="boss-defeated-label">擊退蚊子</span><b data-boss-stat>0</b></div>
           </div>
           <details id="boss-result-details" class="boss-result-details">
             <summary>查看戰鬥紀錄</summary>
             <div class="rescue-statistics boss-statistics boss-detail-statistics">
               <div><span>受傷次數</span><b data-boss-stat>0</b></div>
-              <div><span>PPA 命中</span><b data-boss-stat>0</b></div>
+              <div><span id="boss-item-hit-label">PPA 命中</span><b data-boss-stat>0</b></div>
               <div><span>Boss 命中</span><b data-boss-stat>0</b></div>
             </div>
             <p id="boss-score-note" class="result-summary"></p>

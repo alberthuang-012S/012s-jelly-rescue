@@ -31,6 +31,7 @@ export class WorldRenderer {
   constructor() {
     this.parkImage = null;
     this.alienImage = null;
+    this.gravityImage = null;
     this.mountainImage = null;
     this.lifestyleMaps = new Map();
     this.lifestyleImages = new Map();
@@ -53,7 +54,9 @@ export class WorldRenderer {
     ctx.imageSmoothingQuality = 'high';
     if (stage.id === 'alienMosquito' && this.alienImage?.complete && this.alienImage.naturalWidth)
       ctx.drawImage(this.alienImage, 0, 0, stage.world.width, stage.world.height);
-    else if (stage.renderer === 'lifestyle') ctx.drawImage(this.lifestyleImages.get(stage.id) || this.getLifestyleMap(stage), 0, 0, stage.world.width, stage.world.height);
+    else if (stage.id === 'gravityOverload' && this.gravityImage?.complete && this.gravityImage.naturalWidth)
+      ctx.drawImage(this.gravityImage, 0, 0, stage.world.width, stage.world.height);
+    else if (stage.renderer === 'lifestyle') ctx.drawImage(this.lifestyleImages.get(stage.mapId || stage.id) || this.getLifestyleMap(stage), 0, 0, stage.world.width, stage.world.height);
     else if (stage.id === 'mountain') this.drawMountainBackground(ctx, stage, now);
     else this.drawPark(ctx, stage, now);
   }

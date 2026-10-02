@@ -1353,7 +1353,7 @@ body { background: #deeff5; }
 .boss-banner strong, .boss-banner span { display: block; }
 .boss-banner strong { font-size: clamp(20px, 4vw, 30px); }
 .boss-banner span { margin-top: 7px; color: #dec5f4; font-size: 14px; }
-.is-boss-stage [data-item='NAP'], .is-boss-stage #item-toggle-hint, .is-boss-stage .combo-metric,
+.is-boss-stage[data-boss-item='PPA'] [data-item='NAP'], .is-boss-stage[data-boss-item='NAP'] [data-item='PPA'], .is-boss-stage #item-toggle-hint, .is-boss-stage .combo-metric,
 .is-boss-stage .objective-chip, .is-boss-stage #rescue-indicator-region { display: none !important; }
 .boss-debug { display: none; }
 .is-boss-stage[data-boss-debug='true'] .boss-debug { display: grid; }
@@ -1448,3 +1448,16 @@ body { background: #deeff5; }
 .core-reward p { font-size: 14px; line-height: 1.6; margin: 6px 0 0; color: #59647a; }
 .core-reward button { grid-column: 1 / -1; min-height: 44px; border-radius: 10px; background: #ddd5ee; color: #4c416d; font: 800 14px 'Noto Sans TC', sans-serif; cursor: pointer; }
 @media (max-width: 420px) { .core-collection-dialog { padding: 18px; } .core-entry { grid-template-columns: 80px 1fr; gap: 12px; padding: 12px; } .core-entry-art { width: 80px; height: 80px; } }
+
+/* NAP special encounter: shared controls/results, distinct cool-blue identity. */
+.gravity-stage-card { border-color: #9acede88; background: linear-gradient(135deg, #263b50, #35445f); }
+.gravity-stage-art { background: linear-gradient(90deg, #26415899, #54709244), url('../reference/runtime/gravity-map-v1.webp') center 42% / cover; }
+.gravity-stage-art canvas { width: 240px; height: 150px; filter: drop-shadow(0 6px 8px #15304766); }
+.gravity-stage-card > strong { color: #b5e5ed; }
+.gravity-stage-card .secondary-button { color: #263e58; background: #cfecf2; }
+.is-boss-stage[data-boss-item='NAP'] #boss-health { border-color: #9cc9e1; background: #213b50ed; }
+.is-boss-stage[data-boss-item='NAP'] #boss-health-fill { background: linear-gradient(90deg, #82b8dc, #c7f5f5); }
+.is-boss-stage[data-boss-item='NAP'] .boss-banner { border-color: #b0e7f4; background: #20384ded; }
+#boss-result[data-encounter='gravityOverload'] { --result-accent: #3d7186; --result-tint: #e7f4f6; --result-line: #bfd8df; background: linear-gradient(#193345df, #263a55ed), url('../reference/runtime/gravity-map-v1.webp') center / cover; }
+#boss-result[data-encounter='gravityOverload'][data-outcome='failure'] { --result-accent: #a65c43; --result-tint: #fff0e7; --result-line: #e9cfbf; }
+@media (max-width: 680px) { .gravity-stage-art { margin: -14px -14px 12px; } }

@@ -6,9 +6,10 @@ import { BossScoreManager } from './BossScoreManager.js';
 import { distance } from './utils.js';
 
 export class BossCombatSystem {
-  constructor(stage, player) {
+  constructor(stage, player, { enemyOptions, ScoreClass = BossScoreManager, BossClass = BossMosquito, bossIgnoresCover = true } = {}) {
     this.stage = stage; this.player = player; this.navigation = new CombatNavigation(stage);
-    this.director = new EnemyDirector(this.navigation); this.score = new BossScoreManager();
+    this.director = new EnemyDirector(this.navigation, enemyOptions); this.score = new ScoreClass();
+    this.BossClass = BossClass; this.bossIgnoresCover = bossIgnoresCover;
     this.boss = null; this.coreDrop = null; this.projectiles = []; this.pulses = []; this.wave = 1;
     this.state = 'WAVE'; this.timer = 0; this.elapsed = 0; this.visualTime = 0;
     this.cooldown = 0; this.invulnerability = 0; this.lives = 3; this.hitPause = 0;
@@ -18,7 +19,7 @@ export class BossCombatSystem {
   get targets() { return [...this.director.enemies.filter(e => e.alive), ...(this.state === 'BOSS' && this.boss?.alive ? [this.boss] : [])]; }
   findTarget() {
     return this.targets.filter(e => distance(e, this.player) <= C.range
-      && (e === this.boss || this.navigation.planner(0).isClear(this.player, e)))
+      && ((e === this.boss && this.bossIgnoresCover) || this.navigation.planner(0).isClear(this.player, e)))
       .sort((a, b) => distance(a, this.player) - distance(b, this.player))[0] || null;
   }
   fire = (source, target, count = 1) => {
@@ -57,7 +58,7 @@ export class BossCombatSystem {
   startArrival() {
     const point = this.navigation.findPosition(this.player, B.radius, [], 240, 800);
     if (!point) return false;
-    this.director.clear(); this.projectiles = []; this.boss = new BossMosquito(point);
+    this.director.clear(); this.projectiles = []; this.boss = new this.BossClass(point);
     this.state = 'ARRIVAL'; this.timer = C.arrivalDuration; return true;
   }
   victory() {
@@ -100,8 +101,9 @@ export class BossCombatSystem {
       }
       return;
     }
-    this.director.update(dt, this.player, this.fire);
-    if (this.state === 'BOSS') this.boss.update(dt, this.player, this.navigation, this.fire, () => this.director.summon(this.player));
+    const attacks = this.attackContext ?? this.fire;
+    this.director.update(dt, this.player, attacks);
+    if (this.state === 'BOSS') this.boss.update(dt, this.player, this.navigation, attacks, () => this.director.summon(this.player));
     for (const p of this.projectiles) {
       p.life -= dt; p.x += p.vx * dt; p.y += p.vy * dt;
       if (!this.navigation.planner(p.radius).canOccupy(p)) p.life = 0;

@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "seconds": 42,
+  "states": [
+    "WAVE",
+    "WAVE_CLEAR",
+    "ARRIVAL",
+    "BOSS",
+    "VICTORY"
+  ],
+  "phases": [
+    1,
+    2,
+    3
+  ],
+  "patterns": [
+    "circle",
+    "crystal",
+    "fan"
+  ],
+  "score": 4250,
+  "defeatedEnemies": 11,
+  "damageTaken": 0,
+  "bossDamageTaken": 0,
+  "ppaHits": 0,
+  "bossHits": 9,
+  "cleared": true,
+  "napHits": 32,
+  "crystalsCleared": 1,
+  "note": "Normal-speed automated mover, infinite life; not a human difficulty assessment."
+}

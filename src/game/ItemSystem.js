@@ -5,18 +5,19 @@ export class ItemSystem {
     this.selectedId = 'PPA';
   }
 
-  reset({ ppaOnly = false } = {}) {
+  reset({ ppaOnly = false, lockedId = null } = {}) {
     this.ppaOnly = ppaOnly;
-    this.selectedId = 'PPA';
+    this.lockedId = ppaOnly ? 'PPA' : ITEMS[lockedId] ? lockedId : null;
+    this.selectedId = this.lockedId || 'PPA';
   }
 
   select(itemId) {
-    if (ITEMS[itemId] && (!this.ppaOnly || itemId === 'PPA')) this.selectedId = itemId;
+    if (ITEMS[itemId] && (!this.lockedId || itemId === this.lockedId)) this.selectedId = itemId;
     return this.getSelected();
   }
 
   toggle() {
-    if (this.ppaOnly) return this.select('PPA');
+    if (this.lockedId) return this.select(this.lockedId);
     this.selectedId = this.selectedId === 'PPA' ? 'NAP' : 'PPA';
     return this.getSelected();
   }

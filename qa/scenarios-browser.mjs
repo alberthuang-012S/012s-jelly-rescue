@@ -197,12 +197,12 @@ try {
           game.selectItem('PPA'); game.tryAction();
         });
       }
-      assert.equal(await page.locator('dialog').isVisible(), true);
-      await page.locator('dialog button').click();
+      assert.equal(await page.locator('.evolution-dialog').isVisible(), true);
+      await page.locator('.evolution-dialog button').click();
       await page.evaluate(() => window.__qaGame.finishStage());
-      await page.locator('dialog button').click();
-      await page.waitForFunction(() => window.__qaGame.evolutionStore.state.evolved && document.querySelector('dialog button').textContent === '太棒了，查看結算');
-      await page.locator('dialog button').click();
+      await page.locator('.evolution-dialog button').click();
+      await page.waitForFunction(() => window.__qaGame.evolutionStore.state.evolved && document.querySelector('.evolution-dialog button').textContent === '太棒了，查看結算');
+      await page.locator('.evolution-dialog button').click();
       assert.deepEqual(await page.evaluate(() => ({ ...window.__qaGame.evolutionStore.state, speed: window.__qaGame.player.speed })), { capsule: false, evolved: true, speed: 256.25 });
       await page.locator('#result-next').click(); await page.waitForFunction(() => window.__qaGame.state === 'playing');
       assert.equal(await page.evaluate(() => window.__qaGame.selectedStage), 'city');

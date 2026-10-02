@@ -1,6 +1,7 @@
 import { clamp } from './utils.js';
 import { LIFESTYLE_STAGES } from './LifestyleStages.js';
 import { SPECIAL_STAGE_ID } from './BossConfig.js';
+import { GRAVITY_STAGE_ID } from './GravityConfig.js';
 
 export const STAGE_ORDER = Object.freeze(['tutorial', 'park', 'mountain', 'city', 'sports']);
 
@@ -288,7 +289,11 @@ export const SPECIAL_STAGE_DEFS = Object.freeze({
   [SPECIAL_STAGE_ID]: Object.freeze({ ...STAGE_DEFS.park, id: SPECIAL_STAGE_ID,
     mode: 'boss', name: 'Alien Mosquito Invasion', displayName: '異星蚊災',
     timed: false, maxNpcs: 0,
-    start: { x: 384, y: 760 } })
+    start: { x: 384, y: 760 } }),
+  [GRAVITY_STAGE_ID]: Object.freeze({ ...STAGE_DEFS.sports, id: GRAVITY_STAGE_ID,
+    mode: 'boss', mapId: 'sports', name: 'Gravity Overload', displayName: '重力痠痛危機',
+    timed: false, maxNpcs: 0, cameraPadding: { top: 145, bottom: 165 },
+    start: { x: 384, y: 740 } })
 });
 
 export class StageManager {

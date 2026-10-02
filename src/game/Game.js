@@ -3,6 +3,8 @@ import { ComboManager } from './ComboManager.js';
 import { BossCombatSystem } from './BossCombatSystem.js';
 import { BossRenderer } from './BossRenderer.js';
 import { BossStageUI } from './BossStageUI.js';
+import { GravityCombatSystem } from './GravityCombatSystem.js';
+import { GravityRenderer } from './GravityRenderer.js';
 import { CoreCollectionStore } from './CoreCollectionStore.js';
 import { CoreCollectionUI } from './CoreCollectionUI.js';
 import { EvolutionStore, EVOLVED_SPEED_MULTIPLIER } from './EvolutionStore.js';
@@ -15,7 +17,7 @@ import { Player } from './Player.js?walk-v4';
 import { PersonalBestStore } from './PersonalBestStore.js?result-best-v1';
 import { ResultScreen } from './ResultScreen.js?evolution-v2';
 import { ScoreManager } from './ScoreManager.js';
-import { StageManager, STAGE_DEFS, STAGE_ORDER } from './StageManager.js';
+import { StageManager, STAGE_DEFS, SPECIAL_STAGE_DEFS, STAGE_ORDER } from './StageManager.js';
 import { SCENARIO_DEFS, requiredItem } from './ScenarioDefinitions.js';
 import { NPC_ROLE_DEFS } from './NPCRoleDefinitions.js';
 import { LEGACY_NPC_LAYOUT } from './NPCSpriteLayout.js';
@@ -66,6 +68,11 @@ const ASSET_PATHS = Object.freeze({
   ],
   alienEnemies: ['./reference/runtime/alien-enemies-v1.webp', './reference/runtime/alien-enemies-v1.png'],
   alienBoss: ['./reference/runtime/alien-boss-v1.webp', './reference/runtime/alien-boss-v1.png'],
+  gravityOverload: ['./reference/runtime/gravity-map-v1.webp', './reference/runtime/gravity-map-v1.png', './reference/runtime/sports-map-v1.webp'],
+  gravityStiff: ['./reference/runtime/gravity-stiff-v1.webp', './reference/runtime/gravity-stiff-v1.png'],
+  gravityStomper: ['./reference/runtime/gravity-stomper-v1.webp', './reference/runtime/gravity-stomper-v1.png'],
+  gravityHeavy: ['./reference/runtime/gravity-heavy-v1.webp', './reference/runtime/gravity-heavy-v1.png'],
+  gravityBoss: ['./reference/runtime/gravity-boss-v1.webp', './reference/runtime/gravity-boss-v1.png'],
   mountain: [
     './reference/generated-mountain-open-portrait-hq.webp',
     './reference/generated-mountain-open-portrait-hq.png'
@@ -486,6 +493,9 @@ export class Game {
 
     this.bossCombat = null;
     this.bossRenderer = new BossRenderer();
+    this.gravityRenderer = new GravityRenderer();
+    this.gravityRenderer.portrait(document.querySelector('#gravity-portrait'));
+    this.ensureGravityArt('low');
     this.bossUI = new BossStageUI(this);
     this.coreCollectionStore = new CoreCollectionStore();
     this.coreCollectionUI = new CoreCollectionUI(this.coreCollectionStore);
@@ -519,7 +529,7 @@ export class Game {
   }
 
   updateHomeSelection() {
-    if (this.selectedStage === 'alienMosquito') return;
+    if (SPECIAL_STAGE_DEFS[this.selectedStage]) return;
     const content = HOME_STAGE_CONTENT[this.selectedStage] || HOME_STAGE_CONTENT.tutorial;
     const stageChanged = this.homeStageFeatured?.dataset.stage && this.homeStageFeatured.dataset.stage !== this.selectedStage;
     this.homeStageCards.forEach((item) => {
@@ -694,6 +704,7 @@ export class Game {
       ['NAP+1', this.ensureItemAsset('NAP')]
     ];
     if (stageId === 'alienMosquito') criticalTasks.push(['Alien creatures', this.ensureBossArt()]);
+    if (stageId === 'gravityOverload') criticalTasks.push(['Gravity creatures', this.ensureGravityArt()]);
     let completed = 0;
     onProgress(0, '準備巡邏素材');
     const result = Promise.all(criticalTasks.map(([label, task]) => task.then((value) => {
@@ -742,14 +753,17 @@ export class Game {
 
   ensureStageMap(stageId, { fetchPriority = 'high' } = {}) {
     const lifestyle = STAGE_DEFS[stageId]?.renderer === 'lifestyle';
-    const mapId = stageId === 'alienMosquito' ? stageId : lifestyle ? stageId : stageId === 'mountain' ? 'mountain' : 'park';
+    const mapId = ['alienMosquito', 'gravityOverload'].includes(stageId) ? stageId : lifestyle ? stageId : stageId === 'mountain' ? 'mountain' : 'park';
     if (this.stageMapPromises.has(mapId)) return this.stageMapPromises.get(mapId);
     const mapPromise = loadImageWithFallback(ASSET_PATHS[mapId], {
       fetchPriority,
       assetName: `${mapId} map`
     }).then((mapImage) => {
       if (!mapImage.naturalWidth) return lifestyle ? this.worldRenderer.getLifestyleMap(STAGE_DEFS[stageId]) : mapImage;
-      if (mapId === 'alienMosquito') {
+      if (mapId === 'gravityOverload') {
+        this.worldRenderer.gravityImage = mapImage;
+        this.gravityRenderer.hasGravityMap = /gravity-map-v1/.test(mapImage.src);
+      } else if (mapId === 'alienMosquito') {
         this.worldRenderer.alienImage = mapImage;
         this.bossRenderer.hasNightMap = /alien-map-v1/.test(mapImage.src);
       } else if (lifestyle) {
@@ -772,6 +786,17 @@ export class Game {
       loadImageWithFallback(['./reference/runtime/itch-core-v1.webp', './reference/runtime/itch-core-v1.png'], { fetchPriority: 'high', assetName: 'Itch core pickup' })
     ]).then(([enemies, boss, core]) => { this.bossRenderer.setArt({ enemies, boss, core }); });
     return this.bossArtPromise;
+  }
+
+  ensureGravityArt(fetchPriority = 'high') {
+    if (!this.gravityArtPromise) this.gravityArtPromise = Promise.all(
+      ['gravityStiff', 'gravityStomper', 'gravityHeavy', 'gravityBoss'].map(id =>
+        loadImageWithFallback(ASSET_PATHS[id], { fetchPriority, assetName: `${id} sprites` }))
+    ).then(([stiff, stomper, heavy, boss]) => {
+      this.gravityRenderer.setArt({ stiff, stomper, heavy, boss });
+      this.gravityRenderer.portrait(document.querySelector('#gravity-portrait'));
+    });
+    return this.gravityArtPromise;
   }
 
   bindHome() {
@@ -1149,10 +1174,12 @@ export class Game {
     this.floaters = [];
     this.scoreManager.reset();
     this.combo.reset();
-    this.itemSystem.reset({ ppaOnly: stage.mode === 'boss' });
+    this.itemSystem.reset({ lockedId: stage.mode === 'boss' ? stage.id === 'gravityOverload' ? 'NAP' : 'PPA' : null });
     this.interactionSystem.currentTarget = null;
     this.player.reset(stage.start);
-    this.bossCombat = stage.mode === 'boss' ? new BossCombatSystem(stage, this.player) : null;
+    this.bossCombat = stage.mode === 'boss'
+      ? stage.id === 'gravityOverload' ? new GravityCombatSystem(stage, this.player) : new BossCombatSystem(stage, this.player)
+      : null;
     this.bossUI.setMode(Boolean(this.bossCombat));
     this.cameraState = null;
     this.pavilionRoofOpacity = 1;
@@ -1219,7 +1246,7 @@ export class Game {
   showHome() {
     this.bossUI.setMode(false);
     this.bossCombat = null;
-    if (this.selectedStage === 'alienMosquito') { this.selectedStage = 'tutorial'; this.updateHomeSelection(); }
+    if (SPECIAL_STAGE_DEFS[this.selectedStage]) { this.selectedStage = 'tutorial'; this.updateHomeSelection(); }
     this.clearBackgroundPause();
     this.loadingToken += 1;
     window.clearTimeout(this.tutorialTransitionTimer);
@@ -1682,12 +1709,13 @@ export class Game {
     }
     this.worldRenderer.draw(ctx, stage, this.bossCombat ? this.bossCombat.visualTime * 1000 : now);
     if (this.bossCombat) {
-      this.bossRenderer.atmosphere(ctx, this.bossCombat);
+      const combatRenderer = stage.id === 'gravityOverload' ? this.gravityRenderer : this.bossRenderer;
+      combatRenderer.atmosphere(ctx, this.bossCombat);
       ctx.save();
       if (this.bossCombat.state === 'ARRIVAL' || this.bossCombat.boss?.state === 'SUMMON') {
         ctx.translate(Math.sin(this.bossCombat.visualTime * 45) * 2, 0);
       }
-      this.bossRenderer.draw(ctx, this.bossCombat, this.player, this.debug.showRadius);
+      combatRenderer.draw(ctx, this.bossCombat, this.player, this.debug.showRadius);
       ctx.restore(); ctx.restore(); return;
     }
     const target = this.interactionSystem.currentTarget;

@@ -5,3 +5,4 @@ npm-debug.log*
 .DS_Store
 qa/scenarios/*.png
 qa/boss/*.png
+qa/gravity/*.png
