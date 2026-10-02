@@ -6,3 +6,4 @@ npm-debug.log*
 qa/scenarios/*.png
 qa/boss/*.png
 qa/gravity/*.png
+qa/mobile-layout/*.png

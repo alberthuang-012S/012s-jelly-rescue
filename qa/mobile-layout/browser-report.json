@@ -1,0 +1,114 @@
+{
+  "checks": [
+    "city/320x568: readable HUD, 44px targets, no control overlap, larger unobstructed full map",
+    "sports/320x568: readable HUD, 44px targets, no control overlap, larger unobstructed full map",
+    "gravityOverload/320x568: readable HUD, 44px targets, no control overlap, larger unobstructed full map",
+    "city/375x667: readable HUD, 44px targets, no control overlap, larger unobstructed full map",
+    "sports/375x667: readable HUD, 44px targets, no control overlap, larger unobstructed full map",
+    "gravityOverload/375x667: readable HUD, 44px targets, no control overlap, larger unobstructed full map",
+    "city/390x844: readable HUD, 44px targets, no control overlap, larger unobstructed full map",
+    "sports/390x844: readable HUD, 44px targets, no control overlap, larger unobstructed full map",
+    "gravityOverload/390x844: readable HUD, 44px targets, no control overlap, larger unobstructed full map",
+    "city/430x932: readable HUD, 44px targets, no control overlap, larger unobstructed full map",
+    "sports/430x932: readable HUD, 44px targets, no control overlap, larger unobstructed full map",
+    "gravityOverload/430x932: readable HUD, 44px targets, no control overlap, larger unobstructed full map",
+    "city/667x375: readable HUD, 44px targets, no control overlap, landscape follow",
+    "sports/667x375: readable HUD, 44px targets, no control overlap, landscape follow",
+    "gravityOverload/667x375: readable HUD, 44px targets, no control overlap, landscape follow",
+    "city/844x390: readable HUD, 44px targets, no control overlap, landscape follow",
+    "sports/844x390: readable HUD, 44px targets, no control overlap, landscape follow",
+    "gravityOverload/844x390: readable HUD, 44px targets, no control overlap, landscape follow",
+    "Native touch selects NAP/PPA; wrong item counts once; correct item rescues once",
+    "Native two-finger touch holds movement and uses once; release clears direction",
+    "Emulated 24px notch / 20px home area: HUD, full map and touch controls remain inside safe areas",
+    "Rotation clears held touch, preserves encounter; exit dialog resumes normally",
+    "Earlier stages and Mosquito King retain their existing framing"
+  ],
+  "layouts": [
+    {
+      "stageId": "city",
+      "width": 320,
+      "height": 568,
+      "mapWidth": 237.33333333333334,
+      "oldMapWidth": 208.66666666666669
+    },
+    {
+      "stageId": "sports",
+      "width": 320,
+      "height": 568,
+      "mapWidth": 237.33333333333334,
+      "oldMapWidth": 208.66666666666669
+    },
+    {
+      "stageId": "gravityOverload",
+      "width": 320,
+      "height": 568,
+      "mapWidth": 198.66666666666669,
+      "oldMapWidth": 172
+    },
+    {
+      "stageId": "city",
+      "width": 375,
+      "height": 667,
+      "mapWidth": 303.33333333333337,
+      "oldMapWidth": 274.6666666666667
+    },
+    {
+      "stageId": "sports",
+      "width": 375,
+      "height": 667,
+      "mapWidth": 303.33333333333337,
+      "oldMapWidth": 274.6666666666667
+    },
+    {
+      "stageId": "gravityOverload",
+      "width": 375,
+      "height": 667,
+      "mapWidth": 264.6666666666667,
+      "oldMapWidth": 238
+    },
+    {
+      "stageId": "city",
+      "width": 390,
+      "height": 844,
+      "mapWidth": 390,
+      "oldMapWidth": 390
+    },
+    {
+      "stageId": "sports",
+      "width": 390,
+      "height": 844,
+      "mapWidth": 390,
+      "oldMapWidth": 390
+    },
+    {
+      "stageId": "gravityOverload",
+      "width": 390,
+      "height": 844,
+      "mapWidth": 382.6666666666667,
+      "oldMapWidth": 356
+    },
+    {
+      "stageId": "city",
+      "width": 430,
+      "height": 932,
+      "mapWidth": 430,
+      "oldMapWidth": 430
+    },
+    {
+      "stageId": "sports",
+      "width": 430,
+      "height": 932,
+      "mapWidth": 430,
+      "oldMapWidth": 430
+    },
+    {
+      "stageId": "gravityOverload",
+      "width": 430,
+      "height": 932,
+      "mapWidth": 430,
+      "oldMapWidth": 414.6666666666667
+    }
+  ],
+  "errors": []
+}

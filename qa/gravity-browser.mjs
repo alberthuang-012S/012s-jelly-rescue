@@ -47,10 +47,10 @@ try {
     await page.locator('#action-button').dispatchEvent('pointerup', { pointerId: 9, pointerType: 'touch' });
     assert.ok(await page.evaluate(() => window.__qaGame.bossCombat.cooldown) > 0);
     const geometry = await page.evaluate(() => {
-      const rect = s => { const r = document.querySelector(s).getBoundingClientRect(); return { x: r.x, right: r.right, bottom: r.bottom }; };
+      const rect = s => { const r = document.querySelector(s).getBoundingClientRect(); return { x: r.x, y: r.y, right: r.right, bottom: r.bottom }; };
       return { nap: rect('[data-item="NAP"]'), use: rect('#action-button'), dpad: rect('.mobile-dpad') };
     });
-    assert.ok(geometry.nap.x >= geometry.dpad.right && geometry.nap.right <= geometry.use.x, JSON.stringify(geometry));
+    assert.ok(geometry.nap.x >= geometry.dpad.right && geometry.nap.bottom <= geometry.use.y, JSON.stringify(geometry));
     assert.ok(geometry.nap.bottom <= height && geometry.use.bottom <= height);
     await page.screenshot({ path: `qa/gravity/wave3-${width}.png` });
     await page.evaluate(() => window.__qaGame.bossCombat.startArrival());

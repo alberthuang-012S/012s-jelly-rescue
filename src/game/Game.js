@@ -1122,7 +1122,10 @@ export class Game {
       this.rotateOverlay.classList.add('is-hidden');
     };
     window.addEventListener('resize', update);
-    window.addEventListener('orientationchange', update);
+    window.addEventListener('orientationchange', () => {
+      this.input?.reset();
+      update();
+    });
     this.updateOrientation = update;
     this.resizeCanvas();
   }
@@ -1133,13 +1136,25 @@ export class Game {
     const frameWidth = Math.round(canvasRect.width || frame?.clientWidth || window.innerWidth);
     const frameHeight = Math.round(canvasRect.height || frame?.clientHeight || window.innerHeight);
     const isPortraitPhone = frameHeight > frameWidth && frameWidth < 760;
-    this.layoutMode = isPortraitPhone ? 'mobile-portrait' : frameWidth < 760 ? 'mobile-landscape' : 'desktop';
+    const isLandscapePhone = frameWidth < 760 || (frameHeight <= 520 && frameWidth <= 1100
+      && this.gameShell.classList.contains('has-compact-mobile-layout'));
+    this.layoutMode = isPortraitPhone ? 'mobile-portrait' : isLandscapePhone ? 'mobile-landscape' : 'desktop';
     this.cameraMode = isPortraitPhone ? 'fit' : 'follow';
     // Gameplay remains in world coordinates, while the render viewport tracks
     // the actual CSS box. This prevents a 960x540 canvas from being stretched
     // into a large desktop frame before the DPR is applied.
     this.viewport = { width: frameWidth, height: frameHeight };
     this.displaySize = { width: frameWidth, height: frameHeight };
+    // These three portrait maps share the compact touch layout. Read its
+    // reserved space once per resize so the canvas and safe areas stay aligned.
+    const frameStyle = frame && window.getComputedStyle(frame);
+    const mapTop = parseFloat(frameStyle?.getPropertyValue('--mobile-map-top'));
+    const mapBottom = parseFloat(frameStyle?.getPropertyValue('--mobile-map-bottom'));
+    this.mobileCameraPadding = isPortraitPhone && Number.isFinite(mapTop) && Number.isFinite(mapBottom)
+      ? { top: mapTop + (parseFloat(frameStyle.scrollPaddingTop) || 0),
+        bottom: mapBottom + (parseFloat(frameStyle.scrollPaddingBottom) || 0),
+        left: parseFloat(frameStyle.scrollPaddingLeft) || 0, right: parseFloat(frameStyle.scrollPaddingRight) || 0 }
+      : null;
     this.pixelRatio = Math.min(window.devicePixelRatio || 1, 2.5);
     const bufferWidth = Math.max(1, Math.round(this.displaySize.width * this.pixelRatio));
     const bufferHeight = Math.max(1, Math.round(this.displaySize.height * this.pixelRatio));
@@ -1166,6 +1181,8 @@ export class Game {
     this.closeExitConfirmation({ resume: false });
     this.closeTutorialModal({ enableInput: false });
     this.selectedStage = stageId;
+    this.gameShell.classList.toggle('has-compact-mobile-layout', ['city', 'sports', 'gravityOverload'].includes(stageId));
+    this.gameShell.dataset.stage = stageId;
     this.updateHomeSelection();
     const loadingToken = ++this.loadingToken;
     const stage = this.stageManager.start(stageId);
@@ -1621,15 +1638,16 @@ export class Game {
 
   getCamera(stage) {
     if (this.cameraMode === 'fit') {
-      const padding = stage.cameraPadding || { top: 0, bottom: 0 };
+      const padding = this.mobileCameraPadding || stage.cameraPadding || { top: 0, bottom: 0 };
       const availableHeight = Math.max(160, this.viewport.height - padding.top - padding.bottom);
+      const availableWidth = this.viewport.width - (padding.left || 0) - (padding.right || 0);
       const scale = Math.min(
-        this.viewport.width / stage.world.width,
+        availableWidth / stage.world.width,
         availableHeight / stage.world.height
       );
       return {
         mode: 'fit',
-        x: (this.viewport.width - stage.world.width * scale) / 2,
+        x: (padding.left || 0) + (availableWidth - stage.world.width * scale) / 2,
         y: padding.top + (availableHeight - stage.world.height * scale) / 2,
         scale
       };
@@ -1638,7 +1656,11 @@ export class Game {
     // Landscape keeps the portrait world readable as a normal RPG slice. The
     // width-driven zoom fills the desktop frame without stretching the map,
     // while the minimum keeps smaller landscape devices from feeling distant.
-    const scale = Math.max(1.45, this.viewport.width / (stage.world.width * 0.98));
+    const compactLandscape = ['city', 'sports', 'gravityOverload'].includes(stage.id)
+      && this.viewport.height <= 520 && this.viewport.width <= 1100;
+    const scale = compactLandscape
+      ? Math.max(this.viewport.width / stage.world.width, this.viewport.height / 400)
+      : Math.max(1.45, this.viewport.width / (stage.world.width * 0.98));
     const visibleWidth = this.viewport.width / scale;
     const visibleHeight = this.viewport.height / scale;
     const targetX = clamp(
@@ -1647,7 +1669,8 @@ export class Game {
       Math.max(0, stage.world.width - visibleWidth)
     );
     const targetY = clamp(
-      this.player.y - visibleHeight / 2,
+      // Leave headroom for Gravity King's taller sprite on short phone screens.
+      this.player.y - visibleHeight * (compactLandscape && stage.id === 'gravityOverload' ? 0.8 : 0.5),
       0,
       Math.max(0, stage.world.height - visibleHeight)
     );
