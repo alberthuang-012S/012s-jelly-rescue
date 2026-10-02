@@ -15,5 +15,5 @@ export const GRAVITY_CONFIG = Object.freeze({
   impactTime: .22, recover: .4, phasePause: 1.1, comboDelay: .35,
   coreTimes: [2.3, 2.2, 2.5], maxZones: 2,
   crystalRadius: 64, crystalWarning: 1.25, crystalActive: 1.25,
-  victoryDuration: 5.5, range: 115, cooldown: .52, invulnerability: 1.2
+  victoryDuration: 5.5, range: 115, bossRange: 165, cooldown: .52, invulnerability: 1.2
 });

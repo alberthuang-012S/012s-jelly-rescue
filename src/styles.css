@@ -1436,12 +1436,14 @@ body { background: #deeff5; }
 .core-entry-art img { width: 100%; height: 100%; object-fit: contain; }
 .core-entry-art picture { width: 100%; height: 100%; }
 .core-entry-art [hidden] { display: none; }
-#core-entry-unknown { font-size: 48px; color: #9a91b5; font-weight: 900; }
+#core-entry-unknown, #gravity-core-entry-unknown { font-size: 48px; color: #9a91b5; font-weight: 900; }
 .core-entry-number { font: 700 11px 'DM Mono', monospace; color: #76658c; }
 .core-entry h3 { font-size: 20px; margin: 6px 0 8px; }
 .core-entry p { font-size: 14px; line-height: 1.7; margin: 0 0 10px; color: #59647a; }
-#core-entry-status { font-size: 13px; color: #287b64; }
-.core-entry.is-locked #core-entry-status { color: #76658c; }
+#core-entry-status, #gravity-core-entry-status { font-size: 13px; color: #287b64; }
+.core-entry.is-locked strong { color: #76658c; }
+.core-entry + .core-entry { margin-top: 12px; }
+.core-collection-dialog { max-height: calc(100dvh - 32px); overflow-y: auto; }
 .core-reward { display: grid; grid-template-columns: 80px 1fr; gap: 12px; align-items: center; text-align: left; margin: 16px 0; padding: 14px; border: 1px solid #bbaed8; border-radius: 16px; background: #f8f4ffbb; }
 .core-reward picture, .core-reward img { width: 80px; height: 80px; object-fit: contain; }
 .core-reward strong { font-size: 18px; color: #4c416d; }

@@ -5,6 +5,7 @@ import {GRAVITY_CORE_ANCHORS} from '../src/game/GravityArt.js';
 const sharp=createRequire(import.meta.url)(process.env.JELLY_SHARP_MODULE||'sharp');
 const clear={r:0,g:0,b:0,alpha:0};
 const registration={};
+const version=process.argv.includes('--v2')?'v2':'v1';
 async function frames(source,rows){
   const {data,info}=await sharp(source).ensureAlpha().raw().toBuffer({resolveWithObject:true});
   let transparent=0;for(let i=3;i<data.length;i+=4)transparent+=data[i]===0;
@@ -58,16 +59,21 @@ async function pack(source,kind,size,rows){
     Object.assign(f,{width,height,left,top});delete f.buffer;
   }
   const atlas=await sharp({create:{width:size*3,height:size*(rows.length-1),channels:4,background:clear}}).composite(layers).png().toBuffer();
-  await fs.writeFile(`reference/runtime/gravity-${kind}-v1.png`,atlas);
-  await sharp(atlas).webp({lossless:true}).toFile(`reference/runtime/gravity-${kind}-v1.webp`);
+  await fs.writeFile(`reference/runtime/gravity-${kind}-${version}.png`,atlas);
+  await sharp(atlas).webp({lossless:true}).toFile(`reference/runtime/gravity-${kind}-${version}.webp`);
   registration[kind]={source,size,target,scale,frames:cells};
   return atlas;
 }
-for(const type of ['stiff','stomper','heavy'])await pack(`reference/generated-gravity-${type}-v1.png`,type,256,[0,.5,1]);
+for(const type of ['stiff','stomper','heavy'])await pack(`reference/generated-gravity-${type}-${version}.png`,type,256,[0,.5,1]);
+if(version==='v1'){
 const boss=await pack('reference/generated-gravity-boss-v1.png','boss',384,[0,.365,.67,1]);
 registration.boss.coreAnchors=GRAVITY_CORE_ANCHORS;
 await sharp(boss).extract({left:0,top:0,width:384,height:384}).webp({lossless:true}).toFile('reference/runtime/gravity-king-portrait-v1.webp');
 await sharp('reference/generated-gravity-map-v1.png').resize(1024,1536).png().toFile('reference/runtime/gravity-map-v1.png');
 await sharp('reference/runtime/gravity-map-v1.png').webp({quality:94}).toFile('reference/runtime/gravity-map-v1.webp');
-await fs.writeFile('reference/art-layouts/gravity-art-registration-v1.json',JSON.stringify(registration,null,2)+'\n');
-console.log('PASS: gravity map, 18 small-creature poses, nine King poses and home portrait; real transparency and fixed foot registration.');
+}else{
+  await sharp('reference/generated-gravity-core-v1.png').resize(256,256,{fit:'contain',background:clear}).png().toFile('reference/runtime/gravity-core-v1.png');
+  await sharp('reference/runtime/gravity-core-v1.png').webp({lossless:true}).toFile('reference/runtime/gravity-core-v1.webp');
+}
+await fs.writeFile(`reference/art-layouts/gravity-art-registration-${version}.json`,JSON.stringify(registration,null,2)+'\n');
+console.log(`PASS: ${version} gravity assets; real transparency and fixed foot registration.`);

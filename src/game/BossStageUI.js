@@ -56,7 +56,7 @@ export class BossStageUI {
     e.action.classList.toggle('is-action-ready', ready);
     e.action.setAttribute('aria-disabled', paused ? 'true' : 'false');
     e.action.dataset.state = paused ? 'paused' : ready ? 'ready' : 'idle';
-    document.querySelector('#boss-wave').textContent = collecting ? '討伐成功 · 收集癢癢核心' : c.wave <= 3 && ['WAVE', 'WAVE_CLEAR'].includes(c.state) ? `WAVE ${c.wave} / 3` : 'BOSS';
+    document.querySelector('#boss-wave').textContent = collecting ? `討伐成功 · 收集${this.copy.coreName}` : c.wave <= 3 && ['WAVE', 'WAVE_CLEAR'].includes(c.state) ? `WAVE ${c.wave} / 3` : 'BOSS';
     const bar = document.querySelector('#boss-health');
     bar.classList.toggle('is-hidden', !c.boss || collecting);
     const hp = c.boss?.hp ?? B.hp;
@@ -64,7 +64,7 @@ export class BossStageUI {
     bar.setAttribute('aria-valuenow', hp);
     document.querySelector('#boss-health-number').textContent = `${hp} / ${B.hp}`;
     document.querySelector('#boss-core-hint').textContent = c.state === 'VICTORY' ? `${this.copy.item} 能量淨化完成！` : c.boss
-      ? c.boss.coreOpen ? `核心亮起！靠近使用 ${this.copy.item}` : this.copy.closedHint
+      ? c.boss.coreOpen ? this.copy.item === 'NAP' ? '核心亮起！保持距離使用 NAP' : `核心亮起！靠近使用 ${this.copy.item}` : this.copy.closedHint
       : this.copy.objective;
     if (collecting) {
       const dx = c.coreDrop.x - c.player.x, dy = c.coreDrop.y - c.player.y;
@@ -100,8 +100,8 @@ export class BossStageUI {
       : `挑戰進度：第 ${c.wave} / 3 波${this.copy.enemies}`;
     document.querySelector('#boss-result-tip').textContent = c.boss
       ? this.copy.bossTips[c.boss.phase - 1] : this.copy.waveTips[c.wave - 1];
-    document.querySelector('#boss-result-core-note').classList.toggle('is-hidden', this.copy.item === 'NAP');
-    document.querySelector('#boss-result-core-note').textContent = this.game.coreCollectionStore.has('itchCore')
+    document.querySelector('#boss-result-core-note').classList.remove('is-hidden');
+    document.querySelector('#boss-result-core-note').textContent = this.game.coreCollectionStore.has(this.copy.coreId)
       ? '本次未取得核心；圖鑑保留先前的收藏。'
       : '本次未取得核心。擊敗 Boss 後，記得撿取掉落的核心。';
     document.querySelector('#boss-replay').textContent = won ? '再玩一次' : '重新挑戰';

@@ -37,10 +37,24 @@ try {
     });
     const loaded = await page.evaluate(() => {
       const g = window.__qaGame, r = g.gravityRenderer;
-      return { map: g.worldRenderer.gravityImage.src, themed: r.hasGravityMap, widths: ['stiff', 'stomper', 'heavy', 'boss'].map(id => r.art[id].naturalWidth) };
+      return { map: g.worldRenderer.gravityImage.src, themed: r.hasGravityMap,
+        paths: ['stiff', 'stomper', 'heavy'].map(id => r.art[id].src), core: r.art.core.naturalWidth,
+        widths: ['stiff', 'stomper', 'heavy', 'boss'].map(id => r.art[id].naturalWidth) };
     });
     assert.match(loaded.map, /gravity-map-v1/); assert.equal(loaded.themed, true);
     assert.deepEqual(loaded.widths, [768, 768, 768, 1152]);
+    assert.ok(loaded.paths.every(path => /-v2\.webp/.test(path))); assert.equal(loaded.core, 256);
+    const devices = await page.evaluate(() => {
+      const g = window.__qaGame, calls = [];
+      const ctx = new Proxy(g.ctx, {
+        get(target, key) { if (key === 'translate') return (...args) => { calls.push(args); target.translate(...args); };
+          const value = target[key]; return typeof value === 'function' ? value.bind(target) : value; },
+        set(target, key, value) { target[key] = value; return true; }
+      });
+      g.gravityRenderer.atmosphere(ctx, g.bossCombat); return calls;
+    });
+    assert.deepEqual(devices.filter(([x]) => x !== 0), [[384, 576]]);
+    report.checks.push(`${name}: all three distinct v2 silhouettes; one central gravity device`);
     const expected = { wave: null, warning: [2, 2, 2], attack: [3, 3, 3], hit: [4, 4, 4], both: 1, right: 2, left: 3, impact: 4, core: 5, fatigue: 6, recoil: 7, float: 8 };
     for (const mode of Object.keys(expected)) {
       const draws = await page.evaluate(mode => {
@@ -68,8 +82,8 @@ try {
       }, mode);
       if (Array.isArray(expected[mode])) assert.deepEqual(draws.map(d => d.frame), expected[mode]);
       else if (expected[mode] !== null) assert.ok(draws.some(d => /gravity-boss/.test(d.src) && d.frame === expected[mode]), `${name}/${mode}: ${JSON.stringify(draws)}`);
-      if (['wave', 'warning', 'left', 'core', 'fatigue', 'float'].includes(mode)) await page.screenshot({ path: `qa/gravity/art-v1-${name}-${mode}.png` });
-      if (name === 'desktop' && mode === 'core') await page.locator('#game-canvas').screenshot({ path: 'qa/gravity/art-v1-preview.png' });
+      if (['wave', 'warning', 'left', 'core', 'fatigue', 'float'].includes(mode)) await page.screenshot({ path: `qa/gravity/art-v2-${name}-${mode}.png` });
+      if (name === 'portrait' && mode === 'wave') await page.locator('#game-canvas').screenshot({ path: 'qa/gravity/art-v2-preview.png' });
       report.checks.push(`${name}/${mode}: correct live atlas frames`);
     }
     // Rendering a paused frame twice must produce identical canvas pixels.

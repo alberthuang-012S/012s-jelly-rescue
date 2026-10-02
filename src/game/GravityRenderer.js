@@ -75,7 +75,7 @@ export class GravityRenderer {
   atmosphere(ctx, combat) {
     const { width, height } = combat.stage.world;
     if (!this.hasGravityMap) { ctx.fillStyle = 'rgba(39,58,110,.18)'; ctx.fillRect(0, 0, width, height); }
-    for (const [x, y] of [[340, 140], [470, 545], [305, 1050]]) {
+    for (const [x, y] of [[width / 2, height / 2]]) {
       const t = combat.visualTime;
       ctx.save(); ctx.translate(x, y);
       ellipse(ctx, 0, 12, 31, 10, '#8898d080', '#d2edff', 2);
@@ -182,6 +182,7 @@ export class GravityRenderer {
     this.previous = new Map(combat.director.enemies.map(e => [e, { x: e.x, y: e.y, type: e.type, def: e.def, alive: e.alive }]));
     this.defeated = this.defeated.filter(e => t - e.since < .5 && ['WAVE', 'WAVE_CLEAR', 'BOSS'].includes(combat.state));
     for (const zone of combat.ground.zones) this.ground(ctx, zone, t);
+    if (combat.state === 'COLLECT' && combat.coreDrop && !combat.coreDrop.collected) this.corePickup(ctx, combat.coreDrop, t);
     const actors = [...combat.director.enemies.filter(e => e.alive), ...this.defeated, player];
     if (combat.state === 'BOSS') actors.push(combat.boss);
     for (const entity of actors.sort((a, b) => a.y - b.y)) {
@@ -202,10 +203,11 @@ export class GravityRenderer {
     }
     for (const pulse of combat.pulses) {
       const progress = 1 - pulse.life / .35;
+      const range = pulse.radius || C.range;
       ctx.save(); ctx.globalAlpha = (1 - progress) * .9; ctx.shadowColor = '#abefff'; ctx.shadowBlur = 15;
-      ellipse(ctx, pulse.x, pulse.y, C.range * progress, C.range * progress, '#acdfff20', '#e9ffff', 5);
-      ellipse(ctx, pulse.x, pulse.y, C.range * progress * .7, C.range * progress * .7, 'transparent', '#abaef2', 3);
-      for (let i = 0; i < 8; i++) spark(ctx, pulse.x + Math.cos(i * Math.PI / 4) * C.range * progress, pulse.y + Math.sin(i * Math.PI / 4) * C.range * progress, 5);
+      ellipse(ctx, pulse.x, pulse.y, range * progress, range * progress, '#acdfff20', '#e9ffff', 5);
+      ellipse(ctx, pulse.x, pulse.y, range * progress * .7, range * progress * .7, 'transparent', '#abaef2', 3);
+      for (let i = 0; i < 8; i++) spark(ctx, pulse.x + Math.cos(i * Math.PI / 4) * range * progress, pulse.y + Math.sin(i * Math.PI / 4) * range * progress, 5);
       ctx.restore();
     }
     if (combat.state === 'ARRIVAL') {
@@ -225,7 +227,18 @@ export class GravityRenderer {
         ellipse(ctx, combat.boss.x + Math.sin(t + i) * 90, combat.boss.y - rise - i * 15, 10 + i * 3, 10 + i * 3, '#b9eaff55', '#edffff', 2);
       }
     }
-    if (showRadius) { ctx.save(); ctx.setLineDash([6, 5]); ellipse(ctx, player.x, player.y, C.range, C.range, 'transparent', '#f6eeb9', 2); ctx.restore(); }
+    if (showRadius) { const range = combat.state === 'BOSS' ? C.bossRange : C.range; ctx.save(); ctx.setLineDash([6, 5]); ellipse(ctx, player.x, player.y, range, range, 'transparent', '#f6eeb9', 2); ctx.restore(); }
     if (combat.blockedTime > 0) drawText(ctx, 'CORE CLOSED', player.x, player.y - 78, { color: '#e4f6ff', size: 14 });
+  }
+  corePickup(ctx, drop, t) {
+    ctx.save(); ctx.translate(drop.x, drop.y);
+    ellipse(ctx, 0, 8, 30, 10, '#bcefff44', '#d8fcff', 2);
+    const y = -32 + Math.sin(t * 3) * 4;
+    ctx.shadowColor = '#a7efff'; ctx.shadowBlur = 16;
+    if (this.ready(this.art?.core)) ctx.drawImage(this.art.core, -36, y - 36, 72, 72);
+    else crystal(ctx, 0, y, 25, t);
+    ctx.shadowBlur = 0;
+    for (let i = 0; i < 3; i++) spark(ctx, Math.cos(t + i * 2.1) * 37, y + Math.sin(t + i * 2.1) * 22, 4);
+    ctx.restore();
   }
 }

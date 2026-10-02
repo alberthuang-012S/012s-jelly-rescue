@@ -12,14 +12,17 @@ export class CoreCollectionUI {
     const count=CORE_CATALOG.filter(core=>this.store.has(core.id)).length;
     document.querySelector('#core-collection-count').textContent=`${count} / ${CORE_CATALOG.length}`;
     document.querySelector('#core-collection-progress').textContent=`已收集 ${count} / ${CORE_CATALOG.length}`;
-    const core=CORE_CATALOG[0],unlocked=this.store.has(core.id);
-    document.querySelector('#core-entry').classList.toggle('is-locked',!unlocked);
-    document.querySelector('#core-entry-image').hidden=!unlocked;
-    document.querySelector('#core-entry-unknown').hidden=unlocked;
-    document.querySelector('#core-entry-name').textContent=unlocked?core.name:'未發現的核心';
-    document.querySelector('#core-entry-description').textContent=unlocked?core.description:'擊敗「異星蚊災」Boss 後，靠近並撿取掉落的核心。';
-    document.querySelector('#core-entry-status').textContent=unlocked
-      ?this.store.persisted?'已收集':'已收集 · 本次遊玩':'尚未收集';
+    CORE_CATALOG.forEach((core,i)=>{
+      const prefix=i===0?'core-entry':'gravity-core-entry',unlocked=this.store.has(core.id);
+      document.querySelector(`#${prefix}`).classList.toggle('is-locked',!unlocked);
+      document.querySelector(`#${prefix}-image`).hidden=!unlocked;
+      document.querySelector(`#${prefix}-unknown`).hidden=unlocked;
+      document.querySelector(`#${prefix}-name`).textContent=unlocked?core.name:'未發現的核心';
+      document.querySelector(`#${prefix}-description`).textContent=unlocked?core.description
+        :`擊敗「${i===0?'異星蚊災':'重力痠痛危機'}」Boss 後，靠近並撿取掉落的核心。`;
+      document.querySelector(`#${prefix}-status`).textContent=unlocked
+        ?this.store.persisted?'已收集':'已收集 · 本次遊玩':'尚未收集';
+    });
   }
   open() {
     this.refresh();this.lastTrigger=document.activeElement;
@@ -27,8 +30,14 @@ export class CoreCollectionUI {
   }
   showReward(reward) {
     document.querySelector('#boss-core-reward').classList.toggle('is-hidden',!reward);
-    if(reward)document.querySelector('#boss-core-reward-status').textContent=
-      `${reward.newlyUnlocked?'新核心已收錄圖鑑':'圖鑑中已收藏'}${reward.persisted?'':'（本次遊玩）'}`;
+    if(reward){
+      const card=document.querySelector('#boss-core-reward');
+      card.querySelector('source').srcset=`./reference/runtime/${reward.core.image}.webp`;
+      const img=card.querySelector('img');img.src=`./reference/runtime/${reward.core.image}.png`;img.alt=reward.core.name;
+      card.querySelector('strong').textContent=reward.core.name;
+      document.querySelector('#boss-core-reward-status').textContent=
+        `${reward.newlyUnlocked?'新核心已收錄圖鑑':'圖鑑中已收藏'}${reward.persisted?'':'（本次遊玩）'}`;
+    }
     this.refresh();
   }
 }

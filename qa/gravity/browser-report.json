@@ -4,8 +4,9 @@
     "Home entry and portrait, Sports map loaded, desktop keyboard movement/E, Q lock, only NAP visible",
     "390×844: touch D-pad/Use, dock separation, arrival, visible fan/crystal/core, blur and exit freeze",
     "375×667: touch D-pad/Use, dock separation, arrival, visible fan/crystal/core, blur and exit freeze",
-    "Victory float-away, dedicated NAP result and stats, no mosquito reward, fixed buttons in five viewports",
-    "Replay remains gravity; actual heart loss gives failure, Home, mosquito PPA restoration, Sports rescue/Q/NPC restoration"
+    "Victory float-away, physical gravity core pickup, own collection reward, dedicated NAP result and fixed buttons in five viewports",
+    "Replay remains gravity; actual heart loss gives failure, Home, mosquito PPA restoration, Sports rescue/Q/NPC restoration",
+    "Gravity core persists after reload and the encyclopedia keeps separate locked/unlocked entries"
   ],
   "errors": [],
   "note": "QA injects encounter states for visual coverage; full natural flow is tested separately by gravity-simulation.mjs."

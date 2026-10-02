@@ -1,5 +1,6 @@
 {
   "checks": [
+    "desktop: all three distinct v2 silhouettes; one central gravity device",
     "desktop/wave: correct live atlas frames",
     "desktop/warning: correct live atlas frames",
     "desktop/attack: correct live atlas frames",
@@ -13,6 +14,7 @@
     "desktop/recoil: correct live atlas frames",
     "desktop/float: correct live atlas frames",
     "desktop: paused artwork stays pixel-identical",
+    "portrait: all three distinct v2 silhouettes; one central gravity device",
     "portrait/wave: correct live atlas frames",
     "portrait/warning: correct live atlas frames",
     "portrait/attack: correct live atlas frames",
@@ -26,6 +28,7 @@
     "portrait/recoil: correct live atlas frames",
     "portrait/float: correct live atlas frames",
     "portrait: paused artwork stays pixel-identical",
+    "small: all three distinct v2 silhouettes; one central gravity device",
     "small/wave: correct live atlas frames",
     "small/warning: correct live atlas frames",
     "small/attack: correct live atlas frames",

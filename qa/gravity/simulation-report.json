@@ -6,7 +6,8 @@
     "WAVE_CLEAR",
     "ARRIVAL",
     "BOSS",
-    "VICTORY"
+    "VICTORY",
+    "COLLECT"
   ],
   "phases": [
     1,

@@ -29,3 +29,16 @@ test('unavailable storage retains session collection and explicitly reports unsa
   assert.equal(store.collect('alienMosquito',pickup).newlyUnlocked,false);
   assert.equal(new CoreCollectionStore(null).collect('alienMosquito',pickup).persisted,false);
 });
+
+test('gravity collection preserves v1 itch records, rejects mismatched/uncollected cores and persists both',()=>{
+  const storage=memory();storage.setItem(CORE_COLLECTION_KEY,JSON.stringify({version:1,unlocked:['itchCore']}));
+  const store=new CoreCollectionStore(storage);
+  assert.equal(store.has('itchCore'),true);assert.equal(store.has('gravityCore'),false);
+  assert.equal(store.collect('gravityOverload',{id:'gravityCore',collected:false}),null);
+  assert.equal(store.collect('alienMosquito',{id:'gravityCore',collected:true}),null);
+  assert.equal(store.collect('gravityOverload',pickup),null);
+  const drop={id:'gravityCore',collected:true};
+  assert.equal(store.collect('gravityOverload',drop).newlyUnlocked,true);
+  assert.equal(store.collect('gravityOverload',drop).newlyUnlocked,false);
+  const reload=new CoreCollectionStore(storage);assert.deepEqual([...reload.unlocked],['itchCore','gravityCore']);
+});

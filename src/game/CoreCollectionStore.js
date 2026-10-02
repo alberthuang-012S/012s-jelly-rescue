@@ -1,7 +1,9 @@
 export const CORE_COLLECTION_KEY = 'jellyRescue.coreCollection.v1';
 export const CORE_CATALOG = Object.freeze([
   Object.freeze({id:'itchCore',stageId:'alienMosquito',name:'癢癢核心',
-    description:'異星嗡嗡王留下的能量核心。經 PPA 淨化後，封存在圖鑑中。'})
+    image:'itch-core-v1', description:'異星嗡嗡王留下的能量核心。經 PPA 淨化後，封存在圖鑑中。'}),
+  Object.freeze({id:'gravityCore',stageId:'gravityOverload',name:'重力核心',
+    image:'gravity-core-v1', description:'咚咚王解除過載後留下的重力核心。經 NAP 共鳴後，封存在圖鑑中。'})
 ]);
 
 export class CoreCollectionStore {

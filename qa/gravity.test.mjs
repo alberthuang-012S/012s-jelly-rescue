@@ -108,13 +108,31 @@ test('overlapping hazards cost one heart, pause freezes them, Game Over removes 
   c.state = 'WAVE'; c.invulnerability = 0; c.damage(); c.invulnerability = 0; c.damage();
   assert.equal(c.state, 'GAMEOVER'); assert.equal(c.ground.zones.length, 0);
 });
-test('gravity victory clears threats, awards only once, and never grants the mosquito core', () => {
+test('gravity victory clears threats and waits for physical pickup before awarding its own core', () => {
   const c = make(); c.startArrival(); tick(c, 4.5); c.director.clear();
   Object.assign(c.boss, { x: 590, y: 500, hp: 2 }); c.boss.enter('FATIGUE', 2);
   c.ground.add({ ...c.player }); c.tryAction();
   assert.equal(c.state, 'VICTORY'); assert.equal(c.ground.zones.length, 0);
   const score = c.score.score; c.victory(); assert.equal(c.score.score, score);
-  tick(c, 5.6); assert.equal(c.state, 'CLEAR'); assert.equal(c.coreDrop, null);
+  tick(c, 5.6); assert.equal(c.state, 'COLLECT'); assert.equal(c.coreDrop.id, 'gravityCore');
   const store = new CoreCollectionStore(null); assert.equal(store.collect('gravityOverload', c.coreDrop), null);
+  assert.equal(c.navigation.planner(c.coreDrop.radius).canOccupy(c.coreDrop), true);
+  tick(c, .3, { paused: true }); assert.equal(c.state, 'COLLECT');
+  tick(c, .3); assert.equal(c.state, 'COLLECT'); assert.equal(c.tryAction(), false);
+  Object.assign(c.player, { x: c.coreDrop.x, y: c.coreDrop.y }); tick(c, .02);
+  assert.equal(c.state, 'CLEAR'); assert.equal(c.coreDrop.collected, true);
+  assert.equal(store.collect('gravityOverload', c.coreDrop).core.id, 'gravityCore');
+  assert.equal(store.has('itchCore'), false);
   assert.equal(c.score.napHits, 1); assert.equal(c.score.ppaHits, 0);
+});
+
+test('gravity Boss can be hit with ample contact clearance while mobs and cover keep their ranges', () => {
+  const c = make(); c.startArrival(); tick(c, 4.5); c.director.clear();
+  Object.assign(c.boss, { x: 660, y: 500 }); c.boss.enter('CORE_OPEN', 2);
+  assert.equal(c.findTarget(), c.boss); c.tryAction(); assert.equal(c.boss.hp, 16);
+  tick(c, .25); assert.equal(c.lives, 3); assert.equal(c.pulses[0].radius, 165);
+  c.hitPause = 0; c.cooldown = 0; c.boss.x = 666; assert.equal(c.findTarget(), null);
+  const mob = new GravityEnemy('gravityStiff', { x: 620, y: 500 }, 100); c.director.enemies = [mob];
+  assert.equal(c.findTarget(), null); mob.x = 614; assert.equal(c.findTarget(), mob);
+  c.director.clear(); c.boss.x = 570; c.invulnerability = 0; tick(c, .02); assert.equal(c.lives, 2);
 });

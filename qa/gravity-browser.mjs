@@ -83,10 +83,26 @@ try {
   });
   assert.equal(await page.evaluate(() => window.__qaGame.bossCombat.state), 'VICTORY');
   await page.waitForTimeout(2600); await page.screenshot({ path: 'qa/gravity/mini-flight.png' });
+  await page.waitForFunction(() => window.__qaGame.bossCombat.state === 'COLLECT');
+  assert.equal(await page.locator('#boss-result').isVisible(), false);
+  assert.match(await page.locator('#boss-wave').innerText(), /收集重力核心/);
+  assert.equal(await page.evaluate(() => window.__qaGame.coreCollectionStore.has('gravityCore')), false);
+  await page.screenshot({ path: 'qa/gravity/core-pickup-375.png' });
+  await page.locator('[data-dir="up"]').dispatchEvent('pointerdown', { pointerId: 18, pointerType: 'touch' });
   await page.waitForFunction(() => window.__qaGame.state === 'result');
+  await page.locator('[data-dir="up"]').dispatchEvent('pointerup', { pointerId: 18, pointerType: 'touch' });
   assert.equal(await page.locator('#boss-result').isVisible(), true);
   assert.match(await page.locator('#boss-result').innerText(), /重力痠痛危機/);
-  assert.equal(await page.locator('#boss-result .core-reward').isVisible(), false);
+  assert.equal(await page.locator('#boss-result .core-reward').isVisible(), true);
+  assert.match(await page.locator('#boss-result .core-reward').innerText(), /重力核心/);
+  assert.equal(await page.evaluate(() => window.__qaGame.coreCollectionStore.has('gravityCore')), true);
+  assert.equal(await page.evaluate(() => window.__qaGame.coreCollectionStore.has('itchCore')), false);
+  await page.locator('#boss-core-reward button').click();
+  assert.equal(await page.locator('#gravity-core-entry-name').innerText(), '重力核心');
+  assert.equal(await page.locator('#gravity-core-entry-image').isVisible(), true);
+  assert.equal(await page.locator('#core-entry-image').isVisible(), false);
+  await page.screenshot({ path: 'qa/gravity/collection-375.png' });
+  await page.locator('#core-collection-close').click();
   assert.equal(await page.locator('#boss-result-core-note').isVisible(), false);
   await page.locator('#boss-result-details summary').click();
   assert.match(await page.locator('#boss-item-hit-label').innerText(), /NAP/);
@@ -96,7 +112,7 @@ try {
     assert.ok(await page.locator('#boss-result').evaluate(el => el.scrollWidth <= innerWidth));
     await page.screenshot({ path: `qa/gravity/result-${width}.png` });
   }
-  checks.push('Victory float-away, dedicated NAP result and stats, no mosquito reward, fixed buttons in five viewports');
+  checks.push('Victory float-away, physical gravity core pickup, own collection reward, dedicated NAP result and fixed buttons in five viewports');
   await page.locator('#boss-replay').click(); await page.waitForFunction(() => window.__qaGame.state === 'playing');
   assert.equal(await page.evaluate(() => window.__qaGame.selectedStage), 'gravityOverload');
   await page.evaluate(() => {
@@ -119,6 +135,13 @@ try {
   await page.keyboard.press('q'); assert.equal(await page.evaluate(() => window.__qaGame.itemSystem.selectedId), 'NAP');
   assert.ok(await page.evaluate(() => window.__qaGame.npcs.length) > 0);
   checks.push('Replay remains gravity; actual heart loss gives failure, Home, mosquito PPA restoration, Sports rescue/Q/NPC restoration');
+  await page.reload({ waitUntil: 'networkidle' });
+  assert.equal(await page.locator('#core-collection-count').innerText(), '1 / 2');
+  await page.locator('.collection-home-button').click();
+  assert.equal(await page.locator('#gravity-core-entry-name').innerText(), '重力核心');
+  assert.equal(await page.locator('#core-entry-image').isVisible(), false);
+  await page.locator('#core-collection-close').click();
+  checks.push('Gravity core persists after reload and the encyclopedia keeps separate locked/unlocked entries');
   assert.deepEqual(errors, []);
   const report = { status: 'PASS', checks, errors, note: 'QA injects encounter states for visual coverage; full natural flow is tested separately by gravity-simulation.mjs.' };
   await fs.writeFile('qa/gravity/browser-report.json', JSON.stringify(report, null, 2) + '\n');
