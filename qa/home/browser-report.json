@@ -1,0 +1,929 @@
+{
+  "checks": [
+    "1440x900: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "1280x900: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "1366x768: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "1024x768: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "768x1024: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "375x667: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "390x844: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "667x375: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "Arrow/Home/End navigation, wrapping, one tab stop, clear focus, Enter starts selected mission",
+    "Both distinct Boss entries start their respective encounters"
+  ],
+  "layouts": [
+    {
+      "width": 1440,
+      "height": 900,
+      "copy": {
+        "x": 120,
+        "y": 32,
+        "right": 605.515625,
+        "bottom": 346.4375,
+        "width": 485.515625,
+        "height": 314.4375
+      },
+      "lede": {
+        "x": 120,
+        "y": 292.4375,
+        "right": 400,
+        "bottom": 346.4375,
+        "width": 280,
+        "height": 54
+      },
+      "character": {
+        "x": 421.76220703125,
+        "y": 353.3522033691406,
+        "right": 577.25341796875,
+        "bottom": 483.77618408203125,
+        "width": 155.4912109375,
+        "height": 130.42398071289062
+      },
+      "panel": {
+        "x": 663.109375,
+        "y": 32,
+        "right": 1320,
+        "bottom": 516,
+        "width": 656.890625,
+        "height": 484
+      },
+      "primary": {
+        "x": 663.109375,
+        "y": 437,
+        "right": 1320,
+        "bottom": 489,
+        "width": 656.890625,
+        "height": 52
+      },
+      "challenges": {
+        "x": 120,
+        "y": 540,
+        "right": 1320,
+        "bottom": 797.78125,
+        "width": 1200,
+        "height": 257.78125
+      },
+      "collection": {
+        "x": 1150,
+        "y": 540,
+        "right": 1320,
+        "bottom": 580,
+        "width": 170,
+        "height": 40
+      },
+      "specials": [
+        {
+          "x": 120,
+          "y": 594,
+          "right": 712,
+          "bottom": 797.78125,
+          "width": 592,
+          "height": 203.78125
+        },
+        {
+          "x": 728,
+          "y": 594,
+          "right": 1320,
+          "bottom": 797.78125,
+          "width": 592,
+          "height": 203.78125
+        }
+      ],
+      "buttons": [
+        {
+          "x": 663.109375,
+          "y": 437,
+          "right": 1320,
+          "bottom": 489,
+          "width": 656.890625,
+          "height": 52
+        },
+        {
+          "x": 279,
+          "y": 740.78125,
+          "right": 695,
+          "bottom": 780.78125,
+          "width": 416,
+          "height": 40
+        },
+        {
+          "x": 887,
+          "y": 740.78125,
+          "right": 1303,
+          "bottom": 780.78125,
+          "width": 416,
+          "height": 40
+        },
+        {
+          "x": 1150,
+          "y": 540,
+          "right": 1320,
+          "bottom": 580,
+          "width": 170,
+          "height": 40
+        }
+      ],
+      "bodyWidth": 1440,
+      "homeHeight": 900
+    },
+    {
+      "width": 1280,
+      "height": 900,
+      "copy": {
+        "x": 40,
+        "y": 32,
+        "right": 528.234375,
+        "bottom": 344.3125,
+        "width": 488.234375,
+        "height": 312.3125
+      },
+      "lede": {
+        "x": 40,
+        "y": 290.3125,
+        "right": 320,
+        "bottom": 344.3125,
+        "width": 280,
+        "height": 54
+      },
+      "character": {
+        "x": 344.43634033203125,
+        "y": 346.741943359375,
+        "right": 500.01678466796875,
+        "bottom": 477.272705078125,
+        "width": 155.5804443359375,
+        "height": 130.53076171875
+      },
+      "panel": {
+        "x": 579.421875,
+        "y": 32,
+        "right": 1240,
+        "bottom": 516,
+        "width": 660.578125,
+        "height": 484
+      },
+      "primary": {
+        "x": 579.421875,
+        "y": 437,
+        "right": 1240,
+        "bottom": 489,
+        "width": 660.578125,
+        "height": 52
+      },
+      "challenges": {
+        "x": 40,
+        "y": 540,
+        "right": 1240,
+        "bottom": 797.78125,
+        "width": 1200,
+        "height": 257.78125
+      },
+      "collection": {
+        "x": 1070,
+        "y": 540,
+        "right": 1240,
+        "bottom": 580,
+        "width": 170,
+        "height": 40
+      },
+      "specials": [
+        {
+          "x": 40,
+          "y": 594,
+          "right": 632,
+          "bottom": 797.78125,
+          "width": 592,
+          "height": 203.78125
+        },
+        {
+          "x": 648,
+          "y": 594,
+          "right": 1240,
+          "bottom": 797.78125,
+          "width": 592,
+          "height": 203.78125
+        }
+      ],
+      "buttons": [
+        {
+          "x": 579.421875,
+          "y": 437,
+          "right": 1240,
+          "bottom": 489,
+          "width": 660.578125,
+          "height": 52
+        },
+        {
+          "x": 199,
+          "y": 740.78125,
+          "right": 615,
+          "bottom": 780.78125,
+          "width": 416,
+          "height": 40
+        },
+        {
+          "x": 807,
+          "y": 740.78125,
+          "right": 1223,
+          "bottom": 780.78125,
+          "width": 416,
+          "height": 40
+        },
+        {
+          "x": 1070,
+          "y": 540,
+          "right": 1240,
+          "bottom": 580,
+          "width": 170,
+          "height": 40
+        }
+      ],
+      "bodyWidth": 1280,
+      "homeHeight": 900
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "copy": {
+        "x": 83,
+        "y": 24,
+        "right": 569.78125,
+        "bottom": 325.875,
+        "width": 486.78125,
+        "height": 301.875
+      },
+      "lede": {
+        "x": 83,
+        "y": 271.875,
+        "right": 363,
+        "bottom": 325.875,
+        "width": 280,
+        "height": 54
+      },
+      "character": {
+        "x": 386.04022216796875,
+        "y": 313.25677490234375,
+        "right": 541.5066528320312,
+        "bottom": 443.65106201171875,
+        "width": 155.4664306640625,
+        "height": 130.394287109375
+      },
+      "panel": {
+        "x": 624.40625,
+        "y": 24,
+        "right": 1283,
+        "bottom": 476,
+        "width": 658.59375,
+        "height": 452
+      },
+      "primary": {
+        "x": 624.40625,
+        "y": 397,
+        "right": 1283,
+        "bottom": 449,
+        "width": 658.59375,
+        "height": 52
+      },
+      "challenges": {
+        "x": 83,
+        "y": 496,
+        "right": 1283,
+        "bottom": 735.96875,
+        "width": 1200,
+        "height": 239.96875
+      },
+      "collection": {
+        "x": 1113,
+        "y": 496,
+        "right": 1283,
+        "bottom": 536,
+        "width": 170,
+        "height": 40
+      },
+      "specials": [
+        {
+          "x": 83,
+          "y": 550,
+          "right": 675,
+          "bottom": 735.96875,
+          "width": 592,
+          "height": 185.96875
+        },
+        {
+          "x": 691,
+          "y": 550,
+          "right": 1283,
+          "bottom": 735.96875,
+          "width": 592,
+          "height": 185.96875
+        }
+      ],
+      "buttons": [
+        {
+          "x": 624.40625,
+          "y": 397,
+          "right": 1283,
+          "bottom": 449,
+          "width": 658.59375,
+          "height": 52
+        },
+        {
+          "x": 242,
+          "y": 684.96875,
+          "right": 658,
+          "bottom": 720.96875,
+          "width": 416,
+          "height": 36
+        },
+        {
+          "x": 850,
+          "y": 684.96875,
+          "right": 1266,
+          "bottom": 720.96875,
+          "width": 416,
+          "height": 36
+        },
+        {
+          "x": 1113,
+          "y": 496,
+          "right": 1283,
+          "bottom": 536,
+          "width": 170,
+          "height": 40
+        }
+      ],
+      "bodyWidth": 1366,
+      "homeHeight": 768
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "copy": {
+        "x": 32,
+        "y": 24,
+        "right": 422.59375,
+        "bottom": 292.5625,
+        "width": 390.59375,
+        "height": 268.5625
+      },
+      "lede": {
+        "x": 32,
+        "y": 238.5625,
+        "right": 312,
+        "bottom": 292.5625,
+        "width": 280,
+        "height": 54
+      },
+      "character": {
+        "x": 238.80999755859375,
+        "y": 306.88641357421875,
+        "right": 394.36187744140625,
+        "bottom": 437.3829345703125,
+        "width": 155.5518798828125,
+        "height": 130.49652099609375
+      },
+      "panel": {
+        "x": 463.546875,
+        "y": 24,
+        "right": 992,
+        "bottom": 476,
+        "width": 528.453125,
+        "height": 452
+      },
+      "primary": {
+        "x": 463.546875,
+        "y": 397,
+        "right": 992,
+        "bottom": 449,
+        "width": 528.453125,
+        "height": 52
+      },
+      "challenges": {
+        "x": 32,
+        "y": 496,
+        "right": 992,
+        "bottom": 735.96875,
+        "width": 960,
+        "height": 239.96875
+      },
+      "collection": {
+        "x": 822,
+        "y": 496,
+        "right": 992,
+        "bottom": 536,
+        "width": 170,
+        "height": 40
+      },
+      "specials": [
+        {
+          "x": 32,
+          "y": 550,
+          "right": 504,
+          "bottom": 735.96875,
+          "width": 472,
+          "height": 185.96875
+        },
+        {
+          "x": 520,
+          "y": 550,
+          "right": 992,
+          "bottom": 735.96875,
+          "width": 472,
+          "height": 185.96875
+        }
+      ],
+      "buttons": [
+        {
+          "x": 463.546875,
+          "y": 397,
+          "right": 992,
+          "bottom": 449,
+          "width": 528.453125,
+          "height": 52
+        },
+        {
+          "x": 191,
+          "y": 684.96875,
+          "right": 487,
+          "bottom": 720.96875,
+          "width": 296,
+          "height": 36
+        },
+        {
+          "x": 679,
+          "y": 684.96875,
+          "right": 975,
+          "bottom": 720.96875,
+          "width": 296,
+          "height": 36
+        },
+        {
+          "x": 822,
+          "y": 496,
+          "right": 992,
+          "bottom": 536,
+          "width": 170,
+          "height": 40
+        }
+      ],
+      "bodyWidth": 1024,
+      "homeHeight": 768
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "copy": {
+        "x": 24,
+        "y": 24,
+        "right": 285.75,
+        "bottom": 270.5625,
+        "width": 261.75,
+        "height": 246.5625
+      },
+      "lede": {
+        "x": 24,
+        "y": 220.1875,
+        "right": 285.75,
+        "bottom": 270.5625,
+        "width": 261.75,
+        "height": 50.375
+      },
+      "character": {
+        "x": 136.7714385986328,
+        "y": 354.3470764160156,
+        "right": 274.69732666015625,
+        "bottom": 469.9315185546875,
+        "width": 137.92588806152344,
+        "height": 115.58444213867188
+      },
+      "panel": {
+        "x": 307.75,
+        "y": 24,
+        "right": 744,
+        "bottom": 500,
+        "width": 436.25,
+        "height": 476
+      },
+      "primary": {
+        "x": 307.75,
+        "y": 421,
+        "right": 744,
+        "bottom": 473,
+        "width": 436.25,
+        "height": 52
+      },
+      "challenges": {
+        "x": 24,
+        "y": 522,
+        "right": 744,
+        "bottom": 792.28125,
+        "width": 720,
+        "height": 270.28125
+      },
+      "collection": {
+        "x": 574,
+        "y": 522,
+        "right": 744,
+        "bottom": 562,
+        "width": 170,
+        "height": 40
+      },
+      "specials": [
+        {
+          "x": 24,
+          "y": 576,
+          "right": 376,
+          "bottom": 792.28125,
+          "width": 352,
+          "height": 216.28125
+        },
+        {
+          "x": 392,
+          "y": 576,
+          "right": 744,
+          "bottom": 792.28125,
+          "width": 352,
+          "height": 216.28125
+        }
+      ],
+      "buttons": [
+        {
+          "x": 307.75,
+          "y": 421,
+          "right": 744,
+          "bottom": 473,
+          "width": 436.25,
+          "height": 52
+        },
+        {
+          "x": 135,
+          "y": 737.28125,
+          "right": 361,
+          "bottom": 777.28125,
+          "width": 226,
+          "height": 40
+        },
+        {
+          "x": 503,
+          "y": 737.28125,
+          "right": 729,
+          "bottom": 777.28125,
+          "width": 226,
+          "height": 40
+        },
+        {
+          "x": 574,
+          "y": 522,
+          "right": 744,
+          "bottom": 562,
+          "width": 170,
+          "height": 40
+        }
+      ],
+      "bodyWidth": 768,
+      "homeHeight": 1024
+    },
+    {
+      "width": 375,
+      "height": 667,
+      "copy": {
+        "x": 58.75,
+        "y": 19,
+        "right": 316.25,
+        "bottom": 179.75,
+        "width": 257.5,
+        "height": 160.75
+      },
+      "lede": {
+        "x": 58.75,
+        "y": 164.25,
+        "right": 316.25,
+        "bottom": 179.75,
+        "width": 257.5,
+        "height": 15.5
+      },
+      "character": {
+        "x": 130.64175415039062,
+        "y": 190.76145935058594,
+        "right": 244.34262084960938,
+        "bottom": 282.81866455078125,
+        "width": 113.70086669921875,
+        "height": 92.05720520019531
+      },
+      "panel": {
+        "x": 16,
+        "y": 307.75,
+        "right": 359,
+        "bottom": 659.75,
+        "width": 343,
+        "height": 352
+      },
+      "primary": {
+        "x": 16,
+        "y": 607.75,
+        "right": 359,
+        "bottom": 659.75,
+        "width": 343,
+        "height": 52
+      },
+      "challenges": {
+        "x": 16,
+        "y": 669.75,
+        "right": 359,
+        "bottom": 1502.125,
+        "width": 343,
+        "height": 832.375
+      },
+      "collection": {
+        "x": 16,
+        "y": 1454.125,
+        "right": 359,
+        "bottom": 1502.125,
+        "width": 343,
+        "height": 48
+      },
+      "specials": [
+        {
+          "x": 16,
+          "y": 669.75,
+          "right": 359,
+          "bottom": 1048.9375,
+          "width": 343,
+          "height": 379.1875
+        },
+        {
+          "x": 16,
+          "y": 1060.9375,
+          "right": 359,
+          "bottom": 1442.125,
+          "width": 343,
+          "height": 381.1875
+        }
+      ],
+      "buttons": [
+        {
+          "x": 16,
+          "y": 607.75,
+          "right": 359,
+          "bottom": 659.75,
+          "width": 343,
+          "height": 52
+        },
+        {
+          "x": 31,
+          "y": 989.9375,
+          "right": 344,
+          "bottom": 1033.9375,
+          "width": 313,
+          "height": 44
+        },
+        {
+          "x": 31,
+          "y": 1383.125,
+          "right": 344,
+          "bottom": 1427.125,
+          "width": 313,
+          "height": 44
+        },
+        {
+          "x": 16,
+          "y": 1454.125,
+          "right": 359,
+          "bottom": 1502.125,
+          "width": 343,
+          "height": 48
+        }
+      ],
+      "bodyWidth": 375,
+      "homeHeight": 1516
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "copy": {
+        "x": 66.25,
+        "y": 19,
+        "right": 323.75,
+        "bottom": 183.4375,
+        "width": 257.5,
+        "height": 164.4375
+      },
+      "lede": {
+        "x": 66.25,
+        "y": 167.9375,
+        "right": 323.75,
+        "bottom": 183.4375,
+        "width": 257.5,
+        "height": 15.5
+      },
+      "character": {
+        "x": 137.97097778320312,
+        "y": 189.78160095214844,
+        "right": 252.01339721679688,
+        "bottom": 282.2617492675781,
+        "width": 114.04241943359375,
+        "height": 92.48014831542969
+      },
+      "panel": {
+        "x": 16,
+        "y": 311.4375,
+        "right": 374,
+        "bottom": 663.4375,
+        "width": 358,
+        "height": 352
+      },
+      "primary": {
+        "x": 16,
+        "y": 611.4375,
+        "right": 374,
+        "bottom": 663.4375,
+        "width": 358,
+        "height": 52
+      },
+      "challenges": {
+        "x": 16,
+        "y": 673.4375,
+        "right": 374,
+        "bottom": 1505.8125,
+        "width": 358,
+        "height": 832.375
+      },
+      "collection": {
+        "x": 16,
+        "y": 1457.8125,
+        "right": 374,
+        "bottom": 1505.8125,
+        "width": 358,
+        "height": 48
+      },
+      "specials": [
+        {
+          "x": 16,
+          "y": 673.4375,
+          "right": 374,
+          "bottom": 1052.625,
+          "width": 358,
+          "height": 379.1875
+        },
+        {
+          "x": 16,
+          "y": 1064.625,
+          "right": 374,
+          "bottom": 1445.8125,
+          "width": 358,
+          "height": 381.1875
+        }
+      ],
+      "buttons": [
+        {
+          "x": 16,
+          "y": 611.4375,
+          "right": 374,
+          "bottom": 663.4375,
+          "width": 358,
+          "height": 52
+        },
+        {
+          "x": 31,
+          "y": 993.625,
+          "right": 359,
+          "bottom": 1037.625,
+          "width": 328,
+          "height": 44
+        },
+        {
+          "x": 31,
+          "y": 1386.8125,
+          "right": 359,
+          "bottom": 1430.8125,
+          "width": 328,
+          "height": 44
+        },
+        {
+          "x": 16,
+          "y": 1457.8125,
+          "right": 374,
+          "bottom": 1505.8125,
+          "width": 358,
+          "height": 48
+        }
+      ],
+      "bodyWidth": 390,
+      "homeHeight": 1520
+    },
+    {
+      "width": 667,
+      "height": 375,
+      "copy": {
+        "x": 28,
+        "y": 127.0625,
+        "right": 278,
+        "bottom": 279.9375,
+        "width": 250,
+        "height": 152.875
+      },
+      "lede": {
+        "x": 28,
+        "y": 266.4375,
+        "right": 278,
+        "bottom": 279.9375,
+        "width": 250,
+        "height": 13.5
+      },
+      "character": {
+        "x": 0,
+        "y": 0,
+        "right": 0,
+        "bottom": 0,
+        "width": 0,
+        "height": 0
+      },
+      "panel": {
+        "x": 296,
+        "y": 15,
+        "right": 656,
+        "bottom": 392,
+        "width": 360,
+        "height": 377
+      },
+      "primary": {
+        "x": 296,
+        "y": 344,
+        "right": 656,
+        "bottom": 392,
+        "width": 360,
+        "height": 48
+      },
+      "challenges": {
+        "x": 28,
+        "y": 410,
+        "right": 656,
+        "bottom": 1242.375,
+        "width": 628,
+        "height": 832.375
+      },
+      "collection": {
+        "x": 28,
+        "y": 1194.375,
+        "right": 656,
+        "bottom": 1242.375,
+        "width": 628,
+        "height": 48
+      },
+      "specials": [
+        {
+          "x": 28,
+          "y": 410,
+          "right": 656,
+          "bottom": 789.1875,
+          "width": 628,
+          "height": 379.1875
+        },
+        {
+          "x": 28,
+          "y": 801.1875,
+          "right": 656,
+          "bottom": 1182.375,
+          "width": 628,
+          "height": 381.1875
+        }
+      ],
+      "buttons": [
+        {
+          "x": 296,
+          "y": 344,
+          "right": 656,
+          "bottom": 392,
+          "width": 360,
+          "height": 48
+        },
+        {
+          "x": 43,
+          "y": 730.1875,
+          "right": 641,
+          "bottom": 774.1875,
+          "width": 598,
+          "height": 44
+        },
+        {
+          "x": 43,
+          "y": 1123.375,
+          "right": 641,
+          "bottom": 1167.375,
+          "width": 598,
+          "height": 44
+        },
+        {
+          "x": 28,
+          "y": 1194.375,
+          "right": 656,
+          "bottom": 1242.375,
+          "width": 628,
+          "height": 48
+        }
+      ],
+      "bodyWidth": 667,
+      "homeHeight": 1257
+    }
+  ],
+  "errors": []
+}

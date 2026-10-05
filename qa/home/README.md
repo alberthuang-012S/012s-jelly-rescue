@@ -1,0 +1,7 @@
+# Desktop home refresh
+
+Patrol selection is separate from the two special challenges. The desktop hero and patrol panel occupy the first row; illustrated Boss cards share the next row, with the encyclopedia beside the section heading. Intro text starts near the top, the primary CTA has a brighter fill, and text/keyboard hints are larger. The compact desktop rules keep all three start buttons and the encyclopedia visible at 1366×768 and 1024×768. Existing art assets and stage IDs are reused.
+
+Mission tabs have one Tab stop. Left/Right wrap through the five missions, Home/End select the first/last, and Tab moves to the primary start button. Focused tabs never leave held movement keys in the game. Boss buttons have distinct accessible names. The collection dialog returns focus to its trigger.
+
+Run `node qa/home-browser.mjs` with `JELLY_PLAYWRIGHT_MODULE` set to a local Playwright installation. It starts its own server on 4193 and saves ignored PNGs plus `browser-report.json`. Coverage: 1440×900, 1280×900, 1366×768, 1024×768, 768×1024, 375×667, 390×844 and 667×375; mission previews, CTA labels, art loading, page geometry, keyboard navigation, Boss entries and encyclopedia focus. Portrait keeps its stacked scroll layout and the mascot's height. Existing scenario QA checks loading/exit/replay across all main stages.

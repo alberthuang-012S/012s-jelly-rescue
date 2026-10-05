@@ -58,7 +58,12 @@
           </div>
 
           <button id="start-button" class="primary-button" type="button"><span>開始教學</span><span class="button-arrow">→</span></button>
-          <div class="control-hint"><span>WASD 移動</span><i></i><span>Q 切換道具</span><i></i><span>E 使用</span></div>
+          <div class="control-hint"><span><kbd>WASD</kbd> 移動</span><i></i><span><kbd>Q</kbd> 切換道具</span><i></i><span><kbd>E</kbd> 使用</span></div>
+        </div>
+
+        <section class="home-challenges" aria-labelledby="home-challenges-title">
+          <div class="home-challenges-heading"><h2 id="home-challenges-title">特殊挑戰</h2><p>挑戰 Boss，收集專屬核心。</p></div>
+          <div class="home-challenge-grid">
           <article class="special-stage-card" aria-labelledby="special-title">
             <div class="special-stage-art" aria-hidden="true"><img src="./reference/runtime/alien-king-portrait-v1.webp" alt="" loading="lazy"></div>
             <span class="stage-featured-kicker">SPECIAL STAGE</span>
@@ -66,7 +71,7 @@
             <strong>ALIEN MOSQUITO INVASION</strong>
             <p>神秘的嗡嗡聲籠罩 Jelly Park。<br>使用 PPA+1 擊退異星蚊群，挑戰異星嗡嗡王！</p>
             <div class="stage-featured-meta"><span>SPECIAL</span><span>BOSS BATTLE</span></div>
-            <button id="special-start" class="secondary-button" type="button">開始挑戰 <span>→</span></button>
+            <button id="special-start" class="secondary-button" type="button" aria-label="開始異星蚊災挑戰">挑戰蚊災 <span>→</span></button>
           </article>
           <article class="special-stage-card gravity-stage-card" aria-labelledby="gravity-title">
             <div class="special-stage-art gravity-stage-art" aria-hidden="true"><canvas id="gravity-portrait" width="320" height="190"></canvas></div>
@@ -74,10 +79,11 @@
             <h2 id="gravity-title">重力痠痛危機</h2><strong>GRAVITY OVERLOAD</strong>
             <p>神秘的重力裝置降落運動公園！<br>使用 NAP+1 共鳴能量，解除重力咚咚王的過載裝置。</p>
             <div class="stage-featured-meta"><span>SPECIAL</span><span>BOSS BATTLE</span></div>
-            <button id="gravity-start" class="secondary-button" type="button">開始挑戰 <span>→</span></button>
+            <button id="gravity-start" class="secondary-button" type="button" aria-label="開始重力痠痛危機挑戰">挑戰重力 <span>→</span></button>
           </article>
+          </div>
           <button class="collection-home-button" type="button" data-open-collection>核心圖鑑 <span id="core-collection-count">0 / 2</span></button>
-        </div>
+        </section>
 
         <div class="home-character-wrap" aria-hidden="true">
           <div class="character-glow"></div>

@@ -42,7 +42,7 @@ const phase = (until, name, ppaRatio, tolerance, warningDuration, eventCooldown,
   ({ until, name, ppaRatio, tolerance, warningDuration, eventCooldown, maxSimultaneous, spawnCooldown: 5, scenarioPool });
 const makeStage = (id, name, displayName, subtitle, npcTypes, zones, landmarks, phases, scenarioWeights, spawnPoints) => ({
   id, name, displayName, subtitle, timed: true, duration: 60,
-  world: { width: 768, height: 1152 }, fitToScreen: true, cameraPadding: { top: 110, bottom: 145 },
+  world: { width: 768, height: 1152 }, fitToScreen: true,
   start: { x: 384, y: 1055 }, maxNpcs: 9, seedCount: npcTypes.length,
   event: { initialDelay: 2.4, spawnCooldown: 5, initialTolerance: 11, warningDuration: 3.6 },
   routes, npcTypes, zones, landmarks: alignSolidLandmarks(id, landmarks), phases,

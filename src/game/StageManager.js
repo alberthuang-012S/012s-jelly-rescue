@@ -292,7 +292,7 @@ export const SPECIAL_STAGE_DEFS = Object.freeze({
     start: { x: 384, y: 760 } }),
   [GRAVITY_STAGE_ID]: Object.freeze({ ...STAGE_DEFS.sports, id: GRAVITY_STAGE_ID,
     mode: 'boss', mapId: 'sports', name: 'Gravity Overload', displayName: '重力痠痛危機',
-    timed: false, maxNpcs: 0, cameraPadding: { top: 145, bottom: 165 },
+    timed: false, maxNpcs: 0,
     start: { x: 384, y: 740 } })
 });
 
