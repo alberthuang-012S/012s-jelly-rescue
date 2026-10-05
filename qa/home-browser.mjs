@@ -18,7 +18,7 @@ try {
     await route.fulfill({ response, body: (await response.text()).replace('new Game();', 'window.__qaGame = new Game();') });
   });
   await page.goto('http://localhost:4193', { waitUntil: 'networkidle' });
-  for (const [width, height] of [[1440, 900], [1280, 900], [1366, 768], [1024, 768], [768, 1024], [375, 667], [390, 844], [667, 375]]) {
+  for (const [width, height] of [[1440, 900], [1280, 900], [1366, 768], [1024, 768], [1920, 1080], [768, 1024], [375, 667], [390, 844], [667, 375]]) {
     await page.setViewportSize({ width, height });
     await page.evaluate(() => { window.__qaGame.showHome(); document.querySelector('#home-screen').scrollTop = 0; });
     const layout = await page.evaluate(() => {
@@ -26,7 +26,7 @@ try {
         const r = document.querySelector(selector).getBoundingClientRect();
         return { x: r.x, y: r.y, right: r.right, bottom: r.bottom, width: r.width, height: r.height };
       };
-      return { copy: rect('.home-copy'), lede: rect('.home-lede'), character: rect('.home-character-crop'), panel: rect('.stage-selector-panel'),
+      return { copy: rect('.home-copy'), lede: rect('.home-lede'), character: rect('.home-character-crop'), characterAnchor: rect('.home-character-wrap'), panel: rect('.stage-selector-panel'),
         primary: rect('#start-button'), challenges: rect('.home-challenges'), collection: rect('.collection-home-button'),
         specials: [rect('.special-stage-card'), rect('.gravity-stage-card')],
         buttons: ['#start-button', '#special-start', '#gravity-start', '.collection-home-button'].map(rect),
@@ -41,7 +41,10 @@ try {
       assert.ok(layout.primary.bottom < height);
       assert.ok(layout.specials[0].right < layout.specials[1].x);
       assert.ok(layout.character.y >= layout.lede.bottom + 3 || layout.character.x >= layout.lede.right + 8, `${width}: hero overlaps the intro ${JSON.stringify(layout)}`);
-      assert.ok(Math.abs((layout.character.x + layout.character.right) / 2 - (layout.copy.x + layout.copy.right) / 2) < 2, `${width}: mascot must be centered in the hero column`);
+      assert.ok(Math.abs((layout.characterAnchor.x + layout.characterAnchor.right) / 2 - width / 2) < 1, `${width}: mascot must be at the viewport horizontal center`);
+      assert.ok(Math.abs((layout.characterAnchor.y + layout.characterAnchor.bottom) / 2 - height / 2) < 1, `${width}: mascot must be at the viewport vertical center`);
+      assert.ok(layout.character.right + 8 <= layout.panel.x, `${width}: mascot must not overlap the mission panel`);
+      assert.ok(layout.characterAnchor.bottom <= layout.specials[0].y, `${width}: mascot must not overlap Boss cards`);
       assert.match(await page.locator('.control-hint').innerText(), /WASD.*↑ ↓ ← →.*移動/);
       assert.ok(layout.buttons.every(r => r.bottom <= height), `${width}: challenge entry below the first screen ${JSON.stringify(layout)}`);
     }

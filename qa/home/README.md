@@ -1,6 +1,6 @@
 # Desktop home refresh
 
-The mascot is centered within the left hero column, with space below the intro to prevent overlap during its float animation. The movement hint includes WASD and ↑ ↓ ← →. Tutorial modals, resident help bubbles and rescue replies share the same dialogue as Park/Mountain; browser QA exercises both treatments at 1366×768 and 390×844.
+On desktop, the mascot is anchored at the entire viewport's horizontal and vertical center. Equal left/right columns keep the title and mission selector clear of the central mascot, and the Boss cards start below it. The movement hint includes WASD and ↑ ↓ ← →. Tutorial modals, resident help bubbles and rescue replies share the same dialogue as Park/Mountain; browser QA exercises both treatments at 1366×768 and 390×844. Desktop center coordinates and overlap checks also cover 1920×1080.
 
 Patrol selection is separate from the two special challenges. The desktop hero and patrol panel occupy the first row; illustrated Boss cards share the next row, with the encyclopedia beside the section heading. Intro text starts near the top, the primary CTA has a brighter fill, and text/keyboard hints are larger. The compact desktop rules keep all three start buttons and the encyclopedia visible at 1366×768 and 1024×768. Existing art assets and stage IDs are reused.
 

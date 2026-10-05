@@ -4,6 +4,7 @@
     "1280x900: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
     "1366x768: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
     "1024x768: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "1920x1080: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
     "768x1024: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
     "375x667: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
     "390x844: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
@@ -20,10 +21,10 @@
       "copy": {
         "x": 120,
         "y": 32,
-        "right": 605.515625,
-        "bottom": 518.4375,
-        "width": 485.515625,
-        "height": 486.4375
+        "right": 592,
+        "bottom": 346.4375,
+        "width": 472,
+        "height": 314.4375
       },
       "lede": {
         "x": 120,
@@ -34,93 +35,101 @@
         "height": 54
       },
       "character": {
-        "x": 293.6226806640625,
-        "y": 374.0939025878906,
-        "right": 431.8460693359375,
-        "bottom": 490.03424072265625,
-        "width": 138.223388671875,
-        "height": 115.94033813476562
+        "x": 620,
+        "y": 349.6934814453125,
+        "right": 820,
+        "bottom": 549.6934814453125,
+        "width": 200,
+        "height": 200
+      },
+      "characterAnchor": {
+        "x": 620,
+        "y": 350,
+        "right": 820,
+        "bottom": 550,
+        "width": 200,
+        "height": 200
       },
       "panel": {
-        "x": 663.109375,
+        "x": 848,
         "y": 32,
         "right": 1320,
-        "bottom": 516,
-        "width": 656.890625,
-        "height": 484
+        "bottom": 509,
+        "width": 472,
+        "height": 477
       },
       "primary": {
-        "x": 663.109375,
-        "y": 437,
+        "x": 848,
+        "y": 431,
         "right": 1320,
-        "bottom": 489,
-        "width": 656.890625,
+        "bottom": 483,
+        "width": 472,
         "height": 52
       },
       "challenges": {
         "x": 120,
-        "y": 542.4375,
+        "y": 582,
         "right": 1320,
-        "bottom": 800.21875,
+        "bottom": 839.78125,
         "width": 1200,
         "height": 257.78125
       },
       "collection": {
         "x": 1150,
-        "y": 542.4375,
+        "y": 582,
         "right": 1320,
-        "bottom": 582.4375,
+        "bottom": 622,
         "width": 170,
         "height": 40
       },
       "specials": [
         {
           "x": 120,
-          "y": 596.4375,
+          "y": 636,
           "right": 712,
-          "bottom": 800.21875,
+          "bottom": 839.78125,
           "width": 592,
           "height": 203.78125
         },
         {
           "x": 728,
-          "y": 596.4375,
+          "y": 636,
           "right": 1320,
-          "bottom": 800.21875,
+          "bottom": 839.78125,
           "width": 592,
           "height": 203.78125
         }
       ],
       "buttons": [
         {
-          "x": 663.109375,
-          "y": 437,
+          "x": 848,
+          "y": 431,
           "right": 1320,
-          "bottom": 489,
-          "width": 656.890625,
+          "bottom": 483,
+          "width": 472,
           "height": 52
         },
         {
           "x": 279,
-          "y": 743.21875,
+          "y": 782.78125,
           "right": 695,
-          "bottom": 783.21875,
+          "bottom": 822.78125,
           "width": 416,
           "height": 40
         },
         {
           "x": 887,
-          "y": 743.21875,
+          "y": 782.78125,
           "right": 1303,
-          "bottom": 783.21875,
+          "bottom": 822.78125,
           "width": 416,
           "height": 40
         },
         {
           "x": 1150,
-          "y": 542.4375,
+          "y": 582,
           "right": 1320,
-          "bottom": 582.4375,
+          "bottom": 622,
           "width": 170,
           "height": 40
         }
@@ -134,10 +143,10 @@
       "copy": {
         "x": 40,
         "y": 32,
-        "right": 528.234375,
-        "bottom": 516.3125,
-        "width": 488.234375,
-        "height": 484.3125
+        "right": 524.8125,
+        "bottom": 344.3125,
+        "width": 484.8125,
+        "height": 312.3125
       },
       "lede": {
         "x": 40,
@@ -148,93 +157,101 @@
         "height": 54
       },
       "character": {
-        "x": 214.94776916503906,
-        "y": 365.2999572753906,
-        "right": 353.23974609375,
-        "bottom": 481.3223876953125,
-        "width": 138.29197692871094,
-        "height": 116.02243041992188
+        "x": 550.40625,
+        "y": 354.4087219238281,
+        "right": 729.59375,
+        "bottom": 533.59619140625,
+        "width": 179.1875,
+        "height": 179.18746948242188
+      },
+      "characterAnchor": {
+        "x": 550.40625,
+        "y": 360.40625,
+        "right": 729.59375,
+        "bottom": 539.59375,
+        "width": 179.1875,
+        "height": 179.1875
       },
       "panel": {
-        "x": 579.421875,
+        "x": 755.1875,
         "y": 32,
         "right": 1240,
-        "bottom": 516,
-        "width": 660.578125,
-        "height": 484
+        "bottom": 509,
+        "width": 484.8125,
+        "height": 477
       },
       "primary": {
-        "x": 579.421875,
-        "y": 437,
+        "x": 755.1875,
+        "y": 431,
         "right": 1240,
-        "bottom": 489,
-        "width": 660.578125,
+        "bottom": 483,
+        "width": 484.8125,
         "height": 52
       },
       "challenges": {
         "x": 40,
-        "y": 540.3125,
+        "y": 571.59375,
         "right": 1240,
-        "bottom": 798.09375,
+        "bottom": 829.375,
         "width": 1200,
         "height": 257.78125
       },
       "collection": {
         "x": 1070,
-        "y": 540.3125,
+        "y": 571.59375,
         "right": 1240,
-        "bottom": 580.3125,
+        "bottom": 611.59375,
         "width": 170,
         "height": 40
       },
       "specials": [
         {
           "x": 40,
-          "y": 594.3125,
+          "y": 625.59375,
           "right": 632,
-          "bottom": 798.09375,
+          "bottom": 829.375,
           "width": 592,
           "height": 203.78125
         },
         {
           "x": 648,
-          "y": 594.3125,
+          "y": 625.59375,
           "right": 1240,
-          "bottom": 798.09375,
+          "bottom": 829.375,
           "width": 592,
           "height": 203.78125
         }
       ],
       "buttons": [
         {
-          "x": 579.421875,
-          "y": 437,
+          "x": 755.1875,
+          "y": 431,
           "right": 1240,
-          "bottom": 489,
-          "width": 660.578125,
+          "bottom": 483,
+          "width": 484.8125,
           "height": 52
         },
         {
           "x": 199,
-          "y": 741.09375,
+          "y": 772.375,
           "right": 615,
-          "bottom": 781.09375,
+          "bottom": 812.375,
           "width": 416,
           "height": 40
         },
         {
           "x": 807,
-          "y": 741.09375,
+          "y": 772.375,
           "right": 1223,
-          "bottom": 781.09375,
+          "bottom": 812.375,
           "width": 416,
           "height": 40
         },
         {
           "x": 1070,
-          "y": 540.3125,
+          "y": 571.59375,
           "right": 1240,
-          "bottom": 580.3125,
+          "bottom": 611.59375,
           "width": 170,
           "height": 40
         }
@@ -248,10 +265,10 @@
       "copy": {
         "x": 83,
         "y": 24,
-        "right": 569.78125,
-        "bottom": 497.875,
-        "width": 486.78125,
-        "height": 473.875
+        "right": 560.0625,
+        "bottom": 325.875,
+        "width": 477.0625,
+        "height": 301.875
       },
       "lede": {
         "x": 83,
@@ -262,99 +279,107 @@
         "height": 54
       },
       "character": {
-        "x": 257.2649230957031,
-        "y": 353.5172119140625,
-        "right": 395.4850769042969,
-        "bottom": 469.4537048339844,
-        "width": 138.22015380859375,
-        "height": 115.93649291992188
+        "x": 587.3828125,
+        "y": 287.7701416015625,
+        "right": 778.6171875,
+        "bottom": 479.0045166015625,
+        "width": 191.234375,
+        "height": 191.234375
+      },
+      "characterAnchor": {
+        "x": 587.3828125,
+        "y": 288.3828125,
+        "right": 778.6171875,
+        "bottom": 479.6171875,
+        "width": 191.234375,
+        "height": 191.234375
       },
       "panel": {
-        "x": 624.40625,
+        "x": 805.921875,
         "y": 24,
         "right": 1283,
-        "bottom": 476,
-        "width": 658.59375,
-        "height": 452
+        "bottom": 475,
+        "width": 477.078125,
+        "height": 451
       },
       "primary": {
-        "x": 624.40625,
+        "x": 805.921875,
         "y": 397,
         "right": 1283,
         "bottom": 449,
-        "width": 658.59375,
+        "width": 477.078125,
         "height": 52
       },
       "challenges": {
         "x": 83,
-        "y": 517.875,
+        "y": 504,
         "right": 1283,
-        "bottom": 757.84375,
+        "bottom": 743.96875,
         "width": 1200,
         "height": 239.96875
       },
       "collection": {
         "x": 1113,
-        "y": 517.875,
+        "y": 504,
         "right": 1283,
-        "bottom": 557.875,
+        "bottom": 544,
         "width": 170,
         "height": 40
       },
       "specials": [
         {
           "x": 83,
-          "y": 571.875,
+          "y": 558,
           "right": 675,
-          "bottom": 757.84375,
+          "bottom": 743.96875,
           "width": 592,
           "height": 185.96875
         },
         {
           "x": 691,
-          "y": 571.875,
+          "y": 558,
           "right": 1283,
-          "bottom": 757.84375,
+          "bottom": 743.96875,
           "width": 592,
           "height": 185.96875
         }
       ],
       "buttons": [
         {
-          "x": 624.40625,
+          "x": 805.921875,
           "y": 397,
           "right": 1283,
           "bottom": 449,
-          "width": 658.59375,
+          "width": 477.078125,
           "height": 52
         },
         {
           "x": 242,
-          "y": 706.84375,
+          "y": 692.96875,
           "right": 658,
-          "bottom": 742.84375,
+          "bottom": 728.96875,
           "width": 416,
           "height": 36
         },
         {
           "x": 850,
-          "y": 706.84375,
+          "y": 692.96875,
           "right": 1266,
-          "bottom": 742.84375,
+          "bottom": 728.96875,
           "width": 416,
           "height": 36
         },
         {
           "x": 1113,
-          "y": 517.875,
+          "y": 504,
           "right": 1283,
-          "bottom": 557.875,
+          "bottom": 544,
           "width": 170,
           "height": 40
         }
       ],
       "bodyWidth": 1366,
-      "homeHeight": 778
+      "homeHeight": 784
     },
     {
       "width": 1024,
@@ -362,10 +387,10 @@
       "copy": {
         "x": 32,
         "y": 24,
-        "right": 422.59375,
-        "bottom": 464.5625,
-        "width": 390.59375,
-        "height": 440.5625
+        "right": 419.84375,
+        "bottom": 292.5625,
+        "width": 387.84375,
+        "height": 268.5625
       },
       "lede": {
         "x": 32,
@@ -376,99 +401,229 @@
         "height": 54
       },
       "character": {
-        "x": 158.1375732421875,
-        "y": 325.01336669921875,
-        "right": 296.4249267578125,
-        "bottom": 441.0302734375,
-        "width": 138.287353515625,
-        "height": 116.01690673828125
+        "x": 440.3203125,
+        "y": 306.4962158203125,
+        "right": 583.6796875,
+        "bottom": 449.8555908203125,
+        "width": 143.359375,
+        "height": 143.359375
+      },
+      "characterAnchor": {
+        "x": 440.3203125,
+        "y": 312.3203125,
+        "right": 583.6796875,
+        "bottom": 455.6796875,
+        "width": 143.359375,
+        "height": 143.359375
       },
       "panel": {
-        "x": 463.546875,
+        "x": 604.140625,
         "y": 24,
         "right": 992,
-        "bottom": 476,
-        "width": 528.453125,
-        "height": 452
+        "bottom": 475,
+        "width": 387.859375,
+        "height": 451
       },
       "primary": {
-        "x": 463.546875,
+        "x": 604.140625,
         "y": 397,
         "right": 992,
         "bottom": 449,
-        "width": 528.453125,
+        "width": 387.859375,
         "height": 52
       },
       "challenges": {
         "x": 32,
-        "y": 496,
+        "y": 504,
         "right": 992,
-        "bottom": 735.96875,
+        "bottom": 743.96875,
         "width": 960,
         "height": 239.96875
       },
       "collection": {
         "x": 822,
-        "y": 496,
+        "y": 504,
         "right": 992,
-        "bottom": 536,
+        "bottom": 544,
         "width": 170,
         "height": 40
       },
       "specials": [
         {
           "x": 32,
-          "y": 550,
+          "y": 558,
           "right": 504,
-          "bottom": 735.96875,
+          "bottom": 743.96875,
           "width": 472,
           "height": 185.96875
         },
         {
           "x": 520,
-          "y": 550,
+          "y": 558,
           "right": 992,
-          "bottom": 735.96875,
+          "bottom": 743.96875,
           "width": 472,
           "height": 185.96875
         }
       ],
       "buttons": [
         {
-          "x": 463.546875,
+          "x": 604.140625,
           "y": 397,
           "right": 992,
           "bottom": 449,
-          "width": 528.453125,
+          "width": 387.859375,
           "height": 52
         },
         {
           "x": 191,
-          "y": 684.96875,
+          "y": 692.96875,
           "right": 487,
-          "bottom": 720.96875,
+          "bottom": 728.96875,
           "width": 296,
           "height": 36
         },
         {
           "x": 679,
-          "y": 684.96875,
+          "y": 692.96875,
           "right": 975,
-          "bottom": 720.96875,
+          "bottom": 728.96875,
           "width": 296,
           "height": 36
         },
         {
           "x": 822,
-          "y": 496,
+          "y": 504,
           "right": 992,
-          "bottom": 536,
+          "bottom": 544,
           "width": 170,
           "height": 40
         }
       ],
       "bodyWidth": 1024,
-      "homeHeight": 768
+      "homeHeight": 784
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "copy": {
+        "x": 360,
+        "y": 32,
+        "right": 832,
+        "bottom": 346.4375,
+        "width": 472,
+        "height": 314.4375
+      },
+      "lede": {
+        "x": 360,
+        "y": 292.4375,
+        "right": 640,
+        "bottom": 346.4375,
+        "width": 280,
+        "height": 54
+      },
+      "character": {
+        "x": 860,
+        "y": 438.4564208984375,
+        "right": 1060,
+        "bottom": 638.4564208984375,
+        "width": 200,
+        "height": 200
+      },
+      "characterAnchor": {
+        "x": 860,
+        "y": 440,
+        "right": 1060,
+        "bottom": 640,
+        "width": 200,
+        "height": 200
+      },
+      "panel": {
+        "x": 1088,
+        "y": 32,
+        "right": 1560,
+        "bottom": 509,
+        "width": 472,
+        "height": 477
+      },
+      "primary": {
+        "x": 1088,
+        "y": 431,
+        "right": 1560,
+        "bottom": 483,
+        "width": 472,
+        "height": 52
+      },
+      "challenges": {
+        "x": 360,
+        "y": 672,
+        "right": 1560,
+        "bottom": 929.78125,
+        "width": 1200,
+        "height": 257.78125
+      },
+      "collection": {
+        "x": 1390,
+        "y": 672,
+        "right": 1560,
+        "bottom": 712,
+        "width": 170,
+        "height": 40
+      },
+      "specials": [
+        {
+          "x": 360,
+          "y": 726,
+          "right": 952,
+          "bottom": 929.78125,
+          "width": 592,
+          "height": 203.78125
+        },
+        {
+          "x": 968,
+          "y": 726,
+          "right": 1560,
+          "bottom": 929.78125,
+          "width": 592,
+          "height": 203.78125
+        }
+      ],
+      "buttons": [
+        {
+          "x": 1088,
+          "y": 431,
+          "right": 1560,
+          "bottom": 483,
+          "width": 472,
+          "height": 52
+        },
+        {
+          "x": 519,
+          "y": 872.78125,
+          "right": 935,
+          "bottom": 912.78125,
+          "width": 416,
+          "height": 40
+        },
+        {
+          "x": 1127,
+          "y": 872.78125,
+          "right": 1543,
+          "bottom": 912.78125,
+          "width": 416,
+          "height": 40
+        },
+        {
+          "x": 1390,
+          "y": 672,
+          "right": 1560,
+          "bottom": 712,
+          "width": 170,
+          "height": 40
+        }
+      ],
+      "bodyWidth": 1920,
+      "homeHeight": 1080
     },
     {
       "width": 768,
@@ -490,12 +645,20 @@
         "height": 50.375
       },
       "character": {
-        "x": 85.83515167236328,
-        "y": 354.88592529296875,
-        "right": 223.88358306884766,
-        "bottom": 470.616943359375,
-        "width": 138.04843139648438,
-        "height": 115.73101806640625
+        "x": 85.71196746826172,
+        "y": 355.971435546875,
+        "right": 224.00679779052734,
+        "bottom": 471.997314453125,
+        "width": 138.29483032226562,
+        "height": 116.02587890625
+      },
+      "characterAnchor": {
+        "x": 74.875,
+        "y": 340,
+        "right": 234.875,
+        "bottom": 500,
+        "width": 160,
+        "height": 160
       },
       "panel": {
         "x": 307.75,
@@ -604,12 +767,20 @@
         "height": 15.5
       },
       "character": {
-        "x": 130.7018585205078,
-        "y": 190.0844268798828,
-        "right": 244.28250122070312,
-        "bottom": 281.9929504394531,
-        "width": 113.58064270019531,
-        "height": 91.90852355957031
+        "x": 130.51548767089844,
+        "y": 186.70838928222656,
+        "right": 244.4688720703125,
+        "bottom": 279.0782165527344,
+        "width": 113.95338439941406,
+        "height": 92.36982727050781
+      },
+      "characterAnchor": {
+        "x": 121.5,
+        "y": 186.75,
+        "right": 253.5,
+        "bottom": 298.75,
+        "width": 132,
+        "height": 112
       },
       "panel": {
         "x": 16,
@@ -718,12 +889,20 @@
         "height": 15.5
       },
       "character": {
-        "x": 137.99745178222656,
-        "y": 190.14691162109375,
-        "right": 251.9869384765625,
-        "bottom": 282.56146240234375,
-        "width": 113.98948669433594,
-        "height": 92.41455078125
+        "x": 138.2235107421875,
+        "y": 193.25717163085938,
+        "right": 251.7608642578125,
+        "bottom": 285.1121826171875,
+        "width": 113.537353515625,
+        "height": 91.85501098632812
+      },
+      "characterAnchor": {
+        "x": 129,
+        "y": 190.4375,
+        "right": 261,
+        "bottom": 302.4375,
+        "width": 132,
+        "height": 112
       },
       "panel": {
         "x": 16,
@@ -832,6 +1011,14 @@
         "height": 13.5
       },
       "character": {
+        "x": 0,
+        "y": 0,
+        "right": 0,
+        "bottom": 0,
+        "width": 0,
+        "height": 0
+      },
+      "characterAnchor": {
         "x": 0,
         "y": 0,
         "right": 0,
