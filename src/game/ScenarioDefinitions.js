@@ -40,7 +40,7 @@ const ROLE_SCENARIO_DIALOGUE = Object.freeze({
       SALLOW_CARE: Object.freeze({ RESCUED: '謝謝，剛好能慢慢喝杯咖啡！' })
     }),
     shopper: Object.freeze({
-      PIGMENT_CARE: Object.freeze({ WARNING: '出門逛逛，也想照顧一下自己。', RESCUED: '謝謝，我繼續去逛逛囉！' }),
+      PIGMENT_CARE: Object.freeze({ WARNING: '出門逛逛前，想處理一下黑色素沉澱。', RESCUED: '謝謝，我繼續去逛逛囉！' }),
       SALLOW_CARE: Object.freeze({ RESCUED: '謝謝，我繼續去逛逛囉！' })
     })
   }),
