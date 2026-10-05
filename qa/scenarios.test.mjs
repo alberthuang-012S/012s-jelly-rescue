@@ -112,7 +112,7 @@ test('route planner accounts for detours and rejects physically disconnected tar
   assert.equal(sealed.pathDistance(from, to), Infinity);
 });
 
-test('two-event fairness tests both deadlines and stops dispatch before stage end', () => {
+test('two-event fairness keeps resident deadlines while late dispatch continues until stage end', () => {
   const stage = { ...STAGE_DEFS.sports, world: { width: 1200, height: 1200 }, obstacles: [] };
   const player = { x: 50, y: 600, speed: 100, radius: 25 };
   const director = new EventDirector(stage, { getPlayer: () => player });
@@ -121,9 +121,32 @@ test('two-event fairness tests both deadlines and stops dispatch before stage en
   assert.equal(director.isScheduleFeasible(npc, [existing], 2, 1, 10), false);
   existing.tolerance = 20;
   assert.equal(director.isScheduleFeasible(npc, [existing], 12, 3, 10), true);
-  assert.equal(director.isScheduleFeasible(npc, [], 12, 3, 50), false);
-  assert.equal(director.triggerEvent(59, [makeNpc()]), false);
+  assert.equal(director.isScheduleFeasible(npc, [], 12, 3, 50), true);
+  assert.equal(director.triggerEvent(59, [makeNpc()], CONDITIONS.SORENESS), true);
+  assert.equal(director.triggerEvent(60, [makeNpc()], CONDITIONS.SORENESS), false);
 });
+
+test('all timed patrols automatically dispatch in the final seconds like Park/Mountain', () => withRandom(() => {
+  for (const id of STAGE_ORDER.filter(id => STAGE_DEFS[id].timed !== false)) {
+    const stage = STAGE_DEFS[id];
+    for (const stageTime of [50, 55, 59]) {
+      const player = { ...stage.start, speed: 205, radius: 25 };
+      let eventCount = 0;
+      const director = new EventDirector(stage, { getPlayer: () => player, onEvent: () => { eventCount++; } });
+      const npc = new NPC({ id: `late-${id}`, role: stage.npcTypes[0], ...stage.start, stageId: id, path: [] });
+      director.nextEventAt = stageTime; director.nextSpawnAt = Infinity;
+      director.update(.05, stageTime, [npc]);
+      assert.equal(eventCount, 1, `${id}/${stageTime}: automatic late event`);
+      assert.equal(npc.state, STATES.WARNING);
+      assert.equal(npc.maxTolerance, director.getTolerance(stageTime), `${id}: preserve normal tolerance`);
+      const idle = new NPC({ id: `end-${id}`, role: stage.npcTypes[0], ...stage.start, stageId: id, path: [] });
+      director.nextEventAt = stage.duration;
+      director.update(.05, stage.duration, [idle]);
+      assert.equal(eventCount, 1, `${id}: no event after timer ends`);
+      assert.equal(idle.state, STATES.NORMAL);
+    }
+  }
+}));
 
 test('seeded scenario sampling respects family ratios, city introduction and role compatibility', () => withRandom(() => {
   for (const [id, expected] of [['city', .56], ['sports', .15]]) {

@@ -63,6 +63,7 @@ export class EventDirector {
   }
 
   triggerEvent(stageTime, npcs, forcedCondition = null) {
+    if (stageTime >= this.stage.duration) return false;
     const events = npcs.filter((npc) => npc.active && ACTIVE_STATES.includes(npc.state));
     if (events.length >= this.getMaxSimultaneous(stageTime)) return false;
     let candidates = npcs.filter((npc) => npc.canReceiveEvent(stageTime));
@@ -206,7 +207,10 @@ export class EventDirector {
     if (!player) return true;
     const travel = this.routeTime(player, candidate);
     const newDeadline = Math.max(tolerance + warningDuration, travel + 1.5);
-    if (!Number.isFinite(travel) || newDeadline > this.stage.duration - stageTime) return false;
+    // Match Park/Mountain: keep dispatching until the patrol timer reaches zero.
+    // A resident's full warning/tolerance window may extend beyond patrol end;
+    // the round ends normally and unfinished events are not counted as failures.
+    if (!Number.isFinite(travel)) return false;
     if (!events.length) return travel + 1.5 <= newDeadline;
     // Current stages cap simultaneous events at two. Test both visit orders,
     // including time to use/switch items, against each resident's own deadline.

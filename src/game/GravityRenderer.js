@@ -68,8 +68,12 @@ export class GravityRenderer {
   portrait(canvas) {
     if (!canvas) return;
     const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.save(); ctx.translate(canvas.width / 2, 148);
-    const scale = this.ready(this.art?.boss) ? .82 : .64; ctx.scale(scale, scale);
+    const hasArt = this.ready(this.art?.boss);
+    const scale = hasArt ? .82 : .64;
+    // Creature drawing is anchored at the feet; center its portrait body rather
+    // than treating that foot anchor as the center of the preview canvas.
+    ctx.save(); ctx.translate(canvas.width / 2, canvas.height / 2 + (hasArt ? 84 : 72) * scale);
+    ctx.scale(scale, scale);
     this.creature(ctx, { x: 0, y: 0, phase: 1, state: 'CHASE', coreOpen: false }, 0, true); ctx.restore();
   }
   atmosphere(ctx, combat) {

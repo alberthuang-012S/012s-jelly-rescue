@@ -1453,8 +1453,8 @@ body { background: #deeff5; }
 
 /* NAP special encounter: shared controls/results, distinct cool-blue identity. */
 .gravity-stage-card { border-color: #9acede88; background: linear-gradient(135deg, #263b50, #35445f); }
-.gravity-stage-art { background: linear-gradient(90deg, #26415899, #54709244), url('../reference/runtime/gravity-map-v1.webp') center 42% / cover; }
-.gravity-stage-art canvas { width: 240px; height: 150px; filter: drop-shadow(0 6px 8px #15304766); }
+.gravity-stage-art { position: relative; background: linear-gradient(90deg, #26415899, #54709244), url('../reference/runtime/gravity-map-v1.webp') center 42% / cover; }
+.gravity-stage-art canvas { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 240px; max-width: calc(100% * 1.45); height: auto; filter: drop-shadow(0 6px 8px #15304766); }
 .gravity-stage-card > strong { color: #b5e5ed; }
 .gravity-stage-card .secondary-button { color: #263e58; background: #cfecf2; }
 .is-boss-stage[data-boss-item='NAP'] #boss-health { border-color: #9cc9e1; background: #213b50ed; }
@@ -1558,7 +1558,7 @@ body { background: #deeff5; }
   }
   .home-challenge-grid .special-stage-art { grid-column: 1; grid-row: 1 / 7; align-self: stretch; height: auto; margin: -16px 0 -16px -16px; border-radius: 17px 0 0 17px; border-bottom: 0; border-right: 1px solid #b9ddea33; }
   .home-challenge-grid .special-stage-art img { width: 116px; height: 116px; }
-  .home-challenge-grid .gravity-stage-art canvas { width: 176px; height: 110px; }
+  .home-challenge-grid .gravity-stage-art canvas { width: 176px; height: auto; }
   .home-challenge-grid .special-stage-card > :not(.special-stage-art) { grid-column: 2; min-width: 0; }
   .home-challenge-grid .special-stage-card .stage-featured-kicker { font-size: 10px; }
   .home-challenge-grid .special-stage-card h2 { margin: 6px 0 2px; font-size: 23px; line-height: 1.2; }

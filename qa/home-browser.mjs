@@ -32,6 +32,26 @@ try {
         buttons: ['#start-button', '#special-start', '#gravity-start', '.collection-home-button'].map(rect),
         bodyWidth: document.body.scrollWidth, homeHeight: document.querySelector('#home-screen').scrollHeight };
     });
+    const gravityPortrait = await page.evaluate(() => {
+      const canvas = document.querySelector('#gravity-portrait'), art = canvas.parentElement;
+      const data = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+      let left = canvas.width, right = -1, top = canvas.height, bottom = -1;
+      for (let y = 0; y < canvas.height; y++) for (let x = 0; x < canvas.width; x++) {
+        if (data[(y * canvas.width + x) * 4 + 3] < 160) continue;
+        left = Math.min(left, x); right = Math.max(right, x); top = Math.min(top, y); bottom = Math.max(bottom, y);
+      }
+      const c = canvas.getBoundingClientRect(), a = art.getBoundingClientRect();
+      return { pixels: right >= left, dx: c.x + (left + right + 1) / 2 * c.width / canvas.width - (a.x + a.width / 2),
+        dy: c.y + (top + bottom + 1) / 2 * c.height / canvas.height - (a.y + a.height / 2),
+        bodyLeft: c.x + left * c.width / canvas.width, bodyRight: c.x + (right + 1) * c.width / canvas.width,
+        bodyTop: c.y + top * c.height / canvas.height, bodyBottom: c.y + (bottom + 1) * c.height / canvas.height,
+        art: { left: a.x, right: a.right, top: a.y, bottom: a.bottom } };
+    });
+    assert.equal(gravityPortrait.pixels, true, `${width}: Boss thumbnail has no pixels`);
+    assert.ok(Math.abs(gravityPortrait.dx) < 3 && Math.abs(gravityPortrait.dy) < 3, `${width}: Boss thumbnail is not centered ${JSON.stringify(gravityPortrait)}`);
+    assert.ok(gravityPortrait.bodyLeft >= gravityPortrait.art.left && gravityPortrait.bodyRight <= gravityPortrait.art.right
+      && gravityPortrait.bodyTop >= gravityPortrait.art.top && gravityPortrait.bodyBottom <= gravityPortrait.art.bottom, `${width}: Boss thumbnail body is clipped`);
+    layout.gravityPortrait = gravityPortrait;
     report.layouts.push({ width, height, ...layout });
     await page.screenshot({ path: `qa/home/home-${width}x${height}.png` });
     assert.ok(layout.bodyWidth <= width);

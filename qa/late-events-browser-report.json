@@ -1,0 +1,825 @@
+{
+  "checks": [
+    {
+      "width": 1366,
+      "height": 768,
+      "stageId": "park",
+      "rescue": false,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "ITCH",
+        "at": 59.05,
+        "tolerance": 7.4
+      },
+      "afterAction": "WARNING",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 0,
+        "rescuedCount": 0,
+        "failedCount": 0,
+        "ppaSuccess": 0,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 0,
+          "NAP": 0,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 0,
+        "responseSpeed": 0,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 23,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "stageId": "park",
+      "rescue": true,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "ITCH",
+        "at": 59.05,
+        "tolerance": 7.4
+      },
+      "afterAction": "RESCUED",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 150,
+        "rescuedCount": 1,
+        "failedCount": 0,
+        "ppaSuccess": 1,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 1,
+          "NAP": 0,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 1,
+        "responseSpeed": 100,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 88,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "stageId": "mountain",
+      "rescue": false,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "SORENESS",
+        "at": 59.05,
+        "tolerance": 8.1
+      },
+      "afterAction": "WARNING",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 0,
+        "rescuedCount": 0,
+        "failedCount": 0,
+        "ppaSuccess": 0,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 0,
+          "NAP": 0,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 0,
+        "responseSpeed": 0,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 23,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "stageId": "mountain",
+      "rescue": true,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "ITCH",
+        "at": 59.05,
+        "tolerance": 8.1
+      },
+      "afterAction": "RESCUED",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 150,
+        "rescuedCount": 1,
+        "failedCount": 0,
+        "ppaSuccess": 1,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 1,
+          "NAP": 0,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 1,
+        "responseSpeed": 100,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 88,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "stageId": "city",
+      "rescue": false,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "ITCH",
+        "at": 59.05,
+        "tolerance": 8.5
+      },
+      "afterAction": "WARNING",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 0,
+        "rescuedCount": 0,
+        "failedCount": 0,
+        "ppaSuccess": 0,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 0,
+          "NAP": 0,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 0,
+        "responseSpeed": 0,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 23,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "stageId": "city",
+      "rescue": true,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "SORENESS",
+        "at": 59.05,
+        "tolerance": 8.5
+      },
+      "afterAction": "RESCUED",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 150,
+        "rescuedCount": 1,
+        "failedCount": 0,
+        "ppaSuccess": 0,
+        "napSuccess": 1,
+        "itemSuccess": {
+          "PPA": 0,
+          "NAP": 1,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 1,
+        "responseSpeed": 100,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 88,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "stageId": "sports",
+      "rescue": false,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "SORENESS",
+        "at": 59.05,
+        "tolerance": 8.2
+      },
+      "afterAction": "WARNING",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 0,
+        "rescuedCount": 0,
+        "failedCount": 0,
+        "ppaSuccess": 0,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 0,
+          "NAP": 0,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 0,
+        "responseSpeed": 0,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 23,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "stageId": "sports",
+      "rescue": true,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "SORENESS",
+        "at": 59.05,
+        "tolerance": 8.2
+      },
+      "afterAction": "RESCUED",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 150,
+        "rescuedCount": 1,
+        "failedCount": 0,
+        "ppaSuccess": 0,
+        "napSuccess": 1,
+        "itemSuccess": {
+          "PPA": 0,
+          "NAP": 1,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 1,
+        "responseSpeed": 100,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 88,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "stageId": "garden",
+      "rescue": false,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "PIGMENTATION",
+        "at": 59.05,
+        "tolerance": 8.5
+      },
+      "afterAction": "WARNING",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 0,
+        "rescuedCount": 0,
+        "failedCount": 0,
+        "ppaSuccess": 0,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 0,
+          "NAP": 0,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 0,
+        "responseSpeed": 0,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 23,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "stageId": "garden",
+      "rescue": true,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "PIGMENTATION",
+        "at": 59.05,
+        "tolerance": 8.5
+      },
+      "afterAction": "RESCUED",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 150,
+        "rescuedCount": 1,
+        "failedCount": 0,
+        "ppaSuccess": 0,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 0,
+          "NAP": 0,
+          "DDM": 1,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 1,
+        "responseSpeed": 100,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 88,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "stageId": "park",
+      "rescue": false,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "ITCH",
+        "at": 59.05,
+        "tolerance": 7.4
+      },
+      "afterAction": "WARNING",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 0,
+        "rescuedCount": 0,
+        "failedCount": 0,
+        "ppaSuccess": 0,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 0,
+          "NAP": 0,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 0,
+        "responseSpeed": 0,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 23,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "stageId": "park",
+      "rescue": true,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "ITCH",
+        "at": 59.05,
+        "tolerance": 7.4
+      },
+      "afterAction": "RESCUED",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 150,
+        "rescuedCount": 1,
+        "failedCount": 0,
+        "ppaSuccess": 1,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 1,
+          "NAP": 0,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 1,
+        "responseSpeed": 100,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 88,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "stageId": "mountain",
+      "rescue": false,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "ITCH",
+        "at": 59.05,
+        "tolerance": 8.1
+      },
+      "afterAction": "WARNING",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 0,
+        "rescuedCount": 0,
+        "failedCount": 0,
+        "ppaSuccess": 0,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 0,
+          "NAP": 0,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 0,
+        "responseSpeed": 0,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 23,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "stageId": "mountain",
+      "rescue": true,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "ITCH",
+        "at": 59.05,
+        "tolerance": 8.1
+      },
+      "afterAction": "RESCUED",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 150,
+        "rescuedCount": 1,
+        "failedCount": 0,
+        "ppaSuccess": 1,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 1,
+          "NAP": 0,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 1,
+        "responseSpeed": 100,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 88,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "stageId": "city",
+      "rescue": false,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "SORENESS",
+        "at": 59.05,
+        "tolerance": 8.5
+      },
+      "afterAction": "WARNING",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 0,
+        "rescuedCount": 0,
+        "failedCount": 0,
+        "ppaSuccess": 0,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 0,
+          "NAP": 0,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 0,
+        "responseSpeed": 0,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 23,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "stageId": "city",
+      "rescue": true,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "ITCH",
+        "at": 59.05,
+        "tolerance": 8.5
+      },
+      "afterAction": "RESCUED",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 150,
+        "rescuedCount": 1,
+        "failedCount": 0,
+        "ppaSuccess": 1,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 1,
+          "NAP": 0,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 1,
+        "responseSpeed": 100,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 88,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "stageId": "sports",
+      "rescue": false,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "SORENESS",
+        "at": 59.05,
+        "tolerance": 8.2
+      },
+      "afterAction": "WARNING",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 0,
+        "rescuedCount": 0,
+        "failedCount": 0,
+        "ppaSuccess": 0,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 0,
+          "NAP": 0,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 0,
+        "responseSpeed": 0,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 23,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "stageId": "sports",
+      "rescue": true,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "SORENESS",
+        "at": 59.05,
+        "tolerance": 8.2
+      },
+      "afterAction": "RESCUED",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 150,
+        "rescuedCount": 1,
+        "failedCount": 0,
+        "ppaSuccess": 0,
+        "napSuccess": 1,
+        "itemSuccess": {
+          "PPA": 0,
+          "NAP": 1,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 1,
+        "responseSpeed": 100,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 88,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "stageId": "garden",
+      "rescue": false,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "PIGMENTATION",
+        "at": 59.05,
+        "tolerance": 8.5
+      },
+      "afterAction": "WARNING",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 0,
+        "rescuedCount": 0,
+        "failedCount": 0,
+        "ppaSuccess": 0,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 0,
+          "NAP": 0,
+          "DDM": 0,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 0,
+        "responseSpeed": 0,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 23,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "stageId": "garden",
+      "rescue": true,
+      "spawned": {
+        "state": "WARNING",
+        "condition": "PIGMENTATION",
+        "at": 59.05,
+        "tolerance": 8.5
+      },
+      "afterAction": "RESCUED",
+      "settled": {
+        "state": "result",
+        "remaining": 0,
+        "lives": 3,
+        "score": 150,
+        "rescuedCount": 1,
+        "failedCount": 0,
+        "ppaSuccess": 0,
+        "napSuccess": 0,
+        "itemSuccess": {
+          "PPA": 0,
+          "NAP": 0,
+          "DDM": 1,
+          "SSW": 0
+        },
+        "wrongItemCount": 0,
+        "averageResponseTime": 0,
+        "fastestResponseTime": 0,
+        "maxCombo": 0,
+        "rescueRate": 1,
+        "responseSpeed": 100,
+        "toolAccuracy": 1,
+        "comboScore": 20,
+        "performanceScore": 88,
+        "distanceTravelled": 0
+      },
+      "frozen": true,
+      "resultVisible": true
+    }
+  ],
+  "errors": []
+}

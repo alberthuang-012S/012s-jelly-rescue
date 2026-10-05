@@ -73,14 +73,15 @@ test('garden teaches DDM then SSW, retries a deferred introduction and bounds mi
   } finally { Math.random = original; }
 });
 
-test('garden fairness defers impossible final events and allows two feasible pressure events', () => {
+test('garden keeps the two-event limit and continues dispatching until patrol end', () => {
   const player = { ...stage.start, speed: 205, radius: 25 };
   const director = new EventDirector(stage, { getPlayer: () => player }); const npcs = []; director.seed(npcs);
   npcs.forEach((npc, i) => { npc.x = 384; npc.y = 1000 - i * 40; });
   assert.equal(director.triggerEvent(46, npcs, CONDITIONS.PIGMENTATION), true);
   assert.equal(director.triggerEvent(47, npcs, CONDITIONS.SALLOWNESS), true);
   assert.equal(director.triggerEvent(48, npcs), false);
-  npcs.forEach(npc => npc.clearEvent(0)); assert.equal(director.triggerEvent(55, npcs), false);
+  npcs.forEach(npc => npc.clearEvent(0)); assert.equal(director.triggerEvent(55, npcs), true);
+  npcs.forEach(npc => npc.clearEvent(0)); assert.equal(director.triggerEvent(60, npcs), false);
 });
 
 test('DDM and SSW scoring preserves legacy statistics and independent v1 personal bests', () => {
