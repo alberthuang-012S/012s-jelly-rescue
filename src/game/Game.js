@@ -1152,6 +1152,8 @@ export class Game {
     const isPortraitPhone = frameHeight > frameWidth && frameWidth < 760;
     this.layoutMode = isPortraitPhone ? 'mobile-portrait' : frameWidth < 760 ? 'mobile-landscape' : 'desktop';
     this.cameraMode = isPortraitPhone ? 'fit' : 'follow';
+    this.desktopWideView = frameWidth >= 760 && window.innerWidth >= 961 && window.innerHeight > 520;
+    this.gameShell.classList.toggle('is-desktop-wide', this.desktopWideView);
     // Gameplay remains in world coordinates, while the render viewport tracks
     // the actual CSS box. This prevents a 960x540 canvas from being stretched
     // into a large desktop frame before the DPR is applied.
@@ -1653,17 +1655,20 @@ export class Game {
       };
     }
 
-    // Landscape keeps the portrait world readable as a normal RPG slice. The
-    // width-driven zoom fills the desktop frame without stretching the map,
-    // while the minimum keeps smaller landscape devices from feeling distant.
-    const scale = Math.max(1.45, this.viewport.width / (stage.world.width * 0.98));
+    // Desktop reserves two side rails and shows more of the vertical route.
+    // Use the same map proportion for Mountain, whose larger world previously
+    // hit the minimum zoom. Phone landscape retains its readable close view.
+    const widthScale = this.viewport.width / (stage.world.width * 0.98);
+    const scale = this.desktopWideView ? widthScale * 0.65 : Math.max(1.45, widthScale);
     const visibleWidth = this.viewport.width / scale;
     const visibleHeight = this.viewport.height / scale;
-    const targetX = clamp(
-      this.player.x - visibleWidth / 2,
-      0,
-      Math.max(0, stage.world.width - visibleWidth)
-    );
+    const targetX = visibleWidth >= stage.world.width
+      ? (stage.world.width - visibleWidth) / 2
+      : clamp(
+        this.player.x - visibleWidth / 2,
+        0,
+        Math.max(0, stage.world.width - visibleWidth)
+      );
     const targetY = clamp(
       this.player.y - visibleHeight / 2,
       0,

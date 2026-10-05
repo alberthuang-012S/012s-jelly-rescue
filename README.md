@@ -19,6 +19,7 @@ Open `http://localhost:4173`.
 - Focus a treatment card with Tab, then press Enter/Space to select it; focused Use supports Enter/Space once per press, including key-repeat suppression.
 - Switching windows or hiding the page clears held movement/touch directions and pauses the round. Returning shows a Continue button; the timer and NPC events resume only after confirmation.
 - Mobile portrait: full-screen vertical play with virtual D-pad, fixed item dock and large 使用 button
+- Desktop (window at least 961px wide and over 520px high): the camera shows roughly 56% of the vertical map, with a centered play area and dedicated side rails for score/Boss status and timer/lives/items. Dialogue keeps its screen-space font size, and offscreen help stays at the play area's edge. Smaller windows retain the existing mobile framing.
 - Visual direction: bright pixel-town palette, deep navy outlines and enamel UI panels inspired by the sibling `012s-jelly-world` project
 - Debug panel: click `DEBUG` or press `F2`
 

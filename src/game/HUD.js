@@ -260,6 +260,11 @@ export class HUD {
   getIndicatorBounds(game) {
     const width = game.viewport.width;
     const height = game.viewport.height;
+    if (game.desktopWideView) {
+      const railWidth = width * (1 - 0.65 / 0.98) / 2;
+      return { left: railWidth + 56, right: width - railWidth - 56,
+        top: 50, bottom: Math.max(50, height - 50) };
+    }
     const isPortrait = game.layoutMode === 'mobile-portrait';
     const isLandscapePhone = game.layoutMode === 'mobile-landscape'
       || (height <= 520 && width <= 1100);

@@ -1,0 +1,226 @@
+{
+  "checks": [
+    "961x521: seven stages show 55–58% height, centered map, readable bubbles and nonoverlapping side rails",
+    "1024x768: seven stages show 55–58% height, centered map, readable bubbles and nonoverlapping side rails",
+    "1366x768: seven stages show 55–58% height, centered map, readable bubbles and nonoverlapping side rails",
+    "1440x900: seven stages show 55–58% height, centered map, readable bubbles and nonoverlapping side rails",
+    "1920x1080: seven stages show 55–58% height, centered map, readable bubbles and nonoverlapping side rails",
+    "Side-rail NAP click rescues once; exit confirmation resumes correctly",
+    "Offscreen help retains its direction label; both Boss cores remain physical pickups",
+    "Resizing to phone landscape removes desktop rails and resizing back restores them"
+  ],
+  "layouts": [
+    {
+      "label": "tutorial/961x521",
+      "visibleHeight": 0.5615176151761516,
+      "mapLeft": 144.96428571428564,
+      "mapRight": 716.0357142857143
+    },
+    {
+      "label": "park/961x521",
+      "visibleHeight": 0.5615176151761516,
+      "mapLeft": 144.96428571428564,
+      "mapRight": 716.0357142857143
+    },
+    {
+      "label": "mountain/961x521",
+      "visibleHeight": 0.5615176151761517,
+      "mapLeft": 144.9642857142857,
+      "mapRight": 716.0357142857142
+    },
+    {
+      "label": "city/961x521",
+      "visibleHeight": 0.5615176151761516,
+      "mapLeft": 144.96428571428564,
+      "mapRight": 716.0357142857143
+    },
+    {
+      "label": "sports/961x521",
+      "visibleHeight": 0.5615176151761516,
+      "mapLeft": 144.96428571428564,
+      "mapRight": 716.0357142857143
+    },
+    {
+      "label": "alienMosquito/961x521",
+      "visibleHeight": 0.5615176151761516,
+      "mapLeft": 144.96428571428564,
+      "mapRight": 716.0357142857143
+    },
+    {
+      "label": "gravityOverload/961x521",
+      "visibleHeight": 0.5615176151761516,
+      "mapLeft": 144.96428571428564,
+      "mapRight": 716.0357142857143
+    },
+    {
+      "label": "tutorial/1024x768",
+      "visibleHeight": 0.5618094642484885,
+      "mapLeft": 165.67346938775512,
+      "mapRight": 818.3265306122449
+    },
+    {
+      "label": "park/1024x768",
+      "visibleHeight": 0.5618094642484885,
+      "mapLeft": 165.67346938775512,
+      "mapRight": 818.3265306122449
+    },
+    {
+      "label": "mountain/1024x768",
+      "visibleHeight": 0.5618094642484887,
+      "mapLeft": 165.6734693877551,
+      "mapRight": 818.3265306122448
+    },
+    {
+      "label": "city/1024x768",
+      "visibleHeight": 0.5618094642484885,
+      "mapLeft": 165.67346938775512,
+      "mapRight": 818.3265306122449
+    },
+    {
+      "label": "sports/1024x768",
+      "visibleHeight": 0.5618094642484885,
+      "mapLeft": 165.67346938775512,
+      "mapRight": 818.3265306122449
+    },
+    {
+      "label": "alienMosquito/1024x768",
+      "visibleHeight": 0.5618094642484885,
+      "mapLeft": 165.67346938775512,
+      "mapRight": 818.3265306122449
+    },
+    {
+      "label": "gravityOverload/1024x768",
+      "visibleHeight": 0.5618094642484885,
+      "mapLeft": 165.67346938775512,
+      "mapRight": 818.3265306122449
+    },
+    {
+      "label": "tutorial/1366x768",
+      "visibleHeight": 0.5628717948717948,
+      "mapLeft": 218.87755102040816,
+      "mapRight": 1081.1224489795918
+    },
+    {
+      "label": "park/1366x768",
+      "visibleHeight": 0.5628717948717948,
+      "mapLeft": 218.87755102040816,
+      "mapRight": 1081.1224489795918
+    },
+    {
+      "label": "mountain/1366x768",
+      "visibleHeight": 0.5628717948717948,
+      "mapLeft": 218.87755102040816,
+      "mapRight": 1081.1224489795918
+    },
+    {
+      "label": "city/1366x768",
+      "visibleHeight": 0.5628717948717948,
+      "mapLeft": 218.87755102040816,
+      "mapRight": 1081.1224489795918
+    },
+    {
+      "label": "sports/1366x768",
+      "visibleHeight": 0.5628717948717948,
+      "mapLeft": 218.87755102040816,
+      "mapRight": 1081.1224489795918
+    },
+    {
+      "label": "alienMosquito/1366x768",
+      "visibleHeight": 0.5628717948717948,
+      "mapLeft": 218.87755102040816,
+      "mapRight": 1081.1224489795918
+    },
+    {
+      "label": "gravityOverload/1366x768",
+      "visibleHeight": 0.5628717948717948,
+      "mapLeft": 218.87755102040816,
+      "mapRight": 1081.1224489795918
+    },
+    {
+      "label": "tutorial/1440x900",
+      "visibleHeight": 0.562871794871795,
+      "mapLeft": 235.7142857142857,
+      "mapRight": 1164.2857142857142
+    },
+    {
+      "label": "park/1440x900",
+      "visibleHeight": 0.562871794871795,
+      "mapLeft": 235.7142857142857,
+      "mapRight": 1164.2857142857142
+    },
+    {
+      "label": "mountain/1440x900",
+      "visibleHeight": 0.5628717948717948,
+      "mapLeft": 235.71428571428564,
+      "mapRight": 1164.2857142857144
+    },
+    {
+      "label": "city/1440x900",
+      "visibleHeight": 0.562871794871795,
+      "mapLeft": 235.7142857142857,
+      "mapRight": 1164.2857142857142
+    },
+    {
+      "label": "sports/1440x900",
+      "visibleHeight": 0.562871794871795,
+      "mapLeft": 235.7142857142857,
+      "mapRight": 1164.2857142857142
+    },
+    {
+      "label": "alienMosquito/1440x900",
+      "visibleHeight": 0.562871794871795,
+      "mapLeft": 235.7142857142857,
+      "mapRight": 1164.2857142857142
+    },
+    {
+      "label": "gravityOverload/1440x900",
+      "visibleHeight": 0.562871794871795,
+      "mapLeft": 235.7142857142857,
+      "mapRight": 1164.2857142857142
+    },
+    {
+      "label": "tutorial/1920x1080",
+      "visibleHeight": 0.5629279472854892,
+      "mapLeft": 241.1020408163265,
+      "mapRight": 1190.8979591836733
+    },
+    {
+      "label": "park/1920x1080",
+      "visibleHeight": 0.5629279472854892,
+      "mapLeft": 241.1020408163265,
+      "mapRight": 1190.8979591836733
+    },
+    {
+      "label": "mountain/1920x1080",
+      "visibleHeight": 0.5629279472854892,
+      "mapLeft": 241.10204081632654,
+      "mapRight": 1190.8979591836735
+    },
+    {
+      "label": "city/1920x1080",
+      "visibleHeight": 0.5629279472854892,
+      "mapLeft": 241.1020408163265,
+      "mapRight": 1190.8979591836733
+    },
+    {
+      "label": "sports/1920x1080",
+      "visibleHeight": 0.5629279472854892,
+      "mapLeft": 241.1020408163265,
+      "mapRight": 1190.8979591836733
+    },
+    {
+      "label": "alienMosquito/1920x1080",
+      "visibleHeight": 0.5629279472854892,
+      "mapLeft": 241.1020408163265,
+      "mapRight": 1190.8979591836733
+    },
+    {
+      "label": "gravityOverload/1920x1080",
+      "visibleHeight": 0.5629279472854892,
+      "mapLeft": 241.1020408163265,
+      "mapRight": 1190.8979591836733
+    }
+  ],
+  "errors": [],
+  "status": "PASS"
+}
