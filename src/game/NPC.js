@@ -462,7 +462,7 @@ export class NPC {
     const isRescued = this.state === STATES.RESCUED;
     const isFailed = this.state === STATES.FAILED;
     const stageDialogue = scenarioDialogue(this.role, this.scenarioType, this.state, this.stageId);
-    const legacyDialogue = ['park', 'mountain'].includes(this.stageId)
+    const legacyDialogue = ['tutorial', 'park', 'mountain'].includes(this.stageId)
       ? legacyConditionDialogue(conditionKey, this.state)
       : null;
     const fallbackDialogue = isRescued

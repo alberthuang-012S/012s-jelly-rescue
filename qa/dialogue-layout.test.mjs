@@ -5,6 +5,7 @@ import {CONDITIONS, STATES} from '../src/game/constants.js';
 import {SCENARIO_DEFS, scenarioDialogue} from '../src/game/ScenarioDefinitions.js';
 import {NPC_ROLE_DEFS} from '../src/game/NPCRoleDefinitions.js';
 import {injuryPose} from '../src/game/InjuryAnimation.js';
+import {Game} from '../src/game/Game.js';
 
 const ctx={save(){},restore(){},measureText(text){return {width:[...text].length*14};}};
 
@@ -16,12 +17,12 @@ test('all scenario types have dialogue for each active state',()=>{
     }
 });
 
-test('Park and Mountain use the same simple condition dialogue without role contamination',()=>{
+test('Tutorial, Park and Mountain use the same simple condition dialogue without role contamination',()=>{
   const expected={
     [CONDITIONS.ITCH]:['好像有點癢……','好癢！','快受不了了！','好多了！'],
     [CONDITIONS.SORENESS]:['好像有點痠痛……','痠痛不太舒服……','快受不了了！','好多了！']
   };
-  for(const stageId of ['park','mountain']) for(const [condition,lines] of Object.entries(expected)){
+  for(const stageId of ['tutorial','park','mountain']) for(const [condition,lines] of Object.entries(expected)){
     const npc=new NPC({id:condition,role:'youngWoman',x:150,y:240,stageId});
     npc.startEvent(condition,10,3);
     [STATES.WARNING,STATES.HELP,STATES.CRITICAL,STATES.RESCUED].forEach((state,index)=>{
@@ -30,6 +31,11 @@ test('Park and Mountain use the same simple condition dialogue without role cont
     });
     npc.state=STATES.FAILED;
     assert.equal(npc.getStatusLayout(ctx,0).label,'我先回去了……');
+  }
+  for (const layoutMode of ['desktop', 'mobile-portrait']) {
+    const copy = mode => Game.prototype.getTutorialModalCopy.call({ layoutMode }, mode);
+    assert.equal(copy('itch').visual, expected[CONDITIONS.ITCH][1]);
+    assert.equal(copy('soreness').visual, expected[CONDITIONS.SORENESS][1]);
   }
 });
 

@@ -18,7 +18,7 @@ import { PersonalBestStore } from './PersonalBestStore.js?result-best-v1';
 import { ResultScreen } from './ResultScreen.js?evolution-v2';
 import { ScoreManager } from './ScoreManager.js';
 import { StageManager, STAGE_DEFS, SPECIAL_STAGE_DEFS, STAGE_ORDER } from './StageManager.js';
-import { SCENARIO_DEFS, requiredItem } from './ScenarioDefinitions.js';
+import { SCENARIO_DEFS, legacyConditionDialogue, requiredItem } from './ScenarioDefinitions.js';
 import { NPC_ROLE_DEFS } from './NPCRoleDefinitions.js';
 import { LEGACY_NPC_LAYOUT } from './NPCSpriteLayout.js';
 import { TutorialDirector } from './TutorialDirector.js?mountain-pavilion-dialogue-v2';
@@ -970,9 +970,9 @@ export class Game {
         step: 'STEP 2 / 4',
         title: '居民覺得癢',
         icon: '✦ 癢',
-        visual: '皮膚還是好癢……',
+        visual: legacyConditionDialogue(CONDITIONS.ITCH, STATES.HELP),
         item: 'PPA',
-        body: '癢 → PPA+1\n看到居民說皮膚癢時，選擇 PPA+1。',
+        body: '癢 → PPA+1\n看到居民說癢時，選擇 PPA+1。',
         flow: ['① 找到居民', '② 選擇 PPA+1', '③ 靠近並使用'],
         hint: isMobile
           ? '靠近後按下方「使用」。'
@@ -983,9 +983,9 @@ export class Game {
         step: 'STEP 3 / 4',
         title: '這次是痠痛',
         icon: '↯ 痠痛',
-        visual: '雙腿還是好痠……',
+        visual: legacyConditionDialogue(CONDITIONS.SORENESS, STATES.HELP),
         item: 'NAP',
-        body: '痠痛 → NAP+1\n看到居民說雙腿痠痛時，改用 NAP+1。',
+        body: '痠痛 → NAP+1\n看到居民說痠痛時，改用 NAP+1。',
         flow: ['① 觀察居民對話', '② 切換 NAP+1', '③ 靠近並使用'],
         hint: isMobile
           ? '直接點選下方 NAP+1，再按「使用」。'
@@ -999,7 +999,7 @@ export class Game {
         visual: '自己判斷',
         body: '這次不告訴你要使用哪個道具。\n觀察居民的狀況，再自己選擇。',
         flow: ['✦ 癢', '↯ 痠痛'],
-        hint: isMobile ? '兩個道具都可以自由選擇。' : '觀察 Bubble，再選擇正確道具。',
+        hint: isMobile ? '兩個道具都可以自由選擇。' : '觀察居民對話，再選擇正確道具。',
         primary: '開始最後練習'
       },
       complete: {

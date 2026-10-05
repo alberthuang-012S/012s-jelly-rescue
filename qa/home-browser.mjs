@@ -41,6 +41,8 @@ try {
       assert.ok(layout.primary.bottom < height);
       assert.ok(layout.specials[0].right < layout.specials[1].x);
       assert.ok(layout.character.y >= layout.lede.bottom + 3 || layout.character.x >= layout.lede.right + 8, `${width}: hero overlaps the intro ${JSON.stringify(layout)}`);
+      assert.ok(Math.abs((layout.character.x + layout.character.right) / 2 - (layout.copy.x + layout.copy.right) / 2) < 2, `${width}: mascot must be centered in the hero column`);
+      assert.match(await page.locator('.control-hint').innerText(), /WASD.*↑ ↓ ← →.*移動/);
       assert.ok(layout.buttons.every(r => r.bottom <= height), `${width}: challenge entry below the first screen ${JSON.stringify(layout)}`);
     }
     if (width <= 680 && height > width) assert.ok(layout.character.height >= 60, 'Portrait mascot must not collapse in the scroll layout');
@@ -83,6 +85,31 @@ try {
   await page.waitForFunction(() => window.__qaGame.state === 'playing');
   assert.equal(await page.evaluate(() => window.__qaGame.selectedStage), 'tutorial');
   report.checks.push('Arrow/Home/End navigation, wrapping, one tab stop, clear focus, Enter starts selected mission');
+  for (const [width, height] of [[1366, 768], [390, 844]]) {
+    await page.setViewportSize({ width, height });
+    await page.evaluate(() => window.__qaGame.startStage('tutorial'));
+    await page.locator('#tutorial-modal-primary').click();
+    await page.evaluate(() => { window.__qaGame.player.distanceTravelled = 160; });
+    for (const [mode, line, next] of [['itch', '好癢！', 'soreness'], ['soreness', '痠痛不太舒服……', 'final-check']]) {
+      await page.waitForFunction(mode => window.__qaGame.tutorialModalMode === mode, mode);
+      assert.equal(await page.locator('#tutorial-modal-visual-label').innerText(), line);
+      await page.screenshot({ path: `qa/home/tutorial-${mode}-${width}.png` });
+      await page.locator('#tutorial-modal-primary').click();
+      assert.equal(await page.evaluate(() => {
+        const g = window.__qaGame, npc = g.npcs.find(n => n.state === 'HELP');
+        return npc.getStatusLayout(g.ctx, 0).label;
+      }), line);
+      const rescued = await page.evaluate(() => {
+        const g = window.__qaGame, npc = g.npcs.find(n => n.state === 'HELP');
+        g.player.x = npc.x; g.player.y = npc.y;
+        g.selectItem(npc.condition === 'ITCH' ? 'PPA' : 'NAP'); g.tryAction();
+        return { state: npc.state, line: npc.getStatusLayout(g.ctx, 0).label };
+      });
+      assert.deepEqual(rescued, { state: 'RESCUED', line: '好多了！' });
+      await page.waitForFunction(mode => window.__qaGame.tutorialModalMode === mode, next);
+    }
+    report.checks.push(`${width}x${height}: tutorial modal, resident help and rescue replies match Park/Mountain; both treatments advance the tutorial`);
+  }
   for (const [button, id] of [['#special-start', 'alienMosquito'], ['#gravity-start', 'gravityOverload']]) {
     await page.evaluate(() => window.__qaGame.showHome());
     await page.locator(button).click();

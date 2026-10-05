@@ -1518,15 +1518,15 @@ body { background: #deeff5; }
     padding: 32px max(32px, calc((100vw - 1200px) / 2)) 20px;
     overflow-x: hidden;
   }
-  .home-screen .home-copy { grid-column: 1; grid-row: 1; align-self: start; padding-top: 18px; }
+  .home-screen .home-copy { grid-column: 1; grid-row: 1; align-self: start; padding-top: 18px; padding-bottom: 172px; }
   .home-screen .eyebrow { font-size: 12px; }
   .home-screen .home-copy h1 { margin: 14px 0; font-size: clamp(68px, 7.4vw, 96px); line-height: .82; letter-spacing: -.075em; }
   .home-screen::after { inset: 0; }
   .home-screen .home-positioning { font-size: 20px; }
   .home-screen .home-lede { max-width: 280px; font-size: 15px; line-height: 1.8; }
   .home-screen .home-character-wrap {
-    position: relative; grid-column: 1; grid-row: 1; align-self: end; justify-self: end;
-    left: auto; bottom: auto; width: 180px; margin-right: 16px; transform: none;
+    position: relative; grid-column: 1; grid-row: 1; align-self: end; justify-self: center;
+    left: auto; bottom: auto; width: 160px; margin-right: 0; transform: none;
   }
   .home-screen .home-panel.stage-selector-panel { grid-column: 2; grid-row: 1; width: 100%; max-width: 680px; }
   .home-screen .stage-selector-heading { margin-bottom: 10px; font-size: 13px; letter-spacing: .06em; }
