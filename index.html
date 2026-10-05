@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#10253c" />
     <link rel="stylesheet" href="./src/styles.css?v=scenarios-v1" />
-    <link rel="stylesheet" href="./src/garden.css?v=care-chibi-v1" />
+    <link rel="stylesheet" href="./src/garden.css?v=garden-dialogue-v2" />
     <title>Jelly Rescue</title>
   </head>
   <body>
@@ -300,15 +300,17 @@
       </section>
       <div id="rotate-overlay" class="rotate-overlay is-hidden"><div class="rotate-card"><span>↻</span><b>請將裝置轉為橫向</b><small>Jelly Rescue 需要一點寬度，才能看見整座地圖。</small></div></div>
       <dialog id="garden-intro" class="garden-intro" aria-labelledby="garden-intro-title" aria-describedby="garden-intro-description">
-        <span class="garden-intro-kicker">光采花園 · 新道具</span>
-        <h2 id="garden-intro-title">看清需求，選對道具</h2>
-        <p id="garden-intro-description">觀察居民的對話，靠近後使用。關卡開始後有 60 秒完成照顧。</p>
+        <div class="garden-intro-host"><img src="./reference/runtime/jelly-home.webp" alt="" width="64" height="64" /><span class="garden-intro-kicker">小水母的花園小提醒</span></div>
+        <h2 id="garden-intro-title">歡迎來到光采花園！</h2>
+        <p id="garden-intro-description">今天也有居民想找我們幫忙。帶上這兩瓶，一起去聽聽他們的心願吧！</p>
         <div class="garden-product-guide">
-          <div><span class="garden-guide-icon ddm">●</span><b>黑色素</b><strong>DDM+1</strong></div>
-          <div><span class="garden-guide-icon ssw">☀</span><b>皮膚蠟黃</b><strong>SSW+1</strong></div>
+          <div><picture><source srcset="./reference/runtime/ddm-chibi-v1.webp" type="image/webp" /><img src="./reference/runtime/ddm-chibi-v1.png" alt="黑色瓶身 DDM+1" width="64" height="96" /></picture><strong>DDM+1</strong><b><span aria-hidden="true">●</span> 黑色素專用</b></div>
+          <div><picture><source srcset="./reference/runtime/ssw-chibi-v1.webp" type="image/webp" /><img src="./reference/runtime/ssw-chibi-v1.png" alt="白色瓶身 SSW+1" width="64" height="96" /></picture><strong>SSW+1</strong><b><span aria-hidden="true">☀</span> 皮膚蠟黃專用</b></div>
         </div>
-        <p class="garden-intro-controls">點選道具或按 Q 切換，按「使用」或 E / SPACE 完成照顧。</p>
-        <button id="garden-intro-start" class="primary-button" type="button" autofocus>開始巡邏 →</button>
+        <p class="garden-intro-reminder">先聽需求，再選道具，走近居民就能幫忙囉！</p>
+        <p class="garden-intro-controls"><span class="garden-controls-touch">點選道具 → 靠近居民 → 按「使用」</span><span class="garden-controls-keyboard">按 Q 切換道具，靠近後按 E／空白鍵使用。</span></p>
+        <p class="garden-intro-timing">這次巡邏有 <b>60 秒</b>，記得在居民離開前找到他們。</p>
+        <button id="garden-intro-start" class="primary-button" type="button" autofocus>準備好了，出發！</button>
       </dialog>
       <dialog id="core-collection-dialog" class="core-collection-dialog" aria-labelledby="core-collection-title">
         <div class="core-collection-head"><div><h2 id="core-collection-title">核心圖鑑</h2><p id="core-collection-progress">已收集 0 / 2</p></div><button id="core-collection-close" type="button" aria-label="關閉圖鑑" autofocus>✕</button></div>

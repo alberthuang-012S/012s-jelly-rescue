@@ -1,8 +1,8 @@
 import { CONDITIONS, ITEMS } from './constants.js';
 
-const define = (condition, reaction, warning, help, critical, rescued = '好多了！') => Object.freeze({
+const define = (condition, reaction, warning, help, critical, rescued = '好多了！', failed = null) => Object.freeze({
   condition, reaction, reactionDuration: reaction === 'fall' ? 0.85 : 1.1,
-  dialogue: Object.freeze({ WARNING: warning, HELP: help, CRITICAL: critical, RESCUED: rescued }),
+  dialogue: dialogue(warning, help, critical, rescued, failed),
   wrongItem: condition === CONDITIONS.ITCH ? '這個不太適合……' : '好像不是這個……'
 });
 
@@ -13,15 +13,37 @@ export const SCENARIO_DEFS = Object.freeze({
   FALL: define(CONDITIONS.SORENESS, 'fall', '啊！', '膝蓋還是好痛……', '膝蓋痛得受不了！', '膝蓋好多了，謝謝！'),
   SPORT_SORE: define(CONDITIONS.SORENESS, 'sore', '運動後，肌肉好痠！', '肌肉還是好痠……', '肌肉痠得受不了！', '肌肉舒服多了，謝謝！'),
   LONG_WALK: define(CONDITIONS.SORENESS, 'sore', '走久了，雙腿好痠！', '雙腿還是好痠……', '雙腿痠得受不了！', '雙腿舒服多了，謝謝！'),
-  PIGMENT_CARE: Object.freeze({ ...define(CONDITIONS.PIGMENTATION, 'skin', '想照顧黑色素困擾……', '黑色素，請幫幫我！', '黑色素照顧，我快要走了！', '照顧完成，謝謝你！'), wrongItem: '黑色素要用 DDM+1 喔！' }),
-  SALLOW_CARE: Object.freeze({ ...define(CONDITIONS.SALLOWNESS, 'skin', '皮膚看起來蠟黃……', '皮膚蠟黃，請幫幫我！', '皮膚蠟黃，我快要走了！', '照顧完成，謝謝你！'), wrongItem: '皮膚蠟黃要用 SSW+1 喔！' })
+  PIGMENT_CARE: Object.freeze({
+    ...define(CONDITIONS.PIGMENTATION, 'skin', '想照顧一下臉上的暗沉……', '想處理黑色素沉澱，能幫我嗎？', '我快出發了，能先幫我處理黑色素嗎？', '謝謝你，接著去賞花囉！', '我先赴約，下次再找你囉！'),
+    wrongItem: '我想找黑色那瓶 DDM+1 喔！'
+  }),
+  SALLOW_CARE: Object.freeze({
+    ...define(CONDITIONS.SALLOWNESS, 'skin', '皮膚看起來有點蠟黃，想照顧一下……', '想改善皮膚蠟黃，有辦法能幫我嗎？', '等等要赴約，想先照顧蠟黃的皮膚。', '謝謝，今天的照顧完成啦！', '得先走了，下次見！'),
+    wrongItem: '我需要白色那瓶 SSW+1 喔！'
+  })
 });
 
-const dialogue = (WARNING, HELP, CRITICAL, RESCUED) => Object.freeze({ WARNING, HELP, CRITICAL, RESCUED });
+function dialogue(WARNING, HELP, CRITICAL, RESCUED, FAILED) {
+  return Object.freeze({ WARNING, HELP, CRITICAL, RESCUED, ...(FAILED ? { FAILED } : {}) });
+}
 
 // Role lines are scoped by stage and scenario so they cannot bleed into the
 // condition-based Park and Mountain events or contradict the selected item.
 const ROLE_SCENARIO_DIALOGUE = Object.freeze({
+  garden: Object.freeze({
+    photographerGirl: Object.freeze({
+      PIGMENT_CARE: Object.freeze({ WARNING: '拍照前，想照顧一下暗沉。', RESCUED: '謝謝！我要去拍花園啦！' }),
+      SALLOW_CARE: Object.freeze({ RESCUED: '謝謝！我要去拍花園啦！' })
+    }),
+    cafeVisitor: Object.freeze({
+      PIGMENT_CARE: Object.freeze({ WARNING: '喝完咖啡，也想照顧一下暗沉。', RESCUED: '謝謝，剛好能慢慢喝杯咖啡！' }),
+      SALLOW_CARE: Object.freeze({ RESCUED: '謝謝，剛好能慢慢喝杯咖啡！' })
+    }),
+    shopper: Object.freeze({
+      PIGMENT_CARE: Object.freeze({ WARNING: '出門逛逛，也想照顧一下自己。', RESCUED: '謝謝，我繼續去逛逛囉！' }),
+      SALLOW_CARE: Object.freeze({ RESCUED: '謝謝，我繼續去逛逛囉！' })
+    })
+  }),
   city: Object.freeze({
     youngWoman: Object.freeze({
       SKINCARE: dialogue('皮膚感覺有點乾乾的……', '想好好照顧一下皮膚。', '皮膚越來越不舒服了……', '舒服多了，謝謝你！'),

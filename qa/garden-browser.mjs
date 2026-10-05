@@ -28,6 +28,15 @@ try {
     await page.waitForTimeout(350);
     assert.equal(await page.evaluate(() => window.__qaGame.stageManager.elapsed), 0);
     assert.equal(await page.evaluate(() => window.__qaGame.input.enabled), false);
+    assert.equal(await page.locator('#garden-intro-title').innerText(), '歡迎來到光采花園！');
+    assert.equal(await page.locator('#garden-intro-start').innerText(), '準備好了，出發！');
+    assert.equal(await page.locator('.garden-controls-touch').isVisible(), mobile);
+    assert.equal(await page.locator('.garden-controls-keyboard').isVisible(), !mobile);
+    await page.waitForFunction(() => [...document.querySelectorAll('.garden-product-guide img, .garden-intro-host img')].every(img => img.complete && img.naturalWidth > 0));
+    assert.equal(await page.locator('#garden-intro').evaluate(dialog => {
+      const bounds=dialog.getBoundingClientRect(), host=dialog.querySelector('.garden-intro-host').getBoundingClientRect(), button=dialog.querySelector('button').getBoundingClientRect();
+      return host.top>=bounds.top && button.bottom<=bounds.bottom && dialog.scrollWidth<=dialog.clientWidth;
+    }),true,'intro host and start action must remain visible together');
     await page.screenshot({ path: `qa/garden/intro-${width}.png` });
     await page.evaluate(() => window.__qaGame.pauseForBackground());
     await page.keyboard.press('Escape'); assert.equal(await page.locator('#garden-intro').evaluate(el => el.open), true);
@@ -35,6 +44,7 @@ try {
     assert.equal(await page.evaluate(() => window.__qaGame.backgroundPaused), false);
     assert.equal(await page.locator('#garden-intro').evaluate(el => el.open), true);
     assert.equal(await page.evaluate(() => window.__qaGame.stageManager.elapsed), 0);
+    assert.equal(await page.locator('#garden-intro-start').innerText(), '準備好了，出發！');
     if (mobile) await page.locator('#garden-intro-start').tap(); else await page.locator('#garden-intro-start').click();
     await page.waitForFunction(() => !window.__qaGame.isGardenIntroOpen && window.__qaGame.input.enabled);
     await page.evaluate(() => { const g = window.__qaGame; g.eventDirector.nextEventAt = 999; });
@@ -78,6 +88,33 @@ try {
     await page.screenshot({ path: `qa/garden/play-${width}.png` });
     if (mobile) await page.locator('#action-button').tap(); else await page.keyboard.press('e');
     assert.equal(await page.evaluate(() => window.__qaGame.scoreManager.itemSuccess.DDM), 1);
+    // Read the accepted copy through the real canvas layout, including two concurrent requests.
+    const dialogueLayouts = await page.evaluate(() => {
+      const g=window.__qaGame, stage=g.stageManager.getStage();
+      g.npcs.forEach(n=>n.clearEvent(g.stageManager.elapsed));g.player.x=384;g.player.y=720;g.cameraState=null;
+      const camera=g.getCamera(stage), bounds=g.getVisibleWorldBounds(stage,camera);
+      const result=[];
+      for(const [index,type] of ['PIGMENT_CARE','SALLOW_CARE'].entries()) {
+        const npc=g.npcs[index];npc.x=384;npc.y=index?900:620;npc.startScenario(type,20,3,g.stageManager.elapsed);
+        for(const state of ['WARNING','HELP','CRITICAL','RESCUED','FAILED']) {
+          npc.state=state;
+          const layout=npc.getStatusLayout(g.ctx,0,{cameraScale:camera.scale,compactStatusBubble:g.layoutMode!=='desktop',visibleBounds:bounds});
+          result.push({type,state,label:layout.label,badge:layout.conditionLabel,lines:layout.lines,inside:layout.bubbleX>=bounds.left&&layout.bubbleX+layout.bubbleWidth<=bounds.right+.01&&layout.bubbleY>=bounds.top&&layout.bubbleY+layout.bubbleHeight<=bounds.bottom+.01});
+        }
+        npc.state=index?'HELP':'CRITICAL';
+      }
+      g.pauseForBackground();g.backgroundPause.style.visibility='hidden';g.render();return result;
+    });
+    for(const layout of dialogueLayouts) {
+      assert.equal(layout.lines.join(''),layout.label);assert.ok(layout.lines.length<=2);assert.ok(layout.inside);
+      if(['WARNING','HELP','CRITICAL'].includes(layout.state)) assert.match(layout.badge,layout.type==='PIGMENT_CARE'?/黑色素/:/皮膚蠟黃/);
+    }
+    assert.equal(dialogueLayouts.find(l=>l.type==='PIGMENT_CARE'&&l.state==='HELP').label,'想處理黑色素沉澱，能幫我嗎？');
+    assert.equal(dialogueLayouts.find(l=>l.type==='PIGMENT_CARE'&&l.state==='CRITICAL').label,'我快出發了，能先幫我處理黑色素嗎？');
+    assert.equal(dialogueLayouts.find(l=>l.type==='SALLOW_CARE'&&l.state==='HELP').label,'想改善皮膚蠟黃，有辦法能幫我嗎？');
+    await page.screenshot({ path: `qa/garden/dialogue-${width}.png` });
+    await page.evaluate(() => { window.__qaGame.backgroundPause.style.visibility=''; });
+    await page.locator('#background-resume').click();
     const paused = await page.evaluate(() => {
       const g = window.__qaGame; g.pauseForBackground(); const before = g.stageManager.elapsed; g.update(2); return { before, after: g.stageManager.elapsed };
     });
@@ -116,7 +153,7 @@ try {
         assert.deepEqual(await page.locator('[data-item]:visible').evaluateAll(nodes => nodes.map(node => node.dataset.item)), ['DDM', 'SSW']);
       }
     }
-    report.checks.push(`${width}×${height}: preview, intro/background suspension, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation`);
+    report.checks.push(`${width}×${height}: preview, welcoming intro/Q-version guide/adaptive controls/background suspension, complete two-line dialogue/requirement badges/accepted copy, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation`);
     await context.close();
   }
   assert.deepEqual(report.errors, []); console.log(JSON.stringify(report, null, 2));

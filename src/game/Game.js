@@ -979,7 +979,7 @@ export class Game {
     else if (this.isTutorialModalOpen) this.tutorialModalPrimary.focus();
     else if (this.isGardenIntroOpen) {
       const button = document.querySelector('#garden-intro-start');
-      button.textContent = '開始巡邏 →'; button.focus();
+      button.textContent = '準備好了，出發！'; button.focus();
     }
     else this.backgroundResume.blur();
   }
@@ -1292,7 +1292,7 @@ export class Game {
     if (this.isTutorial()) {
       this.openTutorialModal('move');
     } else if (stageId === 'garden' && !this.gardenIntroduced) {
-      document.querySelector('#garden-intro-start').textContent = this.backgroundPaused ? '繼續遊戲' : '開始巡邏 →';
+      document.querySelector('#garden-intro-start').textContent = this.backgroundPaused ? '繼續遊戲' : '準備好了，出發！';
       this.gardenIntro.showModal();
     } else {
       this.input.setEnabled(true);

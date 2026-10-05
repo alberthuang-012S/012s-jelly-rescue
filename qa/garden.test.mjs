@@ -32,8 +32,12 @@ test('new conditions survive NPC normalization and keep their keyword through ev
     npc.startScenario(type, 10, 3);
     assert.equal(npc.condition, condition); assert.equal(requiredItem(npc.condition), item);
     for (const state of [STATES.WARNING, STATES.HELP, STATES.CRITICAL]) {
-      assert.match(scenarioDialogue(npc.role, type, state, 'garden'), new RegExp(keyword));
+      npc.state = state;
+      const layout = npc.getStatusLayout({ save() {}, restore() {}, measureText(text) { return { width: [...text].length * 14 }; } }, 0);
+      assert.match(layout.conditionLabel, new RegExp(keyword));
+      assert.equal(layout.label, scenarioDialogue(npc.role, type, state, 'garden'));
     }
+    npc.state = STATES.WARNING;
     assert.equal(npc.getInjuryPose(0), null);
     const position = { x: npc.x, y: npc.y }; npc.update(.2, stage, .2);
     assert.deepEqual({ x: npc.x, y: npc.y }, position);

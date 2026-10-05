@@ -16,6 +16,24 @@ function normalizeCondition(condition) {
   return Object.values(CONDITIONS).includes(condition) ? condition : CONDITIONS.SORENESS;
 }
 
+function wrapStatusText(ctx, text, maxWidth) {
+  const lines = []; let line = '';
+  for (const character of text) {
+    if (line && ctx.measureText(line + character).width > maxWidth) {
+      const phraseBreak = line.lastIndexOf('，') + 1;
+      if (phraseBreak >= line.length / 3 && phraseBreak < line.length) {
+        lines.push(line.slice(0, phraseBreak)); line = line.slice(phraseBreak) + character;
+      // Keep Chinese closing punctuation with the preceding word at a line break.
+      } else if (/[，。！？、；：…」』）]/u.test(character) && [...line].length > 1) {
+        const characters = [...line], last = characters.pop();
+        lines.push(characters.join('')); line = last + character;
+      } else { lines.push(line); line = character; }
+    } else line += character;
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
 export class NPC {
   constructor({ id, role, x, y, zone, path = [], name, isPractice = false, stageId = null }) {
     this.id = id;
@@ -473,18 +491,36 @@ export class NPC {
             ? condition.criticalTitle
             : condition.title;
     const text = this.dialogueOverride || stageDialogue || legacyDialogue || fallbackDialogue;
-    const label = [CONDITIONS.PIGMENTATION, CONDITIONS.SALLOWNESS].includes(conditionKey) && !isRescued && !isFailed
+    const isGardenBubble = this.stageId === 'garden' && [CONDITIONS.PIGMENTATION, CONDITIONS.SALLOWNESS].includes(conditionKey);
+    const conditionLabel = isGardenBubble && !isRescued && !isFailed
+      ? `${condition.icon} ${conditionKey === CONDITIONS.SALLOWNESS ? '皮膚蠟黃' : '黑色素'}` : null;
+    const label = !isGardenBubble && [CONDITIONS.PIGMENTATION, CONDITIONS.SALLOWNESS].includes(conditionKey) && !isRescued && !isFailed
       ? `${condition.icon} ${text}` : text;
     const scale = Math.max(0.25, cameraScale);
-    const screenFontSize = compactStatusBubble ? (isCritical ? 16 : 14) : (isCritical ? 19 : 17);
+    let screenFontSize = compactStatusBubble ? (isCritical ? 16 : 14) : (isCritical ? 19 : 17);
     const screenPadding = compactStatusBubble ? 24 : 30;
     const screenBaseWidth = compactStatusBubble ? 116 : 138;
     ctx.save();
     ctx.font = `900 ${screenFontSize}px Manrope, 'Noto Sans TC', sans-serif`;
-    const measuredTextWidth = ctx.measureText(label).width;
+    let measuredTextWidth = ctx.measureText(label).width;
+    let lines = [label];
+    let screenBubbleWidth = Math.max(screenBaseWidth, measuredTextWidth + screenPadding);
+    let screenBubbleHeight = compactStatusBubble ? 35 : 42;
+    const screenHeaderHeight = conditionLabel ? 21 : 0;
+    if (isGardenBubble) {
+      const availableWidth = visibleBounds ? (visibleBounds.right - visibleBounds.left) * scale - (compactStatusBubble ? 20 : 28) : Infinity;
+      const maxWidth = Math.min(compactStatusBubble ? 260 : 300, availableWidth);
+      lines = wrapStatusText(ctx, label, maxWidth - screenPadding);
+      while (lines.length > 2 && screenFontSize > 12) {
+        screenFontSize--;
+        ctx.font = `900 ${screenFontSize}px Manrope, 'Noto Sans TC', sans-serif`;
+        lines = wrapStatusText(ctx, label, maxWidth - screenPadding);
+      }
+      measuredTextWidth = Math.max(...lines.map(line => ctx.measureText(line).width));
+      screenBubbleWidth = Math.min(maxWidth, Math.max(160, measuredTextWidth + screenPadding));
+      screenBubbleHeight = 16 + screenHeaderHeight + lines.length * (screenFontSize + 5);
+    }
     ctx.restore();
-    const screenBubbleWidth = Math.max(screenBaseWidth, measuredTextWidth + screenPadding);
-    const screenBubbleHeight = compactStatusBubble ? 35 : 42;
     const screenPointerHeight = compactStatusBubble ? 8 : 10;
     const bubbleWidth = screenBubbleWidth / scale;
     const bubbleHeight = screenBubbleHeight / scale;
@@ -537,7 +573,7 @@ export class NPC {
       ? clamp(this.x, bubbleX + pointerSafeInset, bubbleX + bubbleWidth - pointerSafeInset)
       : this.x;
     const showBar = !this.isPractice && !isRescued && !isFailed;
-    return { label, scale, screenFontSize, bubbleWidth, bubbleHeight, pointerHeight,
+    return { label, lines, conditionLabel, isGardenBubble, compactStatusBubble, screenHeaderHeight, scale, screenFontSize, bubbleWidth, bubbleHeight, pointerHeight,
       bubbleCenterX, bubbleX, bubbleY, pointerPointsUp, pointerX, pointerSafeInset,
       safePadding, isCritical, isRescued, isFailed, showBar,
       barWidth: (compactStatusBubble ? 92 : 112) / scale,
@@ -550,7 +586,7 @@ export class NPC {
 
   drawStatus(ctx, now, options = {}) {
     const layout = options.statusLayout || this.getStatusLayout(ctx, now, options);
-    const { label, scale, screenFontSize, bubbleWidth, bubbleHeight, pointerHeight,
+    const { label, lines, conditionLabel, isGardenBubble, compactStatusBubble, screenHeaderHeight, scale, screenFontSize, bubbleWidth, bubbleHeight, pointerHeight,
       bubbleCenterX, bubbleX, bubbleY, pointerPointsUp, pointerX,
       isCritical, isRescued, isFailed, showBar, barWidth, barHeight, barGap } = layout;
     const { fill, stroke, textColor } = this.getStatusColors(layout);
@@ -576,12 +612,20 @@ export class NPC {
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
-    drawText(ctx, label, bubbleCenterX, bubbleY + bubbleHeight / 2, {
-      size: screenFontSize / scale,
-      color: textColor,
-      weight: 900,
-      font: "Manrope, 'Noto Sans TC', sans-serif"
-    });
+    const textStyle = { size: screenFontSize / scale, color: textColor, weight: 900, font: "Manrope, 'Noto Sans TC', sans-serif" };
+    if (isGardenBubble) {
+      if (conditionLabel) {
+        const headerHeight = screenHeaderHeight / scale;
+        const inset = 6 / scale;
+        ctx.fillStyle = conditionLabel.includes('皮膚蠟黃') ? '#fff0c8' : '#efe6f9';
+        roundedRect(ctx, bubbleX + inset, bubbleY + inset, bubbleWidth - 2 * inset, headerHeight, 4 / scale); ctx.fill();
+        drawText(ctx, conditionLabel, bubbleCenterX, bubbleY + inset + headerHeight / 2,
+          { ...textStyle, size: (compactStatusBubble ? 12 : 13) / scale, color: '#233a59' });
+      }
+      const lineHeight = (screenFontSize + 5) / scale;
+      lines.forEach((line, index) => drawText(ctx, line, bubbleCenterX,
+        bubbleY + (8 + screenHeaderHeight) / scale + (index + .5) * lineHeight, textStyle));
+    } else drawText(ctx, label, bubbleCenterX, bubbleY + bubbleHeight / 2, textStyle);
     ctx.restore();
     if (showBar) {
       const barY = bubbleY - barGap - barHeight;

@@ -3,22 +3,45 @@
 .item-img-wrap.product-icon picture { position: absolute; inset: 0; min-width: 0; min-height: 0; }
 .item-img-wrap.product-icon img { display: block; width: 100%; height: 100%; min-width: 0; min-height: 0; object-fit: contain; }
 .garden-intro {
-  width: min(440px, calc(100vw - 28px)); max-height: calc(100dvh - 36px); overflow: auto;
-  padding: 26px; border: 3px solid #b49acb; border-radius: 22px;
+  width: min(460px, calc(100vw - 28px)); max-height: calc(100dvh - 36px); overflow: auto;
+  padding: 24px; border: 3px solid #b49acb; border-radius: 22px;
   color: #233a59; background: #fffaf2; box-shadow: 0 18px 70px #152e4a50;
 }
 .garden-intro::backdrop { background: #14263caa; }
+.garden-intro-host { display: flex; align-items: center; gap: 10px; }
+.garden-intro-host img { width: 56px; height: 56px; object-fit: contain; }
 .garden-intro-kicker { color: #85619f; font-size: 12px; font-weight: 800; letter-spacing: .08em; }
-.garden-intro h2 { margin: 12px 0; font-size: clamp(22px, 5vw, 28px); }
-.garden-intro p { font-size: 14px; line-height: 1.7; }
-.garden-product-guide { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 22px 0; }
-.garden-product-guide > div { display: grid; justify-items: center; gap: 8px; padding: 16px 8px; border: 1px solid #e0d4e7; border-radius: 14px; background: #fff; }
-.garden-guide-icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; font-size: 24px; }
-.garden-guide-icon.ddm { color: #7953ab; background: #efe6f9; }
-.garden-guide-icon.ssw { color: #a77219; background: #fff0c8; }
+.garden-intro h2 { margin: 8px 0; font-size: clamp(21px, 5vw, 28px); }
+.garden-intro p { margin: 10px 0; font-size: 14px; line-height: 1.65; }
+.garden-product-guide { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+.garden-product-guide > div { display: grid; justify-items: center; gap: 6px; padding: 12px 6px; border: 1px solid #e0d4e7; border-radius: 14px; background: #fff; }
+.garden-product-guide picture, .garden-product-guide img { display: block; width: 64px; height: 96px; object-fit: contain; }
+.garden-product-guide b { font-size: 12px; white-space: nowrap; }
 .garden-product-guide strong { font: 800 19px 'Space Grotesk', sans-serif; }
 .garden-intro .primary-button { width: 100%; min-height: 48px; margin-top: 8px; }
 .garden-intro-controls { color: #657a8d; }
+.garden-intro-timing { color: #657a8d; }
+.garden-controls-touch { display: none; }
+@media (max-width: 680px), (max-height: 520px) and (orientation: landscape) and (max-width: 1100px) {
+  .garden-intro { padding: 16px; }
+  .garden-intro-host img { width: 42px; height: 42px; }
+  .garden-intro-kicker { font-size: 11px; }
+  .garden-product-guide { gap: 8px; margin: 12px 0; }
+  .garden-product-guide picture, .garden-product-guide img { width: 48px; height: 72px; }
+  .garden-controls-touch { display: inline; }
+  .garden-controls-keyboard { display: none; }
+}
+@media (max-height: 520px) and (orientation: landscape) {
+  .garden-intro { width: min(600px, calc(100vw - 28px)); padding: 12px 16px; }
+  .garden-intro-host img { width: 28px; height: 28px; }
+  .garden-intro h2 { margin: 4px 0; font-size: 21px; }
+  .garden-intro p { margin: 6px 0; font-size: 13px; line-height: 1.45; }
+  .garden-product-guide { margin: 8px 0; }
+  .garden-intro .primary-button { margin-top: 4px; min-height: 44px; }
+  .garden-product-guide > div { grid-template-columns: 46px 1fr; grid-template-rows: auto auto; column-gap: 8px; padding: 8px; }
+  .garden-product-guide picture { grid-row: 1 / 3; width: 40px; height: 60px; }
+  .garden-product-guide img { width: 40px; height: 60px; }
+}
 .game-shell:not([data-stage='garden']) [data-debug='scenario:PIGMENT_CARE'],
 .game-shell:not([data-stage='garden']) [data-debug='scenario:SALLOW_CARE'] { display: none; }
 .game-shell[data-stage='garden'] [data-debug^='scenario:']:not([data-debug='scenario:PIGMENT_CARE']):not([data-debug='scenario:SALLOW_CARE']),

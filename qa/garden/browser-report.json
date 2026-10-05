@@ -1,10 +1,10 @@
 {
   "checks": [
-    "1280×900: preview, intro/background suspension, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation",
-    "390×844: preview, intro/background suspension, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation",
-    "375×667: preview, intro/background suspension, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation",
-    "320×568: preview, intro/background suspension, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation",
-    "667×375: preview, intro/background suspension, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation"
+    "1280×900: preview, welcoming intro/Q-version guide/adaptive controls/background suspension, complete two-line dialogue/requirement badges/accepted copy, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation",
+    "390×844: preview, welcoming intro/Q-version guide/adaptive controls/background suspension, complete two-line dialogue/requirement badges/accepted copy, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation",
+    "375×667: preview, welcoming intro/Q-version guide/adaptive controls/background suspension, complete two-line dialogue/requirement badges/accepted copy, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation",
+    "320×568: preview, welcoming intro/Q-version guide/adaptive controls/background suspension, complete two-line dialogue/requirement badges/accepted copy, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation",
+    "667×375: preview, welcoming intro/Q-version guide/adaptive controls/background suspension, complete two-line dialogue/requirement badges/accepted copy, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation"
   ],
   "errors": [],
   "layouts": [
