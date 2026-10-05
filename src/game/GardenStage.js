@@ -8,13 +8,14 @@ export const GARDEN_STAGE = Object.freeze({
   renderer: 'lifestyle', theme: 'garden', npcArtId: 'city',
   timed: true, duration: 60, world: { width: 768, height: 1152 }, fitToScreen: true,
   start: { x: 384, y: 1060 }, maxNpcs: 8, seedCount: 5, availableItems: ['DDM', 'SSW'],
-  event: { initialDelay: 2.4, spawnCooldown: 5, initialTolerance: 11, warningDuration: 3.8 },
+  event: { initialDelay: 1.8, spawnCooldown: 5, initialTolerance: 11, warningDuration: 3.8 },
   introConditions: [CONDITIONS.PIGMENTATION, CONDITIONS.SALLOWNESS], maxConditionStreak: 2,
   phases: [
-    phase(15, 'ddm', { PIGMENTATION: 1 }, 1, 3.8, 11, 5.6),
-    phase(30, 'ssw', { SALLOWNESS: 1 }, 1, 3.8, 11, 5.2),
-    phase(45, 'mixed', { PIGMENTATION: .5, SALLOWNESS: .5 }, 1, 3.4, 9.5, 4.5),
-    phase(60, 'pressure', { PIGMENTATION: .5, SALLOWNESS: .5 }, 2, 3, 8.5, 3.8)
+    // More scoring opportunities within the same minute, using the shared 100-point base.
+    phase(15, 'ddm', { PIGMENTATION: 1 }, 1, 3.8, 11, 4.8),
+    phase(30, 'ssw', { SALLOWNESS: 1 }, 1, 3.8, 11, 4.4),
+    phase(45, 'mixed', { PIGMENTATION: .5, SALLOWNESS: .5 }, 1, 3.4, 9.5, 3.8),
+    phase(60, 'pressure', { PIGMENTATION: .5, SALLOWNESS: .5 }, 2, 3, 8.5, 3.2)
   ],
   scenarioPool: ['PIGMENT_CARE', 'SALLOW_CARE'], scenarioWeights: { PIGMENT_CARE: 1, SALLOW_CARE: 1 },
   npcTypes: ['youngWoman', 'shopper', 'cafeVisitor', 'photographerGirl', 'deliveryWorker'],

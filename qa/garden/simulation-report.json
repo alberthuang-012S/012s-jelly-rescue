@@ -1,11 +1,56 @@
 {
   "rounds": 200,
-  "events": 1942,
-  "ddm": 1043,
-  "ssw": 899,
-  "rescued": 1942,
+  "events": 2870,
+  "ddm": 1477,
+  "ssw": 1393,
+  "rescued": 2557,
   "failed": 0,
-  "simultaneousRounds": 25,
+  "simultaneousRounds": 183,
   "illegalPositions": 0,
-  "missingIntroductions": 0
+  "missingIntroductions": 0,
+  "scoring": {
+    "all": {
+      "rounds": 200,
+      "min": 1744,
+      "mean": 2658,
+      "median": 2690,
+      "p90": 3096,
+      "max": 3300,
+      "atLeast3000": 29
+    },
+    "baseSpeed": {
+      "rounds": 100,
+      "min": 1744,
+      "mean": 2526,
+      "median": 2528,
+      "p90": 2876,
+      "max": 3234,
+      "atLeast3000": 8
+    },
+    "evolvedSpeed": {
+      "rounds": 100,
+      "min": 2264,
+      "mean": 2791,
+      "median": 2770,
+      "p90": 3160,
+      "max": 3300,
+      "atLeast3000": 21
+    },
+    "rescuesPerRound": {
+      "min": 10,
+      "mean": 13,
+      "median": 13,
+      "p90": 14,
+      "max": 14
+    }
+  },
+  "cadence": {
+    "initialDelay": 1.8,
+    "eventCooldowns": [
+      4.8,
+      4.4,
+      3.8,
+      3.2
+    ]
+  }
 }
