@@ -22,13 +22,16 @@ function withRandom(callback) {
 }
 const makeNpc = (role = 'runner', path = []) => new NPC({ id: role, role, x: 384, y: 600, path });
 
-test('all six scenarios resolve to exactly two conditions; item correctness and wrong item remain condition-only', () => {
-  assert.equal(Object.keys(SCENARIO_DEFS).length, 6);
-  assert.deepEqual(Object.keys(CONDITIONS), ['ITCH', 'SORENESS']);
+test('all scenarios resolve to their dedicated conditions; item correctness remains condition-only', () => {
+  assert.equal(Object.keys(SCENARIO_DEFS).length, 8);
+  assert.deepEqual(Object.keys(CONDITIONS), ['ITCH', 'SORENESS', 'PIGMENTATION', 'SALLOWNESS']);
   for (const [type, definition] of Object.entries(SCENARIO_DEFS)) {
-    const expected = ['SKINCARE', 'OUTDOOR_SKIN', 'GRASS_SKIN'].includes(type) ? 'ITCH' : 'SORENESS';
+    const expected = type === 'PIGMENT_CARE' ? 'PIGMENTATION' : type === 'SALLOW_CARE' ? 'SALLOWNESS'
+      : ['SKINCARE', 'OUTDOOR_SKIN', 'GRASS_SKIN'].includes(type) ? 'ITCH' : 'SORENESS';
     assert.equal(resolveScenario(type).condition, expected);
-    const items = new ItemSystem(); items.select(requiredItem(expected));
+    const items = new ItemSystem();
+    if (['PIGMENT_CARE', 'SALLOW_CARE'].includes(type)) items.reset({ availableItems: ['DDM', 'SSW'] });
+    items.select(requiredItem(expected));
     assert.equal(items.isCorrect(definition.condition), true); items.toggle();
     assert.equal(items.isCorrect(definition.condition), false);
     assert.ok(definition.dialogue.WARNING && definition.dialogue.HELP && definition.dialogue.CRITICAL && definition.dialogue.RESCUED);
@@ -174,5 +177,5 @@ test('results aggregate by item and new personal best storage preserves old reco
   const store = new PersonalBestStore({ storage: { getItem: () => saved, setItem: (_key, value) => { saved = value; } } });
   store.update('city', 400); store.update('sports', 500);
   for (const [id, value] of [['park', 200], ['mountain', 300], ['city', 400], ['sports', 500]]) assert.equal(store.get(id), value);
-  assert.deepEqual(STAGE_ORDER, ['tutorial', 'park', 'mountain', 'city', 'sports']);
+  assert.deepEqual(STAGE_ORDER, ['tutorial', 'park', 'mountain', 'city', 'sports', 'garden']);
 });

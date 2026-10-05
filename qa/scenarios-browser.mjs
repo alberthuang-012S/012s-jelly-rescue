@@ -40,7 +40,7 @@ try {
     });
     await page.goto(`http://localhost:${port}`, { waitUntil: 'networkidle' });
     await page.waitForFunction(() => Boolean(window.__qaGame));
-    assert.equal(await page.locator('[data-stage-select]').count(), 5);
+    assert.equal(await page.locator('[data-stage-select]').count(), 6);
     await page.screenshot({ path: path.join(output, `${name}-home.png`) });
     report.viewports.push({ name, ...viewport });
 

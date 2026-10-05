@@ -1,0 +1,24 @@
+{
+  "source": "reference/generated-garden-map-v1.png",
+  "runtime": "reference/runtime/garden-map-v1.webp",
+  "pixels": [
+    1024,
+    1536
+  ],
+  "world": [
+    768,
+    1152
+  ],
+  "scale": 0.75,
+  "collision": "src/game/GardenStage.js",
+  "npcArt": "city-npcs-v1 / city-condition-v2",
+  "products": [
+    "reference/runtime/ddm-chibi-v1.webp",
+    "reference/runtime/ssw-chibi-v1.webp"
+  ],
+  "productReferences": [
+    "reference/runtime/DDM+1.webp",
+    "reference/runtime/SSW+1.webp"
+  ],
+  "productPolicy": "Transparent Q-version icons generated from preserved product photographs; see care-items-chibi-registration-v1.json."
+}

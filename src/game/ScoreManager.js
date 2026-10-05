@@ -1,4 +1,4 @@
-import { CONDITIONS } from './constants.js';
+import { CONDITIONS, ITEMS } from './constants.js';
 
 export class ScoreManager {
   constructor() {
@@ -11,6 +11,7 @@ export class ScoreManager {
     this.failedCount = 0;
     this.ppaSuccess = 0;
     this.napSuccess = 0;
+    this.itemSuccess = Object.fromEntries(Object.keys(ITEMS).map((id) => [id, 0]));
     this.wrongItemCount = 0;
     this.responseTimes = [];
     this.fastestResponseTime = null;
@@ -30,6 +31,8 @@ export class ScoreManager {
     this.fastestResponseTime = this.fastestResponseTime === null ? responseTime : Math.min(this.fastestResponseTime, responseTime);
     if (condition === CONDITIONS.ITCH) this.ppaSuccess += 1;
     if (condition === CONDITIONS.SORENESS) this.napSuccess += 1;
+    const item = Object.values(ITEMS).find((entry) => entry.condition === condition);
+    if (item) this.itemSuccess[item.id] += 1;
     return { points, bonus, raw };
   }
 
@@ -116,6 +119,7 @@ export class ScoreManager {
       failedCount: this.failedCount,
       ppaSuccess: this.ppaSuccess,
       napSuccess: this.napSuccess,
+      itemSuccess: { ...this.itemSuccess },
       wrongItemCount: this.wrongItemCount,
       averageResponseTime: this.getAverageResponseTime(),
       fastestResponseTime: this.fastestResponseTime || 0,

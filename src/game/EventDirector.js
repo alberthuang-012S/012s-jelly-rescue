@@ -19,6 +19,8 @@ export class EventDirector {
     this.nextSpawnAt = 0.8;
     this.nextEventAt = stage.event.initialDelay;
     this.lastCondition = null;
+    this.conditionStreak = 0;
+    this.introIndex = 0;
     this.travelPlanner = null;
   }
 
@@ -75,7 +77,9 @@ export class EventDirector {
       const player = this.callbacks.getPlayer?.();
       const tolerance = Math.max(baseTolerance, (player ? this.routeTime(player, npc) : 0) + 1.5 - warningDuration);
       if (!npc.startScenario(scenarioType, tolerance, warningDuration, stageTime)) return false;
+      this.conditionStreak = this.lastCondition === npc.condition ? this.conditionStreak + 1 : 1;
       this.lastCondition = npc.condition;
+      if (this.stage.introConditions?.[this.introIndex] === npc.condition) this.introIndex += 1;
       this.callbacks.onEvent?.(npc, npc.condition);
       return true;
     }
@@ -155,22 +159,38 @@ export class EventDirector {
     const pool = phase?.scenarioPool || this.stage.scenarioPool || [];
     const options = candidates.flatMap((npc) => pool.map((scenarioType) => ({
       npc, scenarioType,
-      weight: (this.stage.scenarioWeights[scenarioType] || 0) * (NPC_ROLE_DEFS[npc.role]?.scenarioWeights[scenarioType] || 0)
+      weight: (this.stage.scenarioWeights[scenarioType] || 0) * this.getRoleScenarioWeight(npc, scenarioType)
     })).filter((option) => option.weight > 0));
     const conditions = [...new Set(options.map((option) => SCENARIO_DEFS[option.scenarioType].condition))];
     if (!conditions.length || (forcedCondition && !conditions.includes(forcedCondition))) return null;
     // Choose the product family first so role count/weights cannot skew the
     // stage ratio. A temporary missing family defers rather than substituting.
     const stageFamilies = [...new Set(pool.map((type) => SCENARIO_DEFS[type].condition))];
-    const condition = forcedCondition || (stageFamilies.length === 1 ? stageFamilies[0]
-      : Math.random() < phase.ppaRatio ? CONDITIONS.ITCH : CONDITIONS.SORENESS);
+    const condition = forcedCondition || this.pickScenarioCondition(stageFamilies, phase);
     const eligible = options.filter((option) => SCENARIO_DEFS[option.scenarioType].condition === condition);
     const scenarioType = weightedChoice([...new Set(eligible.map((option) => option.scenarioType))]
       .map((type) => [type, this.stage.scenarioWeights[type]]));
     if (!scenarioType) return null;
     const roleCandidates = eligible.filter((option) => option.scenarioType === scenarioType);
-    const npcId = weightedChoice(roleCandidates.map((option) => [option.npc.id, NPC_ROLE_DEFS[option.npc.role].scenarioWeights[scenarioType]]));
+    const npcId = weightedChoice(roleCandidates.map((option) => [option.npc.id, this.getRoleScenarioWeight(option.npc, scenarioType)]));
     return { scenarioType, npc: candidates.find((npc) => npc.id === npcId) };
+  }
+
+  getRoleScenarioWeight(npc, scenarioType) {
+    return this.stage.roleScenarioWeights?.[scenarioType] ?? NPC_ROLE_DEFS[npc.role]?.scenarioWeights[scenarioType] ?? 0;
+  }
+
+  pickScenarioCondition(families, phase) {
+    if (!phase?.conditionWeights) return families.length === 1 ? families[0]
+      : Math.random() < phase.ppaRatio ? CONDITIONS.ITCH : CONDITIONS.SORENESS;
+    const weights = Object.entries(phase.conditionWeights).filter(([condition]) => families.includes(condition));
+    const introCondition = this.stage.introConditions?.[this.introIndex];
+    // Retry the first introduction until a feasible resident is available.
+    // Subsequent introductions start only in their configured phase.
+    if (introCondition && (this.introIndex === 0 || weights.some(([condition, weight]) => condition === introCondition && weight > 0))) return introCondition;
+    const alternatives = weights.filter(([condition, weight]) => weight > 0 && condition !== this.lastCondition);
+    if (this.conditionStreak >= this.stage.maxConditionStreak && alternatives.length) return weightedChoice(alternatives);
+    return weightedChoice(weights);
   }
 
   routeTime(from, to) {

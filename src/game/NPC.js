@@ -12,10 +12,8 @@ import { injuryPose } from './InjuryAnimation.js';
 import { INJURY_TOP_OFFSETS } from './InjurySpriteLayout.js';
 
 function normalizeCondition(condition) {
-  // Keep the visual dialogue aligned with the two supported rescue conditions.
-  // Older/debug callers may pass SORE instead of SORENESS; anything that is not
-  // explicitly ITCH should therefore resolve to the soreness dialogue.
-  return condition === CONDITIONS.ITCH ? CONDITIONS.ITCH : CONDITIONS.SORENESS;
+  // Preserve all registered conditions and the older SORE debug alias.
+  return Object.values(CONDITIONS).includes(condition) ? condition : CONDITIONS.SORENESS;
 }
 
 export class NPC {
@@ -406,7 +404,7 @@ export class NPC {
     const destinationWidth = lifestyle ? 80 : 72;
     const destinationHeight = lifestyle ? 120 : 132;
     const columns = this.spriteSheet.columns || this.spriteSheet.frameCount;
-    const concerned = [CONDITIONS.ITCH, CONDITIONS.SORENESS].includes(this.condition)
+    const concerned = Object.values(CONDITIONS).includes(this.condition)
       && [STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(this.state)
       && this.spriteSheet.conditionImage?.complete && this.spriteSheet.conditionImage.naturalWidth;
     ctx.save();
@@ -455,7 +453,7 @@ export class NPC {
   }
 
   getStatusLayout(ctx, now, { cameraScale = 1, compactStatusBubble = false, visibleBounds = null } = {}) {
-    const conditionKey = this.condition === CONDITIONS.ITCH ? CONDITIONS.ITCH : CONDITIONS.SORENESS;
+    const conditionKey = normalizeCondition(this.condition);
     const condition = CONDITION_LABELS[conditionKey];
     const isWarning = this.state === STATES.WARNING;
     const isCritical = this.state === STATES.CRITICAL;
@@ -474,7 +472,9 @@ export class NPC {
           : isCritical
             ? condition.criticalTitle
             : condition.title;
-    const label = this.dialogueOverride || stageDialogue || legacyDialogue || fallbackDialogue;
+    const text = this.dialogueOverride || stageDialogue || legacyDialogue || fallbackDialogue;
+    const label = [CONDITIONS.PIGMENTATION, CONDITIONS.SALLOWNESS].includes(conditionKey) && !isRescued && !isFailed
+      ? `${condition.icon} ${text}` : text;
     const scale = Math.max(0.25, cameraScale);
     const screenFontSize = compactStatusBubble ? (isCritical ? 16 : 14) : (isCritical ? 19 : 17);
     const screenPadding = compactStatusBubble ? 24 : 30;

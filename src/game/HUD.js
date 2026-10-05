@@ -93,7 +93,7 @@ export class HUD {
     const target = game.interactionSystem.currentTarget;
     const mobileActionVisible = this.mobileMode && game.state === 'playing';
     this.elements.action.classList.toggle('is-hidden', !(mobileActionVisible || Boolean(target)));
-    const actionPaused = Boolean(game.isTutorialModalOpen || game.isExitConfirmOpen);
+    const actionPaused = Boolean(game.isTutorialModalOpen || game.isExitConfirmOpen || game.isGardenIntroOpen);
     const actionDisabled = actionPaused || !target;
     this.elements.action.classList.toggle('is-action-ready', Boolean(target) && !actionPaused);
     this.elements.action.setAttribute('aria-disabled', actionDisabled ? 'true' : 'false');
@@ -344,10 +344,16 @@ export class HUD {
       .find((candidate) => !overlaps(candidate)) || position;
   }
 
-  updateItems(selectedId) {
+  updateItems(selectedId, availableIds = null) {
     document.querySelectorAll('[data-item]').forEach((button) => {
+      if (availableIds) {
+        const available = availableIds.includes(button.dataset.item);
+        button.classList.toggle('is-hidden', !available);
+        button.disabled = !available;
+      }
       const isSelected = button.dataset.item === selectedId;
       button.classList.toggle('is-selected', isSelected);
+      button.setAttribute('aria-pressed', String(isSelected));
       const status = button.querySelector('.item-status');
       if (status) status.textContent = isSelected ? 'SELECTED' : 'READY';
     });

@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "transparent_background": true,
+  "ddm": {
+    "prompt": "Use case: style-transfer. Asset type: production chibi inventory item sprite for Jelly Rescue. Input image 1 is the actual DDM+1 product identity/packaging reference. Input image 2 is the existing PPA+1 game icon style reference. Redraw image 1 as a cute super-deformed Q-version bottle, matching image 2's thick rounded lavender/navy outlines, softly painted clean highlights and simple smooth cartoon forms. Preserve DDM identity: black/dark navy cylindrical bottle with a rounded oversized black cap and a small band between cap and body; large perfectly legible WHITE text exactly \"DDM+1\" centered on the bottle, with secondary small text exactly \"2050 x 012S\" below. Make proportions short and chunky: overall height about 1.75 times width, cap about 35% of height, pillowy rounded silhouette, slight 3/4 view showing a sliver of right side while the front label remains readable. Dark navy body with restrained blue/lavender highlights so it reads BLACK, not purple or white. No face, eyes, limbs or added characters. One isolated bottle only, full object visible with equal clear padding, centered and occupying approximately 85% of canvas height. Output square 1024x1024 with genuinely transparent background; no floor, no cast shadow, no checkerboard drawn into image, no decorative text outside bottle, no watermark. Crisp and readable at 40px game-icon size. Primary name must be D D M + 1 with no misspelling.",
+    "references": [
+      "reference/runtime/DDM+1.webp",
+      "reference/ppa-plus-one.png"
+    ],
+    "output": "reference/generated-ddm-chibi-v1.png"
+  },
+  "ssw": {
+    "prompt": "Use case: style-transfer. Asset type: production chibi inventory item sprite for Jelly Rescue. Input image 1 is the actual SSW product identity/packaging reference. Input image 2 is the newly approved DDM+1 Q-version sprite and is the primary guide for cartoon rendering, line weight, scale, transparent padding, bottle framing and soft painted highlights. Redraw image 1 as its matched cute super-deformed Q-version partner: short, chunky WHITE cylindrical bottle with a rounded oversized white cap and simple softly rounded navy/lavender outline. Front label has a white-to-sky-blue gradient, large perfectly legible DARK NAVY text exactly \"SSW+1\" centered near upper label, small secondary text exactly \"2050 x 012S\" below, then a simple printed cute navy jellyfish mascot matching the source packaging beneath the wording. Do not add other text, Chinese characters, faces on the cap or body, limbs or extra characters. Keep the overall bottle white, not a blue bottle; only the lower label is blue. Proportions and perspective match the DDM sprite: overall height approximately 1.8 times width, oversized cap occupying about 35% of height, pillowy clean silhouette, very slight 3/4 view with front label fully readable. One isolated complete bottle only, centered and occupying approximately 85% of canvas height with equal clear padding. Square canvas, genuinely transparent background, no floor, no cast shadow, no drawn checkerboard, no watermark. Rounded smooth cartoon forms rather than photorealism, and readable at 40px game-icon size. Primary text must be S S W + 1 with no misspelling.",
+    "references": [
+      "reference/runtime/SSW+1.webp",
+      "reference/generated-ddm-chibi-v1.png"
+    ],
+    "output": "reference/generated-ssw-chibi-v1.png"
+  }
+}

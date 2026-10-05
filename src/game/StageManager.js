@@ -2,8 +2,9 @@ import { clamp } from './utils.js';
 import { LIFESTYLE_STAGES } from './LifestyleStages.js';
 import { SPECIAL_STAGE_ID } from './BossConfig.js';
 import { GRAVITY_STAGE_ID } from './GravityConfig.js';
+import { GARDEN_STAGE } from './GardenStage.js';
 
-export const STAGE_ORDER = Object.freeze(['tutorial', 'park', 'mountain', 'city', 'sports']);
+export const STAGE_ORDER = Object.freeze(['tutorial', 'park', 'mountain', 'city', 'sports', 'garden']);
 
 const PARK_DESIGN_WIDTH = 1024;
 const PARK_DESIGN_HEIGHT = 1536;
@@ -184,6 +185,7 @@ const mountainObstacles = [
 
 export const STAGE_DEFS = Object.freeze({
   ...LIFESTYLE_STAGES,
+  garden: GARDEN_STAGE,
   park: {
     id: 'park',
     name: 'Jelly Park',

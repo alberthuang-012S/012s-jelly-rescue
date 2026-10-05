@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import { Game } from '../src/game/Game.js';
 import { STAGE_DEFS, SPECIAL_STAGE_DEFS } from '../src/game/StageManager.js';
 
-test('City, Sports and Gravity share Park framing and the Mountain portrait map size', () => {
+test('City, Sports, Garden and Gravity share Park framing and the Mountain portrait map size', () => {
   for (const [width, height, cameraMode] of [[320, 568, 'fit'], [375, 667, 'fit'], [390, 844, 'fit'], [430, 932, 'fit'], [655, 369, 'follow'], [832, 378, 'follow']]) {
     for (const player of [{ x: 420, y: 640 }, { x: 100, y: 100 }, { x: 700, y: 1080 }]) {
       const cameraFor = stage => Game.prototype.getCamera.call({ viewport: { width, height }, cameraMode, player, cameraState: null }, stage);
       const reference = cameraFor(STAGE_DEFS.park);
-      for (const stage of [STAGE_DEFS.city, STAGE_DEFS.sports, SPECIAL_STAGE_DEFS.gravityOverload]) {
+      for (const stage of [STAGE_DEFS.city, STAGE_DEFS.sports, STAGE_DEFS.garden, SPECIAL_STAGE_DEFS.gravityOverload]) {
         assert.deepEqual(cameraFor(stage), reference, `${stage.id}/${width}x${height}`);
       }
       if (cameraMode === 'fit') {

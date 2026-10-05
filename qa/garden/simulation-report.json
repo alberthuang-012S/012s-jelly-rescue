@@ -1,0 +1,11 @@
+{
+  "rounds": 200,
+  "events": 1942,
+  "ddm": 1043,
+  "ssw": 899,
+  "rescued": 1942,
+  "failed": 0,
+  "simultaneousRounds": 25,
+  "illegalPositions": 0,
+  "missingIntroductions": 0
+}

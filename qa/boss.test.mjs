@@ -20,8 +20,8 @@ const navigation = new CombatNavigation(arena);
 const noFire = () => {};
 function bossCombat() { const c = make(); c.startArrival(); tick(c, 4.5); c.director.clear(); return c; }
 
-test('special stage is separate from the five-stage mainline and untimed, sharing Park collision', () => {
-  assert.deepEqual(STAGE_ORDER, ['tutorial', 'park', 'mountain', 'city', 'sports']);
+test('special stage is separate from the mainline and untimed, sharing Park collision', () => {
+  assert.deepEqual(STAGE_ORDER, ['tutorial', 'park', 'mountain', 'city', 'sports', 'garden']);
   assert.equal(STAGE_DEFS.alienMosquito, undefined);
   const manager = new StageManager(); manager.start('alienMosquito'); manager.update(1000);
   assert.equal(manager.status, 'playing'); assert.equal(manager.getRemaining(), null);

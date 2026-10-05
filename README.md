@@ -1,6 +1,6 @@
 # Jelly Rescue RPG
 
-A portrait-friendly top-down rescue RPG with Tutorial, Park, Mountain, City Plaza and Sports Park. The project uses browser-native ES modules and a tiny Node static server, so gameplay and unit tests require no package installation.
+A portrait-friendly top-down rescue RPG with Tutorial, Park, Mountain, City Plaza, Sports Park and Radiance Garden. The project uses browser-native ES modules and a tiny Node static server, so gameplay and unit tests require no package installation.
 
 ## Run
 
@@ -13,7 +13,7 @@ Open `http://localhost:4173`.
 ## Controls
 
 - `WASD` / Arrow keys: move the jelly
-- `Q`: toggle between PPA+1 and NAP+1
+- `Q`: toggle the current stage's two items (PPA+1/NAP+1, or DDM+1/SSW+1 in Radiance Garden)
 - Click or tap an item card: select that treatment
 - `E` / `Space` / the mobile 使用 button: rescue when close to an NPC
 - Focus a treatment card with Tab, then press Enter/Space to select it; focused Use supports Enter/Space once per press, including key-repeat suppression.
@@ -52,7 +52,7 @@ The core loop is split into focused modules:
 - Loading is staged: the home screen does not fetch the mountain map; player/NPC assets load in parallel when a stage starts, and image responses are cached by the local server for faster reloads.
 - Park and Mountain gameplay backgrounds keep their original 1024×1536 dimensions but load WebP first (PNG remains the compatibility fallback), reducing desktop stage-image transfer by roughly 84%.
 - Runtime gameplay assets live under `reference/runtime/`: `jelly-player.webp`, `npc-sprites.webp`, `ppa-plus-one.webp`, `nap-plus-one.webp` and `jelly-home.webp`; the original PNGs remain as source/master or compatibility fallbacks.
-- Starting a stage waits for the selected map, player, NPC, PPA+1 and NAP+1 assets to finish asynchronous decode before gameplay begins. A lightweight loading overlay prevents partially loaded entities from appearing.
+- Starting a stage waits for the selected map, player, NPC and that stage's available item assets to finish asynchronous decode before gameplay begins. A lightweight loading overlay prevents partially loaded entities from appearing.
 - Add `?assetReport=1` on localhost to expose `window.__jellyAssetReport` and log asset format, byte size, download time, decode time, total time and cache-hit information.
 - NPC status bubbles are screen-size compensated for camera zoom, with readable dialogue and tolerance bars. All active lines retain the symptom, with short role-specific opening lines. Itch and soreness share the same palette, so players judge the dialogue rather than color. Bubbles follow their owner with the original viewport-edge handling; dynamic overlap avoidance, connector lines and vertical critical pulsing are removed to keep positions stable. Offscreen indicators use the original help/urgent labels and state-only colors. Dialogue renders above characters and foreground across all stages. The transient location-name stamp is intentionally omitted.
 - Touch controls use visual pressed states only; no mobile haptic or vibration API is used.
@@ -62,7 +62,7 @@ The core loop is split into focused modules:
 
 ## Scenario expansion
 
-The rescue items are still exactly **PPA+1** and **NAP+1**. Scenario describes the visible story; Condition determines item correctness. `ItemSystem` does not know scenario names.
+Ordinary legacy stages use **PPA+1 / NAP+1**; Radiance Garden uses **DDM+1 / SSW+1**. Scenario describes the visible story; Condition determines item correctness. `ItemSystem` selects only from the current stage's available items and does not know scenario names.
 
 | Scenario | Condition | Item |
 | --- | --- | --- |
@@ -72,9 +72,12 @@ The rescue items are still exactly **PPA+1** and **NAP+1**. Scenario describes t
 | FALL | SORENESS | NAP+1 |
 | SPORT_SORE | SORENESS | NAP+1 |
 | LONG_WALK | SORENESS | NAP+1 |
+| PIGMENT_CARE | PIGMENTATION | DDM+1 |
+| SALLOW_CARE | SALLOWNESS | SSW+1 |
 
 - **城市生活廣場 / Jelly City Plaza**: 60 seconds; café terrace, flower/clothing shops, photo garden and broad pedestrian plaza. Its first 15 seconds randomly introduce SKINCARE/OUTDOOR_SKIN. Later phases add walking/work soreness and allow two simultaneous residents after 40 seconds. Whole-round PPA target is 65–70%; the introduction is intentionally PPA-only, so later phases use lower PPA weights.
 - **活力運動公園 / Jelly Sports Park**: 60 seconds; basketball court, running track, fitness/skate areas, grass, rest and water stations. Falls and sports soreness target 85% of events (NAP); outdoor/grass skin situations share the remaining 15%. Two simultaneous residents are allowed after 15 seconds and event cooldown tightens after 35 seconds.
+- **光采花園 / Jelly Radiance Garden**: 60 seconds; floral plaza, café and photo courtyard. DDM+1 serves 黑色素 and SSW+1 serves 皮膚蠟黃. Four phases introduce each item before mixed requests and two-resident pressure. A first-visit modal pauses the timer. Each resident can need either product; waiting dialogue keeps the keyword and dot/sun symbol. Transparent Q-version product icons, new map, scoring and QA are documented in [qa/garden/README.md](qa/garden/README.md).
 - City roles: `youngWoman`, `shopper`, `cafeVisitor`, `photographerGirl`, `deliveryWorker`.
 - Sports roles: `basketballPlayer`, `runner`, `skateboarder`, `fitnessGuy`, `sportsGirl`, `grassVisitor`. Role weights determine eligible stories; gender never determines the product. For example, `runner` can receive OUTDOOR_SKIN and `sportsGirl` can receive SPORT_SORE.
 
@@ -88,7 +91,7 @@ New-stage fairness uses a cached visibility graph around collision rectangles ex
 
 City/Sports use dedicated 1024×1536 pixel illustration maps, matching the existing Park art style. WebP runtime maps and lossless transparent NPC atlases live in `reference/runtime/`; `reference/generated-city-*-v1.png` and `reference/generated-sports-*-v1.png` retain the PNG masters. Home previews use the same map assets. Gameplay waits for map and character decode before starting, and switches back to the original NPC atlas for Park/Mountain. Cached procedural maps and outlined bodies remain loading-failure fallbacks. Collision footprints are measured from the artwork; buildings, seating and fitness equipment are solid, while courts, grass, track, picnic blanket and skate surfaces stay walkable. Portrait camera padding reserves room for HUD and controls. Formal item labels show PPA+1/NAP+1 without internal condition/scenario codes.
 
-Debug can force all six scenarios at a safe nearby position and lists role, scenario, resolved condition, required item, visual state and tolerance. Debug forcing intentionally bypasses normal scheduling/probability checks; it is disabled in Tutorial. Stage order is Tutorial → Park → Mountain → City → Sports. Personal-best records now support all four timed stages while preserving existing saved scores.
+Debug can force the stage's supported scenarios at a safe nearby position and lists role, scenario, resolved condition, required item, visual state and tolerance. Debug forcing intentionally bypasses normal scheduling/probability checks; it is disabled in Tutorial. Stage order is Tutorial → Park → Mountain → City → Sports → Garden. Personal-best records support all five timed stages while preserving existing saved scores.
 
 Stage-clear and game-over screens add PPA/NAP correct counts, average successful response time and rescue success rate. Success rate is rescued / (rescued + failed); unfinished events are excluded. Average time starts at event onset (including WARNING) and uses successful rescues only. With no samples, the display shows `—`. The existing Mountain PNN+3 reward, evolution modal and permanent +25% speed are preserved; PNN+3 is not a rescue item.
 
@@ -133,7 +136,7 @@ No shop, equipment, progression tree, gacha or inventory system is included. Com
 
 ## Special stage: 異星蚊災 / Alien Mosquito Invasion
 
-Choose **SPECIAL STAGE → 開始挑戰** on the home screen. This separate `alienMosquito` mode is not in `STAGE_ORDER`; Tutorial → Park → Mountain → City → Sports is unchanged. It uses a dedicated teal/violet night version of Park, preserving its road and obstacle footprints and shared collision. It shares Park's camera scale and framing: portrait phones fit the full map, while desktop and landscape smoothly follow the player. Enemy movement and Boss phases do not change the zoom, and the map is not clipped to a separate combat area.
+Choose **SPECIAL STAGE → 開始挑戰** on the home screen. This separate `alienMosquito` mode is not in `STAGE_ORDER`; the ordinary route is Tutorial → Park → Mountain → City → Sports → Garden. It uses a dedicated teal/violet night version of Park, preserving its road and obstacle footprints and shared collision. It shares Park's camera scale and framing: portrait phones fit the full map, while desktop and landscape smoothly follow the player. Enemy movement and Boss phases do not change the zoom, and the map is not clipped to a separate combat area.
 
 Art v1 uses `reference/runtime/alien-map-v1.webp`, `alien-enemies-v1.webp` (six wing frames for three species) and `alien-boss-v1.webp` (normal wing poses, charge, fatigue, dizzy and UFO). PNG fallbacks are included. King frames register the belly socket to one fixed point; the renderer adds the core glow only while vulnerable. Attack paths, HP dots, PPA pulses and slow bubble projectiles remain live gameplay overlays. Missing creature art uses the original procedural fallback. The home special card previews the King and night park. Built-in ImageGen prompts are in `reference/art-layouts/alien-art-prompts-v1.json`; `qa/build-alien-art.mjs` packages the sprites with transparent padding and recorded registration. `qa/alien-art-browser.mjs` verifies atlas frames in desktop/390px/375px combat, core/dizzy/UFO presentation, fallback and regular Park isolation.
 
@@ -182,4 +185,4 @@ City, Sports and Gravity Overload use the first two stages' phone layout: a full
 
 ## Desktop mission lobby
 
-The desktop home separates patrol selection from the two illustrated Boss cards. A brighter primary CTA, larger text and visible keyboard hints make the selected mission easier to start; the encyclopedia sits beside the special-challenge heading. The five mission tabs support Left/Right, Home/End and one Tab stop. Responsive coverage and screenshots are documented in [qa/home/README.md](qa/home/README.md).
+The desktop home separates patrol selection from the two illustrated Boss cards. A brighter primary CTA, larger text and visible keyboard hints make the selected mission easier to start; the encyclopedia sits beside the special-challenge heading. The six mission tabs support Left/Right, Home/End and one Tab stop. Responsive coverage and screenshots are documented in [qa/home/README.md](qa/home/README.md).

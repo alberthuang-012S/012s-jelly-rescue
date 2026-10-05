@@ -49,7 +49,7 @@ try {
       assert.ok(layout.buttons.every(r => r.bottom <= height), `${width}: challenge entry below the first screen ${JSON.stringify(layout)}`);
     }
     if (width <= 680 && height > width) assert.ok(layout.character.height >= 60, 'Portrait mascot must not collapse in the scroll layout');
-    for (const id of ['tutorial', 'park', 'mountain', 'city', 'sports']) {
+    for (const id of ['tutorial', 'park', 'mountain', 'city', 'sports', 'garden']) {
       await page.locator(`[data-stage-select="${id}"]`).click();
       await page.waitForTimeout(300);
       assert.equal(await page.locator('[role="tab"][aria-selected="true"]').count(), 1);
@@ -73,11 +73,11 @@ try {
   await page.keyboard.press('ArrowRight');
   assert.equal(await page.evaluate(() => document.activeElement.dataset.stageSelect), 'park');
   await page.keyboard.press('End');
-  assert.equal(await page.evaluate(() => document.activeElement.dataset.stageSelect), 'sports');
+  assert.equal(await page.evaluate(() => document.activeElement.dataset.stageSelect), 'garden');
   await page.keyboard.press('ArrowRight');
   assert.equal(await page.evaluate(() => document.activeElement.dataset.stageSelect), 'tutorial');
   await page.keyboard.press('ArrowLeft');
-  assert.equal(await page.evaluate(() => document.activeElement.dataset.stageSelect), 'sports');
+  assert.equal(await page.evaluate(() => document.activeElement.dataset.stageSelect), 'garden');
   await page.keyboard.press('Home');
   assert.equal(await page.evaluate(() => document.activeElement.dataset.stageSelect), 'tutorial');
   assert.equal(await page.locator('[role="tab"][tabindex="0"]').count(), 1);

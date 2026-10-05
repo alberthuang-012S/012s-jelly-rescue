@@ -2,23 +2,25 @@ import { ITEMS } from './constants.js';
 
 export class ItemSystem {
   constructor() {
-    this.selectedId = 'PPA';
+    this.reset();
   }
 
-  reset({ ppaOnly = false, lockedId = null } = {}) {
+  reset({ ppaOnly = false, lockedId = null, availableItems = ['PPA', 'NAP'] } = {}) {
     this.ppaOnly = ppaOnly;
     this.lockedId = ppaOnly ? 'PPA' : ITEMS[lockedId] ? lockedId : null;
-    this.selectedId = this.lockedId || 'PPA';
+    this.availableIds = this.lockedId ? [this.lockedId] : [...new Set(availableItems.filter((id) => ITEMS[id]))];
+    if (!this.availableIds.length) this.availableIds = ['PPA', 'NAP'];
+    this.selectedId = this.availableIds[0];
   }
 
   select(itemId) {
-    if (ITEMS[itemId] && (!this.lockedId || itemId === this.lockedId)) this.selectedId = itemId;
+    if (this.availableIds.includes(itemId)) this.selectedId = itemId;
     return this.getSelected();
   }
 
   toggle() {
     if (this.lockedId) return this.select(this.lockedId);
-    this.selectedId = this.selectedId === 'PPA' ? 'NAP' : 'PPA';
+    this.selectedId = this.availableIds[(this.availableIds.indexOf(this.selectedId) + 1) % this.availableIds.length];
     return this.getSelected();
   }
 

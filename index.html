@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#10253c" />
     <link rel="stylesheet" href="./src/styles.css?v=scenarios-v1" />
+    <link rel="stylesheet" href="./src/garden.css?v=care-chibi-v1" />
     <title>Jelly Rescue</title>
   </head>
   <body>
@@ -54,6 +55,9 @@
             </button>
             <button class="stage-tab" data-stage-select="sports" role="tab" aria-selected="false" aria-controls="home-featured-stage">
               <span class="stage-tab-number">05</span><span class="stage-tab-copy"><b>運動公園</b><small>1 分鐘</small></span>
+            </button>
+            <button class="stage-tab" data-stage-select="garden" role="tab" aria-selected="false" aria-controls="home-featured-stage">
+              <span class="stage-tab-number">06</span><span class="stage-tab-copy"><b>光采花園</b><small>1 分鐘</small></span>
             </button>
           </div>
 
@@ -161,6 +165,14 @@
               <span class="item-img-wrap"><picture><source srcset="./reference/runtime/nap-plus-one.webp" type="image/webp" /><img src="./reference/nap-plus-one.png" alt="NAP+1" loading="lazy" decoding="async" /></picture></span>
               <span class="item-info"><b>NAP+1</b><small>痠痛舒緩</small></span><span class="item-compact-label">NAP+1</span><span class="item-status">READY</span>
             </button>
+            <button class="item-card is-hidden" data-item="DDM" type="button" aria-label="DDM+1，黑色素專用" disabled>
+              <span class="item-img-wrap product-icon"><picture><source srcset="./reference/runtime/ddm-chibi-v1.webp" type="image/webp" /><img src="./reference/runtime/ddm-chibi-v1.png" alt="DDM+1 Q版黑色瓶裝道具" loading="lazy" decoding="async" /></picture></span>
+              <span class="item-info"><b>DDM+1</b><small>黑色素專用</small></span><span class="item-compact-label">DDM+1</span><span class="item-compact-condition">黑色素</span><span class="item-status">READY</span>
+            </button>
+            <button class="item-card is-hidden" data-item="SSW" type="button" aria-label="SSW+1，皮膚蠟黃專用" disabled>
+              <span class="item-img-wrap product-icon"><picture><source srcset="./reference/runtime/ssw-chibi-v1.webp" type="image/webp" /><img src="./reference/runtime/ssw-chibi-v1.png" alt="SSW+1 Q版白色瓶裝道具" loading="lazy" decoding="async" /></picture></span>
+              <span class="item-info"><b>SSW+1</b><small>皮膚蠟黃專用</small></span><span class="item-compact-label">SSW+1</span><span class="item-compact-condition">蠟黃</span><span class="item-status">READY</span>
+            </button>
           </div>
 
           <div class="mobile-dpad" aria-label="虛擬方向控制">
@@ -195,6 +207,7 @@
               <button data-debug="scenario:SKINCARE" type="button">SKINCARE</button><button data-debug="scenario:OUTDOOR_SKIN" type="button">OUTDOOR_SKIN</button>
               <button data-debug="scenario:GRASS_SKIN" type="button">GRASS_SKIN</button><button data-debug="scenario:FALL" type="button">FALL</button>
               <button data-debug="scenario:SPORT_SORE" type="button">SPORT_SORE</button><button data-debug="scenario:LONG_WALK" type="button">LONG_WALK</button>
+              <button data-debug="scenario:PIGMENT_CARE" type="button">黑色素 · DDM</button><button data-debug="scenario:SALLOW_CARE" type="button">蠟黃 · SSW</button>
               <button data-debug="itch" type="button">觸發 ITCH</button><button data-debug="soreness" type="button">觸發 SORENESS</button>
               <button data-debug="clear" type="button">清除事件</button><button data-debug="tolerance" type="button">耐受值設為 3s</button>
               <button data-debug="life" type="button">無限生命：OFF</button>
@@ -286,6 +299,17 @@
         </div>
       </section>
       <div id="rotate-overlay" class="rotate-overlay is-hidden"><div class="rotate-card"><span>↻</span><b>請將裝置轉為橫向</b><small>Jelly Rescue 需要一點寬度，才能看見整座地圖。</small></div></div>
+      <dialog id="garden-intro" class="garden-intro" aria-labelledby="garden-intro-title" aria-describedby="garden-intro-description">
+        <span class="garden-intro-kicker">光采花園 · 新道具</span>
+        <h2 id="garden-intro-title">看清需求，選對道具</h2>
+        <p id="garden-intro-description">觀察居民的對話，靠近後使用。關卡開始後有 60 秒完成照顧。</p>
+        <div class="garden-product-guide">
+          <div><span class="garden-guide-icon ddm">●</span><b>黑色素</b><strong>DDM+1</strong></div>
+          <div><span class="garden-guide-icon ssw">☀</span><b>皮膚蠟黃</b><strong>SSW+1</strong></div>
+        </div>
+        <p class="garden-intro-controls">點選道具或按 Q 切換，按「使用」或 E / SPACE 完成照顧。</p>
+        <button id="garden-intro-start" class="primary-button" type="button" autofocus>開始巡邏 →</button>
+      </dialog>
       <dialog id="core-collection-dialog" class="core-collection-dialog" aria-labelledby="core-collection-title">
         <div class="core-collection-head"><div><h2 id="core-collection-title">核心圖鑑</h2><p id="core-collection-progress">已收集 0 / 2</p></div><button id="core-collection-close" type="button" aria-label="關閉圖鑑" autofocus>✕</button></div>
         <article id="core-entry" class="core-entry is-locked">

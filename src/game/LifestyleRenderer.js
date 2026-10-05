@@ -61,7 +61,7 @@ export function drawLifestyleMap(ctx, stage) {
   for (const x of [30, width - 30]) for (let y = 160; y < 1140; y += 150) tree(ctx, x, y, .7);
   for (const [x, y] of [[140, 1050], [640, 1090], [140, 210], [650, 200]]) tree(ctx, x, y);
   panel(ctx, 290, 1077, 190, 39, '#fff5df', 10);
-  drawText(ctx, sports ? 'SPORTS · 入口' : 'CITY PLAZA · 入口', 385, 1096, { size: 16, color: INK });
+  drawText(ctx, sports ? 'SPORTS · 入口' : stage.theme === 'garden' ? '光采花園 · 入口' : 'CITY PLAZA · 入口', 385, 1096, { size: 16, color: INK });
   ctx.restore();
 }
 

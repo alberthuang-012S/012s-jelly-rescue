@@ -1,3 +1,5 @@
+import { ITEMS } from './constants.js';
+
 export class ResultScreen {
   constructor({ onReplay, onNext, onHome, evolutionStore, onEvolve }) {
     this.screen = document.querySelector('#result-screen');
@@ -151,7 +153,7 @@ export class ResultScreen {
       : `道具準確率 ${Math.round(result.toolAccuracy * 100)}%`;
     document.querySelector('#result-rescued').textContent = `${result.rescuedCount} 人`;
     document.querySelector('#result-max-combo').textContent = result.maxCombo;
-    this.showRescueStatistics(this.screen, result, isTutorial);
+    this.showRescueStatistics(this.screen, result, isTutorial, stage.availableItems);
     const next = document.querySelector('#result-next');
     const nextText = next.querySelector('span');
     if (nextText) nextText.textContent = nextLabel;
@@ -160,28 +162,30 @@ export class ResultScreen {
     this.showEvolution(this.screen);
   }
 
-  showGameOver(result) {
+  showGameOver(result, stage = null) {
     this.hide();
     document.querySelector('#gameover-score').textContent = result.score.toLocaleString();
     document.querySelector('#gameover-rescued').textContent = `${result.rescuedCount} 人`;
     document.querySelector('#gameover-max-combo').textContent = result.maxCombo;
-    this.showRescueStatistics(this.gameover, result);
+    this.showRescueStatistics(this.gameover, result, false, stage?.availableItems);
     this.gameover.classList.remove('is-hidden');
     this.showEvolution(this.gameover);
   }
 
-  showRescueStatistics(screen, result, isTutorial = false) {
+  showRescueStatistics(screen, result, isTutorial = false, availableItems = ['PPA', 'NAP']) {
     let stats = screen.querySelector('.rescue-statistics');
     if (!stats) {
       stats = document.createElement('div'); stats.className = 'rescue-statistics';
-      for (const label of ['PPA+1 正確使用', 'NAP+1 正確使用', '平均反應時間', '救援成功率']) {
+      for (const label of [...availableItems.map((id) => `${ITEMS[id].label} 正確使用`), '平均反應時間', '救援成功率']) {
         const cell = document.createElement('div'); const name = document.createElement('span'); const value = document.createElement('b');
         name.textContent = label; cell.append(name, value); stats.append(cell);
       }
       screen.querySelector('.result-stat-grid').after(stats);
     }
     stats.classList.toggle('is-hidden', isTutorial);
-    const values = [result.ppaSuccess, result.napSuccess,
+    const labels = [...availableItems.map((id) => `${ITEMS[id].label} 正確使用`), '平均反應時間', '救援成功率'];
+    stats.querySelectorAll('span').forEach((element, index) => { element.textContent = labels[index]; });
+    const values = [...availableItems.map((id) => result.itemSuccess?.[id] ?? (id === 'PPA' ? result.ppaSuccess : id === 'NAP' ? result.napSuccess : 0)),
       result.rescuedCount ? `${result.averageResponseTime.toFixed(1)} 秒` : '—',
       result.rescuedCount + result.failedCount ? `${Math.round(result.rescueRate * 100)}%` : '—'];
     stats.querySelectorAll('b').forEach((element, index) => { element.textContent = values[index]; });

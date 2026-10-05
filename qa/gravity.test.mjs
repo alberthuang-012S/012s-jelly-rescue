@@ -19,7 +19,7 @@ test('gravity is an optional untimed Sports encounter, separate from the rescue 
   const stage = SPECIAL_STAGE_DEFS.gravityOverload;
   assert.equal(stage.obstacles, STAGE_DEFS.sports.obstacles);
   assert.equal(stage.mapId, 'sports'); assert.equal(stage.timed, false);
-  assert.deepEqual(STAGE_ORDER, ['tutorial', 'park', 'mountain', 'city', 'sports']);
+  assert.deepEqual(STAGE_ORDER, ['tutorial', 'park', 'mountain', 'city', 'sports', 'garden']);
 });
 test('NAP locks direct selection and toggle, then mosquito and rescue can restore their items', () => {
   const items = new ItemSystem(); items.reset({ lockedId: 'NAP' });

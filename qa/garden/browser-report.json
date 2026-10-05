@@ -1,0 +1,202 @@
+{
+  "checks": [
+    "1280×900: preview, intro/background suspension, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation",
+    "390×844: preview, intro/background suspension, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation",
+    "375×667: preview, intro/background suspension, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation",
+    "320×568: preview, intro/background suspension, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation",
+    "667×375: preview, intro/background suspension, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation"
+  ],
+  "errors": [],
+  "layouts": [
+    {
+      "width": 1280,
+      "height": 900,
+      "items": [
+        {
+          "x": 1063.234375,
+          "y": 527,
+          "right": 1248,
+          "bottom": 603,
+          "width": 184.765625,
+          "height": 76
+        },
+        {
+          "x": 1063.234375,
+          "y": 614,
+          "right": 1248,
+          "bottom": 690,
+          "width": 184.765625,
+          "height": 76
+        }
+      ],
+      "use": {
+        "x": 0,
+        "y": 0,
+        "right": 0,
+        "bottom": 0,
+        "width": 0,
+        "height": 0
+      },
+      "dpad": {
+        "x": 0,
+        "y": 0,
+        "right": 0,
+        "bottom": 0,
+        "width": 0,
+        "height": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "items": [
+        {
+          "x": 173,
+          "y": 756,
+          "right": 229,
+          "bottom": 828,
+          "width": 56,
+          "height": 72
+        },
+        {
+          "x": 233,
+          "y": 756,
+          "right": 289,
+          "bottom": 828,
+          "width": 56,
+          "height": 72
+        }
+      ],
+      "use": {
+        "x": 306,
+        "y": 752,
+        "right": 382,
+        "bottom": 828,
+        "width": 76,
+        "height": 76
+      },
+      "dpad": {
+        "x": 8,
+        "y": 672,
+        "right": 164,
+        "bottom": 828,
+        "width": 156,
+        "height": 156
+      }
+    },
+    {
+      "width": 375,
+      "height": 667,
+      "items": [
+        {
+          "x": 165.5,
+          "y": 579,
+          "right": 221.5,
+          "bottom": 651,
+          "width": 56,
+          "height": 72
+        },
+        {
+          "x": 225.5,
+          "y": 579,
+          "right": 281.5,
+          "bottom": 651,
+          "width": 56,
+          "height": 72
+        }
+      ],
+      "use": {
+        "x": 291,
+        "y": 575,
+        "right": 367,
+        "bottom": 651,
+        "width": 76,
+        "height": 76
+      },
+      "dpad": {
+        "x": 8,
+        "y": 495,
+        "right": 164,
+        "bottom": 651,
+        "width": 156,
+        "height": 156
+      }
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "items": [
+        {
+          "x": 148,
+          "y": 480,
+          "right": 192,
+          "bottom": 552,
+          "width": 44,
+          "height": 72
+        },
+        {
+          "x": 196,
+          "y": 480,
+          "right": 240,
+          "bottom": 552,
+          "width": 44,
+          "height": 72
+        }
+      ],
+      "use": {
+        "x": 248,
+        "y": 488,
+        "right": 312,
+        "bottom": 552,
+        "width": 64,
+        "height": 64
+      },
+      "dpad": {
+        "x": 8,
+        "y": 420,
+        "right": 140,
+        "bottom": 552,
+        "width": 132,
+        "height": 132
+      }
+    },
+    {
+      "width": 667,
+      "height": 375,
+      "items": [
+        {
+          "x": 445.328125,
+          "y": 282.984375,
+          "right": 501.328125,
+          "bottom": 354.984375,
+          "width": 56,
+          "height": 72
+        },
+        {
+          "x": 505.328125,
+          "y": 282.984375,
+          "right": 561.328125,
+          "bottom": 354.984375,
+          "width": 56,
+          "height": 72
+        }
+      ],
+      "use": {
+        "x": 575.328125,
+        "y": 284.984375,
+        "right": 645.328125,
+        "bottom": 354.984375,
+        "width": 70,
+        "height": 70
+      },
+      "dpad": {
+        "x": 24,
+        "y": 198.984375,
+        "right": 180,
+        "bottom": 354.984375,
+        "width": 156,
+        "height": 156
+      }
+    }
+  ]
+}

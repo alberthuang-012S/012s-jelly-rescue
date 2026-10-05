@@ -12,7 +12,9 @@ export const SCENARIO_DEFS = Object.freeze({
   GRASS_SKIN: define(CONDITIONS.ITCH, 'skin', '剛剛碰到草，感覺怪怪的……', '皮膚開始有點癢癢的……', '真的越來越癢了！', '不癢了，謝謝！'),
   FALL: define(CONDITIONS.SORENESS, 'fall', '啊！', '膝蓋還是好痛……', '膝蓋痛得受不了！', '膝蓋好多了，謝謝！'),
   SPORT_SORE: define(CONDITIONS.SORENESS, 'sore', '運動後，肌肉好痠！', '肌肉還是好痠……', '肌肉痠得受不了！', '肌肉舒服多了，謝謝！'),
-  LONG_WALK: define(CONDITIONS.SORENESS, 'sore', '走久了，雙腿好痠！', '雙腿還是好痠……', '雙腿痠得受不了！', '雙腿舒服多了，謝謝！')
+  LONG_WALK: define(CONDITIONS.SORENESS, 'sore', '走久了，雙腿好痠！', '雙腿還是好痠……', '雙腿痠得受不了！', '雙腿舒服多了，謝謝！'),
+  PIGMENT_CARE: Object.freeze({ ...define(CONDITIONS.PIGMENTATION, 'skin', '想照顧黑色素困擾……', '黑色素，請幫幫我！', '黑色素照顧，我快要走了！', '照顧完成，謝謝你！'), wrongItem: '黑色素要用 DDM+1 喔！' }),
+  SALLOW_CARE: Object.freeze({ ...define(CONDITIONS.SALLOWNESS, 'skin', '皮膚看起來蠟黃……', '皮膚蠟黃，請幫幫我！', '皮膚蠟黃，我快要走了！', '照顧完成，謝謝你！'), wrongItem: '皮膚蠟黃要用 SSW+1 喔！' })
 });
 
 const dialogue = (WARNING, HELP, CRITICAL, RESCUED) => Object.freeze({ WARNING, HELP, CRITICAL, RESCUED });
@@ -80,7 +82,7 @@ export function scenarioDialogue(role, type, state, stageId = null) {
   if (!type) return null;
   const definition = SCENARIO_DEFS[type];
   if (!definition) return null;
-  if (stageId && stageId !== 'city' && stageId !== 'sports') return null;
+  if (stageId && !['city', 'sports', 'garden'].includes(stageId)) return null;
   return ROLE_SCENARIO_DIALOGUE[stageId]?.[role]?.[type]?.[state] || definition.dialogue[state] || null;
 }
 

@@ -1,0 +1,48 @@
+{
+  "ddm": {
+    "source": "reference/generated-ddm-chibi-v1.png",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "runtime": [
+      "reference/runtime/ddm-chibi-v1.webp",
+      "reference/runtime/ddm-chibi-v1.png"
+    ],
+    "runtimeSize": [
+      256,
+      384
+    ],
+    "hasAlpha": true,
+    "transparentCorners": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "bytes": 59260
+  },
+  "ssw": {
+    "source": "reference/generated-ssw-chibi-v1.png",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "runtime": [
+      "reference/runtime/ssw-chibi-v1.webp",
+      "reference/runtime/ssw-chibi-v1.png"
+    ],
+    "runtimeSize": [
+      256,
+      384
+    ],
+    "hasAlpha": true,
+    "transparentCorners": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "bytes": 65186
+  }
+}

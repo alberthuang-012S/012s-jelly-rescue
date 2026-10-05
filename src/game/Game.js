@@ -48,6 +48,9 @@ const ASSET_PATHS = Object.freeze({
     './reference/runtime/nap-plus-one.webp',
     './reference/nap-plus-one.png'
   ],
+  ddm: ['./reference/runtime/ddm-chibi-v1.webp', './reference/runtime/ddm-chibi-v1.png'],
+  ssw: ['./reference/runtime/ssw-chibi-v1.webp', './reference/runtime/ssw-chibi-v1.png'],
+  garden: ['./reference/runtime/garden-map-v1.webp', './reference/generated-garden-map-v1.png'],
   home: [
     './reference/jelly-anthropomorphic-home.png',
     './reference/runtime/jelly-home.webp',
@@ -220,6 +223,11 @@ function findPlayerManifest(source, manifestTable) {
 }
 
 const HOME_STAGE_CONTENT = Object.freeze({
+  garden: {
+    tone: 'garden', kicker: '光采花園', title: 'JELLY RADIANCE GARDEN',
+    description: '觀察黑色素與皮膚蠟黃需求，切換 DDM+1 / SSW+1，為花園居民完成照顧。',
+    meta: ['1 分鐘', '雙道具切換'], artLabel: 'RADIANCE GARDEN', alt: '光采花園地圖預覽'
+  },
   city: {
     tone: 'city', kicker: '城市生活廣場', title: 'JELLY CITY PLAZA',
     description: '漫步咖啡露台與購物街，觀察皮膚照顧和走路痠痛的日常情境。',
@@ -465,6 +473,22 @@ export class Game {
         ? CONDITIONS.SORENESS
         : null;
     this.homeStageTransitionTimer = null;
+    this.gardenIntro = document.querySelector('#garden-intro');
+    this.gardenIntroduced = false;
+    document.querySelector('#garden-intro-start')?.addEventListener('click', () => {
+      if (this.backgroundPaused) this.resumeFromBackground();
+      else this.gardenIntro.close();
+    });
+    this.gardenIntro?.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') event.stopPropagation();
+    });
+    this.gardenIntro?.addEventListener('cancel', (event) => {
+      if (this.backgroundPaused) event.preventDefault();
+    });
+    this.gardenIntro?.addEventListener('close', () => {
+      this.gardenIntroduced = true;
+      if (this.state === 'playing' && !this.isGardenIntroOpen && !this.backgroundPaused && !this.isExitConfirmOpen) this.input.setEnabled(true);
+    });
     if (ASSET_REPORT_ENABLED) window.__jellyAssetReport = assetReport;
 
     this.stageManager = new StageManager();
@@ -647,7 +671,8 @@ export class Game {
 
   ensureNpcAsset(stageId = this.selectedStage) {
     const lifestyle = STAGE_DEFS[stageId]?.renderer === 'lifestyle';
-    const assetId = lifestyle ? `${stageId}Npc` : 'npc';
+    const artId = STAGE_DEFS[stageId]?.npcArtId || stageId;
+    const assetId = lifestyle ? `${artId}Npc` : 'npc';
     if (!this.npcAssetPromises.has(assetId)) this.npcAssetPromises.set(assetId, loadImageWithFallback(ASSET_PATHS[assetId], {
       fetchPriority: 'high',
       assetName: `${assetId} sprite`
@@ -657,7 +682,7 @@ export class Game {
         fetchPriority: 'high', assetName: 'Sports injury animation'
       }));
     }
-    const conditionId = lifestyle ? `${stageId}Condition` : 'npcCondition';
+    const conditionId = lifestyle ? `${artId}Condition` : 'npcCondition';
     if (conditionId && !this.npcAssetPromises.has(conditionId)) {
       this.npcAssetPromises.set(conditionId, loadImageWithFallback(ASSET_PATHS[conditionId], {
         fetchPriority: 'high', assetName: `${stageId} concerned expressions`
@@ -671,7 +696,7 @@ export class Game {
       this.npcSpriteSheet = this.npcSpriteImage ? {
         frameWidth: this.npcSpriteImage.naturalWidth / 3,
         frameHeight: this.npcSpriteImage.naturalHeight / (lifestyle ? 2 : 1),
-        frameCount: lifestyle ? (stageId === 'city' ? 5 : 6) : 3,
+        frameCount: lifestyle ? (artId === 'city' ? 5 : 6) : 3,
         columns: 3,
         lifestyle,
         topOffsets: lifestyle ? null : LEGACY_NPC_LAYOUT.topOffsets,
@@ -689,8 +714,8 @@ export class Game {
 
   ensureItemAsset(itemId) {
     if (this.itemAssetPromises.has(itemId)) return this.itemAssetPromises.get(itemId);
-    const assetName = itemId === 'PPA' ? 'PPA+1' : 'NAP+1';
-    const itemPromise = loadImageWithFallback(ASSET_PATHS[itemId === 'PPA' ? 'ppa' : 'nap'], {
+    const assetName = ITEMS[itemId].label;
+    const itemPromise = loadImageWithFallback(ASSET_PATHS[itemId.toLowerCase()], {
       fetchPriority: 'high',
       assetName
     });
@@ -703,8 +728,7 @@ export class Game {
       ['Stage map', this.ensureStageMap(stageId, { fetchPriority: 'high' })],
       ['Player', this.ensurePlayerAsset()],
       ['NPC', this.ensureNpcAsset(stageId)],
-      ['PPA+1', this.ensureItemAsset('PPA')],
-      ['NAP+1', this.ensureItemAsset('NAP')]
+      ...this.itemSystem.availableIds.map((id) => [ITEMS[id].label, this.ensureItemAsset(id)])
     ];
     if (stageId === 'alienMosquito') criticalTasks.push(['Alien creatures', this.ensureBossArt()]);
     if (stageId === 'gravityOverload') criticalTasks.push(['Gravity creatures', this.ensureGravityArt()]);
@@ -858,6 +882,7 @@ export class Game {
   }
 
   handleEscape() {
+    if (this.isGardenIntroOpen) { if (!this.backgroundPaused) this.gardenIntro.close(); return; }
     if (this.coreCollectionUI?.dialog.open) {
       this.coreCollectionUI.dialog.close();
       return;
@@ -931,7 +956,10 @@ export class Game {
     this.backgroundPause.classList.remove('is-hidden');
     this.backgroundPause.setAttribute('aria-hidden', 'false');
     this.gameShell.classList.add('is-background-paused');
-    this.backgroundResume.focus();
+    if (this.isGardenIntroOpen) {
+      const button = document.querySelector('#garden-intro-start');
+      button.textContent = '繼續遊戲'; button.focus();
+    } else this.backgroundResume.focus();
   }
 
   clearBackgroundPause() {
@@ -946,9 +974,13 @@ export class Game {
     this.clearBackgroundPause();
     this.lastTimestamp = 0;
     this.input.reset();
-    this.input.setEnabled(!this.isTutorialModalOpen && !this.isExitConfirmOpen);
+    this.input.setEnabled(!this.isTutorialModalOpen && !this.isExitConfirmOpen && !this.isGardenIntroOpen);
     if (this.isExitConfirmOpen) this.exitConfirmSecondary.focus();
     else if (this.isTutorialModalOpen) this.tutorialModalPrimary.focus();
+    else if (this.isGardenIntroOpen) {
+      const button = document.querySelector('#garden-intro-start');
+      button.textContent = '開始巡邏 →'; button.focus();
+    }
     else this.backgroundResume.blur();
   }
 
@@ -1179,6 +1211,7 @@ export class Game {
   }
 
   async startStage(stageId) {
+    this.gardenIntro?.close();
     this.clearBackgroundPause();
     window.clearTimeout(this.tutorialTransitionTimer);
     this.tutorialTransitionTimer = null;
@@ -1196,7 +1229,8 @@ export class Game {
     this.floaters = [];
     this.scoreManager.reset();
     this.combo.reset();
-    this.itemSystem.reset({ lockedId: stage.mode === 'boss' ? stage.id === 'gravityOverload' ? 'NAP' : 'PPA' : null });
+    this.itemSystem.reset({ availableItems: stage.availableItems, lockedId: stage.mode === 'boss' ? stage.id === 'gravityOverload' ? 'NAP' : 'PPA' : null });
+    this.hud.updateItems(this.itemSystem.selectedId, this.itemSystem.availableIds);
     this.interactionSystem.currentTarget = null;
     this.player.reset(stage.start);
     this.bossCombat = stage.mode === 'boss'
@@ -1257,6 +1291,9 @@ export class Game {
     this.hideLoading();
     if (this.isTutorial()) {
       this.openTutorialModal('move');
+    } else if (stageId === 'garden' && !this.gardenIntroduced) {
+      document.querySelector('#garden-intro-start').textContent = this.backgroundPaused ? '繼續遊戲' : '開始巡邏 →';
+      this.gardenIntro.showModal();
     } else {
       this.input.setEnabled(true);
     }
@@ -1266,6 +1303,7 @@ export class Game {
   }
 
   showHome() {
+    this.gardenIntro?.close();
     this.bossUI.setMode(false);
     this.bossCombat = null;
     if (SPECIAL_STAGE_DEFS[this.selectedStage]) { this.selectedStage = 'tutorial'; this.updateHomeSelection(); }
@@ -1286,19 +1324,20 @@ export class Game {
   }
 
   selectItem(itemId) {
-    if (this.backgroundPaused) return;
+    if (this.backgroundPaused || this.isGardenIntroOpen) return;
     this.itemSystem.select(itemId);
     this.hud.updateItems(this.itemSystem.selectedId);
   }
 
   toggleItem() {
-    if (this.backgroundPaused) return;
+    if (this.backgroundPaused || this.isGardenIntroOpen) return;
     if (this.state !== 'playing') return;
     this.itemSystem.toggle();
     this.hud.updateItems(this.itemSystem.selectedId);
   }
 
   update(dt) {
+    if (this.isGardenIntroOpen) return;
     if (this.backgroundPaused || document.hidden) return;
     if (this.resultScreen.dialog.open) return;
     if (this.state !== 'playing') return;
@@ -1339,6 +1378,7 @@ export class Game {
   }
 
   tryAction() {
+    if (this.isGardenIntroOpen) return;
     if (this.backgroundPaused || document.hidden) return;
     if (this.resultScreen.dialog.open) return;
     if (this.state !== 'playing') return;
@@ -1396,7 +1436,7 @@ export class Game {
       this.combo.break();
       this.createMistakeParticles(target);
       target.showDialogue(SCENARIO_DEFS[target.scenarioType]?.wrongItem || '好像不是這個……', 1.15);
-      const correctItemId = target.condition === CONDITIONS.ITCH ? ITEMS.PPA.id : ITEMS.NAP.id;
+      const correctItemId = requiredItem(target.condition);
       this.hud.flashItemFeedback(this.itemSystem.selectedId, correctItemId);
     }
   }
@@ -1462,6 +1502,10 @@ export class Game {
     this.resetAppScroll();
   }
 
+  get isGardenIntroOpen() {
+    return Boolean(this.gardenIntro?.open);
+  }
+
   finishStage() {
     if (this.state !== 'playing') return;
     if (this.isTutorial()) {
@@ -1495,7 +1539,7 @@ export class Game {
     const result = this.scoreManager.getResult(this.combo.maxCombo);
     result.maxCombo = this.combo.maxCombo;
     this.gameShell.classList.add('is-hidden');
-    this.resultScreen.showGameOver(result);
+    this.resultScreen.showGameOver(result, this.stageManager.getStage());
     this.updateOrientation?.();
     this.resetAppScroll();
   }
@@ -1509,6 +1553,7 @@ export class Game {
       if (this.isTutorial()) return;
       const scenarioType = action.slice('scenario:'.length);
       if (!SCENARIO_DEFS[scenarioType]) return;
+      if (!this.itemSystem.availableIds.includes(requiredItem(SCENARIO_DEFS[scenarioType].condition))) return;
       const stage = this.stageManager.getStage();
       const available = this.npcs.filter((npc) => npc.canReceiveEvent(this.stageManager.elapsed));
       let npc = available.find((candidate) => NPC_ROLE_DEFS[candidate.role]?.scenarioWeights[scenarioType]) || available[0];
@@ -1572,7 +1617,9 @@ export class Game {
   }
 
   createRescueParticles(npc, condition) {
-    const colors = condition === CONDITIONS.ITCH ? ['#fff1b1', '#e3b9ff', '#d0f5e5'] : ['#b7e4ff', '#d6c5ff', '#fff1c1'];
+    const colors = condition === CONDITIONS.PIGMENTATION ? ['#9375c4', '#e7d8ff', '#fff9ef']
+      : condition === CONDITIONS.SALLOWNESS ? ['#efc86c', '#fff1b1', '#fff9ef']
+      : condition === CONDITIONS.ITCH ? ['#fff1b1', '#e3b9ff', '#d0f5e5'] : ['#b7e4ff', '#d6c5ff', '#fff1c1'];
     for (let index = 0; index < 13; index += 1) {
       const angle = (Math.PI * 2 * index) / 13;
       this.particles.push({ x: npc.x, y: npc.y - 8, vx: Math.cos(angle) * (20 + Math.random() * 26), vy: Math.sin(angle) * (20 + Math.random() * 26) - 16, life: 0.9 + Math.random() * 0.3, maxLife: 1.2, size: 2 + Math.random() * 4, color: colors[index % colors.length], shape: 'spark' });
