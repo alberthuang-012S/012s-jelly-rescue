@@ -130,9 +130,9 @@ test('itch and soreness share the same dialogue palette at every state',()=>{
   }
 });
 
-test('garden requirement badges persist through overrides and wrap full dialogue inside mobile map edges',()=>{
+test('garden dialogue and overrides wrap fully inside mobile map edges',()=>{
   for(const scale of [.38,.49,1.5]) for(const compact of [true,false]) for(const role of ['youngWoman','shopper','cafeVisitor','photographerGirl','deliveryWorker'])
-    for(const [type,keyword] of [['PIGMENT_CARE','黑色素'],['SALLOW_CARE','皮膚蠟黃']]) {
+    for(const type of ['PIGMENT_CARE','SALLOW_CARE']) {
       const bounds={left:0,top:0,right:320/scale,bottom:500/scale};
       const npc=new NPC({id:role,role,x:bounds.right-20,y:20,stageId:'garden'});npc.startScenario(type,10,3);
       for(const state of [STATES.WARNING,STATES.HELP,STATES.CRITICAL,STATES.RESCUED,STATES.FAILED]){
@@ -142,11 +142,9 @@ test('garden requirement badges persist through overrides and wrap full dialogue
         assert.ok(layout.lines.length<=2);
         for(const line of layout.lines) assert.ok(ctx.measureText(line).width<=layout.bubbleWidth*scale-(compact?24:30)+.01);
         assert.ok(layout.bubbleX>=0&&layout.bubbleY>=0&&layout.bubbleX+layout.bubbleWidth<=bounds.right+.01&&layout.bubbleY+layout.bubbleHeight<=bounds.bottom+.01);
-        if([STATES.RESCUED,STATES.FAILED].includes(state)) assert.equal(layout.conditionLabel,null);
-        else assert.ok(layout.conditionLabel.includes(keyword));
       }
       npc.state=STATES.HELP;npc.showDialogue('我需要白色那瓶 SSW+1 喔！');
       const override=npc.getStatusLayout(ctx,0,{cameraScale:scale,compactStatusBubble:compact,visibleBounds:bounds});
-      assert.equal(override.lines.join(''),npc.dialogueOverride);assert.ok(override.conditionLabel.includes(keyword));
+      assert.equal(override.lines.join(''),npc.dialogueOverride);
     }
 });

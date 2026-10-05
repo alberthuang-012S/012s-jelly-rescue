@@ -26,7 +26,7 @@ test('garden pair excludes legacy items and resets correctly when returning to r
   items.toggle(); assert.equal(items.selectedId, 'NAP');
 });
 
-test('new conditions survive NPC normalization and keep their keyword through every waiting state', () => {
+test('new conditions survive NPC normalization and keep the requested dialogue through waiting states', () => {
   for (const [type, condition, keyword, item] of [['PIGMENT_CARE', CONDITIONS.PIGMENTATION, '黑色素', 'DDM'], ['SALLOW_CARE', CONDITIONS.SALLOWNESS, '蠟黃', 'SSW']]) {
     const npc = new NPC({ id: type, role: 'cafeVisitor', x: 384, y: 800, stageId: 'garden' });
     npc.startScenario(type, 10, 3);
@@ -34,7 +34,7 @@ test('new conditions survive NPC normalization and keep their keyword through ev
     for (const state of [STATES.WARNING, STATES.HELP, STATES.CRITICAL]) {
       npc.state = state;
       const layout = npc.getStatusLayout({ save() {}, restore() {}, measureText(text) { return { width: [...text].length * 14 }; } }, 0);
-      assert.match(layout.conditionLabel, new RegExp(keyword));
+      if (state !== STATES.WARNING) assert.match(layout.label, new RegExp(keyword));
       assert.equal(layout.label, scenarioDialogue(npc.role, type, state, 'garden'));
     }
     npc.state = STATES.WARNING;

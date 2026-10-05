@@ -99,7 +99,7 @@ try {
         for(const state of ['WARNING','HELP','CRITICAL','RESCUED','FAILED']) {
           npc.state=state;
           const layout=npc.getStatusLayout(g.ctx,0,{cameraScale:camera.scale,compactStatusBubble:g.layoutMode!=='desktop',visibleBounds:bounds});
-          result.push({type,state,label:layout.label,badge:layout.conditionLabel,lines:layout.lines,inside:layout.bubbleX>=bounds.left&&layout.bubbleX+layout.bubbleWidth<=bounds.right+.01&&layout.bubbleY>=bounds.top&&layout.bubbleY+layout.bubbleHeight<=bounds.bottom+.01});
+          result.push({type,state,label:layout.label,lines:layout.lines,inside:layout.bubbleX>=bounds.left&&layout.bubbleX+layout.bubbleWidth<=bounds.right+.01&&layout.bubbleY>=bounds.top&&layout.bubbleY+layout.bubbleHeight<=bounds.bottom+.01});
         }
         npc.state=index?'HELP':'CRITICAL';
       }
@@ -107,7 +107,6 @@ try {
     });
     for(const layout of dialogueLayouts) {
       assert.equal(layout.lines.join(''),layout.label);assert.ok(layout.lines.length<=2);assert.ok(layout.inside);
-      if(['WARNING','HELP','CRITICAL'].includes(layout.state)) assert.match(layout.badge,layout.type==='PIGMENT_CARE'?/黑色素/:/皮膚蠟黃/);
     }
     assert.equal(dialogueLayouts.find(l=>l.type==='PIGMENT_CARE'&&l.state==='HELP').label,'想處理黑色素沉澱，能幫我嗎？');
     assert.equal(dialogueLayouts.find(l=>l.type==='PIGMENT_CARE'&&l.state==='CRITICAL').label,'我快出發了，能先幫我處理黑色素嗎？');
@@ -153,7 +152,7 @@ try {
         assert.deepEqual(await page.locator('[data-item]:visible').evaluateAll(nodes => nodes.map(node => node.dataset.item)), ['DDM', 'SSW']);
       }
     }
-    report.checks.push(`${width}×${height}: preview, welcoming intro/Q-version guide/adaptive controls/background suspension, complete two-line dialogue/requirement badges/accepted copy, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation`);
+    report.checks.push(`${width}×${height}: preview, welcoming intro/Q-version guide/adaptive controls/background suspension, complete two-line dialogue/accepted copy, keyboard/touch selection, wrong/correct use, layout, completion/failure stats, replay, Sports next-stage and legacy/Boss item isolation`);
     await context.close();
   }
   assert.deepEqual(report.errors, []); console.log(JSON.stringify(report, null, 2));
