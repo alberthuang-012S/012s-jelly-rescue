@@ -80,7 +80,7 @@ const ASSET_PATHS = Object.freeze({
   gravityBoss: ['./reference/runtime/gravity-boss-v1.webp', './reference/runtime/gravity-boss-v1.png'],
   gravityCore: ['./reference/runtime/gravity-core-v1.webp', './reference/runtime/gravity-core-v1.png'],
   gravityDevice: ['./reference/runtime/gravity-device-v1.webp', './reference/runtime/gravity-device-v1.png'],
-  pigmentQueen: ['./reference/runtime/pigment-queen-v1.webp', './reference/runtime/pigment-queen-v1.png'],
+  pigmentQueen: ['./reference/runtime/pigment-queen-v2.webp', './reference/runtime/pigment-queen-v2.png'],
   pigmentEnemies: ['./reference/runtime/pigment-enemies-v1.webp', './reference/runtime/pigment-enemies-v1.png'],
   pigmentCrystal: ['./reference/runtime/pigment-crystal-v1.webp', './reference/runtime/pigment-crystal-v1.png'],
   pigmentShield: ['./reference/runtime/pigment-shield-v1.webp', './reference/runtime/pigment-shield-v1.png'],

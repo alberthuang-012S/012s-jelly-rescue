@@ -137,15 +137,22 @@ export class PigmentRenderer {
     gem(ctx, 0, -143, 11);
     for (const side of [-1, 1]) {
       oval(ctx, side * 18, -106, 11, 14, '#fff5f2', INK, 2);
-      if (open) { ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(side * 18, -102, 5, Math.PI, 0); ctx.stroke(); }
+      if (freed) {
+        oval(ctx, side * 18, -104, 5, 7, '#30233e', null);
+        oval(ctx, side * 21, -96, 4, 3, '#bce5ff', '#eefaff', 1);
+        oval(ctx, side * 24, -89, 2.5, 4, '#bce5ff', null);
+        ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.beginPath();
+        ctx.moveTo(side * 10, -119); ctx.lineTo(side * 25, -114); ctx.stroke();
+      }
+      else if (open) { ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(side * 18, -102, 5, Math.PI, 0); ctx.stroke(); }
       else { oval(ctx, side * 18, -104, 5, 8, '#30233e', null); oval(ctx, side * 18 - 2, -108, 2, 3, '#ffffff', null); }
       oval(ctx, side * 31, -86, 7, 3, '#d1b1d9', null);
       for (let i = 0; i < 3; i++) oval(ctx, side * (23 + i * 5), -92 - i % 2 * 3, 1.4, 1.4, '#f9e7ff', null);
-      const raised = warning ? -100 : open ? -54 : -73;
-      petal(ctx, side * 35, -59, 13, 49, side * 1.1, '#8ebbb4');
-      oval(ctx, side * 51, raised, 12, 13, '#b4a0ca', INK);
+      const raised = freed ? -69 : warning ? -100 : open ? -54 : -73;
+      petal(ctx, side * 35, -59, 13, freed ? 32 : 49, side * (freed ? -.65 : 1.1), '#8ebbb4');
+      oval(ctx, side * (freed ? 12 : 51), raised, 12, 13, '#b4a0ca', INK);
     }
-    ctx.strokeStyle = INK; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(-9, -83); ctx.quadraticCurveTo(0, open ? -70 : -78, 9, -83); ctx.stroke();
+    ctx.strokeStyle = INK; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(-9, -83); ctx.quadraticCurveTo(0, freed ? -91 : open ? -70 : -78, 9, -83); ctx.stroke();
     gem(ctx, 0, -41, open ? 19 : 12, open);
     if (!open) {
       for (const side of [-1, 1]) petal(ctx, side * 12, -16, 20, 64, side * .35, '#443653');

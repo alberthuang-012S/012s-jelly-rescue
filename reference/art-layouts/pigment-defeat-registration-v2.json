@@ -1,0 +1,18 @@
+{
+  "source": "reference/generated-pigment-queen-defeat-v2.png",
+  "frame": 5,
+  "bounds": {
+    "left": 186,
+    "top": 47,
+    "width": 890,
+    "height": 1123
+  },
+  "left": 65,
+  "top": 25,
+  "width": 254,
+  "height": 321,
+  "foot": {
+    "x": 192,
+    "y": 346
+  }
+}

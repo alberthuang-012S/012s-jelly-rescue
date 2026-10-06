@@ -289,7 +289,7 @@ export const STAGE_DEFS = Object.freeze({
 
 export const SPECIAL_STAGE_DEFS = Object.freeze({
   pigmentBloom: Object.freeze({ ...STAGE_DEFS.garden, id: 'pigmentBloom',
-    mode: 'boss', mapId: 'garden', name: 'Black Garden Calamity', displayName: '黑色花園浩劫',
+    mode: 'boss', mapId: 'garden', name: 'PIGMENT TAKEOVER', displayName: '暗花浩劫',
     timed: false, maxNpcs: 0, availableItems: ['DDM'], start: { x: 384, y: 820 } }),
   [SPECIAL_STAGE_ID]: Object.freeze({ ...STAGE_DEFS.park, id: SPECIAL_STAGE_ID,
     mode: 'boss', name: 'Alien Mosquito Invasion', displayName: '異星蚊災',

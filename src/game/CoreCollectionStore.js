@@ -5,7 +5,7 @@ export const CORE_CATALOG = Object.freeze([
   Object.freeze({id:'gravityCore',stageId:'gravityOverload',name:'重力核心',
     image:'gravity-core-v1', entryId:'gravity-core-entry', stageTitle:'重力痠痛危機', description:'咚咚王解除過載後留下的重力核心。經 NAP 共鳴後，封存在圖鑑中。'}),
   Object.freeze({id:'pigmentCore',stageId:'pigmentBloom',name:'墨晶核心', image:'pigment-core-v1',
-    entryId:'pigment-core-entry',stageTitle:'黑色花園浩劫',description:'暗沉沉花后獲救後留下的墨晶核心。失控的黑色素能量經 DDM 共鳴後，封存在圖鑑中。'})
+    entryId:'pigment-core-entry',stageTitle:'暗花浩劫',description:'暗沉沉花后獲救後留下的墨晶核心。失控的黑色素能量經 DDM 共鳴後，封存在圖鑑中。'})
 ]);
 
 export class CoreCollectionStore {

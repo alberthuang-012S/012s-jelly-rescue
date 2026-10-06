@@ -1,7 +1,7 @@
 export const BOSS_STAGE_CONTENT = Object.freeze({
   pigmentBloom: {
     coreId: 'pigmentCore', coreName: '墨晶核心',
-    title: '黑色花園浩劫', english: 'BLACK GARDEN CALAMITY', boss: '暗沉沉花后', bossEnglish: 'PIGMENT QUEEN',
+    title: '暗花浩劫', english: 'PIGMENT TAKEOVER', boss: '暗沉沉花后', bossEnglish: 'PIGMENT QUEEN',
     item: 'DDM', hitMetric: 'ddmHits', enemies: '小墨怪', defeated: '擊退小墨怪',
     objective: '使用 DDM 清除黑色素結晶（墨晶）與小墨怪', closedHint: '清除墨晶，解除花后護盾',
     openHint: '核心亮起！保持距離使用 DDM', arrival: '不准天亮！我的花還沒開完呢！',
