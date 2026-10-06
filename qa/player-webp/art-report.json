@@ -1,0 +1,72 @@
+[
+  {
+    "source": "reference/runtime/jelly-anthropomorphic-player-walk-v12.png",
+    "output": "reference/runtime/jelly-anthropomorphic-player-walk-v12.webp",
+    "width": 1680,
+    "height": 1600,
+    "pngBytes": 2910931,
+    "webpBytes": 609518,
+    "reduction": "79.1%",
+    "quality": 90,
+    "lossless": false,
+    "visiblePixels": 1043906,
+    "transparentPixels": 1644094,
+    "alphaIdentical": true,
+    "visibleColorsIdentical": false,
+    "display": [
+      {
+        "background": "#173249",
+        "meanDelta": 0.5313362663906143,
+        "psnr": 46.27400110850691
+      },
+      {
+        "background": "#f5ecd8",
+        "meanDelta": 0.5273087042788129,
+        "psnr": 46.32107165693674
+      }
+    ]
+  },
+  {
+    "source": "reference/jelly-anthropomorphic-home.png",
+    "output": "reference/runtime/jelly-anthropomorphic-home-v1.webp",
+    "width": 1254,
+    "height": 1254,
+    "pngBytes": 1563932,
+    "webpBytes": 368006,
+    "reduction": "76.5%",
+    "quality": 90,
+    "lossless": false,
+    "visiblePixels": 700430,
+    "transparentPixels": 872086,
+    "alphaIdentical": true,
+    "visibleColorsIdentical": false,
+    "display": [
+      {
+        "background": "#173249",
+        "meanDelta": 2.075325,
+        "psnr": 35.59725593196954
+      },
+      {
+        "background": "#f5ecd8",
+        "meanDelta": 2.1937166666666665,
+        "psnr": 34.94504040241399
+      }
+    ]
+  },
+  {
+    "source": "reference/player-jelly-preferred.png",
+    "output": "reference/runtime/player-jelly-preferred-v1.webp",
+    "width": 665,
+    "height": 500,
+    "pngBytes": 548436,
+    "webpBytes": 338694,
+    "reduction": "38.2%",
+    "quality": null,
+    "lossless": true,
+    "visiblePixels": 332500,
+    "transparentPixels": 0,
+    "alphaIdentical": true,
+    "visibleColorsIdentical": true,
+    "display": []
+  }
+]

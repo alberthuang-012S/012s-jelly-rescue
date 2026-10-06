@@ -1,5 +1,11 @@
 import { ITEMS } from './constants.js';
 
+function setEvolutionPortrait(image, evolved) {
+  image.onerror = evolved ? () => { image.onerror = null; image.src = './reference/jelly-anthropomorphic-home.png'; } : null;
+  image.src = evolved ? './reference/runtime/jelly-anthropomorphic-home-v1.webp?webp-q90-v1' : './reference/runtime/jelly-home.webp';
+  image.alt = evolved ? '人型水母' : '小水母';
+}
+
 export class ResultScreen {
   constructor({ onReplay, onNext, onHome, evolutionStore, onEvolve }) {
     this.screen = document.querySelector('#result-screen');
@@ -70,8 +76,7 @@ export class ResultScreen {
         try {
           if (!await this.onEvolve()) throw new Error('Evolution incomplete');
           const image = this.dialog.querySelector('img');
-          image.src = './reference/jelly-anthropomorphic-home.png';
-          image.alt = '人型水母';
+          setEvolutionPortrait(image, true);
           await image.decode().catch(() => {});
           this.dialog.querySelector('.reward-capsule').remove();
           this.dialog.querySelector('.evolution-dialog-art').classList.add('is-evolving');
@@ -108,11 +113,12 @@ export class ResultScreen {
     panel.classList.remove('is-evolving');
     const { capsule, evolved } = this.evolutionStore.state;
     panel.innerHTML = `
-      <img class="evolution-character" src="${evolved ? './reference/jelly-anthropomorphic-home.png' : './reference/runtime/jelly-home.webp'}" alt="${evolved ? '人型水母' : '小水母'}" />
+      <img class="evolution-character" alt="${evolved ? '人型水母' : '小水母'}" />
       <div class="evolution-copy" aria-live="polite">
         <strong>${evolved ? '人型水母' : capsule ? '獲得 PNN+3 膠囊' : '小水母'}</strong>
         <p>${evolved ? '移動速度永久 +25%' : capsule ? '服用膠囊，進化成人型水母，移動速度永久 +25%。' : '在山區成功救援第 2 位居民，即可獲得進化膠囊。'}</p>
       </div>`;
+    setEvolutionPortrait(panel.querySelector('.evolution-character'), evolved);
     if (capsule) this.requireEvolution(screen);
   }
 

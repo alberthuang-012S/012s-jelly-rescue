@@ -1,0 +1,253 @@
+{
+  "checks": [
+    {
+      "blocked": false,
+      "width": 1366,
+      "height": 768,
+      "evolution": {
+        "speed": 256.25,
+        "sprite": "http://localhost:4200/reference/runtime/jelly-anthropomorphic-player-walk-v12.webp?webp-q90-v1",
+        "sheet": {
+          "layout": "direction-grid",
+          "frameWidth": 420,
+          "frameHeight": 400,
+          "frameCount": 4,
+          "directionRows": {
+            "down": 0,
+            "left": 1,
+            "right": 2,
+            "up": 3
+          },
+          "sourceY": 0,
+          "sourceHeight": 400,
+          "destinationWidth": 84,
+          "destinationHeight": 92,
+          "anchorOffset": 58,
+          "strideDistance": 148,
+          "walkSequence": [
+            1,
+            2,
+            3,
+            0
+          ],
+          "idleFrame": 1,
+          "assetPath": "./reference/runtime/jelly-anthropomorphic-player-walk-v12.webp"
+        },
+        "portraits": [
+          "http://localhost:4200/reference/runtime/jelly-anthropomorphic-home-v1.webp?webp-q90-v1",
+          "http://localhost:4200/reference/runtime/jelly-anthropomorphic-home-v1.webp?webp-q90-v1"
+        ]
+      },
+      "directions": [
+        {
+          "direction": "left",
+          "moving": true,
+          "distance": 26.44500000000022
+        },
+        {
+          "direction": "right",
+          "moving": true,
+          "distance": 63.93437500000016
+        },
+        {
+          "direction": "up",
+          "moving": true,
+          "distance": 104.98562500000025
+        },
+        {
+          "direction": "down",
+          "moving": true,
+          "distance": 146.01125000000093
+        }
+      ],
+      "home": "http://localhost:4200/reference/runtime/jelly-anthropomorphic-home-v1.webp?webp-q90-v1"
+    },
+    {
+      "blocked": false,
+      "width": 390,
+      "height": 844,
+      "evolution": {
+        "speed": 256.25,
+        "sprite": "http://localhost:4200/reference/runtime/jelly-anthropomorphic-player-walk-v12.webp?webp-q90-v1",
+        "sheet": {
+          "layout": "direction-grid",
+          "frameWidth": 420,
+          "frameHeight": 400,
+          "frameCount": 4,
+          "directionRows": {
+            "down": 0,
+            "left": 1,
+            "right": 2,
+            "up": 3
+          },
+          "sourceY": 0,
+          "sourceHeight": 400,
+          "destinationWidth": 84,
+          "destinationHeight": 92,
+          "anchorOffset": 58,
+          "strideDistance": 148,
+          "walkSequence": [
+            1,
+            2,
+            3,
+            0
+          ],
+          "idleFrame": 1,
+          "assetPath": "./reference/runtime/jelly-anthropomorphic-player-walk-v12.webp"
+        },
+        "portraits": [
+          "http://localhost:4200/reference/runtime/jelly-anthropomorphic-home-v1.webp?webp-q90-v1",
+          "http://localhost:4200/reference/runtime/jelly-anthropomorphic-home-v1.webp?webp-q90-v1"
+        ]
+      },
+      "directions": [
+        {
+          "direction": "left",
+          "moving": true,
+          "distance": 37.59187500000024
+        },
+        {
+          "direction": "right",
+          "moving": true,
+          "distance": 78.56625000000065
+        },
+        {
+          "direction": "up",
+          "moving": true,
+          "distance": 116.2350000000007
+        },
+        {
+          "direction": "down",
+          "moving": true,
+          "distance": 153.87812500000052
+        }
+      ],
+      "home": "http://localhost:4200/reference/runtime/jelly-anthropomorphic-home-v1.webp?webp-q90-v1"
+    },
+    {
+      "blocked": true,
+      "width": 1366,
+      "height": 768,
+      "evolution": {
+        "speed": 256.25,
+        "sprite": "http://localhost:4200/reference/runtime/jelly-anthropomorphic-player-walk-v12.png",
+        "sheet": {
+          "layout": "direction-grid",
+          "frameWidth": 420,
+          "frameHeight": 400,
+          "frameCount": 4,
+          "directionRows": {
+            "down": 0,
+            "left": 1,
+            "right": 2,
+            "up": 3
+          },
+          "sourceY": 0,
+          "sourceHeight": 400,
+          "destinationWidth": 84,
+          "destinationHeight": 92,
+          "anchorOffset": 58,
+          "strideDistance": 148,
+          "walkSequence": [
+            1,
+            2,
+            3,
+            0
+          ],
+          "idleFrame": 1,
+          "assetPath": "./reference/runtime/jelly-anthropomorphic-player-walk-v12.png"
+        },
+        "portraits": [
+          "http://localhost:4200/reference/jelly-anthropomorphic-home.png",
+          "http://localhost:4200/reference/jelly-anthropomorphic-home.png"
+        ]
+      },
+      "directions": [
+        {
+          "direction": "left",
+          "moving": true,
+          "distance": 37.56625000000008
+        },
+        {
+          "direction": "right",
+          "moving": true,
+          "distance": 78.59187499999973
+        },
+        {
+          "direction": "up",
+          "moving": true,
+          "distance": 116.28624999999977
+        },
+        {
+          "direction": "down",
+          "moving": true,
+          "distance": 157.38874999999973
+        }
+      ],
+      "home": "http://localhost:4200/reference/jelly-anthropomorphic-home.png"
+    },
+    {
+      "blocked": true,
+      "width": 390,
+      "height": 844,
+      "evolution": {
+        "speed": 256.25,
+        "sprite": "http://localhost:4200/reference/runtime/jelly-anthropomorphic-player-walk-v12.png",
+        "sheet": {
+          "layout": "direction-grid",
+          "frameWidth": 420,
+          "frameHeight": 400,
+          "frameCount": 4,
+          "directionRows": {
+            "down": 0,
+            "left": 1,
+            "right": 2,
+            "up": 3
+          },
+          "sourceY": 0,
+          "sourceHeight": 400,
+          "destinationWidth": 84,
+          "destinationHeight": 92,
+          "anchorOffset": 58,
+          "strideDistance": 148,
+          "walkSequence": [
+            1,
+            2,
+            3,
+            0
+          ],
+          "idleFrame": 1,
+          "assetPath": "./reference/runtime/jelly-anthropomorphic-player-walk-v12.png"
+        },
+        "portraits": [
+          "http://localhost:4200/reference/jelly-anthropomorphic-home.png",
+          "http://localhost:4200/reference/jelly-anthropomorphic-home.png"
+        ]
+      },
+      "directions": [
+        {
+          "direction": "left",
+          "moving": true,
+          "distance": 37.51500000000004
+        },
+        {
+          "direction": "right",
+          "moving": true,
+          "distance": 78.54062499999998
+        },
+        {
+          "direction": "up",
+          "moving": true,
+          "distance": 119.59187500000064
+        },
+        {
+          "direction": "down",
+          "moving": true,
+          "distance": 160.69437500000083
+        }
+      ],
+      "home": "http://localhost:4200/reference/jelly-anthropomorphic-home.png"
+    }
+  ],
+  "errors": []
+}

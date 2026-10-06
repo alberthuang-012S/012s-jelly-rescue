@@ -7,6 +7,7 @@ qa/scenarios/*.png
 qa/boss/*.png
 qa/gravity/*.png
 qa/pigment/*.png
+qa/player-webp/*.png
 qa/mobile-layout/*.png
 qa/home/*.png
 qa/desktop-view/*.png

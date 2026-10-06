@@ -28,16 +28,19 @@ import { WorldRenderer } from './WorldRenderer.js?v=mountain-pavilion-dialogue-v
 import { clamp, drawText, formatClock, lerp } from './utils.js';
 
 const ASSET_PATHS = Object.freeze({
-  player: [
+  evolvedPlayer: [
+    './reference/runtime/jelly-anthropomorphic-player-walk-v12.webp?webp-q90-v1',
     './reference/runtime/jelly-anthropomorphic-player-walk-v12.png',
     './reference/runtime/jelly-anthropomorphic-player-walk-v3.png',
     './reference/runtime/jelly-anthropomorphic-player-walk-v2.png',
     './reference/jelly-anthropomorphic-player-walk.png',
     './reference/jelly-anthropomorphic-player.png',
+  ],
+  player: [
     './reference/runtime/jelly-player.webp',
     './reference/world-jelly-player-hq.png'
   ],
-  playerFallback: './reference/player-jelly-preferred.png',
+  playerFallback: ['./reference/runtime/player-jelly-preferred-v1.webp', './reference/player-jelly-preferred.png'],
   npc: [
     './reference/runtime/npc-sprites.webp',
     './reference/generated-npcs-hiker-elder-child-hq.png'
@@ -54,6 +57,7 @@ const ASSET_PATHS = Object.freeze({
   ssw: ['./reference/runtime/ssw-chibi-v1.webp', './reference/runtime/ssw-chibi-v1.png'],
   garden: ['./reference/runtime/garden-map-v1.webp', './reference/generated-garden-map-v1.png'],
   home: [
+    './reference/runtime/jelly-anthropomorphic-home-v1.webp?webp-q90-v1',
     './reference/jelly-anthropomorphic-home.png',
     './reference/runtime/jelly-home.webp',
     './reference/world-jelly-front-hq.png'
@@ -123,7 +127,7 @@ const ASSET_PATHS = Object.freeze({
 // Player sprite layout is selected by the actual loaded asset path. Keep the
 // geometry explicit so a different image cannot silently inherit a guessed
 // row/column layout from its dimensions.
-export const PLAYER_SPRITE_MANIFESTS = Object.freeze({
+const PLAYER_PNG_SPRITE_MANIFESTS = Object.freeze({
   './reference/runtime/jelly-anthropomorphic-player-walk-v12.png': Object.freeze({
     layout: 'direction-grid',
     frameWidth: 420,
@@ -186,6 +190,11 @@ export const PLAYER_SPRITE_MANIFESTS = Object.freeze({
     destinationHeight: 92,
     anchorOffset: 58
   })
+});
+
+export const PLAYER_SPRITE_MANIFESTS = Object.freeze({
+  ...PLAYER_PNG_SPRITE_MANIFESTS,
+  './reference/runtime/jelly-anthropomorphic-player-walk-v12.webp': PLAYER_PNG_SPRITE_MANIFESTS['./reference/runtime/jelly-anthropomorphic-player-walk-v12.png']
 });
 
 const PLAYER_DIRECTION_STRIP_MANIFESTS = Object.freeze({
@@ -327,7 +336,7 @@ function loadImage(source, { fetchPriority = 'auto', assetName = source } = {}) 
       if (ASSET_REPORT_ENABLED) {
         assetReport.push({
           asset: assetName,
-          format: source.split('.').pop().toUpperCase(),
+          format: source.split('?')[0].split('.').pop().toUpperCase(),
           bytes: resource?.encodedBodySize || resource?.transferSize || null,
           loadStart: Math.round(loadStart),
           downloadMs: Math.round(downloadComplete - loadStart),
@@ -616,8 +625,8 @@ export class Game {
   ensurePlayerAsset() {
     if (this.playerAssetPromise) return this.playerAssetPromise;
     const sources = this.evolutionStore.state.evolved
-      ? ASSET_PATHS.player.slice(0, 5)
-      : ASSET_PATHS.player.slice(5);
+      ? ASSET_PATHS.evolvedPlayer
+      : ASSET_PATHS.player;
     this.playerAssetPromise = loadImageWithFallback(sources, {
       fetchPriority: 'high',
       assetName: 'Player sprite'
@@ -648,7 +657,7 @@ export class Game {
         }
         this.player.spriteSheet = this.playerSpriteSheet;
       } else {
-        const rawSprite = await loadImage(ASSET_PATHS.playerFallback, {
+        const rawSprite = await loadImageWithFallback(ASSET_PATHS.playerFallback, {
           fetchPriority: 'high',
           assetName: 'Player fallback'
         });
@@ -665,10 +674,15 @@ export class Game {
   syncEvolution() {
     const evolved = this.evolutionStore.state.evolved;
     this.player.speed = 205 * (evolved ? EVOLVED_SPEED_MULTIPLIER : 1);
-    const source = evolved ? './reference/jelly-anthropomorphic-home.png' : './reference/runtime/jelly-home.webp';
-    document.querySelector('.home-character-crop source').srcset = source;
-    document.querySelector('.home-character-crop source').type = evolved ? 'image/png' : 'image/webp';
-    document.querySelector('.home-character-crop img').src = source;
+    const source = evolved ? './reference/runtime/jelly-anthropomorphic-home-v1.webp?webp-q90-v1' : './reference/runtime/jelly-home.webp';
+    const fallback = evolved ? './reference/jelly-anthropomorphic-home.png' : source;
+    const pictureSource = document.querySelector('.home-character-crop source');
+    const image = document.querySelector('.home-character-crop img');
+    image.onerror = evolved ? () => {
+      image.onerror = null; pictureSource.removeAttribute('srcset'); image.src = fallback;
+    } : null;
+    pictureSource.type = 'image/webp'; pictureSource.srcset = source;
+    image.src = fallback;
   }
 
   async evolve() {
