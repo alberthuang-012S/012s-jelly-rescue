@@ -1,0 +1,93 @@
+{
+  "status": "PASS",
+  "results": [
+    {
+      "start": {
+        "x": 384,
+        "y": 820
+      },
+      "seconds": 41,
+      "states": [
+        "WAVE",
+        "WAVE_CLEAR",
+        "ARRIVAL",
+        "BOSS",
+        "VICTORY",
+        "COLLECT"
+      ],
+      "phases": [
+        1,
+        2,
+        3
+      ],
+      "score": 4050,
+      "defeatedEnemies": 9,
+      "damageTaken": 0,
+      "bossDamageTaken": 0,
+      "ppaHits": 0,
+      "bossHits": 9,
+      "cleared": true,
+      "ddmHits": 33,
+      "crystalsCleared": 5
+    },
+    {
+      "start": {
+        "x": 384,
+        "y": 210
+      },
+      "seconds": 40,
+      "states": [
+        "WAVE",
+        "WAVE_CLEAR",
+        "ARRIVAL",
+        "BOSS",
+        "VICTORY",
+        "COLLECT"
+      ],
+      "phases": [
+        1,
+        2,
+        3
+      ],
+      "score": 4050,
+      "defeatedEnemies": 9,
+      "damageTaken": 0,
+      "bossDamageTaken": 0,
+      "ppaHits": 0,
+      "bossHits": 9,
+      "cleared": true,
+      "ddmHits": 33,
+      "crystalsCleared": 5
+    },
+    {
+      "start": {
+        "x": 190,
+        "y": 810
+      },
+      "seconds": 40,
+      "states": [
+        "WAVE",
+        "WAVE_CLEAR",
+        "ARRIVAL",
+        "BOSS",
+        "VICTORY",
+        "COLLECT"
+      ],
+      "phases": [
+        1,
+        2,
+        3
+      ],
+      "score": 4050,
+      "defeatedEnemies": 9,
+      "damageTaken": 0,
+      "bossDamageTaken": 0,
+      "ppaHits": 0,
+      "bossHits": 9,
+      "cleared": true,
+      "ddmHits": 33,
+      "crystalsCleared": 5
+    }
+  ],
+  "note": "Actual pulses, shield breaks and pickup with normal-speed movement from three positions. Infinite life isolates flow/score; not a human difficulty assessment."
+}

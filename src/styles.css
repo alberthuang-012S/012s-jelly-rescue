@@ -1499,7 +1499,7 @@ body { background: #deeff5; }
   .game-shell[data-stage='gravityOverload'] .item-card { width: 44px; }
 }
 
-/* Mission lobby: separate patrol selection from the two special challenges. */
+/* Mission lobby: patrol selection and optional special challenges. */
 .home-challenges { z-index: 4; grid-column: 1 / -1; min-width: 0; }
 .home-challenges-heading { display: none; }
 .home-challenge-grid { display: grid; gap: 12px; }
@@ -1716,3 +1716,50 @@ body { background: #deeff5; }
   .is-desktop-wide .debug-toggle { top: 166px; }
   .is-desktop-wide .boss-hud { top: 180px; }
 }
+
+/* Black Garden: silver/lavender warnings stay bright against the night garden. */
+.pigment-stage-card { background: linear-gradient(135deg, #29283f, #4d365b); border-color: #cfb5e080; }
+.pigment-stage-art { position: relative; background: linear-gradient(#2d1c5533, #43305f33), url('../reference/runtime/pigment-map-v1.webp') center / cover; }
+.pigment-stage-art canvas { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 220px; height: auto; }
+.pigment-stage-card > strong { color: #e6cdf0; }
+.pigment-stage-card .secondary-button { background: #e3d2ee; color: #493454; }
+.is-boss-stage[data-boss-item='DDM'] [data-item]:not([data-item='DDM']) { display: none !important; }
+.is-boss-stage[data-boss-item='DDM'] #boss-health { background: #352840ec; border-color: #d5b8ed; }
+.is-boss-stage[data-boss-item='DDM'] #boss-health-fill { background: linear-gradient(90deg, #a88bcd, #ecd6ef); }
+.is-boss-stage[data-boss-item='DDM'] .boss-banner { background: #34233fea; border-color: #dfc0e7; }
+.is-boss-stage[data-boss-item='DDM'] .boss-banner.is-victory strong { font-size: clamp(13px, 3.7vw, 17px); }
+#boss-result[data-encounter='pigmentBloom'] { --result-accent: #76558c; --result-tint: #f1e9f5; --result-line: #d9c5e1; background: linear-gradient(#2b1d43e6, #3e2c52ed), url('../reference/runtime/garden-map-v1.webp') center / cover; }
+#boss-result[data-encounter='pigmentBloom'][data-outcome='failure'] { --result-accent: #a65c43; --result-tint: #fff0e7; --result-line: #e9cfbf; }
+#pigment-core-entry-unknown { font-size: 48px; color: #9a91b5; font-weight: 900; }
+#pigment-core-entry-status { font-size: 13px; color: #287b64; }
+#pigment-core-entry.is-locked strong { color: #76658c; }
+@media (min-width: 681px) and (min-height: 521px) {
+  .home-challenge-grid .pigment-stage-card { grid-column: 1 / -1; }
+  .home-challenge-grid .pigment-stage-art canvas { width: 200px; }
+}
+@media (min-width: 1100px) and (min-height: 521px) {
+  .home-challenge-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .home-challenge-grid > .special-stage-card { grid-template-columns: 92px minmax(0, 1fr); gap: 0 14px; }
+  .home-challenge-grid .pigment-stage-card { grid-column: auto; }
+  .home-challenge-grid .pigment-stage-art canvas { width: 156px; }
+  .home-challenge-grid .special-stage-card h2 { font-size: 20px; }
+}
+@media (max-width: 680px), (max-height: 520px) and (orientation: landscape) and (max-width: 1100px) {
+  .game-shell[data-stage='pigmentBloom'] .item-dock { left: clamp(164px, 42vw, 190px); right: calc(76px + max(8px, env(safe-area-inset-right)) + 8px); }
+  .game-shell[data-stage='pigmentBloom'] .item-card { width: 56px; }
+  .game-shell[data-stage='pigmentBloom'] .boss-hud { top: calc(max(6px, env(safe-area-inset-top)) + 54px); left: calc(50% + 24px); width: min(410px, calc(100% - 80px)); transform: translateX(-50%); display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 4px 8px; }
+  .game-shell[data-stage='pigmentBloom'] #boss-wave { font-size: 12px; letter-spacing: .03em; }
+  .game-shell[data-stage='pigmentBloom'] #boss-health { margin: 0; padding: 4px 7px; }
+  .game-shell[data-stage='pigmentBloom'] .boss-health-label { font-size: 12px; line-height: 16px; }
+  .game-shell[data-stage='pigmentBloom'] .boss-health-label span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .game-shell[data-stage='pigmentBloom'] #boss-health-number { flex-shrink: 0; }
+  .game-shell[data-stage='pigmentBloom'] .boss-health-track { height: 6px; margin-top: 4px; }
+  .game-shell[data-stage='pigmentBloom'] #boss-core-hint { grid-column: 1 / -1; margin: 0; font-size: 12px; line-height: 18px; }
+  .game-shell[data-stage='pigmentBloom'].is-core-collecting #boss-wave { grid-column: 1 / -1; }
+}
+@media (max-width: 680px) and (orientation: portrait) {
+  .pigment-stage-art { margin: -14px -14px 12px; }
+  .pigment-stage-art canvas { width: 156px; }
+}
+@media (max-height: 520px) and (orientation: landscape) and (max-width: 1100px) { .game-shell[data-stage='pigmentBloom'] .item-dock { left: auto; } }
+@media (max-width: 350px) and (orientation: portrait) { .game-shell[data-stage='pigmentBloom'] .item-dock { left: 148px; right: 80px; } .game-shell[data-stage='pigmentBloom'] .item-card { width: 44px; } }

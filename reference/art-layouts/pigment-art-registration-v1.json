@@ -1,0 +1,264 @@
+{
+  "version": 1,
+  "boss": [
+    {
+      "frame": 0,
+      "source": {
+        "left": 78,
+        "top": 7,
+        "width": 395,
+        "height": 494
+      },
+      "left": 59,
+      "top": 13,
+      "width": 266,
+      "height": 333,
+      "foot": {
+        "x": 192,
+        "y": 346
+      }
+    },
+    {
+      "frame": 1,
+      "source": {
+        "left": 567,
+        "top": 8,
+        "width": 419,
+        "height": 493
+      },
+      "left": 51,
+      "top": 14,
+      "width": 282,
+      "height": 332,
+      "foot": {
+        "x": 192,
+        "y": 346
+      }
+    },
+    {
+      "frame": 2,
+      "source": {
+        "left": 1066,
+        "top": 8,
+        "width": 430,
+        "height": 495
+      },
+      "left": 47,
+      "top": 12,
+      "width": 290,
+      "height": 334,
+      "foot": {
+        "x": 192,
+        "y": 346
+      }
+    },
+    {
+      "frame": 3,
+      "source": {
+        "left": 79,
+        "top": 516,
+        "width": 389,
+        "height": 481
+      },
+      "left": 61,
+      "top": 22,
+      "width": 262,
+      "height": 324,
+      "foot": {
+        "x": 192,
+        "y": 346
+      }
+    },
+    {
+      "frame": 4,
+      "source": {
+        "left": 582,
+        "top": 525,
+        "width": 375,
+        "height": 472
+      },
+      "left": 66,
+      "top": 28,
+      "width": 253,
+      "height": 318,
+      "foot": {
+        "x": 192,
+        "y": 346
+      }
+    },
+    {
+      "frame": 5,
+      "source": {
+        "left": 1071,
+        "top": 521,
+        "width": 435,
+        "height": 476
+      },
+      "left": 46,
+      "top": 25,
+      "width": 293,
+      "height": 321,
+      "foot": {
+        "x": 192,
+        "y": 346
+      }
+    }
+  ],
+  "enemies": [
+    {
+      "frame": 0,
+      "source": {
+        "left": 76,
+        "top": 61,
+        "width": 369,
+        "height": 431
+      },
+      "left": 39,
+      "top": 21,
+      "width": 179,
+      "height": 209,
+      "foot": {
+        "x": 128,
+        "y": 230
+      }
+    },
+    {
+      "frame": 1,
+      "source": {
+        "left": 552,
+        "top": 73,
+        "width": 441,
+        "height": 417
+      },
+      "left": 21,
+      "top": 28,
+      "width": 214,
+      "height": 202,
+      "foot": {
+        "x": 128,
+        "y": 230
+      }
+    },
+    {
+      "frame": 2,
+      "source": {
+        "left": 1087,
+        "top": 39,
+        "width": 398,
+        "height": 451
+      },
+      "left": 32,
+      "top": 12,
+      "width": 193,
+      "height": 218,
+      "foot": {
+        "x": 128,
+        "y": 230
+      }
+    },
+    {
+      "frame": 3,
+      "source": {
+        "left": 78,
+        "top": 556,
+        "width": 380,
+        "height": 388
+      },
+      "left": 36,
+      "top": 42,
+      "width": 184,
+      "height": 188,
+      "foot": {
+        "x": 128,
+        "y": 230
+      }
+    },
+    {
+      "frame": 4,
+      "source": {
+        "left": 558,
+        "top": 559,
+        "width": 397,
+        "height": 383
+      },
+      "left": 32,
+      "top": 45,
+      "width": 192,
+      "height": 185,
+      "foot": {
+        "x": 128,
+        "y": 230
+      }
+    },
+    {
+      "frame": 5,
+      "source": {
+        "left": 1073,
+        "top": 534,
+        "width": 431,
+        "height": 408
+      },
+      "left": 24,
+      "top": 32,
+      "width": 209,
+      "height": 198,
+      "foot": {
+        "x": 128,
+        "y": 230
+      }
+    }
+  ],
+  "props": [
+    {
+      "name": "crystal",
+      "source": {
+        "left": 30,
+        "top": 192,
+        "width": 447,
+        "height": 631
+      },
+      "left": 50,
+      "top": 10,
+      "width": 156,
+      "height": 220,
+      "foot": {
+        "x": 128,
+        "y": 230
+      }
+    },
+    {
+      "name": "shield",
+      "source": {
+        "left": 537,
+        "top": 197,
+        "width": 462,
+        "height": 604
+      },
+      "left": 44,
+      "top": 10,
+      "width": 168,
+      "height": 220,
+      "foot": {
+        "x": 128,
+        "y": 230
+      }
+    },
+    {
+      "name": "core",
+      "source": {
+        "left": 1029,
+        "top": 204,
+        "width": 492,
+        "height": 568
+      },
+      "left": 33,
+      "top": 10,
+      "width": 191,
+      "height": 220,
+      "foot": {
+        "x": 128,
+        "y": 230
+      }
+    }
+  ]
+}

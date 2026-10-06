@@ -5,6 +5,8 @@ import { BossRenderer } from './BossRenderer.js';
 import { BossStageUI } from './BossStageUI.js';
 import { GravityCombatSystem } from './GravityCombatSystem.js';
 import { GravityRenderer } from './GravityRenderer.js';
+import { PigmentCombatSystem } from './PigmentCombatSystem.js';
+import { PigmentRenderer } from './PigmentRenderer.js';
 import { CoreCollectionStore } from './CoreCollectionStore.js';
 import { CoreCollectionUI } from './CoreCollectionUI.js';
 import { EvolutionStore, EVOLVED_SPEED_MULTIPLIER } from './EvolutionStore.js';
@@ -78,6 +80,12 @@ const ASSET_PATHS = Object.freeze({
   gravityBoss: ['./reference/runtime/gravity-boss-v1.webp', './reference/runtime/gravity-boss-v1.png'],
   gravityCore: ['./reference/runtime/gravity-core-v1.webp', './reference/runtime/gravity-core-v1.png'],
   gravityDevice: ['./reference/runtime/gravity-device-v1.webp', './reference/runtime/gravity-device-v1.png'],
+  pigmentQueen: ['./reference/runtime/pigment-queen-v1.webp', './reference/runtime/pigment-queen-v1.png'],
+  pigmentEnemies: ['./reference/runtime/pigment-enemies-v1.webp', './reference/runtime/pigment-enemies-v1.png'],
+  pigmentCrystal: ['./reference/runtime/pigment-crystal-v1.webp', './reference/runtime/pigment-crystal-v1.png'],
+  pigmentShield: ['./reference/runtime/pigment-shield-v1.webp', './reference/runtime/pigment-shield-v1.png'],
+  pigmentCore: ['./reference/runtime/pigment-core-v1.webp', './reference/runtime/pigment-core-v1.png'],
+  pigmentMap: ['./reference/runtime/pigment-map-v1.webp', './reference/runtime/pigment-map-v1.png'],
   mountain: [
     './reference/generated-mountain-open-portrait-hq.webp',
     './reference/generated-mountain-open-portrait-hq.png'
@@ -521,6 +529,9 @@ export class Game {
     this.bossRenderer = new BossRenderer();
     this.gravityRenderer = new GravityRenderer();
     this.gravityRenderer.portrait(document.querySelector('#gravity-portrait'));
+    this.pigmentRenderer = new PigmentRenderer();
+    this.pigmentRenderer.portrait(document.querySelector('#pigment-portrait'));
+    this.ensurePigmentArt('low');
     this.ensureGravityArt('low');
     this.bossUI = new BossStageUI(this);
     this.coreCollectionStore = new CoreCollectionStore();
@@ -732,6 +743,7 @@ export class Game {
     ];
     if (stageId === 'alienMosquito') criticalTasks.push(['Alien creatures', this.ensureBossArt()]);
     if (stageId === 'gravityOverload') criticalTasks.push(['Gravity creatures', this.ensureGravityArt()]);
+    if (stageId === 'pigmentBloom') criticalTasks.push(['Garden creatures', this.ensurePigmentArt()]);
     let completed = 0;
     onProgress(0, '準備巡邏素材');
     const result = Promise.all(criticalTasks.map(([label, task]) => task.then((value) => {
@@ -779,6 +791,7 @@ export class Game {
   }
 
   ensureStageMap(stageId, { fetchPriority = 'high' } = {}) {
+    if (stageId === 'pigmentBloom') return this.ensureStageMap('garden', { fetchPriority });
     const lifestyle = STAGE_DEFS[stageId]?.renderer === 'lifestyle';
     const mapId = ['alienMosquito', 'gravityOverload'].includes(stageId) ? stageId : lifestyle ? stageId : stageId === 'mountain' ? 'mountain' : 'park';
     if (this.stageMapPromises.has(mapId)) return this.stageMapPromises.get(mapId);
@@ -824,6 +837,17 @@ export class Game {
       this.gravityRenderer.portrait(document.querySelector('#gravity-portrait'));
     });
     return this.gravityArtPromise;
+  }
+
+  ensurePigmentArt(fetchPriority = 'high') {
+    if (!this.pigmentArtPromise) this.pigmentArtPromise = Promise.all(
+      ['pigmentQueen', 'pigmentEnemies', 'pigmentCrystal', 'pigmentShield', 'pigmentCore', 'pigmentMap'].map(id =>
+        loadImageWithFallback(ASSET_PATHS[id], { fetchPriority, assetName: `${id} sprites` }))
+    ).then(([queen, enemies, crystal, shield, core, map]) => {
+      this.pigmentRenderer.setArt({ queen, enemies, crystal, shield, core, map });
+      this.pigmentRenderer.portrait(document.querySelector('#pigment-portrait'));
+    });
+    return this.pigmentArtPromise;
   }
 
   bindHome() {
@@ -1229,12 +1253,14 @@ export class Game {
     this.floaters = [];
     this.scoreManager.reset();
     this.combo.reset();
-    this.itemSystem.reset({ availableItems: stage.availableItems, lockedId: stage.mode === 'boss' ? stage.id === 'gravityOverload' ? 'NAP' : 'PPA' : null });
+    this.itemSystem.reset({ availableItems: stage.availableItems,
+      lockedId: stage.mode === 'boss' ? ({ gravityOverload: 'NAP', pigmentBloom: 'DDM' }[stage.id] || 'PPA') : null });
     this.hud.updateItems(this.itemSystem.selectedId, this.itemSystem.availableIds);
     this.interactionSystem.currentTarget = null;
     this.player.reset(stage.start);
     this.bossCombat = stage.mode === 'boss'
-      ? stage.id === 'gravityOverload' ? new GravityCombatSystem(stage, this.player) : new BossCombatSystem(stage, this.player)
+      ? stage.id === 'pigmentBloom' ? new PigmentCombatSystem(stage, this.player)
+        : stage.id === 'gravityOverload' ? new GravityCombatSystem(stage, this.player) : new BossCombatSystem(stage, this.player)
       : null;
     this.bossUI.setMode(Boolean(this.bossCombat));
     this.cameraState = null;
@@ -1781,7 +1807,7 @@ export class Game {
     }
     this.worldRenderer.draw(ctx, stage, this.bossCombat ? this.bossCombat.visualTime * 1000 : now);
     if (this.bossCombat) {
-      const combatRenderer = stage.id === 'gravityOverload' ? this.gravityRenderer : this.bossRenderer;
+      const combatRenderer = stage.id === 'pigmentBloom' ? this.pigmentRenderer : stage.id === 'gravityOverload' ? this.gravityRenderer : this.bossRenderer;
       combatRenderer.atmosphere(ctx, this.bossCombat);
       ctx.save();
       if (this.bossCombat.state === 'ARRIVAL' || this.bossCombat.boss?.state === 'SUMMON') {

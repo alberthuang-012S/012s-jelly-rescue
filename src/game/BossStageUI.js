@@ -13,6 +13,7 @@ export class BossStageUI {
     game.gameShell.dataset.bossDebug = String(this.development);
     document.querySelector('#special-start').addEventListener('click', () => game.startStage('alienMosquito'));
     document.querySelector('#gravity-start').addEventListener('click', () => game.startStage('gravityOverload'));
+    document.querySelector('#pigment-start').addEventListener('click', () => game.startStage('pigmentBloom'));
     document.querySelector('#boss-replay').addEventListener('click', () => game.startStage(game.selectedStage));
     document.querySelector('#boss-home').addEventListener('click', () => game.showHome());
     this.result.addEventListener('keydown', event => {
@@ -39,6 +40,7 @@ export class BossStageUI {
     this.banner.classList.add('is-hidden'); this.result.classList.add('is-hidden');
     document.querySelector('[data-item="PPA"] .item-info small').textContent = active && copy.item === 'PPA' ? '能量脈衝' : '皮膚照顧';
     document.querySelector('[data-item="NAP"] .item-info small').textContent = active && copy.item === 'NAP' ? '舒緩共鳴' : '痠痛舒緩';
+    document.querySelector('[data-item="DDM"] .item-info small').textContent = active && copy.item === 'DDM' ? '光采脈衝' : '黑色素';
   }
   update() {
     const game = this.game; const c = game.bossCombat;
@@ -64,8 +66,11 @@ export class BossStageUI {
     bar.setAttribute('aria-valuenow', hp);
     document.querySelector('#boss-health-number').textContent = `${hp} / ${B.hp}`;
     document.querySelector('#boss-core-hint').textContent = c.state === 'VICTORY' ? `${this.copy.item} 能量淨化完成！` : c.boss
-      ? c.boss.coreOpen ? this.copy.item === 'NAP' ? '核心亮起！保持距離使用 NAP' : `核心亮起！靠近使用 ${this.copy.item}` : this.copy.closedHint
+      ? c.boss.coreOpen ? this.copy.openHint || (this.copy.item === 'NAP' ? '核心亮起！保持距離使用 NAP' : `核心亮起！靠近使用 ${this.copy.item}`) : this.copy.closedHint
       : this.copy.objective;
+    if (c.state === 'BOSS' && ['SHIELD', 'SHIELD_WARN', 'SHIELD_BUILD'].includes(c.boss.state)) {
+      document.querySelector('#boss-core-hint').textContent = `DDM 清除護盾墨晶 · 剩餘 ${c.attackContext.shields()} 顆`;
+    }
     if (collecting) {
       const dx = c.coreDrop.x - c.player.x, dy = c.coreDrop.y - c.player.y;
       const direction = `${Math.abs(dx) > 25 ? dx > 0 ? '右' : '左' : ''}${Math.abs(dy) > 25 ? dy > 0 ? '下' : '上' : ''}`;
@@ -76,7 +81,7 @@ export class BossStageUI {
     if (c.state === 'ARRIVAL') {
       const elapsed = C.arrivalDuration - c.timer;
       title = elapsed < 2.6 ? 'WARNING' : this.copy.boss;
-      subtitle = elapsed < 2.6 ? '偵測到大型生命體！' : this.copy.bossEnglish;
+      subtitle = elapsed < 2.6 ? '偵測到大型生命體！' : this.copy.arrival || this.copy.bossEnglish;
     }
     if (c.state === 'BOSS' && c.boss.state === 'SUMMON') { title = `PHASE ${c.boss.phase}`; subtitle = '保持距離，準備閃避！'; }
     if (c.state === 'VICTORY') {
@@ -110,7 +115,7 @@ export class BossStageUI {
     this.result.querySelectorAll('[data-boss-stat]').forEach((node, i) => { node.textContent = values[i]; });
     document.querySelector('#boss-result-time-label').textContent = won ? '討伐時間' : '挑戰時間';
     document.querySelector('#boss-score-note').textContent = won
-      ? `Boss 擊退 +1500 · 通關 +500${r.bossDamageTaken === 0 ? ' · Boss 戰無傷 +500' : ''}`
+      ? `${this.copy.item === 'DDM' ? `墨晶清除 ${r.crystalsCleared} 顆 · ` : ''}Boss 擊退 +1500 · 通關 +500${r.bossDamageTaken === 0 ? ' · Boss 戰無傷 +500' : ''}`
       : this.copy.bossTips[0];
     document.querySelector('#boss-result-details').open = false;
     this.result.classList.remove('is-hidden'); this.result.scrollTop = 0;

@@ -85,8 +85,16 @@
             <div class="stage-featured-meta"><span>SPECIAL</span><span>BOSS BATTLE</span></div>
             <button id="gravity-start" class="secondary-button" type="button" aria-label="開始重力痠痛危機挑戰">挑戰重力 <span>→</span></button>
           </article>
+          <article class="special-stage-card pigment-stage-card" aria-labelledby="pigment-title">
+            <div class="special-stage-art pigment-stage-art" aria-hidden="true"><canvas id="pigment-portrait" width="320" height="240"></canvas></div>
+            <span class="stage-featured-kicker">SPECIAL STAGE · DDM+1</span>
+            <h2 id="pigment-title">黑色花園浩劫</h2><strong>BLACK GARDEN CALAMITY</strong>
+            <p>暗沉沉花后的黑色素失控擴散，讓居民的皮膚陷入暗沉危機！<br>使用 DDM+1 清除墨晶，阻止花園浩劫！</p>
+            <div class="stage-featured-meta"><span>SPECIAL</span><span>BOSS BATTLE</span></div>
+            <button id="pigment-start" class="secondary-button" type="button" aria-label="開始黑色花園浩劫挑戰">挑戰花后 <span>→</span></button>
+          </article>
           </div>
-          <button class="collection-home-button" type="button" data-open-collection>核心圖鑑 <span id="core-collection-count">0 / 2</span></button>
+          <button class="collection-home-button" type="button" data-open-collection>核心圖鑑 <span id="core-collection-count">0 / 3</span></button>
         </section>
 
         <div class="home-character-wrap" aria-hidden="true">
@@ -313,7 +321,7 @@
         <button id="garden-intro-start" class="primary-button" type="button" autofocus>準備好了，出發！</button>
       </dialog>
       <dialog id="core-collection-dialog" class="core-collection-dialog" aria-labelledby="core-collection-title">
-        <div class="core-collection-head"><div><h2 id="core-collection-title">核心圖鑑</h2><p id="core-collection-progress">已收集 0 / 2</p></div><button id="core-collection-close" type="button" aria-label="關閉圖鑑" autofocus>✕</button></div>
+        <div class="core-collection-head"><div><h2 id="core-collection-title">核心圖鑑</h2><p id="core-collection-progress">已收集 0 / 3</p></div><button id="core-collection-close" type="button" aria-label="關閉圖鑑" autofocus>✕</button></div>
         <article id="core-entry" class="core-entry is-locked">
           <div class="core-entry-art"><picture id="core-entry-image" hidden><source srcset="./reference/runtime/itch-core-v1.webp" type="image/webp"><img src="./reference/runtime/itch-core-v1.png" alt="癢癢核心" width="112" height="112"></picture><span id="core-entry-unknown" aria-hidden="true">?</span></div>
           <div><span class="core-entry-number">CORE 001</span><h3 id="core-entry-name">未發現的核心</h3><p id="core-entry-description">擊敗「異星蚊災」Boss 後，靠近並撿取掉落的核心。</p><strong id="core-entry-status">尚未收集</strong></div>
@@ -321,6 +329,10 @@
         <article id="gravity-core-entry" class="core-entry is-locked">
           <div class="core-entry-art"><picture id="gravity-core-entry-image" hidden><source srcset="./reference/runtime/gravity-core-v1.webp" type="image/webp"><img src="./reference/runtime/gravity-core-v1.png" alt="重力核心" width="112" height="112"></picture><span id="gravity-core-entry-unknown" aria-hidden="true">?</span></div>
           <div><span class="core-entry-number">CORE 002</span><h3 id="gravity-core-entry-name">未發現的核心</h3><p id="gravity-core-entry-description">擊敗「重力痠痛危機」Boss 後，靠近並撿取掉落的核心。</p><strong id="gravity-core-entry-status">尚未收集</strong></div>
+        </article>
+        <article id="pigment-core-entry" class="core-entry is-locked">
+          <div class="core-entry-art"><picture id="pigment-core-entry-image" hidden><source srcset="./reference/runtime/pigment-core-v1.webp" type="image/webp"><img src="./reference/runtime/pigment-core-v1.png" alt="墨晶核心" width="112" height="112"></picture><span id="pigment-core-entry-unknown" aria-hidden="true">?</span></div>
+          <div><span class="core-entry-number">CORE 003</span><h3 id="pigment-core-entry-name">未發現的核心</h3><p id="pigment-core-entry-description">擊敗「黑色花園浩劫」Boss 後，靠近並撿取掉落的核心。</p><strong id="pigment-core-entry-status">尚未收集</strong></div>
         </article>
       </dialog>
     </main>

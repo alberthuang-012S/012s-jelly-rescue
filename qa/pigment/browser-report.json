@@ -1,0 +1,75 @@
+{
+  "status": "PASS",
+  "checks": [
+    "Third home entry, Garden map, concise intro without modal, keyboard move/Use, DDM-only/Q lock",
+    "390×844: touch movement/Use, dock bounds, arrival quote, two real shield breaks/core opening, fan, blur/exit freeze",
+    "375×667: touch movement/Use, dock bounds, arrival quote, two real shield breaks/core opening, fan, blur/exit freeze",
+    "320×568: touch movement/Use, dock bounds, arrival quote, two real shield breaks/core opening, fan, blur/exit freeze",
+    "Victory/petal escape, no auto award, real touch pickup, illustrated core reward, DDM stats, result buttons at five sizes, third encyclopedia entry",
+    "Correct replay, real life-loss failure, Home, persistent third core after reload, PPA/NAP/Garden DDM+SSW/rescue restoration"
+  ],
+  "errors": [],
+  "art": {
+    "queen": {
+      "ready": true,
+      "width": 1152,
+      "height": 768
+    },
+    "enemies": {
+      "ready": true,
+      "width": 768,
+      "height": 512
+    },
+    "crystal": {
+      "ready": true,
+      "width": 256,
+      "height": 256
+    },
+    "shield": {
+      "ready": true,
+      "width": 256,
+      "height": 256
+    },
+    "core": {
+      "ready": true,
+      "width": 256,
+      "height": 256
+    },
+    "map": {
+      "ready": true,
+      "width": 1024,
+      "height": 1536
+    }
+  },
+  "portraits": [
+    {
+      "width": 1280,
+      "height": 900,
+      "dx": -0.5,
+      "dy": 0,
+      "clipped": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "dx": 0,
+      "dy": -0.5,
+      "clipped": false
+    },
+    {
+      "width": 375,
+      "height": 667,
+      "dx": 0,
+      "dy": -0.5,
+      "clipped": false
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "dx": 0,
+      "dy": -0.5,
+      "clipped": false
+    }
+  ],
+  "note": "Visual scenarios use controlled state setup; natural waves/phases/score/pickup are checked separately in pigment-simulation.mjs."
+}

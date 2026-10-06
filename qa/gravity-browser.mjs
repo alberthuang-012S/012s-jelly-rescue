@@ -137,7 +137,7 @@ try {
   assert.ok(await page.evaluate(() => window.__qaGame.npcs.length) > 0);
   checks.push('Replay remains gravity; actual heart loss gives failure, Home, mosquito PPA restoration, Sports rescue/Q/NPC restoration');
   await page.reload({ waitUntil: 'networkidle' });
-  assert.equal(await page.locator('#core-collection-count').innerText(), '1 / 2');
+  assert.equal(await page.locator('#core-collection-count').innerText(), '1 / 3');
   await page.locator('.collection-home-button').click();
   assert.equal(await page.locator('#gravity-core-entry-name').innerText(), '重力核心');
   assert.equal(await page.locator('#core-entry-image').isVisible(), false);

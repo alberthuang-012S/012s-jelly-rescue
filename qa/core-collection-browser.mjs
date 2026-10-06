@@ -52,9 +52,9 @@ try{
   await page.evaluate(()=>window.__qaGame.finishBossStage());
   assert.equal(await page.evaluate(()=>window.__qaGame.state),'playing','Uncollected core cannot finish the stage');
   await page.evaluate(()=>window.__qaGame.showHome());
-  assert.equal(await page.locator('#core-collection-count').textContent(),'0 / 2');
+  assert.equal(await page.locator('#core-collection-count').textContent(),'0 / 3');
   await page.reload({waitUntil:'networkidle'});
-  assert.equal(await page.locator('#core-collection-count').textContent(),'0 / 2');
+  assert.equal(await page.locator('#core-collection-count').textContent(),'0 / 3');
   report.checks.push('Pickup visible at three viewports; idle, pause, premature result and abandoning the drop never unlock collection');
   await page.evaluate(async()=>{
     const g=window.__qaGame;await g.startStage('alienMosquito');const c=g.bossCombat;c.startArrival();c.state='BOSS';
@@ -67,7 +67,7 @@ try{
   await page.locator('[data-dir="up"]').dispatchEvent('pointerup',{pointerId:18,pointerType:'touch'});
   assert.equal(await page.evaluate(()=>window.__qaGame.bossCombat.coreDrop.collected),true);
   assert.equal(await page.locator('#boss-core-reward-status').textContent(),'新核心已收錄圖鑑');
-  assert.equal(await page.locator('#core-collection-count').textContent(),'1 / 2');
+  assert.equal(await page.locator('#core-collection-count').textContent(),'1 / 3');
   for(const [name,viewport]of [['small',{width:375,height:667}],['portrait',{width:390,height:844}],['desktop',{width:1280,height:900}]]){
     await page.setViewportSize(viewport);
     await page.locator('#boss-core-reward button').click();
@@ -81,7 +81,7 @@ try{
     report.checks.push(`${name}: unlocked icon, readable bounded modal and return focus`);
   }
   await page.reload({waitUntil:'networkidle'});
-  assert.equal(await page.locator('#core-collection-count').textContent(),'1 / 2');
+  assert.equal(await page.locator('#core-collection-count').textContent(),'1 / 3');
   await page.locator('.collection-home-button').click();assert.equal(await page.locator('#core-entry-name').textContent(),'癢癢核心');
   await page.locator('#core-collection-close').click();
   await page.evaluate(async()=>{

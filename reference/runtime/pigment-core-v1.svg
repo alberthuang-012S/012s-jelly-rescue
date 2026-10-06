@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs><linearGradient id="petal" x2=".8" y2="1"><stop stop-color="#b3a4eb"/><stop offset=".48" stop-color="#554276"/><stop offset="1" stop-color="#28243f"/></linearGradient><linearGradient id="gem" x2=".8" y2="1"><stop stop-color="#faf5ff"/><stop offset=".45" stop-color="#c2b0f0"/><stop offset="1" stop-color="#7668b7"/></linearGradient></defs>
+  <g fill="url(#petal)" stroke="#e0d5f3" stroke-width="3" stroke-linejoin="round">
+    <path d="M128 151Q73 93 128 20Q183 93 128 151Z"/><path d="M134 152Q160 62 222 78Q219 163 134 152Z"/><path d="M132 143Q224 134 220 196Q157 225 132 143Z"/><path d="M128 146Q177 211 128 238Q79 211 128 146Z"/><path d="M124 143Q32 134 36 196Q99 225 124 143Z"/><path d="M122 152Q96 62 34 78Q37 163 122 152Z"/>
+  </g><path d="M128 66L166 112L155 158L128 180L101 158L90 112Z" fill="url(#gem)" stroke="#fff5db" stroke-width="4"/>
+  <path d="M128 66V180L90 112L166 112Z" fill="#e4dbff" fill-opacity=".35" stroke="#fff" stroke-opacity=".65" stroke-width="2"/>
+  <path d="M124 96L130 111L145 117L130 123L124 138L118 123L103 117L118 111Z" fill="#fff8dc"/>
+</svg>
