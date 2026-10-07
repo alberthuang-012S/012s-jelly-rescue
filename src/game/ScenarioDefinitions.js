@@ -14,7 +14,7 @@ export const SCENARIO_DEFS = Object.freeze({
   SPORT_SORE: define(CONDITIONS.SORENESS, 'sore', '運動後，肌肉好痠！', '肌肉還是好痠……', '肌肉痠得受不了！', '肌肉舒服多了，謝謝！'),
   LONG_WALK: define(CONDITIONS.SORENESS, 'sore', '走久了，雙腿好痠！', '雙腿還是好痠……', '雙腿痠得受不了！', '雙腿舒服多了，謝謝！'),
   PIGMENT_CARE: Object.freeze({
-    ...define(CONDITIONS.PIGMENTATION, 'skin', '想照顧一下臉上的暗沉……', '想處理黑色素沉澱，能幫我嗎？', '我快出發了，能先幫我處理黑色素嗎？', '謝謝你，接著去賞花囉！', '我先赴約，下次再找你囉！'),
+    ...define(CONDITIONS.PIGMENTATION, 'skin', '想處理一下臉上的暗沉……', '想處理黑色素沉澱，能幫我嗎？', '我快出發了，能先幫我處理黑色素嗎？', '謝謝你，接著去賞花囉！', '我先赴約，下次再找你囉！'),
     wrongItem: '我想找黑色那瓶 DDM+1 喔！'
   }),
   SALLOW_CARE: Object.freeze({
@@ -32,11 +32,11 @@ function dialogue(WARNING, HELP, CRITICAL, RESCUED, FAILED) {
 const ROLE_SCENARIO_DIALOGUE = Object.freeze({
   garden: Object.freeze({
     photographerGirl: Object.freeze({
-      PIGMENT_CARE: Object.freeze({ WARNING: '拍照前，想照顧一下暗沉。', RESCUED: '謝謝！我要去拍花園啦！' }),
+      PIGMENT_CARE: Object.freeze({ WARNING: '拍照前，想處理一下暗沉。', RESCUED: '謝謝！我要去拍花園啦！' }),
       SALLOW_CARE: Object.freeze({ RESCUED: '謝謝！我要去拍花園啦！' })
     }),
     cafeVisitor: Object.freeze({
-      PIGMENT_CARE: Object.freeze({ WARNING: '喝完咖啡，也想照顧一下暗沉。', RESCUED: '謝謝，剛好能慢慢喝杯咖啡！' }),
+      PIGMENT_CARE: Object.freeze({ WARNING: '喝完咖啡，也想處理一下暗沉。', RESCUED: '謝謝，剛好能慢慢喝杯咖啡！' }),
       SALLOW_CARE: Object.freeze({ RESCUED: '謝謝，剛好能慢慢喝杯咖啡！' })
     }),
     shopper: Object.freeze({
@@ -114,7 +114,7 @@ const ENDLESS_FALL_DIALOGUE = dialogue('啊！跌倒了！', '跌倒後，膝蓋
 const ENDLESS_DIALOGUE = Object.freeze({
   [CONDITIONS.ITCH]: dialogue('皮膚有點癢……', '皮膚好癢！', '癢得受不了了！', '不癢了，謝謝！'),
   [CONDITIONS.SORENESS]: dialogue('雙腿有點痠……', '雙腿好痠痛！', '痠痛得受不了了！', '雙腿舒服多了！'),
-  [CONDITIONS.PIGMENTATION]: dialogue('想照顧黑色素暗沉……', '能幫我處理黑色素嗎？', '快出發了，想先處理黑色素！', '暗沉照顧完成，謝謝！', '我先走了，下次見！'),
+  [CONDITIONS.PIGMENTATION]: dialogue('想處理黑色素暗沉……', '能幫我處理黑色素嗎？', '快出發了，想先處理黑色素！', '暗沉處理完成，謝謝！', '我先走了，下次見！'),
   [CONDITIONS.SALLOWNESS]: dialogue('皮膚有點蠟黃……', '想照顧蠟黃的皮膚！', '快赴約了，想先照顧蠟黃！', '皮膚照顧完成，謝謝！', '我先走了，下次見！')
 });
 

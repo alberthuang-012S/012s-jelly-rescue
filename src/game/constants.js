@@ -28,7 +28,7 @@ export const ITEMS = Object.freeze({
 export const CONDITION_LABELS = Object.freeze({
   [CONDITIONS.ITCH]: { warningTitle: '皮膚有點癢……', title: '皮膚還是好癢……', criticalTitle: '皮膚癢得受不了！', rescuedTitle: '不癢了，謝謝你！', short: '癢', english: 'ITCH', icon: '✦', color: '#b58cff' },
   [CONDITIONS.SORENESS]: { warningTitle: '雙腿有點痠……', title: '雙腿還是好痠……', criticalTitle: '雙腿痠得受不了！', rescuedTitle: '雙腿舒服多了，謝謝！', short: '痠痛', english: 'SORE', icon: '↯', color: '#77c8ff' },
-  [CONDITIONS.PIGMENTATION]: { warningTitle: '想照顧一下臉上的暗沉……', title: '想處理黑色素沉澱，能幫我嗎？', criticalTitle: '我快出發了，能先幫我處理黑色素嗎？', rescuedTitle: '謝謝你，接著去賞花囉！', short: '黑色素', english: 'PIGMENT', icon: '●', color: '#9375c4' },
+  [CONDITIONS.PIGMENTATION]: { warningTitle: '想處理一下臉上的暗沉……', title: '想處理黑色素沉澱，能幫我嗎？', criticalTitle: '我快出發了，能先幫我處理黑色素嗎？', rescuedTitle: '謝謝你，接著去賞花囉！', short: '黑色素', english: 'PIGMENT', icon: '●', color: '#9375c4' },
   [CONDITIONS.SALLOWNESS]: { warningTitle: '皮膚看起來有點蠟黃，想照顧一下……', title: '想改善皮膚蠟黃，有辦法能幫我嗎？', criticalTitle: '等等要赴約，想先照顧蠟黃的皮膚。', rescuedTitle: '謝謝，今天的照顧完成啦！', short: '蠟黃', english: 'SALLOW', icon: '☀', color: '#d7a23e' }
 });
 
