@@ -12,7 +12,7 @@ import { CoreCollectionUI } from './CoreCollectionUI.js';
 import { EvolutionStore, EVOLVED_SPEED_MULTIPLIER } from './EvolutionStore.js';
 import { EventDirector } from './EventDirector.js?mountain-pavilion-dialogue-v2';
 import { HUD } from './HUD.js';
-import { InputController } from './InputController.js?input-controls-v1';
+import { InputController } from './InputController.js?mobile-ring-v1';
 import { InteractionSystem } from './InteractionSystem.js';
 import { ItemSystem } from './ItemSystem.js';
 import { Player } from './Player.js?walk-v4';

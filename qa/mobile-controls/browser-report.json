@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "checks": [
+    "Real touch: center dead zone, four directions, arbitrary diagonals, fixed speed, dragging outside ring, release stops",
+    "Two fingers: moving and using item together; releasing action preserves movement; cancellation stops",
+    "Lost capture, disabled input, blur, and mode change clear movement; original direction buttons work; reload remembers ring",
+    "Both modes fit six portrait/landscape phone sizes with no control overlaps; desktop keyboard still works",
+    "Blocked storage still allows switching and gameplay"
+  ],
+  "errors": []
+}

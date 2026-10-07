@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#10253c" />
-    <link rel="stylesheet" href="./src/styles.css?v=scenarios-v1" />
+    <link rel="stylesheet" href="./src/styles.css?v=mobile-ring-v1" />
     <link rel="stylesheet" href="./src/garden.css?v=garden-dialogue-v2" />
     <title>Jelly Rescue</title>
   </head>
@@ -183,12 +183,20 @@
             </button>
           </div>
 
-          <div class="mobile-dpad" aria-label="虛擬方向控制">
+          <div class="mobile-dpad" data-control-mode="buttons" aria-label="虛擬方向控制">
+            <button id="mobile-control-toggle" class="mobile-control-toggle" type="button" aria-label="切換為圓環操作" aria-pressed="false">切換圓環</button>
             <button data-dir="up" aria-label="向上">▲</button>
             <button data-dir="left" aria-label="向左">◀</button>
             <span class="mobile-dpad-center" aria-hidden="true"></span>
             <button data-dir="right" aria-label="向右">▶</button>
             <button data-dir="down" aria-label="向下">▼</button>
+            <button id="mobile-joystick" class="mobile-joystick" type="button" aria-label="圓環操作，按住並拖曳以移動，放開停止" hidden>
+              <span class="joystick-direction joystick-up" aria-hidden="true">▲</span>
+              <span class="joystick-direction joystick-left" aria-hidden="true">◀</span>
+              <span class="joystick-direction joystick-right" aria-hidden="true">▶</span>
+              <span class="joystick-direction joystick-down" aria-hidden="true">▼</span>
+              <span class="joystick-thumb" aria-hidden="true"></span>
+            </button>
           </div>
 
           <div id="tutorial-modal" class="tutorial-modal is-hidden" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="tutorial-modal-title">

@@ -11,10 +11,15 @@ const KEY_VECTORS = {
   KeyD: { x: 1, y: 0 }
 };
 
+const MOBILE_CONTROL_STORAGE_KEY = 'jelly-rescue-mobile-controls';
+
 export class InputController {
   constructor({ onAction, onItemSelect, onItemToggle, onEscape, onSuspend }) {
     this.keys = new Set();
     this.activeDirectionPointers = new Map();
+    this.joystickPointerId = null;
+    this.joystickVector = { x: 0, y: 0 };
+    this.mobileControlMode = 'buttons';
     this.onAction = onAction;
     this.onItemSelect = onItemSelect;
     this.onItemToggle = onItemToggle;
@@ -29,7 +34,10 @@ export class InputController {
     this.boundVisibility = () => { if (document.hidden) this.boundSuspend(); };
     window.addEventListener('blur', this.boundSuspend);
     document.addEventListener('visibilitychange', this.boundVisibility);
+    this.boundResize = () => this.reset();
+    window.addEventListener('resize', this.boundResize);
     this.bindTouchControls();
+    this.bindMobileControlMode();
   }
 
   setEnabled(enabled) {
@@ -85,7 +93,7 @@ export class InputController {
       const direction = button.dataset.dir;
       const press = (event) => {
         event.preventDefault();
-        if (!this.enabled) return;
+        if (!this.enabled || this.mobileControlMode !== 'buttons') return;
         this.activeDirectionPointers.set(event.pointerId, direction);
         this.updateDirectionButtonState(direction);
         if (button.setPointerCapture) {
@@ -146,9 +154,88 @@ export class InputController {
     directions.forEach((direction) => this.updateDirectionButtonState(direction));
   }
 
+  bindMobileControlMode() {
+    this.mobileControls = document.querySelector('.mobile-dpad');
+    this.mobileControlToggle = document.getElementById('mobile-control-toggle');
+    this.joystick = document.getElementById('mobile-joystick');
+    try {
+      this.mobileControlMode = window.localStorage.getItem(MOBILE_CONTROL_STORAGE_KEY) === 'ring' ? 'ring' : 'buttons';
+    } catch (_error) {
+      // Controls still work when browser storage is unavailable.
+    }
+    this.setMobileControlMode(this.mobileControlMode);
+    this.mobileControlToggle?.addEventListener('click', () => {
+      if (!this.enabled) return;
+      this.setMobileControlMode(this.mobileControlMode === 'buttons' ? 'ring' : 'buttons');
+      try {
+        window.localStorage.setItem(MOBILE_CONTROL_STORAGE_KEY, this.mobileControlMode);
+      } catch (_error) {
+        // The selected mode remains usable for this session.
+      }
+    });
+    this.joystick?.addEventListener('pointerdown', (event) => {
+      event.preventDefault();
+      if (!this.enabled || this.mobileControlMode !== 'ring' || this.joystickPointerId !== null) return;
+      this.joystickPointerId = event.pointerId;
+      try { this.joystick.setPointerCapture(event.pointerId); } catch (_error) { /* Window listeners provide a release fallback. */ }
+      this.updateJoystick(event);
+    }, { passive: false });
+    this.boundJoystickMove = (event) => {
+      if (event.pointerId !== this.joystickPointerId) return;
+      event.preventDefault();
+      this.updateJoystick(event);
+    };
+    this.boundJoystickRelease = (event) => {
+      if (event.pointerId === this.joystickPointerId) this.clearJoystick();
+    };
+    window.addEventListener('pointermove', this.boundJoystickMove, { passive: false });
+    window.addEventListener('pointerup', this.boundJoystickRelease);
+    window.addEventListener('pointercancel', this.boundJoystickRelease);
+    this.joystick?.addEventListener('lostpointercapture', this.boundJoystickRelease);
+  }
+
+  setMobileControlMode(mode) {
+    this.reset();
+    this.mobileControlMode = mode === 'ring' ? 'ring' : 'buttons';
+    const isRing = this.mobileControlMode === 'ring';
+    if (this.mobileControls) this.mobileControls.dataset.controlMode = this.mobileControlMode;
+    this.mobileControls?.querySelectorAll('[data-dir], .mobile-dpad-center').forEach((element) => { element.hidden = isRing; });
+    if (this.joystick) this.joystick.hidden = !isRing;
+    if (this.mobileControlToggle) {
+      this.mobileControlToggle.textContent = isRing ? '切換方向鍵' : '切換圓環';
+      this.mobileControlToggle.setAttribute('aria-label', isRing ? '切換為上下左右方向鍵' : '切換為圓環操作');
+      this.mobileControlToggle.setAttribute('aria-pressed', String(isRing));
+    }
+  }
+
+  updateJoystick(event) {
+    const rect = this.joystick.getBoundingClientRect();
+    const radius = Math.min(rect.width, rect.height) * .3;
+    if (!radius) { this.clearJoystick(); return; }
+    const x = event.clientX - rect.left - rect.width / 2;
+    const y = event.clientY - rect.top - rect.height / 2;
+    const distance = Math.hypot(x, y);
+    const scale = distance > radius ? radius / distance : 1;
+    this.joystickVector = distance > radius * .18 ? normalize(x, y) : { x: 0, y: 0 };
+    this.joystick.style.setProperty('--joystick-x', `${x * scale}px`);
+    this.joystick.style.setProperty('--joystick-y', `${y * scale}px`);
+    this.joystick.classList.toggle('is-pressed', distance > radius * .18);
+  }
+
+  clearJoystick() {
+    const pointerId = this.joystickPointerId;
+    this.joystickPointerId = null;
+    this.joystickVector = { x: 0, y: 0 };
+    this.joystick?.style.setProperty('--joystick-x', '0px');
+    this.joystick?.style.setProperty('--joystick-y', '0px');
+    this.joystick?.classList.remove('is-pressed');
+    if (pointerId !== null && this.joystick?.hasPointerCapture?.(pointerId)) this.joystick.releasePointerCapture(pointerId);
+  }
+
   reset() {
     this.keys.clear();
     this.clearDirectionPointers();
+    this.clearJoystick();
   }
 
   getMovementVector() {
@@ -168,7 +255,7 @@ export class InputController {
       if (direction === 'up') y -= 1;
       if (direction === 'down') y += 1;
     }
-    return normalize(x, y);
+    return normalize(x + this.joystickVector.x, y + this.joystickVector.y);
   }
 
   dispose() {
@@ -176,5 +263,11 @@ export class InputController {
     window.removeEventListener('keyup', this.boundKeyUp);
     window.removeEventListener('blur', this.boundSuspend);
     document.removeEventListener('visibilitychange', this.boundVisibility);
+    window.removeEventListener('resize', this.boundResize);
+    window.removeEventListener('pointermove', this.boundJoystickMove);
+    window.removeEventListener('pointerup', this.boundJoystickRelease);
+    window.removeEventListener('pointercancel', this.boundJoystickRelease);
+    this.joystick?.removeEventListener('lostpointercapture', this.boundJoystickRelease);
+    this.reset();
   }
 }

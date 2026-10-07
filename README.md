@@ -18,7 +18,7 @@ Open `http://localhost:4173`.
 - `E` / `Space` / the mobile 使用 button: rescue when close to an NPC
 - Focus a treatment card with Tab, then press Enter/Space to select it; focused Use supports Enter/Space once per press, including key-repeat suppression.
 - Switching windows or hiding the page clears held movement/touch directions and pauses the round. Returning shows a Continue button; the timer and NPC events resume only after confirmation.
-- Mobile portrait: full-screen vertical play with virtual D-pad, fixed item dock and large 使用 button
+- Mobile: tap 切換圓環 above the bottom-left D-pad to use a circular joystick; drag to move in any direction and release to stop. Tap 切換方向鍵 to return to the D-pad. The browser remembers the selected mode. Portrait play retains the fixed item dock and large 使用 button.
 - Desktop (window at least 961px wide and over 520px high): the camera shows roughly 56% of the vertical map, with a centered play area and dedicated side rails for score/Boss status and timer/lives/items. Dialogue keeps its screen-space font size, and offscreen help stays at the play area's edge. Smaller windows retain the existing mobile framing.
 - Visual direction: bright pixel-town palette, deep navy outlines and enamel UI panels inspired by the sibling `012s-jelly-world` project
 - Debug panel: click `DEBUG` or press `F2`
@@ -114,6 +114,8 @@ The simulation runs 200 complete rounds per new stage, alternating normal/evolve
 Browser QA is optional and requires an available Playwright package and installed Edge (or a channel selected by `JELLY_BROWSER_CHANNEL`). It starts/stops its own server on port 4174; override with `JELLY_QA_PORT` if necessary.
 
 `node qa/input-reliability-browser.mjs` uses the same Playwright module configuration to check single action dispatch, focused item activation, native buttons, blur/visibility suspension, cleared touch input, explicit resume, essential mobile font sizes and result-page scrolling at 390×844 and 375×667. Reports and screenshots are saved under `qa/scenarios/`. These are emulated-browser checks; physical-phone touch and lock-screen behavior still need device acceptance testing.
+
+`node qa/mobile-controls-browser.mjs` checks D-pad/joystick switching, remembered preferences, native touch dragging, simultaneous movement and Use, release/cancellation/pause cleanup, blocked storage, desktop keyboard input and six phone viewport layouts. Reports and screenshots are saved under `qa/mobile-controls/`.
 
 ```powershell
 # Omit this variable if Playwright is already installed in the project.
