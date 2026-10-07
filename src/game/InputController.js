@@ -75,6 +75,11 @@ export class InputController {
       event.preventDefault();
       if (!event.repeat) this.onAction?.();
     }
+    const itemKey = /^(?:Digit|Numpad)([1-4])$/.exec(event.code);
+    if (itemKey) {
+      event.preventDefault();
+      if (!event.repeat) this.onItemSelect?.(['PPA', 'NAP', 'DDM', 'SSW'][Number(itemKey[1]) - 1]);
+    }
     if (event.code === 'KeyQ') {
       event.preventDefault();
       if (!event.repeat) this.onItemToggle?.();

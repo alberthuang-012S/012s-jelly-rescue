@@ -1,3 +1,4 @@
+import { ENDLESS_STAGE, ENDLESS_STAGE_ID } from './EndlessStage.js';
 import { clamp } from './utils.js';
 import { LIFESTYLE_STAGES } from './LifestyleStages.js';
 import { SPECIAL_STAGE_ID } from './BossConfig.js';
@@ -288,6 +289,7 @@ export const STAGE_DEFS = Object.freeze({
 });
 
 export const SPECIAL_STAGE_DEFS = Object.freeze({
+  [ENDLESS_STAGE_ID]: ENDLESS_STAGE,
   pigmentBloom: Object.freeze({ ...STAGE_DEFS.garden, id: 'pigmentBloom',
     mode: 'boss', mapId: 'garden', name: 'PIGMENT TAKEOVER', displayName: '暗花浩劫',
     timed: false, maxNpcs: 0, availableItems: ['DDM'], start: { x: 384, y: 820 } }),
@@ -308,8 +310,9 @@ export class StageManager {
     this.elapsed = 0;
   }
 
-  start(stageId = 'park') {
+  start(stageId = 'park', stageOverride = null) {
     this.currentStageId = STAGE_DEFS[stageId] || SPECIAL_STAGE_DEFS[stageId] ? stageId : 'park';
+    this.stageOverride = stageOverride;
     this.elapsed = 0;
     this.status = 'playing';
     return this.getStage();
@@ -325,7 +328,7 @@ export class StageManager {
   }
 
   getStage() {
-    return STAGE_DEFS[this.currentStageId] || SPECIAL_STAGE_DEFS[this.currentStageId];
+    return this.stageOverride || STAGE_DEFS[this.currentStageId] || SPECIAL_STAGE_DEFS[this.currentStageId];
   }
 
   getRemaining() {

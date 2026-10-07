@@ -170,6 +170,10 @@ export class ResultScreen {
 
   showGameOver(result, stage = null) {
     this.hide();
+    this.gameover.querySelector('#gameover-title').textContent = '先休息一下吧';
+    this.gameover.querySelector('.result-kicker').textContent = 'FIELD REPORT · NEEDS REST';
+    this.gameover.querySelector('.result-summary').textContent = '小水母已經很努力了。下次我們會更早發現預警。';
+    this.gameover.querySelector('.endless-result-record')?.classList.add('is-hidden');
     document.querySelector('#gameover-score').textContent = result.score.toLocaleString();
     document.querySelector('#gameover-rescued').textContent = `${result.rescuedCount} 人`;
     document.querySelector('#gameover-max-combo').textContent = result.maxCombo;
@@ -182,11 +186,14 @@ export class ResultScreen {
     let stats = screen.querySelector('.rescue-statistics');
     if (!stats) {
       stats = document.createElement('div'); stats.className = 'rescue-statistics';
+      screen.querySelector('.result-stat-grid').after(stats);
+    }
+    if (stats.children.length !== availableItems.length + 2) {
+      stats.replaceChildren();
       for (const label of [...availableItems.map((id) => `${ITEMS[id].label} 正確使用`), '平均反應時間', '救援成功率']) {
         const cell = document.createElement('div'); const name = document.createElement('span'); const value = document.createElement('b');
         name.textContent = label; cell.append(name, value); stats.append(cell);
       }
-      screen.querySelector('.result-stat-grid').after(stats);
     }
     stats.classList.toggle('is-hidden', isTutorial);
     const labels = [...availableItems.map((id) => `${ITEMS[id].label} 正確使用`), '平均反應時間', '救援成功率'];

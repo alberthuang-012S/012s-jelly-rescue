@@ -1,0 +1,64 @@
+.endless-stage-card { border-color: #b8dae9; background: linear-gradient(135deg, #1e4259, #343754); }
+.endless-stage-art { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #ffe7a7; background: radial-gradient(circle, #73cdd930, transparent 70%), #173447; }
+.endless-stage-art span { font-size: 94px; line-height: 1.1; font-weight: 700; }
+.endless-stage-art small { font-size: 10px; letter-spacing: .12em; }
+.endless-home-best { display: block; color: #ffe7a7; font-size: 13px; margin: 4px 0 8px; }
+.endless-home-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.home-challenge-grid .endless-home-actions .secondary-button { width: auto; flex: 1 1 150px; min-height: 44px; font-size: 14px; white-space: normal; }
+.endless-dialog { width: min(480px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 28px; border: 2px solid #a8d7e7; border-radius: 18px; color: #173b52; background: #f4f8ee; box-shadow: 0 24px 80px #07172780; overflow-y: auto; }
+.endless-dialog::backdrop { background: #071b2cbb; }
+.endless-dialog > small { color: #547486; font-size: 12px; letter-spacing: .14em; }
+.endless-dialog h2 { margin: 12px 0; font-size: 26px; line-height: 1.4; }
+.endless-dialog p, .endless-result-record { white-space: pre-line; font-size: 15px; line-height: 1.8; }
+.endless-actions { display: grid; gap: 10px; margin-top: 20px; }
+.endless-actions button { width: 100%; min-height: 48px; margin: 0; font-size: 16px; }
+.endless-actions .secondary-button { color: #315b7c; border-color: #99b9c7; background: #e2eef0; }
+.endless-dialog button:focus-visible { outline: 3px solid #315b7c; outline-offset: 3px; }
+.endless-result-record { padding: 14px; border: 1px solid #9bbecb; border-radius: 10px; background: #e2eef0; }
+.is-endless-stage .hud-brand b { letter-spacing: .02em; }
+.is-endless-stage .hud-brand small { font-family: inherit; font-size: 12px; letter-spacing: 0; }
+.game-shell.is-endless-stage .objective-chip { display: flex !important; color: #173b52; font-size: 13px; white-space: nowrap; }
+.game-shell.is-endless-stage .objective-chip .pulse-dot { animation: none; }
+.game-shell.is-endless-stage.is-desktop-wide .objective-chip { top: auto; bottom: 20px; left: var(--desktop-rail-inset); right: auto; width: calc(var(--desktop-rail-width) - 2 * var(--desktop-rail-inset)); transform: none; white-space: normal; font-size: 12px; }
+@media (max-width: 680px) {
+  .endless-dialog { padding: 22px 18px; }
+  .endless-dialog h2 { font-size: 23px; }
+  .is-endless-stage .hud-brand small { font-size: 11px; }
+}
+
+/* Four stable slots; selecting never also uses an item. */
+.game-shell.is-endless-stage .item-dock { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.game-shell.is-endless-stage .item-toggle-hint { grid-column: 1 / -1; font-size: 11px; }
+.game-shell.is-endless-stage .item-card { position: relative; }
+.game-shell.is-endless-stage .item-card.is-endless-locked { opacity: .62; filter: grayscale(.85); border-color: #80939e; box-shadow: none; cursor: default; }
+.endless-lock-label { position: absolute; top: 2px; left: 2px; right: 2px; text-align: center; font: 700 10px sans-serif; line-height: 14px; border-radius: 4px; color: #fff; background: #29475ce6; pointer-events: none; }
+.endless-lock-label:empty { display: none; }
+.game-shell.is-endless-stage.is-desktop-wide { --desktop-use-bottom: 220px; }
+.game-shell.is-endless-stage.is-desktop-wide .item-card { display: grid; grid-template-columns: 1fr; grid-template-rows: 42px 17px; min-height: 76px; padding: 5px 2px; justify-items: center; gap: 2px; }
+.game-shell.is-endless-stage.is-desktop-wide .item-img-wrap { width: 40px; height: 42px; }
+.game-shell.is-endless-stage.is-desktop-wide .item-img-wrap img { width: 40px; height: 40px; }
+.game-shell.is-endless-stage.is-desktop-wide .item-info,
+.game-shell.is-endless-stage.is-desktop-wide .item-status { display: none; }
+.game-shell.is-endless-stage.is-desktop-wide .item-compact-label { display: block; font-size: 12px; color: #29475c; }
+.app-shell:has(.game-shell.is-endless-stage:not(.is-hidden)) .toast-region { top: 140px; }
+@media (max-width: 680px), (max-height: 520px) and (orientation: landscape) and (max-width: 1100px) {
+  .game-shell.is-endless-stage .item-dock { left: 172px; right: 96px; bottom: calc(max(8px, env(safe-area-inset-bottom)) + 8px); gap: 5px; width: auto; }
+  .game-shell.is-endless-stage .item-card { width: 100%; min-width: 0; min-height: 58px; height: 58px; grid-template-rows: 32px 17px; padding: 3px 1px; }
+  .game-shell.is-endless-stage .item-toggle-hint { display: none; }
+  .game-shell.is-endless-stage .objective-chip { max-width: calc(100% - 24px); font-size: 11px; }
+  .app-shell:has(.game-shell.is-endless-stage:not(.is-hidden)) .toast-region { top: 98px; }
+}
+@media (max-width: 350px) and (orientation: portrait) {
+  .game-shell.is-endless-stage .item-dock { left: 148px; right: 80px; gap: 4px; }
+  .game-shell.is-endless-stage .item-compact-label { font-size: 9px; }
+}
+@media (max-height: 520px) and (orientation: landscape) and (max-width: 1100px) {
+  .game-shell.is-endless-stage .item-dock { left: auto; width: 126px; right: 94px; }
+}
+
+@media (max-width: 350px) and (orientation: portrait) {
+  .game-shell.is-endless-stage .endless-lock-label { font-size: 9px; white-space: nowrap; letter-spacing: -.3px; }
+}
+.app-shell:has(.game-shell.is-endless-stage:not(.is-hidden)) .toast-region { width: min(360px, calc(100vw - 28px)); }
+.game-shell.is-endless-stage.is-desktop-wide .item-toggle-hint { display: block; }
+.game-shell.is-endless-stage.is-desktop-wide .item-toggle-hint::after { content: ' · 1–4 選擇'; }

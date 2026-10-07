@@ -14,6 +14,11 @@ export class CoreCollectionUI {
     document.querySelector('#core-collection-progress').textContent=`已收集 ${count} / ${CORE_CATALOG.length}`;
     CORE_CATALOG.forEach(core=>{
       const prefix=core.entryId,unlocked=this.store.has(core.id);
+      const homeStatus=document.querySelector('[data-home-core="'+core.id+'"]');
+      if(homeStatus){
+        homeStatus.textContent=unlocked ? this.store.persisted ? '核心已收集 ✓' : '核心已收集 · 本次遊玩' : '核心尚未收集';
+        homeStatus.classList.toggle('is-collected',unlocked);
+      }
       document.querySelector(`#${prefix}`).classList.toggle('is-locked',!unlocked);
       document.querySelector(`#${prefix}-image`).hidden=!unlocked;
       document.querySelector(`#${prefix}-unknown`).hidden=unlocked;

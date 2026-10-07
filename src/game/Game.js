@@ -1,5 +1,8 @@
+import { EndlessDirector } from './EndlessDirector.js';
+import { ENDLESS_ITEMS, ENDLESS_SPORTS_ROLES } from './EndlessStage.js';
 import { CONDITIONS, ITEMS, STATES, VIEWPORT } from './constants.js';
 import { ComboManager } from './ComboManager.js';
+import { EndlessMode } from './EndlessMode.js';
 import { BossCombatSystem } from './BossCombatSystem.js';
 import { BossRenderer } from './BossRenderer.js';
 import { BossStageUI } from './BossStageUI.js';
@@ -28,6 +31,7 @@ import { WorldRenderer } from './WorldRenderer.js?v=mountain-pavilion-dialogue-v
 import { clamp, drawText, formatClock, lerp } from './utils.js';
 
 const ASSET_PATHS = Object.freeze({
+  endlessPlaza: ['./reference/runtime/endless-map-v3.webp', './reference/generated-endless-map-v3.png'],
   evolvedPlayer: [
     './reference/runtime/jelly-anthropomorphic-player-walk-v12.webp?webp-q90-v1',
     './reference/runtime/jelly-anthropomorphic-player-walk-v12.png',
@@ -242,24 +246,24 @@ function findPlayerManifest(source, manifestTable) {
 const HOME_STAGE_CONTENT = Object.freeze({
   garden: {
     tone: 'garden', kicker: '光采花園', title: 'JELLY RADIANCE GARDEN',
-    description: '觀察黑色素與皮膚蠟黃需求，切換 DDM+1 / SSW+1，為花園居民完成照顧。',
+    description: '使用 DDM+1、SSW+1，照顧花園居民。',
     meta: ['1 分鐘', '雙道具切換'], artLabel: 'RADIANCE GARDEN', alt: '光采花園地圖預覽'
   },
   city: {
     tone: 'city', kicker: '城市生活廣場', title: 'JELLY CITY PLAZA',
-    description: '漫步咖啡露台與購物街，觀察皮膚照顧和走路痠痛的日常情境。',
+    description: '觀察日常需求，完成廣場居民的救援。',
     meta: ['1 分鐘', '生活判斷'], artLabel: 'CITY PLAZA', alt: '城市生活廣場地圖預覽'
   },
   sports: {
     tone: 'sports', kicker: '活力運動公園', title: 'JELLY SPORTS PARK',
-    description: '留意跌倒、運動痠痛與草地活動的訊號，及時幫助運動中的居民。',
+    description: '辨認跌倒與痠痛，幫助運動中的居民。',
     meta: ['1 分鐘', '反應救援'], artLabel: 'SPORTS PARK', alt: '活力運動公園地圖預覽'
   },
   tutorial: {
     tone: 'tutorial',
     kicker: '新手教學',
     title: 'JELLY TRAINING',
-    description: '學習移動、辨認居民狀況，以及 PPA+1 / NAP+1 的使用方式。',
+    description: '學習移動與使用 PPA+1、NAP+1。',
     meta: ['無時間限制', '初次遊玩推薦'],
     artLabel: 'JELLY TRAINING',
     preview: ASSET_PATHS.park[0],
@@ -270,7 +274,7 @@ const HOME_STAGE_CONTENT = Object.freeze({
     tone: 'park',
     kicker: '城市公園',
     title: 'JELLY PARK',
-    description: '在寬闊步道間快速發現居民狀況，練習判斷與救援速度。',
+    description: '發現求救訊號，練習判斷與救援速度。',
     meta: ['1 分鐘', '反應型關卡'],
     artLabel: 'JELLY PARK',
     preview: ASSET_PATHS.park[0],
@@ -281,7 +285,7 @@ const HOME_STAGE_CONTENT = Object.freeze({
     tone: 'mountain',
     kicker: '山谷巡邏',
     title: 'JELLY MOUNTAIN',
-    description: '面對較遠的救援目標，判斷先後順序並規劃移動路線。',
+    description: '規劃山谷動線，掌握救援的先後順序。',
     meta: ['1 分鐘', '路線型關卡'],
     artLabel: 'JELLY MOUNTAIN',
     preview: ASSET_PATHS.mountain[0],
@@ -419,6 +423,8 @@ export class Game {
     this.ctx = this.canvas.getContext('2d');
     this.appShell = document.querySelector('#app');
     this.homeScreen = document.querySelector('#home-screen');
+    try { this.homeScreen.dataset.hasPlayed = localStorage.getItem('jellyRescue.home.visited.v1') === '1' ? 'true' : 'false'; }
+    catch { this.homeScreen.dataset.hasPlayed = 'false'; }
     this.gameShell = document.querySelector('#game-shell');
     this.homeStageCards = [...document.querySelectorAll('[data-stage-select]')];
     this.homeStageFeatured = document.querySelector('#home-featured-stage');
@@ -527,7 +533,7 @@ export class Game {
     this.player = new Player(null);
     this.syncEvolution();
     this.resultScreen = new ResultScreen({
-      onReplay: () => this.startStage(this.selectedStage),
+      onReplay: () => this.endlessMode?.run ? this.endlessMode.newRun() : this.startStage(this.selectedStage),
       onNext: () => this.startStage(this.getNextStageId()),
       onHome: () => this.showHome(),
       evolutionStore: this.evolutionStore,
@@ -545,6 +551,7 @@ export class Game {
     this.bossUI = new BossStageUI(this);
     this.coreCollectionStore = new CoreCollectionStore();
     this.coreCollectionUI = new CoreCollectionUI(this.coreCollectionStore);
+    this.endlessMode = new EndlessMode(this);
     this.bindHome();
     this.updateHomeSelection();
     this.bindDebug();
@@ -564,6 +571,10 @@ export class Game {
 
   isTutorial() {
     return this.selectedStage === 'tutorial';
+  }
+
+  isEndless() {
+    return Boolean(this.endlessMode?.run);
   }
 
   getNextStageId() {
@@ -595,8 +606,8 @@ export class Game {
         }, 280);
       }
     }
-    if (this.homeStageKicker) this.homeStageKicker.textContent = content.kicker;
-    if (this.homeStageTitle) this.homeStageTitle.textContent = content.title;
+    if (this.homeStageKicker) this.homeStageKicker.textContent = content.title;
+    if (this.homeStageTitle) this.homeStageTitle.textContent = content.kicker;
     if (this.homeStageDescription) this.homeStageDescription.textContent = content.description;
     if (this.homeStageMeta) {
       this.homeStageMeta.replaceChildren(...content.meta.map((label) => {
@@ -695,14 +706,17 @@ export class Game {
   }
 
   ensureNpcAsset(stageId = this.selectedStage) {
-    const lifestyle = STAGE_DEFS[stageId]?.renderer === 'lifestyle';
-    const artId = STAGE_DEFS[stageId]?.npcArtId || stageId;
+    const definition = STAGE_DEFS[stageId] || SPECIAL_STAGE_DEFS[stageId];
+    const lifestyle = ['lifestyle', 'endless'].includes(definition?.renderer);
+    const artId = definition?.npcArtId || stageId;
+    const mixedSports = definition?.renderer === 'endless';
+    const needsInjury = stageId === 'sports' || mixedSports;
     const assetId = lifestyle ? `${artId}Npc` : 'npc';
     if (!this.npcAssetPromises.has(assetId)) this.npcAssetPromises.set(assetId, loadImageWithFallback(ASSET_PATHS[assetId], {
       fetchPriority: 'high',
       assetName: `${assetId} sprite`
     }));
-    if (stageId === 'sports' && !this.npcAssetPromises.has('sportsInjury')) {
+    if (needsInjury && !this.npcAssetPromises.has('sportsInjury')) {
       this.npcAssetPromises.set('sportsInjury', loadImageWithFallback(ASSET_PATHS.sportsInjury, {
         fetchPriority: 'high', assetName: 'Sports injury animation'
       }));
@@ -713,10 +727,19 @@ export class Game {
         fetchPriority: 'high', assetName: `${stageId} concerned expressions`
       }));
     }
+    if (mixedSports) {
+      for (const id of ['sportsNpc', 'sportsCondition']) {
+        if (!this.npcAssetPromises.has(id)) this.npcAssetPromises.set(id, loadImageWithFallback(ASSET_PATHS[id], {
+          fetchPriority: 'high', assetName: `${id} plaza visitors`
+        }));
+      }
+    }
     return Promise.all([this.npcAssetPromises.get(assetId),
-      stageId === 'sports' ? this.npcAssetPromises.get('sportsInjury') : null,
-      conditionId ? this.npcAssetPromises.get(conditionId) : null
-    ]).then(([npcSprite, injuryImage, conditionImage]) => {
+      needsInjury ? this.npcAssetPromises.get('sportsInjury') : null,
+      conditionId ? this.npcAssetPromises.get(conditionId) : null,
+      mixedSports ? this.npcAssetPromises.get('sportsNpc') : null,
+      mixedSports ? this.npcAssetPromises.get('sportsCondition') : null
+    ]).then(([npcSprite, injuryImage, conditionImage, sportsSprite, sportsCondition]) => {
       this.npcSpriteImage = npcSprite?.naturalWidth ? npcSprite : null;
       this.npcSpriteSheet = this.npcSpriteImage ? {
         frameWidth: this.npcSpriteImage.naturalWidth / 3,
@@ -729,12 +752,23 @@ export class Game {
         injuryImage: injuryImage?.naturalWidth ? injuryImage : null,
         conditionImage: conditionImage?.naturalWidth ? conditionImage : null
       } : null;
-      this.npcs.forEach((npc) => {
-        npc.spriteImage = this.npcSpriteImage;
-        npc.spriteSheet = this.npcSpriteSheet;
-      });
+      if (mixedSports) this.endlessSportsSprites = sportsSprite?.naturalWidth ? {
+        image: sportsSprite,
+        sheet: { frameWidth: sportsSprite.naturalWidth / 3, frameHeight: sportsSprite.naturalHeight / 2,
+          frameCount: 6, columns: 3, lifestyle: true,
+          injuryImage: injuryImage?.naturalWidth ? injuryImage : null,
+          conditionImage: sportsCondition?.naturalWidth ? sportsCondition : null }
+      } : null;
+      this.npcs.forEach((npc) => this.applyNpcAssets(npc));
       return this.npcSpriteImage;
     });
+  }
+
+  applyNpcAssets(npc) {
+    const sportsRole = npc.stageId === 'endlessPlaza' && ENDLESS_SPORTS_ROLES.includes(npc.role);
+    // Missing sports art uses the generic role drawing rather than a city character.
+    npc.spriteImage = sportsRole ? this.endlessSportsSprites?.image || null : this.npcSpriteImage;
+    npc.spriteSheet = sportsRole ? this.endlessSportsSprites?.sheet || null : this.npcSpriteSheet;
   }
 
   ensureItemAsset(itemId) {
@@ -753,7 +787,7 @@ export class Game {
       ['Stage map', this.ensureStageMap(stageId, { fetchPriority: 'high' })],
       ['Player', this.ensurePlayerAsset()],
       ['NPC', this.ensureNpcAsset(stageId)],
-      ...this.itemSystem.availableIds.map((id) => [ITEMS[id].label, this.ensureItemAsset(id)])
+      ...(this.isEndless() ? ENDLESS_ITEMS : this.itemSystem.availableIds).map((id) => [ITEMS[id].label, this.ensureItemAsset(id)])
     ];
     if (stageId === 'alienMosquito') criticalTasks.push(['Alien creatures', this.ensureBossArt()]);
     if (stageId === 'gravityOverload') criticalTasks.push(['Gravity creatures', this.ensureGravityArt()]);
@@ -805,6 +839,18 @@ export class Game {
   }
 
   ensureStageMap(stageId, { fetchPriority = 'high' } = {}) {
+    if (SPECIAL_STAGE_DEFS[stageId]?.renderer === 'endless') {
+      if (!this.stageMapPromises.has(stageId)) {
+        const promise = loadImageWithFallback(ASSET_PATHS[stageId], {
+          fetchPriority, assetName: 'Endless plaza map'
+        }).then((image) => {
+          if (image.naturalWidth) this.worldRenderer.setEndlessImage(image);
+          return this.worldRenderer.getEndlessMap(SPECIAL_STAGE_DEFS[stageId]);
+        });
+        this.stageMapPromises.set(stageId, promise);
+      }
+      return this.stageMapPromises.get(stageId);
+    }
     if (stageId === 'pigmentBloom') return this.ensureStageMap('garden', { fetchPriority });
     const lifestyle = STAGE_DEFS[stageId]?.renderer === 'lifestyle';
     const mapId = ['alienMosquito', 'gravityOverload'].includes(stageId) ? stageId : lifestyle ? stageId : stageId === 'mountain' ? 'mountain' : 'park';
@@ -947,7 +993,9 @@ export class Game {
       this.tutorialModal?.setAttribute('aria-hidden', 'true');
     }
     if (this.exitConfirmBody) {
-      this.exitConfirmBody.textContent = this.isTutorial()
+      this.exitConfirmBody.textContent = this.isEndless()
+        ? '無限救援進度會自動保存，可從主選單繼續目前這局。'
+        : this.isTutorial()
         ? '目前的教學進度將會重新開始。'
         : '目前的巡邏進度將不會保留。';
     }
@@ -990,6 +1038,7 @@ export class Game {
   pauseForBackground() {
     if (!['playing', 'loading'].includes(this.state) || this.backgroundPaused) return;
     this.backgroundPaused = true;
+    this.endlessMode?.save();
     this.input.setEnabled(false);
     this.backgroundPause.classList.remove('is-hidden');
     this.backgroundPause.setAttribute('aria-hidden', 'false');
@@ -1244,11 +1293,12 @@ export class Game {
 
   resetAppScroll() {
     this.appShell?.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    this.homeScreen.scrollTop = 0;
+    this.homeScreen.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     this.resultScreen.screen.scrollTop = 0;
   }
 
-  async startStage(stageId) {
+  async startStage(stageId, { endlessStage = null, endlessSnapshot = null } = {}) {
+    if (!endlessStage && this.isEndless()) this.endlessMode.leave();
     this.gardenIntro?.close();
     this.clearBackgroundPause();
     window.clearTimeout(this.tutorialTransitionTimer);
@@ -1257,11 +1307,13 @@ export class Game {
     this.closeTutorialModal({ enableInput: false });
     this.selectedStage = stageId;
     this.gameShell.dataset.stage = stageId;
+    this.gameShell.classList.toggle('is-endless-stage', Boolean(endlessStage));
     this.updateHomeSelection();
     const loadingToken = ++this.loadingToken;
-    const stage = this.stageManager.start(stageId);
+    const stage = this.stageManager.start(stageId, endlessStage);
     this.state = 'loading';
-    this.lives = 3;
+    this.lives = endlessStage ? this.endlessMode.run.lives : 3;
+    if (endlessStage) this.debug.infiniteLife = false;
     this.npcs = [];
     this.particles = [];
     this.floaters = [];
@@ -1284,12 +1336,10 @@ export class Game {
       onFailure: (npc) => this.handleFailure(npc),
       onStateChange: (npc, state) => this.handleNPCStateChange(npc, state),
       onEvent: (npc) => this.handleEventStart(npc),
-      onSpawn: (npc) => {
-        npc.spriteImage = this.npcSpriteImage;
-        npc.spriteSheet = this.npcSpriteSheet;
-      },
+      onSpawn: (npc) => this.applyNpcAssets(npc),
       getPlayer: () => this.player
     };
+    if (endlessStage) directorCallbacks.random = this.endlessMode.random;
     this.eventDirector = null;
     this.tutorialDirector = null;
     if (this.isTutorial()) {
@@ -1299,9 +1349,10 @@ export class Game {
         onStep: (step, npc) => this.handleTutorialStep(step, npc)
       });
     } else if (!this.bossCombat) {
-      this.eventDirector = new EventDirector(stage, directorCallbacks);
+      this.eventDirector = endlessStage ? new EndlessDirector(stage, directorCallbacks) : new EventDirector(stage, directorCallbacks);
       this.eventDirector.seed(this.npcs);
     }
+    if (endlessStage) this.endlessMode.restoreState(endlessSnapshot);
     this.hud.update(this);
     this.input.setEnabled(false);
     this.resultScreen.hide();
@@ -1327,22 +1378,25 @@ export class Game {
     if (loadingToken !== this.loadingToken) return;
 
     this.state = 'playing';
+    this.homeScreen.dataset.hasPlayed = 'true';
+    try { localStorage.setItem('jellyRescue.home.visited.v1', '1'); } catch { /* Session ordering still works. */ }
     this.hud.updateItems(this.itemSystem.selectedId);
     this.hideLoading();
     if (this.isTutorial()) {
       this.openTutorialModal('move');
-    } else if (stageId === 'garden' && !this.gardenIntroduced) {
+    } else if (!endlessStage && stageId === 'garden' && !this.gardenIntroduced) {
       document.querySelector('#garden-intro-start').textContent = this.backgroundPaused ? '繼續遊戲' : '準備好了，出發！';
       this.gardenIntro.showModal();
     } else {
       this.input.setEnabled(true);
     }
-    this.scheduleNextStagePreload(stageId);
+    if (!endlessStage) this.scheduleNextStagePreload(stageId);
     if (this.backgroundPaused) this.input.setEnabled(false);
     else if (document.hidden) this.pauseForBackground();
   }
 
   showHome() {
+    this.endlessMode?.leave();
     this.gardenIntro?.close();
     this.bossUI.setMode(false);
     this.bossCombat = null;
@@ -1384,6 +1438,7 @@ export class Game {
     if (this.isTutorialModalOpen || this.isExitConfirmOpen) return;
     const stage = this.stageManager.getStage();
     this.stageManager.update(dt);
+    if (this.isEndless()) this.endlessMode.beforeUpdate();
     if (this.bossCombat) {
       if (!this.bossCombat.frozen) this.player.update(dt, this.input, stage);
       const oldLives = this.lives;
@@ -1408,12 +1463,16 @@ export class Game {
       this.hud.update(this);
       return;
     }
-    for (const npc of this.npcs) npc.update(dt, stage, this.stageManager.elapsed);
+    for (const npc of this.npcs) {
+      npc.update(dt, stage, this.stageManager.elapsed);
+      if (this.state !== 'playing') return;
+    }
     this.updatePavilionRoof(dt, stage);
     this.interactionSystem.findTarget(this.player, this.npcs);
     this.updateParticles(dt);
     this.updateFloaters(dt);
     this.hud.update(this);
+    if (this.isEndless()) { this.endlessMode.update(dt); return; }
     if (this.stageManager.status === 'complete') this.finishStage();
   }
 
@@ -1439,7 +1498,7 @@ export class Game {
       const comboCount = this.combo.registerSuccess();
       const scored = this.scoreManager.recordRescue(responseTime, target.condition, this.combo.getMultiplier());
       target.rescue(this.stageManager.elapsed);
-      if (this.evolutionStore.award(this.selectedStage, this.scoreManager.rescuedCount)) {
+      if (!this.isEndless() && this.evolutionStore.award(this.selectedStage, this.scoreManager.rescuedCount)) {
         this.input.setEnabled(false);
         this.resultScreen.showReward(() => {
           if (this.state === 'playing') this.input.setEnabled(true);
@@ -1451,6 +1510,10 @@ export class Game {
       const comboText = comboCount >= 2 ? ` · ${comboCount} COMBO` : '';
       this.addFloater(target.x, target.y - 82, `${rating} · +${scored.points}`, '#fff0b7');
       if (comboText) this.addFloater(target.x, target.y - 112, `${comboCount} COMBO`, '#dff8e9');
+      if (this.isEndless()) {
+        this.endlessMode.update(0);
+        this.endlessMode.save();
+      }
     } else {
       if (this.isTutorial()) {
         const isFinalCheck = this.tutorialDirector?.step === 'final-check';
@@ -1478,6 +1541,7 @@ export class Game {
       target.showDialogue(SCENARIO_DEFS[target.scenarioType]?.wrongItem || '好像不是這個……', 1.15);
       const correctItemId = requiredItem(target.condition);
       this.hud.flashItemFeedback(this.itemSystem.selectedId, correctItemId);
+      this.endlessMode?.save();
     }
   }
 
@@ -1519,6 +1583,7 @@ export class Game {
     // The onboarding stage is intentionally forgiving. A malformed/debug
     // failure must never turn a learning mistake into a Game Over.
     if (this.isTutorial()) return;
+    if (this.isEndless() && !this.debug.infiniteLife) { this.endlessMode.fail(); return; }
     this.scoreManager.recordFailure();
     this.combo.break();
     if (!this.debug.infiniteLife) this.lives = Math.max(0, this.lives - 1);
@@ -1586,6 +1651,10 @@ export class Game {
 
   handleDebug(action, button) {
     if (this.state !== 'playing') return;
+    if (this.isEndless() && !['radius'].includes(action)) {
+      this.endlessMode.run.practice = true;
+      this.endlessMode.save();
+    }
     if (action.startsWith('boss:')) { if (this.bossUI.development) this.bossCombat?.debug(action.slice(5)); return; }
     if (this.bossCombat && !['life', 'radius', 'stage'].includes(action)) return;
     if (this.isTutorial() && ['itch', 'soreness', 'clear', 'tolerance'].includes(action)) return;

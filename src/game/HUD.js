@@ -67,15 +67,20 @@ export class HUD {
     this.elements.exitButton?.setAttribute('aria-hidden', canExitStage ? 'false' : 'true');
     this.elements.score.textContent = formatScore(game.scoreManager.score);
     this.elements.combo.textContent = combo.combo ? `x${combo.getMultiplier().toFixed(1)}` : '—';
+    const endless = game.isEndless?.() && stage.endless;
     const isTimedStage = stage.timed !== false;
-    const timerText = isTimedStage ? formatClock(game.stageManager.getRemaining()) : '教學';
+    const timerText = endless ? formatClock(Math.floor(game.stageManager.elapsed)) : isTimedStage ? formatClock(game.stageManager.getRemaining()) : '教學';
     if (this.elements.timer.textContent !== timerText) this.elements.timer.textContent = timerText;
-    if (this.elements.timerLabel && this.elements.timerLabel.textContent !== (isTimedStage ? '巡邏剩餘' : '模式')) {
-      this.elements.timerLabel.textContent = isTimedStage ? '巡邏剩餘' : '模式';
+    if (this.elements.timerLabel && this.elements.timerLabel.textContent !== (endless ? '生存時間' : isTimedStage ? '巡邏剩餘' : '模式')) {
+      this.elements.timerLabel.textContent = endless ? '生存時間' : isTimedStage ? '巡邏剩餘' : '模式';
     }
-    this.elements.timerBox?.classList.toggle('is-untimed', !isTimedStage);
-    if (this.elements.brandTitle) this.elements.brandTitle.textContent = tutorialStage ? 'JELLY TRAINING' : 'JELLY RESCUE';
-    this.elements.stageName.textContent = tutorialStage ? '' : stage.name.toUpperCase();
+    this.elements.timerBox?.classList.toggle('is-untimed', !isTimedStage && !endless);
+    if (this.elements.brandTitle) this.elements.brandTitle.textContent = endless
+      ? '無限救援'
+      : tutorialStage ? 'JELLY TRAINING' : 'JELLY RESCUE';
+    this.elements.stageName.textContent = endless
+      ? `${stage.displayName} · ${game.endlessMode.run.unlocked ? '四道具' : '雙道具'}`
+      : tutorialStage ? '' : stage.name.toUpperCase();
     if (this.lastLives !== game.lives) {
       const lostLife = this.lifeLossPending || (this.lastLives >= 0 && game.lives < this.lastLives);
       const hearts = [0, 1, 2].map((index) => {
@@ -101,7 +106,9 @@ export class HUD {
     const tutorialObjective = game.tutorialDirector?.getObjective?.(game);
     // Formal stages communicate through the map, NPC bubble, and Use state.
     // Keep the chip available only for the explicit tutorial instructions.
-    const objective = tutorialStage ? tutorialObjective || '' : '';
+    const objective = endless
+      ? `已救援 ${game.scoreManager.rescuedCount} 人 · ${game.stageManager.elapsed < 60 ? `${Math.ceil(60 - game.stageManager.elapsed)}s 後四道具` : `再救 ${20 - game.scoreManager.rescuedCount % 20} 人補血`}`
+      : tutorialStage ? tutorialObjective || '' : '';
     if (objective !== this.lastObjective) {
       this.elements.objective.textContent = objective;
       this.lastObjective = objective;
@@ -111,6 +118,7 @@ export class HUD {
     const objectiveFaded = this.mobileMode
       && game.state === 'playing'
       && !tutorialActive
+      && !endless
       && game.stageManager.elapsed >= 3;
     this.elements.objectiveChip?.classList.toggle('is-mobile-faded', objectiveFaded);
     this.updateTutorialGuide(game);
@@ -219,11 +227,11 @@ export class HUD {
         const bDistance = Math.hypot(b.x - game.player.x, b.y - game.player.y);
         return aDistance - bDistance;
       })
-      .slice(0, 2);
+      .slice(0, game.isEndless?.() ? 4 : 2);
 
     const selectedIds = new Set(events.map((npc) => npc.id));
     this.indicatorNodes.forEach((node, id) => {
-      if (!selectedIds.has(id)) node.classList.add('is-hidden');
+      if (!selectedIds.has(id)) { node.remove(); this.indicatorNodes.delete(id); }
     });
     region.classList.toggle('is-hidden', !events.length);
     const occupiedPositions = [];

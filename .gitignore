@@ -1,4 +1,5 @@
 node_modules/
+qa/endless/*.png
 npm-debug.log*
 .env
 .env.*

@@ -10,10 +10,52 @@ npm start
 
 Open `http://localhost:4173`.
 
+## Endless Rescue
+
+Choose **無限救援** in the home challenge cards to enter the new **救援中央廣場**.
+This is one continuous survival session: no rounds, quotas, map switches or intermissions.
+The plaza uses the same richly detailed pixel-art style as City and Sports Park,
+with a flush rescue mosaic, cafes, sports court and perimeter greenery. The built-in
+ImageGen master is `reference/generated-endless-map-v3.png`; the game loads
+`reference/runtime/endless-map-v3.webp` (PNG fallback). References and prompt are
+saved in `reference/art-layouts/endless-map-prompt-v3.json`. Spawn zones and prop
+collisions are measured against this artwork; older v2 saves relocate only residents
+or the player covered by a prop, keeping the clock, events, score and random state.
+The timer counts up. Three hearts last until residents time out; each timeout costs one
+heart while play and scoring continue. Wrong items break the combo without directly
+costing a heart. Every 20 successful rescues restores one heart, capped at three.
+
+PPA+1 and NAP+1 are initially available. DDM+1 and SSW+1 unlock together at 60 seconds
+with a brief toast; four stable item slots remain on screen throughout. Requests come
+every 4 seconds for the first 20 seconds, every 3 seconds until 80 seconds, and every
+2.4 seconds until 150 seconds. After that, 10 seconds at 1.8-second intervals alternates
+with 5 seconds at 2.6-second intervals indefinitely. Concurrent requests grow from two
+to three to four. Minimum tolerance is 9 seconds plus a 3-second warning. Dispatch
+checks complete rescue visit orders against collision-aware travel times and deadlines.
+Residents continuously enter and leave, with bounded resident and indicator populations.
+Basketball players, runners and skateboarders can fall from the start of the session.
+Their stumble/fall/injured poses use the registered sports atlas; knee-pain dialogue
+identifies NAP+1 as the treatment. Falls share the soreness family rather than adding
+a fifth item or increasing the event rate.
+
+Progress is stored under `jellyRescue.endless.v2`, separately from old round-mode saves,
+ordinary patrol records and Boss progress. It saves every gameplay second, after actions,
+on background suspension and on leaving. **繼續挑戰** restores elapsed time, hearts,
+player, residents, all four item states, score, scheduler and seeded random state.
+Starting a new run asks before replacing unfinished progress. If storage is unavailable,
+progress stays in the current page session. Records rank survival duration first, then
+score; gameplay DEBUG actions mark the run as practice.
+
+Validation: `npm test` covers the dedicated map, scheduling boundaries, four-person
+feasibility, 20-minute deterministic continuous simulation, healing and storage.
+Optional browser QA: `node qa/endless-browser.mjs` with the same Playwright setup as
+other browser runners, including desktop, portrait, narrow portrait and landscape,
+unlock, actual item use, timeout continuation, reload, healing, game-over and patrol regression.
+
 ## Controls
 
 - `WASD` / Arrow keys: move the jelly
-- `Q`: toggle the current stage's two items (PPA+1/NAP+1, or DDM+1/SSW+1 in Radiance Garden)
+- `Q`: cycle available treatments; `1`–`4`: directly select PPA, NAP, DDM or SSW (locked treatments stay unavailable)
 - Click or tap an item card: select that treatment
 - `E` / `Space` / the mobile 使用 button: rescue when close to an NPC
 - Focus a treatment card with Tab, then press Enter/Space to select it; focused Use supports Enter/Space once per press, including key-repeat suppression.
@@ -196,4 +238,4 @@ City, Sports and Gravity Overload use the first two stages' phone layout: a full
 
 ## Desktop mission lobby
 
-The desktop home separates patrol selection from three Boss cards. Wide desktops show one row of three; smaller layouts wrap while retaining reachable entry buttons. A brighter primary CTA, larger text and visible keyboard hints make the selected mission easier to start; the encyclopedia sits beside the special-challenge heading. The six mission tabs support Left/Right, Home/End and one Tab stop. Responsive coverage and screenshots are documented in [qa/home/README.md](qa/home/README.md).
+The desktop home centers the mascot between patrol selection on the left and Endless Rescue on the right. All three Boss cards share a lower row; the core encyclopedia sits in the compact top header and each Boss shows its own collection state. Patrol previews emphasize Chinese titles and retain six tabs with Left/Right, Home/End and one Tab stop. Endless uses Central Plaza artwork; an existing save makes Continue primary and New Run secondary. Phones keep the mascot centered above compact stacked entries, with tutorial first for new visitors and Endless first after a previous mission or existing endless save. The home-only ordering preference uses `jellyRescue.home.visited.v1`; game records remain in their existing stores. Responsive coverage and screenshots are documented in [qa/home/README.md](qa/home/README.md).

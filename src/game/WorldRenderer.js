@@ -1,3 +1,4 @@
+import { drawEndlessPlaza } from './EndlessRenderer.js';
 import { drawText } from './utils.js';
 import { drawLifestyleMap } from './LifestyleRenderer.js';
 
@@ -30,6 +31,7 @@ const MAP = Object.freeze({
 export class WorldRenderer {
   constructor() {
     this.parkImage = null;
+    this.endlessImage = null;
     this.alienImage = null;
     this.gravityImage = null;
     this.mountainImage = null;
@@ -56,9 +58,28 @@ export class WorldRenderer {
       ctx.drawImage(this.alienImage, 0, 0, stage.world.width, stage.world.height);
     else if (stage.id === 'gravityOverload' && this.gravityImage?.complete && this.gravityImage.naturalWidth)
       ctx.drawImage(this.gravityImage, 0, 0, stage.world.width, stage.world.height);
+    else if (stage.renderer === 'endless') ctx.drawImage(this.getEndlessMap(stage), 0, 0, stage.world.width, stage.world.height);
     else if (stage.renderer === 'lifestyle') ctx.drawImage(this.lifestyleImages.get(stage.mapId || stage.id) || this.getLifestyleMap(stage), 0, 0, stage.world.width, stage.world.height);
     else if (stage.id === 'mountain') this.drawMountainBackground(ctx, stage, now);
     else this.drawPark(ctx, stage, now);
+  }
+
+  setEndlessImage(image) {
+    this.endlessImage = image;
+    this.lifestyleMaps.delete('endlessPlaza');
+  }
+
+  getEndlessMap(stage) {
+    if (!this.lifestyleMaps.has(stage.id)) {
+      const canvas = document.createElement('canvas');
+      canvas.width = stage.world.width; canvas.height = stage.world.height;
+      const ctx = canvas.getContext('2d');
+      if (this.endlessImage?.complete && this.endlessImage.naturalWidth) {
+        ctx.drawImage(this.endlessImage, 0, 0, canvas.width, canvas.height);
+      } else drawEndlessPlaza(ctx, stage);
+      this.lifestyleMaps.set(stage.id, canvas);
+    }
+    return this.lifestyleMaps.get(stage.id);
   }
 
   getLifestyleMap(stage) {

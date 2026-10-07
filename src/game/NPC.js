@@ -35,7 +35,8 @@ function wrapStatusText(ctx, text, maxWidth) {
 }
 
 export class NPC {
-  constructor({ id, role, x, y, zone, path = [], name, isPractice = false, stageId = null }) {
+  constructor({ id, role, x, y, zone, path = [], name, isPractice = false, stageId = null, random = null }) {
+    this.random = random || (() => Math.random());
     this.id = id;
     this.role = role;
     this.name = name || NPC_ROLE_DEFS[role]?.label || '遊客';
@@ -47,7 +48,7 @@ export class NPC {
     this.path = path;
     this.pathIndex = 0;
     this.wanderTarget = null;
-    this.wanderWait = Math.random() * 2;
+    this.wanderWait = this.random() * 2;
     this.blockedTime = 0;
     this.state = STATES.NORMAL;
     this.condition = null;
@@ -66,11 +67,12 @@ export class NPC {
     this.removeTimer = 0;
     this.nextEventAt = 0;
     this.active = true;
+    this.departing = false;
     this.isRescued = false;
     this.isPractice = isPractice;
     this.practicePulseTimer = 0;
     this.highlighted = false;
-    this.phase = Math.random() * Math.PI * 2;
+    this.phase = this.random() * Math.PI * 2;
     this.spriteImage = null;
     this.spriteSheet = null;
     this.stateMachine = new NPCStateMachine(this);
@@ -79,7 +81,7 @@ export class NPC {
   }
 
   canReceiveEvent(stageTime) {
-    return this.active && this.state === STATES.NORMAL && stageTime >= this.nextEventAt;
+    return this.active && !this.departing && this.state === STATES.NORMAL && stageTime >= this.nextEventAt;
   }
 
   startEvent(condition, maxTolerance, warningDuration, stageTime = 0) {
@@ -146,7 +148,7 @@ export class NPC {
     this.isRescued = true;
     this.dialogueOverride = '';
     this.dialogueOverrideTimer = 0;
-    this.nextEventAt = stageTime + 4 + Math.random() * 2;
+    this.nextEventAt = stageTime + 4 + this.random() * 2;
   }
 
   finishRescue() {
@@ -192,6 +194,11 @@ export class NPC {
   }
 
   updateMovement(dt, stage, stageTime) {
+    if (this.departing) {
+      this.moveAlongPath(dt, 55, stage);
+      if (distance(this, { x: 384, y: 1010 }) < 16) this.active = false;
+      return;
+    }
     const style = NPC_ROLE_DEFS[this.role] || NPC_ROLE_DEFS.visitor;
     if (this.state === STATES.RESCUED || style.movement === 'sit') return;
     const scenarioActive = this.scenarioType && [STATES.WARNING, STATES.HELP, STATES.CRITICAL].includes(this.state);
@@ -254,8 +261,8 @@ export class NPC {
     const maxY = Math.min(stage.world.height - this.radius, zone.y + zone.height - padding);
     for (let attempt = 0; attempt < 16; attempt += 1) {
       const candidate = {
-        x: minX + Math.random() * Math.max(1, maxX - minX),
-        y: minY + Math.random() * Math.max(1, maxY - minY)
+        x: minX + this.random() * Math.max(1, maxX - minX),
+        y: minY + this.random() * Math.max(1, maxY - minY)
       };
       if (this.canOccupy(candidate, stage)) return candidate;
     }
@@ -491,7 +498,7 @@ export class NPC {
             ? condition.criticalTitle
             : condition.title;
     const text = this.dialogueOverride || stageDialogue || legacyDialogue || fallbackDialogue;
-    const isGardenBubble = this.stageId === 'garden' && [CONDITIONS.PIGMENTATION, CONDITIONS.SALLOWNESS].includes(conditionKey);
+    const isGardenBubble = this.stageId === 'endlessPlaza' || (this.stageId === 'garden' && [CONDITIONS.PIGMENTATION, CONDITIONS.SALLOWNESS].includes(conditionKey));
     const label = !isGardenBubble && [CONDITIONS.PIGMENTATION, CONDITIONS.SALLOWNESS].includes(conditionKey) && !isRescued && !isFailed
       ? `${condition.icon} ${text}` : text;
     const scale = Math.max(0.25, cameraScale);

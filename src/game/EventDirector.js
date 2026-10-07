@@ -1,6 +1,6 @@
 import { CONDITIONS, STATES } from './constants.js';
 import { NPC } from './NPC.js?mountain-pavilion-dialogue-v2';
-import { choose, distance } from './utils.js';
+import { distance } from './utils.js';
 import { NPC_ROLE_DEFS } from './NPCRoleDefinitions.js';
 import { SCENARIO_DEFS, weightedChoice } from './ScenarioDefinitions.js';
 import { TravelPlanner } from './TravelPlanner.js';
@@ -10,6 +10,7 @@ const ACTIVE_STATES = [STATES.WARNING, STATES.HELP, STATES.CRITICAL];
 export class EventDirector {
   constructor(stage, callbacks = {}) {
     this.callbacks = callbacks;
+    this.random = callbacks.random || (() => Math.random());
     this.reset(stage);
   }
 
@@ -30,7 +31,7 @@ export class EventDirector {
   }
 
   spawn(npcs, preferredIndex = null) {
-    const pointIndex = preferredIndex === null ? Math.floor(Math.random() * this.stage.spawnPoints.length) : preferredIndex % this.stage.spawnPoints.length;
+    const pointIndex = preferredIndex === null ? Math.floor(this.random() * this.stage.spawnPoints.length) : preferredIndex % this.stage.spawnPoints.length;
     const point = this.stage.spawnPoints[pointIndex];
     const role = this.stage.npcTypes[(this.nextNpcId - 1) % this.stage.npcTypes.length];
     const route = point.route ? this.stage.routes[point.route] : [];
@@ -41,7 +42,8 @@ export class EventDirector {
       y: point.y,
       zone: point.zone,
       path: route,
-      stageId: this.stage.id
+      stageId: this.stage.id,
+      random: this.random
     });
     npc.onFailure = this.callbacks.onFailure;
     npc.onStateChange = this.callbacks.onStateChange;
@@ -109,7 +111,7 @@ export class EventDirector {
   selectCandidate(candidates, stageTime, npcs = []) {
     if (candidates.length <= 1) return candidates[0];
     const activeEvents = npcs.filter((npc) => npc.active && ACTIVE_STATES.includes(npc.state));
-    if (!activeEvents.length) return choose(candidates);
+    if (!activeEvents.length) return candidates[Math.floor(this.random() * candidates.length)];
 
     const preferredSeparation = this.stage.id === 'mountain' ? 230 : 180;
     const separated = candidates.filter((candidate) => activeEvents.every((event) => (
@@ -170,10 +172,10 @@ export class EventDirector {
     const condition = forcedCondition || this.pickScenarioCondition(stageFamilies, phase);
     const eligible = options.filter((option) => SCENARIO_DEFS[option.scenarioType].condition === condition);
     const scenarioType = weightedChoice([...new Set(eligible.map((option) => option.scenarioType))]
-      .map((type) => [type, this.stage.scenarioWeights[type]]));
+      .map((type) => [type, this.stage.scenarioWeights[type]]), this.random);
     if (!scenarioType) return null;
     const roleCandidates = eligible.filter((option) => option.scenarioType === scenarioType);
-    const npcId = weightedChoice(roleCandidates.map((option) => [option.npc.id, this.getRoleScenarioWeight(option.npc, scenarioType)]));
+    const npcId = weightedChoice(roleCandidates.map((option) => [option.npc.id, this.getRoleScenarioWeight(option.npc, scenarioType)]), this.random);
     return { scenarioType, npc: candidates.find((npc) => npc.id === npcId) };
   }
 
@@ -183,15 +185,15 @@ export class EventDirector {
 
   pickScenarioCondition(families, phase) {
     if (!phase?.conditionWeights) return families.length === 1 ? families[0]
-      : Math.random() < phase.ppaRatio ? CONDITIONS.ITCH : CONDITIONS.SORENESS;
+      : this.random() < phase.ppaRatio ? CONDITIONS.ITCH : CONDITIONS.SORENESS;
     const weights = Object.entries(phase.conditionWeights).filter(([condition]) => families.includes(condition));
     const introCondition = this.stage.introConditions?.[this.introIndex];
     // Retry the first introduction until a feasible resident is available.
     // Subsequent introductions start only in their configured phase.
     if (introCondition && (this.introIndex === 0 || weights.some(([condition, weight]) => condition === introCondition && weight > 0))) return introCondition;
     const alternatives = weights.filter(([condition, weight]) => weight > 0 && condition !== this.lastCondition);
-    if (this.conditionStreak >= this.stage.maxConditionStreak && alternatives.length) return weightedChoice(alternatives);
-    return weightedChoice(weights);
+    if (this.conditionStreak >= this.stage.maxConditionStreak && alternatives.length) return weightedChoice(alternatives, this.random);
+    return weightedChoice(weights, this.random);
   }
 
   routeTime(from, to) {

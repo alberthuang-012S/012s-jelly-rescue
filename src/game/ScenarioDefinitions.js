@@ -104,9 +104,19 @@ export function scenarioDialogue(role, type, state, stageId = null) {
   if (!type) return null;
   const definition = SCENARIO_DEFS[type];
   if (!definition) return null;
+  if (stageId === 'endlessPlaza') return (type === 'FALL' ? ENDLESS_FALL_DIALOGUE : ENDLESS_DIALOGUE[definition.condition])?.[state] || null;
   if (stageId && !['city', 'sports', 'garden'].includes(stageId)) return null;
   return ROLE_SCENARIO_DIALOGUE[stageId]?.[role]?.[type]?.[state] || definition.dialogue[state] || null;
 }
+
+const ENDLESS_FALL_DIALOGUE = dialogue('啊！跌倒了！', '跌倒後，膝蓋好痛！', '膝蓋痛得受不了！', '膝蓋好多了，謝謝！');
+
+const ENDLESS_DIALOGUE = Object.freeze({
+  [CONDITIONS.ITCH]: dialogue('皮膚有點癢……', '皮膚好癢！', '癢得受不了了！', '不癢了，謝謝！'),
+  [CONDITIONS.SORENESS]: dialogue('雙腿有點痠……', '雙腿好痠痛！', '痠痛得受不了了！', '雙腿舒服多了！'),
+  [CONDITIONS.PIGMENTATION]: dialogue('想照顧黑色素暗沉……', '能幫我處理黑色素嗎？', '快出發了，想先處理黑色素！', '暗沉照顧完成，謝謝！', '我先走了，下次見！'),
+  [CONDITIONS.SALLOWNESS]: dialogue('皮膚有點蠟黃……', '想照顧蠟黃的皮膚！', '快赴約了，想先照顧蠟黃！', '皮膚照顧完成，謝謝！', '我先走了，下次見！')
+});
 
 const LEGACY_CONDITION_DIALOGUE = Object.freeze({
   [CONDITIONS.ITCH]: dialogue('好像有點癢……', '好癢！', '快受不了了！', '好多了！'),

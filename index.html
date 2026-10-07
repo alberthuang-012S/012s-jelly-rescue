@@ -6,6 +6,8 @@
     <meta name="theme-color" content="#10253c" />
     <link rel="stylesheet" href="./src/styles.css?v=mobile-ring-v1" />
     <link rel="stylesheet" href="./src/garden.css?v=garden-dialogue-v2" />
+    <link rel="stylesheet" href="./src/endless.css?v=endless-survival-v2" />
+    <link rel="stylesheet" href="./src/home.css?v=centered-lobby-v1" />
     <title>Jelly Rescue</title>
   </head>
   <body>
@@ -13,21 +15,23 @@
       <div class="ambient ambient-one"></div>
       <div class="ambient ambient-two"></div>
 
-      <section id="home-screen" class="screen home-screen" data-stage-tone="tutorial" aria-labelledby="game-title">
-        <div class="home-copy">
-          <div class="eyebrow">2050 × 012S</div>
-          <h1 id="game-title">JELLY<br /><span>RESCUE</span></h1>
-          <p class="home-positioning">小水母救援任務</p>
-          <p class="home-lede">觀察居民的狀況，選擇正確道具，在巡邏途中完成救援。</p>
-        </div>
-
+      <section id="home-screen" class="screen home-screen" data-stage-tone="tutorial" data-has-played="false" aria-labelledby="game-title">
+        <header class="home-header">
+          <div class="home-copy">
+            <div class="eyebrow">2050 × 012S</div>
+            <h1 id="game-title">JELLY <span>RESCUE</span></h1>
+            <p class="home-lede">選對道具，讓每一次救援都成功。</p>
+          </div>
+          <button class="collection-home-button" type="button" data-open-collection>核心圖鑑 <span id="core-collection-count">0 / 3</span></button>
+        </header>
+        <div class="home-modes">
         <div class="home-panel stage-selector-panel">
-          <div class="stage-selector-heading"><span>選擇任務</span><span class="stage-selector-rule"></span></div>
+          <div class="stage-selector-heading"><span>巡邏任務</span><span class="stage-selector-rule"></span></div>
           <article id="home-featured-stage" class="stage-featured-card" data-stage="tutorial" aria-live="polite">
             <div class="stage-featured-copy">
-              <span id="home-stage-kicker" class="stage-featured-kicker">新手教學</span>
-              <h2 id="home-stage-title">JELLY TRAINING</h2>
-              <p id="home-stage-description">學習移動、辨認居民狀況，以及 PPA+1 / NAP+1 的使用方式。</p>
+              <span id="home-stage-kicker" class="stage-featured-kicker">JELLY TRAINING</span>
+              <h2 id="home-stage-title">新手教學</h2>
+              <p id="home-stage-description">學習移動與使用 PPA+1、NAP+1。</p>
               <div id="home-stage-meta" class="stage-featured-meta"><span>無時間限制</span><span>初次遊玩推薦</span></div>
             </div>
             <div class="stage-featured-art" aria-hidden="true">
@@ -62,41 +66,7 @@
           </div>
 
           <button id="start-button" class="primary-button" type="button"><span>開始教學</span><span class="button-arrow">→</span></button>
-          <div class="control-hint"><span><kbd>WASD</kbd> / <kbd aria-label="上下左右方向鍵">↑ ↓ ← →</kbd> 移動</span><i></i><span><kbd>Q</kbd> 切換道具</span><i></i><span><kbd>E</kbd> 使用</span></div>
         </div>
-
-        <section class="home-challenges" aria-labelledby="home-challenges-title">
-          <div class="home-challenges-heading"><h2 id="home-challenges-title">特殊挑戰</h2><p>挑戰 Boss，收集專屬核心。</p></div>
-          <div class="home-challenge-grid">
-          <article class="special-stage-card" aria-labelledby="special-title">
-            <div class="special-stage-art" aria-hidden="true"><img src="./reference/runtime/alien-king-portrait-v1.webp" alt="" loading="lazy"></div>
-            <span class="stage-featured-kicker">SPECIAL STAGE</span>
-            <h2 id="special-title">異星蚊災</h2>
-            <strong>ALIEN MOSQUITO INVASION</strong>
-            <p>神秘的嗡嗡聲籠罩 Jelly Park。<br>使用 PPA+1 擊退異星蚊群，挑戰異星嗡嗡王！</p>
-            <div class="stage-featured-meta"><span>SPECIAL</span><span>BOSS BATTLE</span></div>
-            <button id="special-start" class="secondary-button" type="button" aria-label="開始異星蚊災挑戰">挑戰蚊災 <span>→</span></button>
-          </article>
-          <article class="special-stage-card gravity-stage-card" aria-labelledby="gravity-title">
-            <div class="special-stage-art gravity-stage-art" aria-hidden="true"><canvas id="gravity-portrait" width="320" height="190"></canvas></div>
-            <span class="stage-featured-kicker">SPECIAL STAGE · NAP+1</span>
-            <h2 id="gravity-title">重力痠痛危機</h2><strong>GRAVITY OVERLOAD</strong>
-            <p>神秘的重力裝置降落運動公園！<br>使用 NAP+1 共鳴能量，解除重力咚咚王的過載裝置。</p>
-            <div class="stage-featured-meta"><span>SPECIAL</span><span>BOSS BATTLE</span></div>
-            <button id="gravity-start" class="secondary-button" type="button" aria-label="開始重力痠痛危機挑戰">挑戰重力 <span>→</span></button>
-          </article>
-          <article class="special-stage-card pigment-stage-card" aria-labelledby="pigment-title">
-            <div class="special-stage-art pigment-stage-art" aria-hidden="true"><canvas id="pigment-portrait" width="320" height="240"></canvas></div>
-            <span class="stage-featured-kicker">SPECIAL STAGE · DDM+1</span>
-            <h2 id="pigment-title">暗花浩劫</h2><strong>PIGMENT TAKEOVER</strong>
-            <p>暗沉沉花后的黑色素失控擴散，讓居民的皮膚陷入暗沉危機！<br>使用 DDM+1 清除墨晶，阻止暗花浩劫！</p>
-            <div class="stage-featured-meta"><span>SPECIAL</span><span>BOSS BATTLE</span></div>
-            <button id="pigment-start" class="secondary-button" type="button" aria-label="開始暗花浩劫挑戰">挑戰花后 <span>→</span></button>
-          </article>
-          </div>
-          <button class="collection-home-button" type="button" data-open-collection>核心圖鑑 <span id="core-collection-count">0 / 3</span></button>
-        </section>
-
         <div class="home-character-wrap" aria-hidden="true">
           <div class="character-glow"></div>
           <picture class="home-character-crop">
@@ -105,8 +75,52 @@
           </picture>
           <div class="floating-spark spark-a">✦</div><div class="floating-spark spark-b">·</div><div class="floating-spark spark-c">✦</div>
         </div>
-
-        <div class="home-footer"><span>2050 × 012S</span></div>
+          <article class="endless-stage-card home-endless-panel" aria-labelledby="endless-title">
+            <div class="lobby-mode-heading"><h2 id="endless-title">無限救援</h2><span>∞ ENDLESS</span></div>
+            <div class="endless-stage-art" aria-hidden="true">
+              <img src="./reference/runtime/endless-map-v3.webp" alt="" decoding="async" fetchpriority="low">
+              <span class="endless-art-badge">救援中央廣場</span>
+            </div>
+            <p class="endless-home-description">連續救援，挑戰你的生存極限。</p>
+            <div class="endless-home-rules"><span>60 秒解鎖四道具</span><span>每救 20 人回血</span></div>
+            <small id="endless-best" class="endless-home-best" aria-live="polite">挑戰你的第一個生存紀錄</small>
+            <div class="endless-home-actions">
+              <button id="endless-resume" class="primary-button is-hidden" type="button">繼續救援</button>
+              <button id="endless-start" class="primary-button" type="button">開始無限挑戰 <span>→</span></button>
+            </div>
+          </article>
+        </div>
+        <section class="home-challenges" aria-labelledby="home-challenges-title">
+          <div class="home-challenges-heading"><h2 id="home-challenges-title">Boss 挑戰</h2><p>救援 Boss，收集三種核心。</p></div>
+          <div class="home-challenge-grid">
+          <article class="special-stage-card" aria-labelledby="special-title">
+            <div class="special-stage-art" aria-hidden="true"><img src="./reference/runtime/alien-king-portrait-v1.webp" alt="" loading="lazy"></div>
+            <span class="stage-featured-kicker">PPA+1 · 核心 001</span>
+            <h2 id="special-title">異星蚊災</h2>
+            <strong>ALIEN MOSQUITO INVASION</strong>
+            <p>擊退蚊群，救援異星嗡嗡王。</p>
+            <span class="home-core-status" data-home-core="itchCore">核心尚未收集</span>
+            <button id="special-start" class="secondary-button" type="button" aria-label="開始異星蚊災挑戰">挑戰蚊災 <span>→</span></button>
+          </article>
+          <article class="special-stage-card gravity-stage-card" aria-labelledby="gravity-title">
+            <div class="special-stage-art gravity-stage-art" aria-hidden="true"><canvas id="gravity-portrait" width="320" height="190"></canvas></div>
+            <span class="stage-featured-kicker">NAP+1 · 核心 002</span>
+            <h2 id="gravity-title">重力痠痛危機</h2><strong>GRAVITY OVERLOAD</strong>
+            <p>躲開震波，解除咚咚王的過載。</p>
+            <span class="home-core-status" data-home-core="gravityCore">核心尚未收集</span>
+            <button id="gravity-start" class="secondary-button" type="button" aria-label="開始重力痠痛危機挑戰">挑戰重力 <span>→</span></button>
+          </article>
+          <article class="special-stage-card pigment-stage-card" aria-labelledby="pigment-title">
+            <div class="special-stage-art pigment-stage-art" aria-hidden="true"><canvas id="pigment-portrait" width="320" height="240"></canvas></div>
+            <span class="stage-featured-kicker">DDM+1 · 核心 003</span>
+            <h2 id="pigment-title">暗花浩劫</h2><strong>PIGMENT TAKEOVER</strong>
+            <p>清除墨晶，救援暗沉沉花后。</p>
+            <span class="home-core-status" data-home-core="pigmentCore">核心尚未收集</span>
+            <button id="pigment-start" class="secondary-button" type="button" aria-label="開始暗花浩劫挑戰">挑戰花后 <span>→</span></button>
+          </article>
+          </div>
+        </section>
+        <div class="home-footer"><div class="control-hint"><span><kbd>WASD</kbd> / <kbd aria-label="上下左右方向鍵">↑ ↓ ← →</kbd> 移動</span><i></i><span><kbd>Q</kbd> 切換道具</span><i></i><span><kbd>E</kbd> 使用</span></div></div>
       </section>
 
       <section id="game-shell" class="game-shell is-hidden" aria-label="遊戲畫面">
@@ -279,6 +293,7 @@
       </section>
 
       <div id="toast-region" class="toast-region" aria-live="polite"></div>
+      <dialog id="endless-dialog" class="endless-dialog" aria-labelledby="endless-dialog-title" aria-describedby="endless-dialog-description"></dialog>
       <section id="boss-result" class="screen result-screen is-hidden" role="dialog" aria-modal="true" aria-labelledby="boss-result-title" aria-describedby="boss-result-description">
         <div class="result-inner boss-result-card">
           <div class="boss-result-body">
