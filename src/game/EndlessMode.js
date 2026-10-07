@@ -1,13 +1,13 @@
 import { NPC } from './NPC.js?mountain-pavilion-dialogue-v2';
 import { ITEMS } from './constants.js';
-import { ENDLESS_ITEMS, ENDLESS_UNLOCK_AT, safeEndlessPosition } from './EndlessStage.js';
+import { ENDLESS_ITEMS, ENDLESS_UNLOCK_AT, ENDLESS_HEAL_EVERY, ENDLESS_MOVEMENT_VERSION, safeEndlessPosition, assignEndlessPatrol } from './EndlessStage.js';
 import { createEndlessRun, createEndlessStage, healEndlessRun, seededRandom, EndlessStore } from './EndlessRun.js';
 import { TravelPlanner } from './TravelPlanner.js';
 import { formatClock } from './utils.js';
 
 const copy = (value) => JSON.parse(JSON.stringify(value));
 const EXCLUDED = new Set(['spriteImage', 'spriteSheet', 'stateMachine', 'random', 'onFailure', 'onStateChange']);
-const DIRECTOR_KEYS = ['nextNpcId', 'nextSpawnAt', 'nextEventAt', 'lastCondition', 'conditionStreak', 'introIndex', 'stageTime', 'fourItemsDispatched'];
+const DIRECTOR_KEYS = ['nextNpcId', 'nextSpawnAt', 'nextEventAt', 'lastCondition', 'conditionStreak', 'introIndex', 'stageTime', 'fourItemsDispatched', 'pendingIntroductions'];
 function dataOf(object) {
   return copy(Object.fromEntries(Object.entries(object).filter(([key, value]) => !EXCLUDED.has(key)
     && typeof value !== 'function' && (value === null || ['number', 'string', 'boolean', 'object'].includes(typeof value)))));
@@ -84,7 +84,7 @@ export class EndlessMode {
       game.stageManager.elapsed = snapshot.elapsed;
       game.stageManager.status = 'playing';
       for (const key of DIRECTOR_KEYS) {
-        if (Object.hasOwn(snapshot.director, key)) game.eventDirector[key] = snapshot.director[key];
+        if (Object.hasOwn(snapshot.director, key)) game.eventDirector[key] = copy(snapshot.director[key]);
       }
       game.npcs = snapshot.npcs.map((data) => {
         const npc = new NPC({ ...data, random: this.random });
@@ -94,8 +94,12 @@ export class EndlessMode {
         Object.assign(npc, safeEndlessPosition(stage, npc, npc.radius));
         const planner = new TravelPlanner(stage, npc.radius);
         if (npc.wanderTarget && !planner.canOccupy(npc.wanderTarget)) npc.wanderTarget = null;
-        if (npc.path?.some((point) => !planner.canOccupy(point))) {
-          npc.path = npc.departing ? [{ x: 384, y: npc.y }, { x: 384, y: 1010 }] : copy(stage.routes.promenade);
+        const invalidPath = npc.path?.some((point) => !planner.canOccupy(point));
+        if (!npc.departing && (snapshot.movementVersion !== ENDLESS_MOVEMENT_VERSION || invalidPath)) {
+          assignEndlessPatrol(stage, npc);
+          npc.wanderTarget = null;
+        } else if (invalidPath) {
+          npc.path = [{ x: 384, y: npc.y }, { x: 384, y: 1010 }];
           npc.pathIndex = 0;
         }
         npc.onFailure = (resident) => game.handleFailure(resident);
@@ -145,7 +149,7 @@ export class EndlessMode {
     const healed = healEndlessRun(this.run, this.game.scoreManager.rescuedCount);
     this.game.lives = this.run.lives;
     if (healed) {
-      this.game.hud.showToast('成功救援 20 人，愛心 +1');
+      this.game.hud.showToast(`成功救援 ${ENDLESS_HEAL_EVERY} 人，愛心 +1`);
       this.game.hud.update(this.game);
     }
     this.saveElapsed += dt;
@@ -187,10 +191,10 @@ export class EndlessMode {
     if (!this.run || this.run.status === 'over') return;
     const game = this.game;
     if (this.run.status === 'playing' && game.state === 'playing') {
-      this.run.snapshot = { elapsed: game.stageManager.elapsed, player: dataOf(game.player),
+      this.run.snapshot = { movementVersion: ENDLESS_MOVEMENT_VERSION, elapsed: game.stageManager.elapsed, player: dataOf(game.player),
         score: dataOf(game.scoreManager), combo: dataOf(game.combo),
         selectedItem: game.itemSystem.selectedId, randomState: this.random.getState(),
-        director: Object.fromEntries(DIRECTOR_KEYS.filter((key) => key in game.eventDirector).map((key) => [key, game.eventDirector[key]])),
+        director: Object.fromEntries(DIRECTOR_KEYS.filter((key) => key in game.eventDirector).map((key) => [key, copy(game.eventDirector[key])])),
         npcs: game.npcs.filter((npc) => npc.active).map(dataOf) };
     }
     this.store.save(this.run);

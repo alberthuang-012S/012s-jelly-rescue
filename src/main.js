@@ -1,4 +1,4 @@
-import { Game } from './game/Game.js?centered-home-v5';
+import { Game } from './game/Game.js?endless-pressure-v7';
 
 window.addEventListener('DOMContentLoaded', () => {
   new Game();

@@ -1,4 +1,4 @@
-import { ENDLESS_STAGE } from './EndlessStage.js';
+import { ENDLESS_STAGE, ENDLESS_HEAL_EVERY } from './EndlessStage.js';
 import { NPC_ROLE_DEFS } from './NPCRoleDefinitions.js';
 
 export const ENDLESS_SAVE_KEY = 'jellyRescue.endless.v2';
@@ -24,10 +24,18 @@ export function createEndlessStage(seed) {
 }
 export function createEndlessRun(seed = Math.floor(Math.random() * 4294967296)) {
   return { seed: seed >>> 0, lives: 3, status: 'ready', snapshot: null,
-    practice: false, healedMilestones: 0, unlocked: false };
+    practice: false, healEvery: ENDLESS_HEAL_EVERY, healedMilestones: 0, unlocked: false };
+}
+export function migrateEndlessHealing(run, rescuedCount = run.snapshot?.score?.rescuedCount || 0) {
+  if (run.healEvery === ENDLESS_HEAL_EVERY) return;
+  // Preserve earned hearts; restart milestone accounting under the new rule
+  // without awarding past thresholds again or carrying 20-person milestones.
+  run.healEvery = ENDLESS_HEAL_EVERY;
+  run.healedMilestones = Math.floor(rescuedCount / ENDLESS_HEAL_EVERY);
 }
 export function healEndlessRun(run, rescuedCount) {
-  const milestones = Math.floor(rescuedCount / 20);
+  migrateEndlessHealing(run, rescuedCount);
+  const milestones = Math.floor(rescuedCount / ENDLESS_HEAL_EVERY);
   const gained = Math.max(0, milestones - run.healedMilestones);
   run.healedMilestones = milestones;
   const before = run.lives;
@@ -85,6 +93,7 @@ export class EndlessStore {
       if (raw) {
         const parsed = JSON.parse(raw);
         this.memory = { run: validEndlessRun(parsed.run) ? parsed.run : null, best: validBest(parsed.best) ? parsed.best : null };
+        if (this.memory.run) migrateEndlessHealing(this.memory.run);
       }
     } catch { /* Storage can be unavailable; keep this session's progress. */ }
     return clone(this.memory);

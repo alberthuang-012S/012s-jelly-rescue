@@ -6,7 +6,7 @@ export const BOSS_STAGE_CONTENT = Object.freeze({
     objective: '使用 DDM 清除黑色素結晶（墨晶）與小墨怪', closedHint: '清除墨晶，解除花后護盾',
     openHint: '核心亮起！保持距離使用 DDM', arrival: '不准天亮！我的花還沒開完呢！',
     escape: '嗚……只是想讓大家看看我的花嘛……', mini: 'MINI PIGMENT QUEEN', peaceful: '黑霧散去，花園恢復平靜',
-    success: '黑色素停止擴散，暗沉沉花后獲救了！', failure: '稍作休息，再出發阻止黑色素擴散。',
+    success: '黑色素停止擴散，居民不再受到暗花影響！', failure: '稍作休息，再出發阻止黑色素擴散。',
     waveTips: ['靠近小墨怪使用 DDM，看到蓄力就先移開。', '避開直線滾動，趁滾晶仔停下時使用 DDM。', '先用 DDM 清除黑色素結晶，打開安全路線。'],
     bossTips: ['先避開墨珠，再清除護盾墨晶，讓核心亮起。', '兩顆護盾墨晶都要清除；已清除的本輪不會補生。', '扇形墨珠有兩輪，穿過缺口，再清除墨晶攻擊核心。']
   },

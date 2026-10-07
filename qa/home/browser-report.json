@@ -1,15 +1,15 @@
 {
   "checks": [
-    "1440x900: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
-    "1280x900: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
-    "1366x768: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
-    "1024x768: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
-    "1920x1080: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
-    "768x1024: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
-    "320x640: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
-    "375x667: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
-    "390x844: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
-    "667x375: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "1440x900: Boss English titles and complete resident-protection stories visible without clipping; all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "1280x900: Boss English titles and complete resident-protection stories visible without clipping; all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "1366x768: Boss English titles and complete resident-protection stories visible without clipping; all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "1024x768: Boss English titles and complete resident-protection stories visible without clipping; all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "1920x1080: Boss English titles and complete resident-protection stories visible without clipping; all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "768x1024: Boss English titles and complete resident-protection stories visible without clipping; all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "320x640: Boss English titles and complete resident-protection stories visible without clipping; all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "375x667: Boss English titles and complete resident-protection stories visible without clipping; all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "390x844: Boss English titles and complete resident-protection stories visible without clipping; all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
+    "667x375: Boss English titles and complete resident-protection stories visible without clipping; all mission tabs update preview/CTA, cards reachable, collection opens and restores focus",
     "Arrow/Home/End navigation, wrapping, one tab stop, clear focus, Enter starts selected mission",
     "1366x768: tutorial modal, resident help and rescue replies match Park/Mountain; both treatments advance the tutorial",
     "390x844: tutorial modal, resident help and rescue replies match Park/Mountain; both treatments advance the tutorial",
@@ -38,9 +38,9 @@
       },
       "character": {
         "x": 620,
-        "y": 349.5204772949219,
+        "y": 349.3334045410156,
         "right": 820,
-        "bottom": 549.5205078125,
+        "bottom": 549.3334350585938,
         "width": 200,
         "height": 200.00003051757812
       },
@@ -80,9 +80,9 @@
         "x": 80,
         "y": 568,
         "right": 1360,
-        "bottom": 764,
+        "bottom": 827.59375,
         "width": 1280,
-        "height": 196
+        "height": 259.59375
       },
       "collection": {
         "x": 1241.265625,
@@ -97,25 +97,25 @@
           "x": 80,
           "y": 602,
           "right": 500,
-          "bottom": 764,
+          "bottom": 827.59375,
           "width": 420,
-          "height": 162
+          "height": 225.59375
         },
         {
           "x": 510,
           "y": 602,
           "right": 930,
-          "bottom": 764,
+          "bottom": 827.59375,
           "width": 420,
-          "height": 162
+          "height": 225.59375
         },
         {
           "x": 940,
           "y": 602,
           "right": 1360,
-          "bottom": 764,
+          "bottom": 827.59375,
           "width": 420,
-          "height": 162
+          "height": 225.59375
         }
       ],
       "buttons": [
@@ -136,27 +136,27 @@
           "height": 48
         },
         {
-          "x": 175,
-          "y": 692.546875,
+          "x": 93,
+          "y": 770.59375,
           "right": 487,
-          "bottom": 736.546875,
-          "width": 312,
+          "bottom": 814.59375,
+          "width": 394,
           "height": 44
         },
         {
-          "x": 605,
-          "y": 692.546875,
+          "x": 523,
+          "y": 770.59375,
           "right": 917,
-          "bottom": 736.546875,
-          "width": 312,
+          "bottom": 814.59375,
+          "width": 394,
           "height": 44
         },
         {
-          "x": 1035,
-          "y": 692.546875,
+          "x": 953,
+          "y": 770.59375,
           "right": 1347,
-          "bottom": 736.546875,
-          "width": 312,
+          "bottom": 814.59375,
+          "width": 394,
           "height": 44
         },
         {
@@ -176,13 +176,13 @@
         "dy": -0.16875000000004547,
         "bodyLeft": 521.1125,
         "bodyRight": 583.8875,
-        "bodyTop": 659.375,
-        "bodyBottom": 706.2875,
+        "bodyTop": 623.375,
+        "bodyBottom": 670.2875,
         "art": {
           "left": 511,
           "right": 595,
-          "top": 614.453125,
-          "bottom": 751.546875
+          "top": 603,
+          "bottom": 691
         }
       }
     },
@@ -207,11 +207,11 @@
       },
       "character": {
         "x": 550.40625,
-        "y": 354.6137390136719,
+        "y": 354.8985595703125,
         "right": 729.59375,
-        "bottom": 533.80126953125,
+        "bottom": 534.0860595703125,
         "width": 179.1875,
-        "height": 179.18753051757812
+        "height": 179.1875
       },
       "characterAnchor": {
         "x": 550.40625,
@@ -249,9 +249,9 @@
         "x": 24,
         "y": 557.59375,
         "right": 1256,
-        "bottom": 753.59375,
+        "bottom": 817.1875,
         "width": 1232,
-        "height": 196
+        "height": 259.59375
       },
       "collection": {
         "x": 1137.265625,
@@ -266,25 +266,25 @@
           "x": 24,
           "y": 591.59375,
           "right": 428,
-          "bottom": 753.59375,
+          "bottom": 817.1875,
           "width": 404,
-          "height": 162
+          "height": 225.59375
         },
         {
           "x": 438,
           "y": 591.59375,
           "right": 842,
-          "bottom": 753.59375,
+          "bottom": 817.1875,
           "width": 404,
-          "height": 162
+          "height": 225.59375
         },
         {
           "x": 852,
           "y": 591.59375,
           "right": 1256,
-          "bottom": 753.59375,
+          "bottom": 817.1875,
           "width": 404,
-          "height": 162
+          "height": 225.59375
         }
       ],
       "buttons": [
@@ -305,27 +305,27 @@
           "height": 48
         },
         {
-          "x": 119,
-          "y": 682.140625,
+          "x": 37,
+          "y": 760.1875,
           "right": 415,
-          "bottom": 726.140625,
-          "width": 296,
+          "bottom": 804.1875,
+          "width": 378,
           "height": 44
         },
         {
-          "x": 533,
-          "y": 682.140625,
+          "x": 451,
+          "y": 760.1875,
           "right": 829,
-          "bottom": 726.140625,
-          "width": 296,
+          "bottom": 804.1875,
+          "width": 378,
           "height": 44
         },
         {
-          "x": 947,
-          "y": 682.140625,
+          "x": 865,
+          "y": 760.1875,
           "right": 1243,
-          "bottom": 726.140625,
-          "width": 296,
+          "bottom": 804.1875,
+          "width": 378,
           "height": 44
         },
         {
@@ -345,13 +345,13 @@
         "dy": -0.16875000000004547,
         "bodyLeft": 449.1125,
         "bodyRight": 511.8875,
-        "bodyTop": 648.96875,
-        "bodyBottom": 695.88125,
+        "bodyTop": 612.96875,
+        "bodyBottom": 659.88125,
         "art": {
           "left": 439,
           "right": 523,
-          "top": 604.046875,
-          "bottom": 741.140625
+          "top": 592.59375,
+          "bottom": 680.59375
         }
       }
     },
@@ -376,9 +376,9 @@
       },
       "character": {
         "x": 587.3828125,
-        "y": 288.3771057128906,
+        "y": 288.2074279785156,
         "right": 778.6171875,
-        "bottom": 479.61151123046875,
+        "bottom": 479.44183349609375,
         "width": 191.234375,
         "height": 191.23440551757812
       },
@@ -418,9 +418,9 @@
         "x": 43,
         "y": 510,
         "right": 1323,
-        "bottom": 706,
+        "bottom": 769.59375,
         "width": 1280,
-        "height": 196
+        "height": 259.59375
       },
       "collection": {
         "x": 1204.265625,
@@ -435,25 +435,25 @@
           "x": 43,
           "y": 544,
           "right": 463,
-          "bottom": 706,
+          "bottom": 769.59375,
           "width": 420,
-          "height": 162
+          "height": 225.59375
         },
         {
           "x": 473,
           "y": 544,
           "right": 893,
-          "bottom": 706,
+          "bottom": 769.59375,
           "width": 420,
-          "height": 162
+          "height": 225.59375
         },
         {
           "x": 903,
           "y": 544,
           "right": 1323,
-          "bottom": 706,
+          "bottom": 769.59375,
           "width": 420,
-          "height": 162
+          "height": 225.59375
         }
       ],
       "buttons": [
@@ -474,27 +474,27 @@
           "height": 48
         },
         {
-          "x": 138,
-          "y": 634.546875,
+          "x": 56,
+          "y": 712.59375,
           "right": 450,
-          "bottom": 678.546875,
-          "width": 312,
+          "bottom": 756.59375,
+          "width": 394,
           "height": 44
         },
         {
-          "x": 568,
-          "y": 634.546875,
+          "x": 486,
+          "y": 712.59375,
           "right": 880,
-          "bottom": 678.546875,
-          "width": 312,
+          "bottom": 756.59375,
+          "width": 394,
           "height": 44
         },
         {
-          "x": 998,
-          "y": 634.546875,
+          "x": 916,
+          "y": 712.59375,
           "right": 1310,
-          "bottom": 678.546875,
-          "width": 312,
+          "bottom": 756.59375,
+          "width": 394,
           "height": 44
         },
         {
@@ -507,20 +507,20 @@
         }
       ],
       "bodyWidth": 1366,
-      "homeHeight": 768,
+      "homeHeight": 828,
       "gravityPortrait": {
         "pixels": true,
         "dx": -0.5,
         "dy": -0.16875000000004547,
         "bodyLeft": 484.1125,
         "bodyRight": 546.8875,
-        "bodyTop": 601.375,
-        "bodyBottom": 648.2875,
+        "bodyTop": 565.375,
+        "bodyBottom": 612.2875,
         "art": {
           "left": 474,
           "right": 558,
-          "top": 556.453125,
-          "bottom": 693.546875
+          "top": 545,
+          "bottom": 633
         }
       }
     },
@@ -545,11 +545,11 @@
       },
       "character": {
         "x": 440.3203125,
-        "y": 306.83868408203125,
+        "y": 308.0619812011719,
         "right": 583.6796875,
-        "bottom": 450.19805908203125,
+        "bottom": 451.42138671875,
         "width": 143.359375,
-        "height": 143.359375
+        "height": 143.35940551757812
       },
       "characterAnchor": {
         "x": 440.3203125,
@@ -587,9 +587,9 @@
         "x": 24,
         "y": 510,
         "right": 1000,
-        "bottom": 706,
+        "bottom": 789.390625,
         "width": 976,
-        "height": 196
+        "height": 279.390625
       },
       "collection": {
         "x": 881.265625,
@@ -604,25 +604,25 @@
           "x": 24,
           "y": 544,
           "right": 342.65625,
-          "bottom": 706,
+          "bottom": 789.390625,
           "width": 318.65625,
-          "height": 162
+          "height": 245.390625
         },
         {
           "x": 352.65625,
           "y": 544,
           "right": 671.328125,
-          "bottom": 706,
+          "bottom": 789.390625,
           "width": 318.671875,
-          "height": 162
+          "height": 245.390625
         },
         {
           "x": 681.328125,
           "y": 544,
           "right": 999.984375,
-          "bottom": 706,
+          "bottom": 789.390625,
           "width": 318.65625,
-          "height": 162
+          "height": 245.390625
         }
       ],
       "buttons": [
@@ -643,27 +643,27 @@
           "height": 48
         },
         {
-          "x": 119,
-          "y": 634.546875,
+          "x": 37,
+          "y": 732.390625,
           "right": 329.65625,
-          "bottom": 678.546875,
-          "width": 210.65625,
+          "bottom": 776.390625,
+          "width": 292.65625,
           "height": 44
         },
         {
-          "x": 447.65625,
-          "y": 634.546875,
+          "x": 365.65625,
+          "y": 732.390625,
           "right": 658.328125,
-          "bottom": 678.546875,
-          "width": 210.671875,
+          "bottom": 776.390625,
+          "width": 292.671875,
           "height": 44
         },
         {
-          "x": 776.328125,
-          "y": 634.546875,
+          "x": 694.328125,
+          "y": 732.390625,
           "right": 986.984375,
-          "bottom": 678.546875,
-          "width": 210.65625,
+          "bottom": 776.390625,
+          "width": 292.65625,
           "height": 44
         },
         {
@@ -676,20 +676,20 @@
         }
       ],
       "bodyWidth": 1024,
-      "homeHeight": 768,
+      "homeHeight": 847,
       "gravityPortrait": {
         "pixels": true,
         "dx": -0.5,
         "dy": -0.16875000000004547,
         "bodyLeft": 363.76875,
         "bodyRight": 426.54375,
-        "bodyTop": 601.375,
-        "bodyBottom": 648.2875,
+        "bodyTop": 565.375,
+        "bodyBottom": 612.2875,
         "art": {
           "left": 353.65625,
           "right": 437.65625,
-          "top": 556.453125,
-          "bottom": 693.546875
+          "top": 545,
+          "bottom": 633
         }
       }
     },
@@ -714,11 +714,11 @@
       },
       "character": {
         "x": 860,
-        "y": 439.9554748535156,
+        "y": 439.16180419921875,
         "right": 1060,
-        "bottom": 639.9554443359375,
+        "bottom": 639.1618041992188,
         "width": 200,
-        "height": 199.99996948242188
+        "height": 200
       },
       "characterAnchor": {
         "x": 860,
@@ -756,9 +756,9 @@
         "x": 320,
         "y": 658,
         "right": 1600,
-        "bottom": 854,
+        "bottom": 917.59375,
         "width": 1280,
-        "height": 196
+        "height": 259.59375
       },
       "collection": {
         "x": 1481.265625,
@@ -773,25 +773,25 @@
           "x": 320,
           "y": 692,
           "right": 740,
-          "bottom": 854,
+          "bottom": 917.59375,
           "width": 420,
-          "height": 162
+          "height": 225.59375
         },
         {
           "x": 750,
           "y": 692,
           "right": 1170,
-          "bottom": 854,
+          "bottom": 917.59375,
           "width": 420,
-          "height": 162
+          "height": 225.59375
         },
         {
           "x": 1180,
           "y": 692,
           "right": 1600,
-          "bottom": 854,
+          "bottom": 917.59375,
           "width": 420,
-          "height": 162
+          "height": 225.59375
         }
       ],
       "buttons": [
@@ -812,27 +812,27 @@
           "height": 48
         },
         {
-          "x": 415,
-          "y": 782.546875,
+          "x": 333,
+          "y": 860.59375,
           "right": 727,
-          "bottom": 826.546875,
-          "width": 312,
+          "bottom": 904.59375,
+          "width": 394,
           "height": 44
         },
         {
-          "x": 845,
-          "y": 782.546875,
+          "x": 763,
+          "y": 860.59375,
           "right": 1157,
-          "bottom": 826.546875,
-          "width": 312,
+          "bottom": 904.59375,
+          "width": 394,
           "height": 44
         },
         {
-          "x": 1275,
-          "y": 782.546875,
+          "x": 1193,
+          "y": 860.59375,
           "right": 1587,
-          "bottom": 826.546875,
-          "width": 312,
+          "bottom": 904.59375,
+          "width": 394,
           "height": 44
         },
         {
@@ -852,13 +852,13 @@
         "dy": -0.16875000000004547,
         "bodyLeft": 761.1125,
         "bodyRight": 823.8875,
-        "bodyTop": 749.375,
-        "bodyBottom": 796.2875,
+        "bodyTop": 713.375,
+        "bodyBottom": 760.2875,
         "art": {
           "left": 751,
           "right": 835,
-          "top": 704.453125,
-          "bottom": 841.546875
+          "top": 693,
+          "bottom": 781
         }
       }
     },
@@ -883,9 +883,9 @@
       },
       "character": {
         "x": 326,
-        "y": 101.34397888183594,
+        "y": 102.11471557617188,
         "right": 442,
-        "bottom": 217.34397888183594,
+        "bottom": 218.11471557617188,
         "width": 116,
         "height": 116
       },
@@ -925,9 +925,9 @@
         "x": 24,
         "y": 624.8125,
         "right": 744,
-        "bottom": 820.8125,
+        "bottom": 924,
         "width": 720,
-        "height": 196
+        "height": 299.1875
       },
       "collection": {
         "x": 625.265625,
@@ -942,25 +942,25 @@
           "x": 24,
           "y": 658.8125,
           "right": 257.328125,
-          "bottom": 820.8125,
+          "bottom": 924,
           "width": 233.328125,
-          "height": 162
+          "height": 265.1875
         },
         {
           "x": 267.328125,
           "y": 658.8125,
           "right": 500.65625,
-          "bottom": 820.8125,
+          "bottom": 924,
           "width": 233.328125,
-          "height": 162
+          "height": 265.1875
         },
         {
           "x": 510.65625,
           "y": 658.8125,
           "right": 743.984375,
-          "bottom": 820.8125,
+          "bottom": 924,
           "width": 233.328125,
-          "height": 162
+          "height": 265.1875
         }
       ],
       "buttons": [
@@ -981,27 +981,27 @@
           "height": 48
         },
         {
-          "x": 119,
-          "y": 749.359375,
+          "x": 37,
+          "y": 867,
           "right": 244.328125,
-          "bottom": 793.359375,
-          "width": 125.328125,
+          "bottom": 911,
+          "width": 207.328125,
           "height": 44
         },
         {
-          "x": 362.328125,
-          "y": 749.359375,
+          "x": 280.328125,
+          "y": 867,
           "right": 487.65625,
-          "bottom": 793.359375,
-          "width": 125.328125,
+          "bottom": 911,
+          "width": 207.328125,
           "height": 44
         },
         {
-          "x": 605.65625,
-          "y": 749.359375,
+          "x": 523.65625,
+          "y": 867,
           "right": 730.984375,
-          "bottom": 793.359375,
-          "width": 125.328125,
+          "bottom": 911,
+          "width": 207.328125,
           "height": 44
         },
         {
@@ -1021,13 +1021,13 @@
         "dy": -0.16875000000004547,
         "bodyLeft": 278.440625,
         "bodyRight": 341.215625,
-        "bodyTop": 716.1875,
-        "bodyBottom": 763.1,
+        "bodyTop": 680.1875,
+        "bodyBottom": 727.1,
         "art": {
           "left": 268.328125,
           "right": 352.328125,
-          "top": 671.265625,
-          "bottom": 808.359375
+          "top": 659.8125,
+          "bottom": 747.8125
         }
       }
     },
@@ -1052,9 +1052,9 @@
       },
       "character": {
         "x": 110,
-        "y": 84.75080108642578,
+        "y": 84.74921417236328,
         "right": 210,
-        "bottom": 184.75079345703125,
+        "bottom": 184.74920654296875,
         "width": 100,
         "height": 99.99999237060547
       },
@@ -1094,9 +1094,9 @@
         "x": 31,
         "y": 950.328125,
         "right": 289,
-        "bottom": 1512.5,
+        "bottom": 1791.09375,
         "width": 258,
-        "height": 562.171875
+        "height": 840.765625
       },
       "collection": {
         "x": 223,
@@ -1109,27 +1109,27 @@
       "specials": [
         {
           "x": 31,
-          "y": 984.328125,
+          "y": 1004.328125,
           "right": 289,
-          "bottom": 1153.71875,
+          "bottom": 1266.515625,
           "width": 258,
-          "height": 169.390625
+          "height": 262.1875
         },
         {
           "x": 31,
-          "y": 1163.71875,
+          "y": 1276.515625,
           "right": 289,
-          "bottom": 1333.109375,
+          "bottom": 1538.703125,
           "width": 258,
-          "height": 169.390625
+          "height": 262.1875
         },
         {
           "x": 31,
-          "y": 1343.109375,
+          "y": 1548.703125,
           "right": 289,
-          "bottom": 1512.5,
+          "bottom": 1791.09375,
           "width": 258,
-          "height": 169.390625
+          "height": 242.390625
         }
       ],
       "buttons": [
@@ -1150,27 +1150,27 @@
           "height": 48
         },
         {
-          "x": 134,
-          "y": 1096.71875,
+          "x": 44,
+          "y": 1209.515625,
           "right": 276,
-          "bottom": 1140.71875,
-          "width": 142,
+          "bottom": 1253.515625,
+          "width": 232,
           "height": 44
         },
         {
-          "x": 134,
-          "y": 1276.109375,
+          "x": 44,
+          "y": 1481.703125,
           "right": 276,
-          "bottom": 1320.109375,
-          "width": 142,
+          "bottom": 1525.703125,
+          "width": 232,
           "height": 44
         },
         {
-          "x": 134,
-          "y": 1455.5,
+          "x": 44,
+          "y": 1734.09375,
           "right": 276,
-          "bottom": 1499.5,
-          "width": 142,
+          "bottom": 1778.09375,
+          "width": 232,
           "height": 44
         },
         {
@@ -1183,20 +1183,20 @@
         }
       ],
       "bodyWidth": 320,
-      "homeHeight": 1537,
+      "homeHeight": 1815,
       "gravityPortrait": {
         "pixels": true,
         "dx": -0.5,
-        "dy": -0.21393914473674158,
+        "dy": -0.20612664473674158,
         "bodyLeft": 39.1556640625,
         "bodyRight": 115.8443359375,
-        "bodyTop": 1219.548519736842,
-        "bodyBottom": 1276.8517269736842,
+        "bodyTop": 1292.657894736842,
+        "bodyBottom": 1349.9611019736842,
         "art": {
           "left": 32,
           "right": 124,
-          "top": 1164.71875,
-          "bottom": 1332.109375
+          "top": 1277.515625,
+          "bottom": 1365.515625
         }
       }
     },
@@ -1221,11 +1221,11 @@
       },
       "character": {
         "x": 137.5,
-        "y": 80.44046020507812,
+        "y": 79.00313568115234,
         "right": 237.5,
-        "bottom": 180.44046020507812,
+        "bottom": 179.00314331054688,
         "width": 100,
-        "height": 100
+        "height": 100.00000762939453
       },
       "characterAnchor": {
         "x": 137.5,
@@ -1263,9 +1263,9 @@
         "x": 31,
         "y": 918.546875,
         "right": 344,
-        "bottom": 1431.21875,
+        "bottom": 1679.921875,
         "width": 313,
-        "height": 512.671875
+        "height": 761.375
       },
       "collection": {
         "x": 278,
@@ -1280,25 +1280,25 @@
           "x": 31,
           "y": 952.546875,
           "right": 344,
-          "bottom": 1105.4375,
+          "bottom": 1175.140625,
           "width": 313,
-          "height": 152.890625
+          "height": 222.59375
         },
         {
           "x": 31,
-          "y": 1115.4375,
+          "y": 1185.140625,
           "right": 344,
-          "bottom": 1268.328125,
+          "bottom": 1427.53125,
           "width": 313,
-          "height": 152.890625
+          "height": 242.390625
         },
         {
           "x": 31,
-          "y": 1278.328125,
+          "y": 1437.53125,
           "right": 344,
-          "bottom": 1431.21875,
+          "bottom": 1679.921875,
           "width": 313,
-          "height": 152.890625
+          "height": 242.390625
         }
       ],
       "buttons": [
@@ -1319,27 +1319,27 @@
           "height": 48
         },
         {
-          "x": 134,
-          "y": 1048.4375,
+          "x": 44,
+          "y": 1118.140625,
           "right": 331,
-          "bottom": 1092.4375,
-          "width": 197,
+          "bottom": 1162.140625,
+          "width": 287,
           "height": 44
         },
         {
-          "x": 134,
-          "y": 1211.328125,
+          "x": 44,
+          "y": 1370.53125,
           "right": 331,
-          "bottom": 1255.328125,
-          "width": 197,
+          "bottom": 1414.53125,
+          "width": 287,
           "height": 44
         },
         {
-          "x": 134,
-          "y": 1374.21875,
+          "x": 44,
+          "y": 1622.921875,
           "right": 331,
-          "bottom": 1418.21875,
-          "width": 197,
+          "bottom": 1666.921875,
+          "width": 287,
           "height": 44
         },
         {
@@ -1352,20 +1352,20 @@
         }
       ],
       "bodyWidth": 375,
-      "homeHeight": 1455,
+      "homeHeight": 1704,
       "gravityPortrait": {
         "pixels": true,
         "dx": -0.5,
-        "dy": -0.21393914473674158,
+        "dy": -0.20612664473674158,
         "bodyLeft": 39.1556640625,
         "bodyRight": 115.8443359375,
-        "bodyTop": 1163.017269736842,
-        "bodyBottom": 1220.3204769736842,
+        "bodyTop": 1201.282894736842,
+        "bodyBottom": 1258.5861019736842,
         "art": {
           "left": 32,
           "right": 124,
-          "top": 1116.4375,
-          "bottom": 1267.328125
+          "top": 1186.140625,
+          "bottom": 1274.140625
         }
       }
     },
@@ -1390,9 +1390,9 @@
       },
       "character": {
         "x": 145,
-        "y": 81.51072692871094,
+        "y": 84.67161560058594,
         "right": 245,
-        "bottom": 181.51072692871094,
+        "bottom": 184.67161560058594,
         "width": 100,
         "height": 100
       },
@@ -1432,9 +1432,9 @@
         "x": 31,
         "y": 918.546875,
         "right": 359,
-        "bottom": 1431.21875,
+        "bottom": 1679.921875,
         "width": 328,
-        "height": 512.671875
+        "height": 761.375
       },
       "collection": {
         "x": 293,
@@ -1449,25 +1449,25 @@
           "x": 31,
           "y": 952.546875,
           "right": 359,
-          "bottom": 1105.4375,
+          "bottom": 1175.140625,
           "width": 328,
-          "height": 152.890625
+          "height": 222.59375
         },
         {
           "x": 31,
-          "y": 1115.4375,
+          "y": 1185.140625,
           "right": 359,
-          "bottom": 1268.328125,
+          "bottom": 1427.53125,
           "width": 328,
-          "height": 152.890625
+          "height": 242.390625
         },
         {
           "x": 31,
-          "y": 1278.328125,
+          "y": 1437.53125,
           "right": 359,
-          "bottom": 1431.21875,
+          "bottom": 1679.921875,
           "width": 328,
-          "height": 152.890625
+          "height": 242.390625
         }
       ],
       "buttons": [
@@ -1481,34 +1481,34 @@
         },
         {
           "x": 46,
-          "y": 838.6657104492188,
+          "y": 839.546875,
           "right": 344,
-          "bottom": 886.6657104492188,
+          "bottom": 887.546875,
           "width": 298,
           "height": 48
         },
         {
-          "x": 134,
-          "y": 1048.4375,
+          "x": 44,
+          "y": 1118.140625,
           "right": 346,
-          "bottom": 1092.4375,
-          "width": 212,
+          "bottom": 1162.140625,
+          "width": 302,
           "height": 44
         },
         {
-          "x": 134,
-          "y": 1211.328125,
+          "x": 44,
+          "y": 1370.53125,
           "right": 346,
-          "bottom": 1255.328125,
-          "width": 212,
+          "bottom": 1414.53125,
+          "width": 302,
           "height": 44
         },
         {
-          "x": 134,
-          "y": 1374.21875,
+          "x": 44,
+          "y": 1622.921875,
           "right": 346,
-          "bottom": 1418.21875,
-          "width": 212,
+          "bottom": 1666.921875,
+          "width": 302,
           "height": 44
         },
         {
@@ -1521,20 +1521,20 @@
         }
       ],
       "bodyWidth": 390,
-      "homeHeight": 1455,
+      "homeHeight": 1704,
       "gravityPortrait": {
         "pixels": true,
         "dx": -0.5,
-        "dy": -0.21393914473674158,
+        "dy": -0.20612664473674158,
         "bodyLeft": 39.1556640625,
         "bodyRight": 115.8443359375,
-        "bodyTop": 1163.017269736842,
-        "bodyBottom": 1220.3204769736842,
+        "bodyTop": 1201.282894736842,
+        "bodyBottom": 1258.5861019736842,
         "art": {
           "left": 32,
           "right": 124,
-          "top": 1116.4375,
-          "bottom": 1267.328125
+          "top": 1186.140625,
+          "bottom": 1274.140625
         }
       }
     },
@@ -1559,11 +1559,11 @@
       },
       "character": {
         "x": 293.5,
-        "y": 92.17961883544922,
+        "y": 88.36197662353516,
         "right": 373.5,
-        "bottom": 172.17962646484375,
+        "bottom": 168.36196899414062,
         "width": 80,
-        "height": 80.00000762939453
+        "height": 79.99999237060547
       },
       "characterAnchor": {
         "x": 293.5,
@@ -1601,9 +1601,9 @@
         "x": 33,
         "y": 899.578125,
         "right": 634,
-        "bottom": 1412.25,
+        "bottom": 1621.359375,
         "width": 601,
-        "height": 512.671875
+        "height": 721.78125
       },
       "collection": {
         "x": 515.265625,
@@ -1618,25 +1618,25 @@
           "x": 33,
           "y": 933.578125,
           "right": 634,
-          "bottom": 1086.46875,
+          "bottom": 1156.171875,
           "width": 601,
-          "height": 152.890625
+          "height": 222.59375
         },
         {
           "x": 33,
-          "y": 1096.46875,
+          "y": 1166.171875,
           "right": 634,
-          "bottom": 1249.359375,
+          "bottom": 1388.765625,
           "width": 601,
-          "height": 152.890625
+          "height": 222.59375
         },
         {
           "x": 33,
-          "y": 1259.359375,
+          "y": 1398.765625,
           "right": 634,
-          "bottom": 1412.25,
+          "bottom": 1621.359375,
           "width": 601,
-          "height": 152.890625
+          "height": 222.59375
         }
       ],
       "buttons": [
@@ -1657,27 +1657,27 @@
           "height": 48
         },
         {
-          "x": 136,
-          "y": 1029.46875,
+          "x": 46,
+          "y": 1099.171875,
           "right": 621,
-          "bottom": 1073.46875,
-          "width": 485,
+          "bottom": 1143.171875,
+          "width": 575,
           "height": 44
         },
         {
-          "x": 136,
-          "y": 1192.359375,
+          "x": 46,
+          "y": 1331.765625,
           "right": 621,
-          "bottom": 1236.359375,
-          "width": 485,
+          "bottom": 1375.765625,
+          "width": 575,
           "height": 44
         },
         {
-          "x": 136,
-          "y": 1355.25,
+          "x": 46,
+          "y": 1564.359375,
           "right": 621,
-          "bottom": 1399.25,
-          "width": 485,
+          "bottom": 1608.359375,
+          "width": 575,
           "height": 44
         },
         {
@@ -1690,20 +1690,20 @@
         }
       ],
       "bodyWidth": 667,
-      "homeHeight": 1432,
+      "homeHeight": 1641,
       "gravityPortrait": {
         "pixels": true,
         "dx": -0.5,
-        "dy": -0.21393914473674158,
+        "dy": -0.20612664473674158,
         "bodyLeft": 41.1556640625,
         "bodyRight": 117.8443359375,
-        "bodyTop": 1144.048519736842,
-        "bodyBottom": 1201.3517269736842,
+        "bodyTop": 1182.314144736842,
+        "bodyBottom": 1239.6173519736842,
         "art": {
           "left": 34,
           "right": 126,
-          "top": 1097.46875,
-          "bottom": 1248.359375
+          "top": 1167.171875,
+          "bottom": 1255.171875
         }
       }
     }

@@ -1,4 +1,5 @@
 import { STATES } from './constants.js';
+import { ENDLESS_HEAL_EVERY, ENDLESS_UNLOCK_AT } from './EndlessStage.js';
 import { clamp, formatClock, formatScore } from './utils.js';
 
 const ACTIVE_EVENT_STATES = [STATES.WARNING, STATES.HELP, STATES.CRITICAL];
@@ -107,7 +108,7 @@ export class HUD {
     // Formal stages communicate through the map, NPC bubble, and Use state.
     // Keep the chip available only for the explicit tutorial instructions.
     const objective = endless
-      ? `已救援 ${game.scoreManager.rescuedCount} 人 · ${game.stageManager.elapsed < 60 ? `${Math.ceil(60 - game.stageManager.elapsed)}s 後四道具` : `再救 ${20 - game.scoreManager.rescuedCount % 20} 人補血`}`
+      ? `已救援 ${game.scoreManager.rescuedCount} 人 · ${game.stageManager.elapsed < ENDLESS_UNLOCK_AT ? `${Math.ceil(ENDLESS_UNLOCK_AT - game.stageManager.elapsed)}s 後四道具` : `再救 ${ENDLESS_HEAL_EVERY - game.scoreManager.rescuedCount % ENDLESS_HEAL_EVERY} 人補血`}`
       : tutorialStage ? tutorialObjective || '' : '';
     if (objective !== this.lastObjective) {
       this.elements.objective.textContent = objective;
@@ -227,7 +228,7 @@ export class HUD {
         const bDistance = Math.hypot(b.x - game.player.x, b.y - game.player.y);
         return aDistance - bDistance;
       })
-      .slice(0, game.isEndless?.() ? 4 : 2);
+      .slice(0, game.isEndless?.() ? 5 : 2);
 
     const selectedIds = new Set(events.map((npc) => npc.id));
     this.indicatorNodes.forEach((node, id) => {
@@ -344,12 +345,24 @@ export class HUD {
           { x: position.x + offset * 2, y: position.y },
           { x: position.x - offset * 2, y: position.y }
         ];
-    return candidates
+    const nearby = candidates
       .map((candidate) => ({
         x: clamp(candidate.x, bounds.left, bounds.right),
         y: clamp(candidate.y, bounds.top, bounds.bottom)
       }))
-      .find((candidate) => !overlaps(candidate)) || position;
+      .find((candidate) => !overlaps(candidate));
+    if (nearby) return nearby;
+    // Five requests can exhaust one edge. Find the closest free perimeter
+    // slot before falling back to an overlapping indicator.
+    const perimeter = [];
+    for (let x = bounds.left; x <= bounds.right; x += width + 12) {
+      perimeter.push({x,y:bounds.top},{x,y:bounds.bottom});
+    }
+    for (let y = bounds.top; y <= bounds.bottom; y += height + 12) {
+      perimeter.push({x:bounds.left,y},{x:bounds.right,y});
+    }
+    return perimeter.filter(candidate => !overlaps(candidate))
+      .sort((a,b) => Math.hypot(a.x-position.x,a.y-position.y)-Math.hypot(b.x-position.x,b.y-position.y))[0] || position;
   }
 
   updateItems(selectedId, availableIds = null) {

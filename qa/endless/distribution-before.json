@@ -1,0 +1,1200 @@
+{
+  "method": "45s movement-only, events disabled to isolate routing; 5 seeded worlds, samples at 10–45s",
+  "runs": [
+    {
+      "seed": 1,
+      "hubFraction": 0.17857142857142858,
+      "middleFraction": 0.6,
+      "patrolMiddleFraction": 0.48214285714285715,
+      "samples": [
+        {
+          "time": 15,
+          "npcs": [
+            {
+              "role": "youngWoman",
+              "x": 429.5,
+              "y": 795.7,
+              "zone": "south"
+            },
+            {
+              "role": "shopper",
+              "x": 382.3,
+              "y": 537.6,
+              "zone": "central"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 387.5,
+              "y": 750.5,
+              "zone": "south"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 448.1,
+              "y": 414.4,
+              "zone": "north"
+            },
+            {
+              "role": "deliveryWorker",
+              "x": 470.7,
+              "y": 524.8,
+              "zone": "north"
+            },
+            {
+              "role": "basketballPlayer",
+              "x": 466.5,
+              "y": 363.2,
+              "zone": "north"
+            },
+            {
+              "role": "runner",
+              "x": 250.2,
+              "y": 642,
+              "zone": "south"
+            },
+            {
+              "role": "skateboarder",
+              "x": 383.9,
+              "y": 355.8,
+              "zone": "west"
+            },
+            {
+              "role": "youngWoman",
+              "x": 398.5,
+              "y": 355.5,
+              "zone": "north"
+            },
+            {
+              "role": "shopper",
+              "x": 560.5,
+              "y": 417.5,
+              "zone": "east"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 395.6,
+              "y": 391.3,
+              "zone": "north"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 602.3,
+              "y": 464.7,
+              "zone": "east"
+            }
+          ]
+        },
+        {
+          "time": 30,
+          "npcs": [
+            {
+              "role": "youngWoman",
+              "x": 377,
+              "y": 763,
+              "zone": "south"
+            },
+            {
+              "role": "shopper",
+              "x": 365.9,
+              "y": 541.1,
+              "zone": "central"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 373.4,
+              "y": 731.6,
+              "zone": "south"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 478.8,
+              "y": 408.9,
+              "zone": "north"
+            },
+            {
+              "role": "deliveryWorker",
+              "x": 348.6,
+              "y": 647.1,
+              "zone": "north"
+            },
+            {
+              "role": "basketballPlayer",
+              "x": 399.2,
+              "y": 525.9,
+              "zone": "north"
+            },
+            {
+              "role": "runner",
+              "x": 256.1,
+              "y": 396,
+              "zone": "south"
+            },
+            {
+              "role": "skateboarder",
+              "x": 384,
+              "y": 533.2,
+              "zone": "west"
+            },
+            {
+              "role": "youngWoman",
+              "x": 417.6,
+              "y": 365.2,
+              "zone": "north"
+            },
+            {
+              "role": "shopper",
+              "x": 560.4,
+              "y": 447.6,
+              "zone": "east"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 357.4,
+              "y": 389.1,
+              "zone": "north"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 520.5,
+              "y": 514.9,
+              "zone": "east"
+            }
+          ]
+        },
+        {
+          "time": 44.900000000000006,
+          "npcs": [
+            {
+              "role": "youngWoman",
+              "x": 415.3,
+              "y": 757.9,
+              "zone": "south"
+            },
+            {
+              "role": "shopper",
+              "x": 391.8,
+              "y": 556.1,
+              "zone": "central"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 410.2,
+              "y": 801,
+              "zone": "south"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 433.1,
+              "y": 424.5,
+              "zone": "north"
+            },
+            {
+              "role": "deliveryWorker",
+              "x": 444.3,
+              "y": 359.2,
+              "zone": "north"
+            },
+            {
+              "role": "basketballPlayer",
+              "x": 382.5,
+              "y": 807.9,
+              "zone": "north"
+            },
+            {
+              "role": "runner",
+              "x": 462,
+              "y": 360.9,
+              "zone": "south"
+            },
+            {
+              "role": "skateboarder",
+              "x": 373.8,
+              "y": 669.5,
+              "zone": "west"
+            },
+            {
+              "role": "youngWoman",
+              "x": 422.4,
+              "y": 347.9,
+              "zone": "north"
+            },
+            {
+              "role": "shopper",
+              "x": 537.4,
+              "y": 468.9,
+              "zone": "east"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 427.3,
+              "y": 389.2,
+              "zone": "north"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 526,
+              "y": 477.8,
+              "zone": "east"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 77,
+      "hubFraction": 0.30238095238095236,
+      "middleFraction": 0.7119047619047619,
+      "patrolMiddleFraction": 0.5071428571428571,
+      "samples": [
+        {
+          "time": 15,
+          "npcs": [
+            {
+              "role": "youngWoman",
+              "x": 394.7,
+              "y": 737.6,
+              "zone": "south"
+            },
+            {
+              "role": "shopper",
+              "x": 391.4,
+              "y": 411.2,
+              "zone": "north"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 391.4,
+              "y": 569.7,
+              "zone": "central"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 398.8,
+              "y": 416.5,
+              "zone": "north"
+            },
+            {
+              "role": "deliveryWorker",
+              "x": 459.1,
+              "y": 525,
+              "zone": "north"
+            },
+            {
+              "role": "basketballPlayer",
+              "x": 253.6,
+              "y": 560.1,
+              "zone": "south"
+            },
+            {
+              "role": "runner",
+              "x": 339.1,
+              "y": 355.6,
+              "zone": "east"
+            },
+            {
+              "role": "skateboarder",
+              "x": 383.9,
+              "y": 355.8,
+              "zone": "west"
+            },
+            {
+              "role": "youngWoman",
+              "x": 332.5,
+              "y": 744.7,
+              "zone": "south"
+            },
+            {
+              "role": "shopper",
+              "x": 504.8,
+              "y": 467.9,
+              "zone": "east"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 387.7,
+              "y": 514.6,
+              "zone": "central"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 367.1,
+              "y": 421,
+              "zone": "north"
+            }
+          ]
+        },
+        {
+          "time": 30,
+          "npcs": [
+            {
+              "role": "youngWoman",
+              "x": 426.1,
+              "y": 749.2,
+              "zone": "south"
+            },
+            {
+              "role": "shopper",
+              "x": 465.6,
+              "y": 399.8,
+              "zone": "north"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 366,
+              "y": 536.4,
+              "zone": "central"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 410,
+              "y": 376.6,
+              "zone": "north"
+            },
+            {
+              "role": "deliveryWorker",
+              "x": 337,
+              "y": 646.2,
+              "zone": "north"
+            },
+            {
+              "role": "basketballPlayer",
+              "x": 383.3,
+              "y": 355.6,
+              "zone": "south"
+            },
+            {
+              "role": "runner",
+              "x": 514.6,
+              "y": 422.5,
+              "zone": "east"
+            },
+            {
+              "role": "skateboarder",
+              "x": 384,
+              "y": 533.2,
+              "zone": "west"
+            },
+            {
+              "role": "youngWoman",
+              "x": 398.3,
+              "y": 780.3,
+              "zone": "south"
+            },
+            {
+              "role": "shopper",
+              "x": 550.5,
+              "y": 438.9,
+              "zone": "east"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 370.4,
+              "y": 512.2,
+              "zone": "central"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 449.5,
+              "y": 421.5,
+              "zone": "north"
+            }
+          ]
+        },
+        {
+          "time": 44.900000000000006,
+          "npcs": [
+            {
+              "role": "youngWoman",
+              "x": 433.8,
+              "y": 798.5,
+              "zone": "south"
+            },
+            {
+              "role": "shopper",
+              "x": 396.7,
+              "y": 377.2,
+              "zone": "north"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 402.8,
+              "y": 590.1,
+              "zone": "central"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 371.4,
+              "y": 401,
+              "zone": "north"
+            },
+            {
+              "role": "deliveryWorker",
+              "x": 455.8,
+              "y": 360,
+              "zone": "north"
+            },
+            {
+              "role": "basketballPlayer",
+              "x": 482.7,
+              "y": 521.8,
+              "zone": "south"
+            },
+            {
+              "role": "runner",
+              "x": 383.9,
+              "y": 550.6,
+              "zone": "east"
+            },
+            {
+              "role": "skateboarder",
+              "x": 373.8,
+              "y": 669.5,
+              "zone": "west"
+            },
+            {
+              "role": "youngWoman",
+              "x": 374.5,
+              "y": 754.1,
+              "zone": "south"
+            },
+            {
+              "role": "shopper",
+              "x": 523,
+              "y": 453.2,
+              "zone": "east"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 402.1,
+              "y": 567,
+              "zone": "central"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 424.9,
+              "y": 396.8,
+              "zone": "north"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 123,
+      "hubFraction": 0.14761904761904762,
+      "middleFraction": 0.669047619047619,
+      "patrolMiddleFraction": 0.5,
+      "samples": [
+        {
+          "time": 15,
+          "npcs": [
+            {
+              "role": "youngWoman",
+              "x": 442.8,
+              "y": 393.9,
+              "zone": "north"
+            },
+            {
+              "role": "shopper",
+              "x": 216.3,
+              "y": 495.1,
+              "zone": "west"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 350.2,
+              "y": 774.2,
+              "zone": "south"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 371.5,
+              "y": 778.6,
+              "zone": "south"
+            },
+            {
+              "role": "deliveryWorker",
+              "x": 496.4,
+              "y": 362.7,
+              "zone": "central"
+            },
+            {
+              "role": "basketballPlayer",
+              "x": 251.2,
+              "y": 620.8,
+              "zone": "south"
+            },
+            {
+              "role": "runner",
+              "x": 380.1,
+              "y": 355.9,
+              "zone": "north"
+            },
+            {
+              "role": "skateboarder",
+              "x": 516.8,
+              "y": 425.6,
+              "zone": "north"
+            },
+            {
+              "role": "youngWoman",
+              "x": 337.4,
+              "y": 382.5,
+              "zone": "north"
+            },
+            {
+              "role": "shopper",
+              "x": 399.7,
+              "y": 759,
+              "zone": "south"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 435.1,
+              "y": 406.5,
+              "zone": "north"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 291.2,
+              "y": 362.9,
+              "zone": "north"
+            }
+          ]
+        },
+        {
+          "time": 30,
+          "npcs": [
+            {
+              "role": "youngWoman",
+              "x": 338.9,
+              "y": 416.4,
+              "zone": "north"
+            },
+            {
+              "role": "shopper",
+              "x": 268,
+              "y": 488.9,
+              "zone": "west"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 346.6,
+              "y": 773.2,
+              "zone": "south"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 398,
+              "y": 732.2,
+              "zone": "south"
+            },
+            {
+              "role": "deliveryWorker",
+              "x": 383.2,
+              "y": 787.8,
+              "zone": "central"
+            },
+            {
+              "role": "basketballPlayer",
+              "x": 322.5,
+              "y": 355.4,
+              "zone": "south"
+            },
+            {
+              "role": "runner",
+              "x": 511.4,
+              "y": 463.4,
+              "zone": "north"
+            },
+            {
+              "role": "skateboarder",
+              "x": 383.5,
+              "y": 737.2,
+              "zone": "north"
+            },
+            {
+              "role": "youngWoman",
+              "x": 446,
+              "y": 400.8,
+              "zone": "north"
+            },
+            {
+              "role": "shopper",
+              "x": 371,
+              "y": 771.9,
+              "zone": "south"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 372.7,
+              "y": 400.2,
+              "zone": "north"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 376.6,
+              "y": 402.2,
+              "zone": "north"
+            }
+          ]
+        },
+        {
+          "time": 44.900000000000006,
+          "npcs": [
+            {
+              "role": "youngWoman",
+              "x": 367.7,
+              "y": 410.3,
+              "zone": "north"
+            },
+            {
+              "role": "shopper",
+              "x": 173,
+              "y": 516.1,
+              "zone": "west"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 439.2,
+              "y": 784.4,
+              "zone": "south"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 338.4,
+              "y": 754.8,
+              "zone": "south"
+            },
+            {
+              "role": "deliveryWorker",
+              "x": 257.8,
+              "y": 389.8,
+              "zone": "central"
+            },
+            {
+              "role": "basketballPlayer",
+              "x": 514,
+              "y": 497.6,
+              "zone": "south"
+            },
+            {
+              "role": "runner",
+              "x": 383.9,
+              "y": 591.6,
+              "zone": "north"
+            },
+            {
+              "role": "skateboarder",
+              "x": 252.5,
+              "y": 586.1,
+              "zone": "north"
+            },
+            {
+              "role": "youngWoman",
+              "x": 460.4,
+              "y": 346.1,
+              "zone": "north"
+            },
+            {
+              "role": "shopper",
+              "x": 392,
+              "y": 742.4,
+              "zone": "south"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 458.2,
+              "y": 377,
+              "zone": "north"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 358.4,
+              "y": 403.8,
+              "zone": "north"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 456,
+      "hubFraction": 0.175,
+      "middleFraction": 0.6273809523809524,
+      "patrolMiddleFraction": 0.48928571428571427,
+      "samples": [
+        {
+          "time": 15,
+          "npcs": [
+            {
+              "role": "youngWoman",
+              "x": 335.9,
+              "y": 759.4,
+              "zone": "south"
+            },
+            {
+              "role": "shopper",
+              "x": 419,
+              "y": 782.5,
+              "zone": "south"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 493.7,
+              "y": 383,
+              "zone": "north"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 330.5,
+              "y": 737.4,
+              "zone": "south"
+            },
+            {
+              "role": "deliveryWorker",
+              "x": 511.3,
+              "y": 514.9,
+              "zone": "west"
+            },
+            {
+              "role": "basketballPlayer",
+              "x": 466.5,
+              "y": 363.3,
+              "zone": "north"
+            },
+            {
+              "role": "runner",
+              "x": 339.1,
+              "y": 355.6,
+              "zone": "east"
+            },
+            {
+              "role": "skateboarder",
+              "x": 516.8,
+              "y": 425.6,
+              "zone": "north"
+            },
+            {
+              "role": "youngWoman",
+              "x": 368.8,
+              "y": 370.2,
+              "zone": "north"
+            },
+            {
+              "role": "shopper",
+              "x": 514.3,
+              "y": 460,
+              "zone": "east"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 378.9,
+              "y": 631.6,
+              "zone": "central"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 205.5,
+              "y": 495.4,
+              "zone": "west"
+            }
+          ]
+        },
+        {
+          "time": 30,
+          "npcs": [
+            {
+              "role": "youngWoman",
+              "x": 418.6,
+              "y": 788.1,
+              "zone": "south"
+            },
+            {
+              "role": "shopper",
+              "x": 365.7,
+              "y": 729,
+              "zone": "south"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 357.4,
+              "y": 400.3,
+              "zone": "north"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 441.7,
+              "y": 795.2,
+              "zone": "south"
+            },
+            {
+              "role": "deliveryWorker",
+              "x": 373.3,
+              "y": 672.1,
+              "zone": "west"
+            },
+            {
+              "role": "basketballPlayer",
+              "x": 399.2,
+              "y": 525.9,
+              "zone": "north"
+            },
+            {
+              "role": "runner",
+              "x": 514.6,
+              "y": 422.5,
+              "zone": "east"
+            },
+            {
+              "role": "skateboarder",
+              "x": 383.5,
+              "y": 737.2,
+              "zone": "north"
+            },
+            {
+              "role": "youngWoman",
+              "x": 388.3,
+              "y": 356.9,
+              "zone": "north"
+            },
+            {
+              "role": "shopper",
+              "x": 566.5,
+              "y": 441.7,
+              "zone": "east"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 399.3,
+              "y": 539.7,
+              "zone": "central"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 266.4,
+              "y": 431.1,
+              "zone": "west"
+            }
+          ]
+        },
+        {
+          "time": 44.900000000000006,
+          "npcs": [
+            {
+              "role": "youngWoman",
+              "x": 406.2,
+              "y": 756.2,
+              "zone": "south"
+            },
+            {
+              "role": "shopper",
+              "x": 437.7,
+              "y": 784.5,
+              "zone": "south"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 416.3,
+              "y": 401.3,
+              "zone": "north"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 437.4,
+              "y": 773.4,
+              "zone": "south"
+            },
+            {
+              "role": "deliveryWorker",
+              "x": 392.2,
+              "y": 355.6,
+              "zone": "west"
+            },
+            {
+              "role": "basketballPlayer",
+              "x": 382.5,
+              "y": 807.9,
+              "zone": "north"
+            },
+            {
+              "role": "runner",
+              "x": 383.9,
+              "y": 550.6,
+              "zone": "east"
+            },
+            {
+              "role": "skateboarder",
+              "x": 252.5,
+              "y": 586.1,
+              "zone": "north"
+            },
+            {
+              "role": "youngWoman",
+              "x": 374.5,
+              "y": 376,
+              "zone": "north"
+            },
+            {
+              "role": "shopper",
+              "x": 553.5,
+              "y": 470.4,
+              "zone": "east"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 392.9,
+              "y": 531,
+              "zone": "central"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 191,
+              "y": 507.7,
+              "zone": "west"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": 789,
+      "hubFraction": 0.175,
+      "middleFraction": 0.5630952380952381,
+      "patrolMiddleFraction": 0.4928571428571429,
+      "samples": [
+        {
+          "time": 15,
+          "npcs": [
+            {
+              "role": "youngWoman",
+              "x": 432.6,
+              "y": 386.7,
+              "zone": "north"
+            },
+            {
+              "role": "shopper",
+              "x": 225.4,
+              "y": 540.2,
+              "zone": "west"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 552.8,
+              "y": 465.7,
+              "zone": "east"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 372.8,
+              "y": 760.2,
+              "zone": "south"
+            },
+            {
+              "role": "deliveryWorker",
+              "x": 511.3,
+              "y": 514.9,
+              "zone": "west"
+            },
+            {
+              "role": "basketballPlayer",
+              "x": 466.5,
+              "y": 363.3,
+              "zone": "north"
+            },
+            {
+              "role": "runner",
+              "x": 250.2,
+              "y": 642,
+              "zone": "south"
+            },
+            {
+              "role": "skateboarder",
+              "x": 516.8,
+              "y": 425.6,
+              "zone": "north"
+            },
+            {
+              "role": "youngWoman",
+              "x": 418.4,
+              "y": 768.7,
+              "zone": "south"
+            },
+            {
+              "role": "shopper",
+              "x": 426.1,
+              "y": 791.5,
+              "zone": "south"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 353,
+              "y": 572.4,
+              "zone": "central"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 206.1,
+              "y": 539.6,
+              "zone": "west"
+            }
+          ]
+        },
+        {
+          "time": 30,
+          "npcs": [
+            {
+              "role": "youngWoman",
+              "x": 440.3,
+              "y": 426.5,
+              "zone": "north"
+            },
+            {
+              "role": "shopper",
+              "x": 215.4,
+              "y": 456.2,
+              "zone": "west"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 551.1,
+              "y": 489.6,
+              "zone": "east"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 389.9,
+              "y": 753.1,
+              "zone": "south"
+            },
+            {
+              "role": "deliveryWorker",
+              "x": 373.3,
+              "y": 672.1,
+              "zone": "west"
+            },
+            {
+              "role": "basketballPlayer",
+              "x": 399.2,
+              "y": 525.9,
+              "zone": "north"
+            },
+            {
+              "role": "runner",
+              "x": 256.1,
+              "y": 396,
+              "zone": "south"
+            },
+            {
+              "role": "skateboarder",
+              "x": 383.5,
+              "y": 737.2,
+              "zone": "north"
+            },
+            {
+              "role": "youngWoman",
+              "x": 411.2,
+              "y": 752.1,
+              "zone": "south"
+            },
+            {
+              "role": "shopper",
+              "x": 360.8,
+              "y": 742.2,
+              "zone": "south"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 356,
+              "y": 529.2,
+              "zone": "central"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 225.1,
+              "y": 562.4,
+              "zone": "west"
+            }
+          ]
+        },
+        {
+          "time": 44.900000000000006,
+          "npcs": [
+            {
+              "role": "youngWoman",
+              "x": 326.7,
+              "y": 394.5,
+              "zone": "north"
+            },
+            {
+              "role": "shopper",
+              "x": 185.4,
+              "y": 618.2,
+              "zone": "west"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 588.7,
+              "y": 501.8,
+              "zone": "east"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 369.2,
+              "y": 754.1,
+              "zone": "south"
+            },
+            {
+              "role": "deliveryWorker",
+              "x": 392.2,
+              "y": 355.6,
+              "zone": "west"
+            },
+            {
+              "role": "basketballPlayer",
+              "x": 382.5,
+              "y": 807.9,
+              "zone": "north"
+            },
+            {
+              "role": "runner",
+              "x": 462,
+              "y": 360.9,
+              "zone": "south"
+            },
+            {
+              "role": "skateboarder",
+              "x": 252.5,
+              "y": 586.1,
+              "zone": "north"
+            },
+            {
+              "role": "youngWoman",
+              "x": 382.4,
+              "y": 752.8,
+              "zone": "south"
+            },
+            {
+              "role": "shopper",
+              "x": 408.3,
+              "y": 777.2,
+              "zone": "south"
+            },
+            {
+              "role": "cafeVisitor",
+              "x": 387.4,
+              "y": 572.1,
+              "zone": "central"
+            },
+            {
+              "role": "photographerGirl",
+              "x": 221.8,
+              "y": 535.2,
+              "zone": "west"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

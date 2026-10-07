@@ -23,16 +23,22 @@ collisions are measured against this artwork; older v2 saves relocate only resid
 or the player covered by a prop, keeping the clock, events, score and random state.
 The timer counts up. Three hearts last until residents time out; each timeout costs one
 heart while play and scoring continue. Wrong items break the combo without directly
-costing a heart. Every 20 successful rescues restores one heart, capped at three.
+costing a heart. Every 50 successful rescues restores one heart, capped at three.
 
 PPA+1 and NAP+1 are initially available. DDM+1 and SSW+1 unlock together at 60 seconds
 with a brief toast; four stable item slots remain on screen throughout. Requests come
-every 4 seconds for the first 20 seconds, every 3 seconds until 80 seconds, and every
-2.4 seconds until 150 seconds. After that, 10 seconds at 1.8-second intervals alternates
-with 5 seconds at 2.6-second intervals indefinitely. Concurrent requests grow from two
-to three to four. Minimum tolerance is 9 seconds plus a 3-second warning. Dispatch
+every 2.5 seconds until 15 seconds, every 2 seconds until 60 seconds, every 1.6 seconds
+until 120 seconds, and every 1.4 seconds until 180 seconds. From 180 seconds, 16 busy
+seconds at 1.2-second intervals alternate with 4 gentler seconds at 1.8-second intervals
+indefinitely. Concurrent requests grow from two to three at 15 seconds, four at 120,
+and five at 180. Successful rescues with at most one remaining request bring the next
+attempt forward to 0.8–1.2 seconds later, retaining the same cap and feasibility guard.
+Unlock queues DDM then SSW introductions before normal random requests, and the queue
+persists across reloads. Selection favors nearby and adjacent regions among feasible
+candidates without changing product-family ratios. Minimum tolerance is 9 seconds
+plus a 3-second warning; fall animation durations remain unchanged. Dispatch
 checks complete rescue visit orders against collision-aware travel times and deadlines.
-Residents continuously enter and leave, with bounded resident and indicator populations.
+Residents continuously enter and leave, with bounded resident and indicator populations. North, west, east and south have separate patrol loops; residents start at nearby visible nodes and new arrivals prefer the least populated region and the clearest spawn point. Movement-only audits are recorded in `qa/endless/distribution-before.json` and `distribution-after.json`, reproducible with `node qa/endless-movement.mjs`. Old v2 snapshots migrate routes without moving legal residents or resetting requests; snapshots with `movementVersion: 2` preserve exact route phases.
 Basketball players, runners and skateboarders can fall from the start of the session.
 Their stumble/fall/injured poses use the registered sports atlas; knee-pain dialogue
 identifies NAP+1 as the treatment. Falls share the soreness family rather than adding
@@ -46,8 +52,10 @@ Starting a new run asks before replacing unfinished progress. If storage is unav
 progress stays in the current page session. Records rank survival duration first, then
 score; gameplay DEBUG actions mark the run as practice.
 
-Validation: `npm test` covers the dedicated map, scheduling boundaries, four-person
-feasibility, 20-minute deterministic continuous simulation, healing and storage.
+Validation: `npm test` covers the dedicated map, scheduling boundaries, five-person
+feasibility, 20-minute deterministic continuous simulation, 50-rescue healing and storage.
+Legacy 20-rescue saves retain their earned hearts, score and elapsed time, rebase their
+healing milestones to the current rescue count, and heal next at the following multiple of 50.
 Optional browser QA: `node qa/endless-browser.mjs` with the same Playwright setup as
 other browser runners, including desktop, portrait, narrow portrait and landscape,
 unlock, actual item use, timeout continuation, reload, healing, game-over and patrol regression.

@@ -1511,6 +1511,7 @@ export class Game {
       this.addFloater(target.x, target.y - 82, `${rating} · +${scored.points}`, '#fff0b7');
       if (comboText) this.addFloater(target.x, target.y - 112, `${comboCount} COMBO`, '#dff8e9');
       if (this.isEndless()) {
+        this.eventDirector.onRescue(this.stageManager.elapsed, this.npcs);
         this.endlessMode.update(0);
         this.endlessMode.save();
       }

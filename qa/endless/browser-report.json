@@ -1,10 +1,10 @@
 {
   "checks": [
-    "desktop: stable four-slot layout, 171s continuous play, unlock, keys 1–4/Q, exact resume, actual DDM/SSW use, wrong item, timeout continuation, healing, four requests, game-over, replay, natural falls, restored injury atlas, actual touch/keyboard NAP fall rescue and normal patrol",
-    "portrait: stable four-slot layout, 171s continuous play, unlock, keys 1–4/Q, exact resume, actual DDM/SSW use, wrong item, timeout continuation, healing, four requests, game-over, replay, natural falls, restored injury atlas, actual touch/keyboard NAP fall rescue and normal patrol",
-    "small-portrait: stable four-slot layout, 171s continuous play, unlock, keys 1–4/Q, exact resume, actual DDM/SSW use, wrong item, timeout continuation, healing, four requests, game-over, replay, natural falls, restored injury atlas, actual touch/keyboard NAP fall rescue and normal patrol",
-    "narrow-portrait: stable four-slot layout, 171s continuous play, unlock, keys 1–4/Q, exact resume, actual DDM/SSW use, wrong item, timeout continuation, healing, four requests, game-over, replay, natural falls, restored injury atlas, actual touch/keyboard NAP fall rescue and normal patrol",
-    "landscape: stable four-slot layout, 171s continuous play, unlock, keys 1–4/Q, exact resume, actual DDM/SSW use, wrong item, timeout continuation, healing, four requests, game-over, replay, natural falls, restored injury atlas, actual touch/keyboard NAP fall rescue and normal patrol"
+    "desktop: stable four-slot layout, 201s continuous play, unlock, keys 1–4/Q, exact resume, actual DDM/SSW use, wrong item, timeout continuation, 50-rescue healing, five requests, game-over, replay, natural falls, restored injury atlas, actual touch/keyboard NAP fall rescue and normal patrol",
+    "portrait: stable four-slot layout, 201s continuous play, unlock, keys 1–4/Q, exact resume, actual DDM/SSW use, wrong item, timeout continuation, 50-rescue healing, five requests, game-over, replay, natural falls, restored injury atlas, actual touch/keyboard NAP fall rescue and normal patrol",
+    "small-portrait: stable four-slot layout, 201s continuous play, unlock, keys 1–4/Q, exact resume, actual DDM/SSW use, wrong item, timeout continuation, 50-rescue healing, five requests, game-over, replay, natural falls, restored injury atlas, actual touch/keyboard NAP fall rescue and normal patrol",
+    "narrow-portrait: stable four-slot layout, 201s continuous play, unlock, keys 1–4/Q, exact resume, actual DDM/SSW use, wrong item, timeout continuation, 50-rescue healing, five requests, game-over, replay, natural falls, restored injury atlas, actual touch/keyboard NAP fall rescue and normal patrol",
+    "landscape: stable four-slot layout, 201s continuous play, unlock, keys 1–4/Q, exact resume, actual DDM/SSW use, wrong item, timeout continuation, 50-rescue healing, five requests, game-over, replay, natural falls, restored injury atlas, actual touch/keyboard NAP fall rescue and normal patrol"
   ],
   "errors": []
 }

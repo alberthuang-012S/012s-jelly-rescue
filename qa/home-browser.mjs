@@ -68,13 +68,38 @@ try {
       assert.ok(layout.specials.every(r => Math.abs(r.y-layout.specials[0].y)<1), `${width}: all three Boss cards share one row`);
       assert.ok(layout.characterAnchor.bottom <= layout.specials[0].y, `${width}: mascot must not overlap Boss cards`);
       assert.match(await page.locator('.control-hint').innerText(), /WASD.*↑ ↓ ← →.*移動/);
-      assert.ok(layout.buttons.every(r => r.bottom <= height), `${width}: challenge entry below the first screen ${JSON.stringify(layout)}`);
+      assert.ok([layout.primary, layout.collection].every(r => r.bottom <= height), `${width}: main entry below the first screen`);
     }
     if (width <= 680 && height > width) {
       assert.ok(layout.character.height >= 60, 'Portrait mascot must not collapse in the scroll layout');
       assert.ok(Math.abs((layout.characterAnchor.x+layout.characterAnchor.right)/2-width/2)<1, 'Phone mascot stays centered');
       assert.ok(layout.characterAnchor.bottom<=Math.min(layout.panel.y,layout.endless.y), 'Phone mascot stays above both entries');
-      assert.ok(layout.specials.every(r=>r.height<=170), 'Phone Boss cards stay compact');
+      assert.ok(layout.specials.every(r=>r.height>=200), 'Phone Boss cards reserve room for complete stories');
+    }
+    const bossCopy = [
+      ['special-title', 'ALIEN MOSQUITO INVASION', '居民飽受蚊災困擾', 'PPA+1'],
+      ['gravity-title', 'GRAVITY OVERLOAD', '讓居民行動沉重、痠痛不適', 'NAP+1'],
+      ['pigment-title', 'PIGMENT TAKEOVER', '讓居民的皮膚陷入暗沉危機', 'DDM+1']
+    ];
+    assert.match(await page.locator('.home-challenges-heading p').innerText(), /阻止 Boss 影響居民/);
+    for (const [title, english, story, item] of bossCopy) {
+      const card = page.locator('article').filter({ has: page.locator('#'+title) });
+      await card.scrollIntoViewIfNeeded();
+      assert.equal(await card.locator('strong').innerText(), english);
+      assert.equal(await card.locator('strong').isVisible(), true);
+      assert.equal(await card.locator('p').isVisible(), true);
+      const description = await card.locator('p').innerText();
+      assert.ok(description.includes(story) && description.includes(item), width+': missing Boss story/objective');
+      assert.doesNotMatch(description, /救援.*王|救援.*花后/);
+      assert.equal(await card.evaluate(el => {
+        const bounds = el.getBoundingClientRect();
+        return [...el.querySelectorAll('h2, strong, p, button')].every(node => {
+          const r = node.getBoundingClientRect();
+          return r.width > 0 && r.height > 0 && (!node.matches('p') || r.width >= bounds.width - 30) && node.scrollWidth <= node.clientWidth + 1
+            && node.scrollHeight <= node.clientHeight + 1
+            && r.x >= bounds.x && r.right <= bounds.right && r.y >= bounds.y && r.bottom <= bounds.bottom;
+        });
+      }), true, width+': Boss text must remain complete inside the card');
     }
     for (const id of ['tutorial', 'park', 'mountain', 'city', 'sports', 'garden']) {
       await page.locator(`[data-stage-select="${id}"]`).click();
@@ -92,7 +117,7 @@ try {
     assert.equal(await page.evaluate(() => document.activeElement.matches('.collection-home-button')), true);
     await page.locator('#gravity-start').scrollIntoViewIfNeeded();
     await page.screenshot({ path: `qa/home/challenges-${width}x${height}.png` });
-    report.checks.push(`${width}x${height}: all mission tabs update preview/CTA, cards reachable, collection opens and restores focus`);
+    report.checks.push(`${width}x${height}: Boss English titles and complete resident-protection stories visible without clipping; all mission tabs update preview/CTA, cards reachable, collection opens and restores focus`);
   }
   await page.setViewportSize({ width: 1366, height: 768 });
   await page.evaluate(() => window.__qaGame.showHome());

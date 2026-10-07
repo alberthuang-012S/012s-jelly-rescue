@@ -71,6 +71,7 @@ try {
     await page.goto('http://localhost:'+port,{waitUntil:'networkidle'});
     await page.waitForFunction(()=>Boolean(window.__qaGame));
     assert.equal(await page.locator('#endless-resume').isVisible(),false);
+    assert.match(await page.locator('.endless-home-rules').textContent(),/每救 50 人回血/);
     await page.locator('#endless-start').scrollIntoViewIfNeeded();
     await page.screenshot({path:path.join(output,name+'-home.png')});
     await page.locator('#endless-start').click();
@@ -126,8 +127,8 @@ try {
     }
     await page.keyboard.press('KeyQ');
     assert.equal(await page.evaluate(()=>window.__qaGame.itemSystem.selectedId),'PPA');
-    const late=await advance(page,111.3);
-    assert.equal(late.state,'playing');assert.ok(late.elapsed>171);assert.equal(late.lives,3);assert.ok(late.rescued>40);assert.ok(late.npcs<=12);assert.ok(late.falls>0,'Natural fall requests occurred');
+    const late=await advance(page,141.3);
+    assert.equal(late.state,'playing');assert.ok(late.elapsed>201);assert.equal(late.lives,3);assert.ok(late.rescued>40);assert.ok(late.npcs<=12);assert.ok(late.falls>0,'Natural fall requests occurred');
     const saved=await page.evaluate(()=>{
       const game=window.__qaGame;
       game.npcs.forEach(n=>n.clearEvent(0));
@@ -176,7 +177,7 @@ try {
 
     const use=await page.evaluate(()=>{
       const game=window.__qaGame;
-      game.eventDirector.nextEventAt=100000;
+      game.eventDirector.nextEventAt=game.stageManager.elapsed+10;
       game.npcs.forEach(n=>n.clearEvent(0));
       const npc=game.npcs[0];npc.departing=false;npc.departAt=100000;
       npc.x=game.player.x;npc.y=game.player.y;
@@ -187,10 +188,11 @@ try {
       game.selectItem('DDM');game.tryAction();
       npc.clearEvent(0);npc.startScenario('SALLOW_CARE',9,3,game.stageManager.elapsed);
       game.selectItem('SSW');game.tryAction();
-      return {before,wrong,after:game.scoreManager.rescuedCount,ddm:game.scoreManager.itemSuccess.DDM,ssw:game.scoreManager.itemSuccess.SSW};
+      return {nextDelay:game.eventDirector.nextEventAt-game.stageManager.elapsed,before,wrong,after:game.scoreManager.rescuedCount,ddm:game.scoreManager.itemSuccess.DDM,ssw:game.scoreManager.itemSuccess.SSW};
     });
     assert.equal(use.wrong.lives,use.before.lives);assert.equal(use.wrong.score,use.before.score);assert.equal(use.wrong.rescued,use.before.rescued);assert.equal(use.wrong.wrong,use.before.wrong+1);
     assert.equal(use.after,use.before.rescued+2);assert.ok(use.ddm>0&&use.ssw>0);
+    assert.ok(use.nextDelay>=.8&&use.nextDelay<=1.2, "Actual rescue action expedites the next request");
     const loss=await page.evaluate(()=>{
       const game=window.__qaGame,npc=game.npcs[0];npc.clearEvent(0);npc.startEvent('ITCH',.1,0,game.stageManager.elapsed);npc.state='HELP';
       const before={elapsed:game.stageManager.elapsed,score:game.scoreManager.score};
@@ -199,29 +201,51 @@ try {
     });
     assert.equal(loss.state,'playing');assert.equal(loss.lives,2);assert.equal(loss.score,loss.before.score);assert.ok(loss.elapsed>loss.before.elapsed);assert.equal(loss.dialog,false);
     const heal=await page.evaluate(()=>{
-      const game=window.__qaGame,npc=game.npcs[0],needed=20-game.scoreManager.rescuedCount%20;
+      const game=window.__qaGame,npc=game.npcs[0],needed=50-game.scoreManager.rescuedCount%50;
       npc.active=true;npc.departing=false;npc.departAt=100000;npc.x=game.player.x;npc.y=game.player.y;
-      for(let i=0;i<needed;i++){npc.clearEvent(0);npc.startScenario('LONG_WALK',9,3,game.stageManager.elapsed);game.selectItem('NAP');game.tryAction();}
+      for(let i=0;i<needed-1;i++){npc.clearEvent(0);npc.startScenario('LONG_WALK',9,3,game.stageManager.elapsed);game.selectItem('NAP');game.tryAction();}
+      const beforeThreshold=game.lives;
+      npc.clearEvent(0);npc.startScenario('LONG_WALK',9,3,game.stageManager.elapsed);game.selectItem('NAP');game.tryAction();
       const healed=game.lives;
       game.endlessMode.fail();
       npc.clearEvent(0);npc.startScenario('OUTDOOR_SKIN',9,3,game.stageManager.elapsed);game.selectItem('PPA');game.tryAction();
-      return {healed,lives:game.lives,state:game.state};
+      game.hud.update(game);
+      return {beforeThreshold,healed,lives:game.lives,state:game.state};
     });
-    assert.deepEqual(heal,{healed:3,lives:2,state:'playing'});
+    assert.deepEqual(heal,{beforeThreshold:2,healed:3,lives:2,state:'playing'});
+    assert.match(await page.locator('#toast-region').textContent(),/成功救援 50 人/);
+    assert.match(await page.locator('.objective-chip').textContent(),/再救 49 人補血/);
     await page.evaluate(()=>{
       const game=window.__qaGame;game.npcs.forEach(n=>n.clearEvent(0));game.player.x=384;game.player.y=650;game.cameraState=null;
-      for(const [i,type]of ['OUTDOOR_SKIN','LONG_WALK','PIGMENT_CARE','SALLOW_CARE'].entries()){
-        const npc=game.npcs[i];npc.active=true;npc.departing=false;
-        [npc.x,npc.y]=[[260,500],[520,540],[220,700],[520,820]][i];npc.startScenario(type,9,0,game.stageManager.elapsed);npc.enterHelp();npc.reactionTimer=0;
+      game.eventDirector.nextEventAt=100000;
+      const fallen=game.npcs.find(n=>['basketballPlayer','runner','skateboarder'].includes(n.role));
+      const residents=[...game.npcs.filter(n=>n!==fallen).slice(0,4),fallen];
+      for(const [i,type]of ['OUTDOOR_SKIN','LONG_WALK','PIGMENT_CARE','SALLOW_CARE','FALL'].entries()){
+        const npc=residents[i];npc.active=true;npc.departing=false;
+        [npc.x,npc.y]=[[260,500],[520,540],[220,700],[520,820],[350,380]][i];npc.startScenario(type,9,0,game.stageManager.elapsed);npc.enterHelp();npc.reactionTimer=0;
       }
       game.hud.update(game);game.render();
     });
     await layout(page,viewport,mobile);
-    await page.screenshot({path:path.join(output,name+'-four-items.png')});
+    await page.screenshot({path:path.join(output,name+'-five-requests.png')});
+    assert.equal(await page.evaluate(()=>window.__qaGame.npcs.filter(n=>n.active&&['WARNING','HELP','CRITICAL'].includes(n.state)).length),5);
+    const indicators=await page.evaluate(()=>{
+      const game=window.__qaGame;
+      game.hud.updateRescueIndicators(game,{mode:'follow',x:0,y:1000,scale:1});
+      return [...document.querySelectorAll('#rescue-indicator-region .rescue-indicator')].map(node=>{
+        const r=node.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height};
+      });
+    });
+    assert.equal(indicators.length,5,'All five offscreen requests receive an indicator');
+    for(const [i,a]of indicators.entries()){
+      assert.ok(a.x>=0&&a.y>=0&&a.x+a.w<=viewport.width+1&&a.y+a.h<=viewport.height+1);
+      for(const b of indicators.slice(i+1))assert.equal(a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y,false,'Five indicators do not overlap');
+    }
+    await page.evaluate(()=>window.__qaGame.render());
     await page.evaluate(()=>{const game=window.__qaGame;game.endlessMode.fail();game.endlessMode.fail();});
     assert.equal(await page.evaluate(()=>window.__qaGame.state),'gameover');
     assert.match(await page.locator('#gameover-title').textContent(),/無限救援挑戰結束/);
-    assert.match(await page.locator('#gameover-screen .result-summary').textContent(),/生存 02:51/);
+    assert.match(await page.locator('#gameover-screen .result-summary').textContent(),/生存 03:21/);
     assert.equal(await page.locator('#gameover-screen .rescue-statistics > div').count(),6);
     assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('jellyRescue.endless.v2')).run),null);
     await page.screenshot({path:path.join(output,name+'-gameover.png')});
@@ -240,7 +264,7 @@ try {
     assert.equal(await page.locator('#gameover-title').textContent(),'先休息一下吧');
     assert.equal(await page.locator('#gameover-screen .rescue-statistics > div').count(),4);
     assert.equal(await page.locator('.endless-result-record').isVisible(),false);
-    report.checks.push(name+': stable four-slot layout, 171s continuous play, unlock, keys 1–4/Q, exact resume, actual DDM/SSW use, wrong item, timeout continuation, healing, four requests, game-over, replay, natural falls, restored injury atlas, actual touch/keyboard NAP fall rescue and normal patrol');
+    report.checks.push(name+': stable four-slot layout, 201s continuous play, unlock, keys 1–4/Q, exact resume, actual DDM/SSW use, wrong item, timeout continuation, 50-rescue healing, five requests, game-over, replay, natural falls, restored injury atlas, actual touch/keyboard NAP fall rescue and normal patrol');
     await context.close();
   }
   assert.deepEqual(report.errors,[]);
