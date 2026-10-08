@@ -174,6 +174,7 @@ export class ResultScreen {
     this.gameover.querySelector('.result-kicker').textContent = 'FIELD REPORT · NEEDS REST';
     this.gameover.querySelector('.result-summary').textContent = '小水母已經很努力了。下次我們會更早發現預警。';
     this.gameover.querySelector('.endless-result-record')?.classList.add('is-hidden');
+    this.gameover.querySelector('.endless-ranking-result')?.classList.add('is-hidden');
     document.querySelector('#gameover-score').textContent = result.score.toLocaleString();
     document.querySelector('#gameover-rescued').textContent = `${result.rescuedCount} 人`;
     document.querySelector('#gameover-max-combo').textContent = result.maxCombo;

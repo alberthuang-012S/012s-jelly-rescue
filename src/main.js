@@ -1,4 +1,4 @@
-import { Game } from './game/Game.js?endless-pressure-v7';
+import { Game } from './game/Game.js?endless-leaderboard-v8';
 
 window.addEventListener('DOMContentLoaded', () => {
   new Game();

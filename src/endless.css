@@ -62,3 +62,65 @@
 .app-shell:has(.game-shell.is-endless-stage:not(.is-hidden)) .toast-region { width: min(360px, calc(100vw - 28px)); }
 .game-shell.is-endless-stage.is-desktop-wide .item-toggle-hint { display: block; }
 .game-shell.is-endless-stage.is-desktop-wide .item-toggle-hint::after { content: ' · 1–4 選擇'; }
+
+/* Local simulated standings. Keep header and return controls outside scrolling rows. */
+.endless-leaderboard-dialog {
+  position: fixed; inset: 0; width: min(640px, calc(100vw - 24px)); max-height: calc(100dvh - 24px);
+  margin: auto; padding: 20px; overflow: hidden; border: 2px solid #a8d7e7; border-radius: 22px;
+  color: #173b52; background: #f8f6ee; box-shadow: 0 24px 80px #07172780; font-family: inherit;
+}
+.endless-leaderboard-dialog[open] { display: flex; flex-direction: column; }
+.endless-leaderboard-dialog::backdrop { background: #071b2ccc; backdrop-filter: blur(4px); }
+.leaderboard-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; }
+.leaderboard-kicker { color: #6a8590; font: 700 10px/1.5 'DM Mono', monospace; letter-spacing: .13em; }
+.leaderboard-header h2 { margin: 4px 0 0; font-size: 26px; line-height: 1.3; }
+#endless-leaderboard-close { flex-shrink: 0; width: 44px; height: 44px; padding: 0; border: 1px solid #b3c9cd; border-radius: 12px; color: #31596b; background: #e9efec; font-size: 25px; }
+.leaderboard-description { margin: 10px 0 8px; color: #647b83; font-size: 12px; line-height: 1.7; flex-shrink: 0; }
+.leaderboard-simulation-label { display: inline-block; padding: 2px 7px; border-radius: 5px; color: #866c35; background: #f4e8c9; font-size: 10px; }
+.leaderboard-summary { margin: 0 0 10px; color: #31596b; font-size: 13px; font-weight: 700; line-height: 1.6; flex-shrink: 0; }
+.leaderboard-table-scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; border: 1px solid #d4e0db; border-radius: 12px; }
+.leaderboard-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 13px; }
+.leaderboard-table .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.leaderboard-table th, .leaderboard-table td { padding: 10px 7px; text-align: left; border-bottom: 1px solid #dbe5df; vertical-align: middle; }
+.leaderboard-table thead th { position: sticky; top: 0; z-index: 1; color: #65808a; background: #eaf0e9; font-size: 11px; }
+.leaderboard-table thead th:nth-child(1) { width: 46px; text-align: center; }
+.leaderboard-table thead th:nth-child(3) { width: 70px; text-align: right; }
+.leaderboard-table thead th:nth-child(4) { width: 94px; text-align: right; }
+.leaderboard-table .leaderboard-rank { text-align: center; font-size: 19px; font-weight: 800; color: #647a87; }
+.leaderboard-table .leaderboard-time, .leaderboard-table .leaderboard-score { text-align: right; font-family: 'DM Mono', monospace; font-variant-numeric: tabular-nums; }
+.leaderboard-table tr:last-child > * { border-bottom: 0; }
+.leaderboard-table .is-podium { background: #fbf4e1; }
+.leaderboard-table .is-player { color: #174e54; background: #dff1e7; }
+.leaderboard-challenger { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.leaderboard-challenger > span:last-child { min-width: 0; }
+.leaderboard-challenger b { display: block; font-size: 13px; overflow-wrap: anywhere; }
+.leaderboard-challenger small { display: block; margin-top: 2px; color: #74838a; font-size: 10px; font-weight: 400; }
+.leaderboard-portrait { flex: 0 0 30px; width: 30px; height: 30px; display: grid; place-items: center; color: #517a87; background: #e2ebe5; border-radius: 9px; font-size: 19px; }
+.leaderboard-portrait img { display: block; width: 30px; height: 30px; object-fit: contain; }
+.leaderboard-footer { flex-shrink: 0; padding-top: 10px; }
+.leaderboard-footer p { margin: 0 0 5px; color: #416574; font-size: 12px; line-height: 1.6; }
+.leaderboard-footer small { display: block; color: #7a8584; font-size: 10px; line-height: 1.6; }
+.leaderboard-return { width: 100%; min-height: 44px; margin-top: 10px; border: 1px solid #214f68; border-radius: 10px; color: #fffced; background: #1c4c66; font-size: 14px; font-weight: 700; }
+.endless-leaderboard-dialog button:focus-visible { outline: 3px solid #c99733; outline-offset: 3px; }
+.endless-ranking-result { margin: 12px 0; padding: 14px; border: 1px solid #a8cec7; border-radius: 12px; color: #31596b; background: #eaf5ee; text-align: left; }
+.endless-ranking-headline { display: block; font-size: 15px; line-height: 1.6; }
+.endless-ranking-result p { margin: 5px 0; font-size: 12px; line-height: 1.6; }
+.endless-ranking-result .endless-ranking-target { color: #687a73; }
+.endless-ranking-result .secondary-button { width: 100%; min-height: 44px; margin: 10px 0 0; padding: 9px 12px; color: #31596b; border-color: #a8cec7; background: #fffdf7; font-size: 13px; }
+.endless-ranking-result.is-celebrating { border-color: #d6b268; background: #fff5da; animation: endlessRankCelebrate .8s ease-out; }
+#gameover-screen:has(.endless-ranking-result:not(.is-hidden)) { place-items: start center; }
+@keyframes endlessRankCelebrate { from { transform: translateY(7px); box-shadow: 0 0 0 5px #eac47155; } to { transform: none; box-shadow: 0 0 0 0 #eac47100; } }
+@media (max-width: 420px) {
+  .endless-leaderboard-dialog { padding: 14px 10px; border-radius: 17px; }
+  .leaderboard-header h2 { font-size: 23px; }
+  .leaderboard-table { font-size: 11px; }
+  .leaderboard-table th, .leaderboard-table td { padding: 9px 4px; }
+  .leaderboard-table thead th:nth-child(1) { width: 34px; }
+  .leaderboard-table thead th:nth-child(3) { width: 49px; }
+  .leaderboard-table thead th:nth-child(4) { width: 66px; }
+  .leaderboard-challenger { gap: 4px; }
+  .leaderboard-challenger b { font-size: 11px; }
+  .leaderboard-portrait, .leaderboard-portrait img { width: 24px; height: 24px; }
+  .leaderboard-portrait { flex-basis: 24px; font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .endless-ranking-result.is-celebrating { animation: none; } }

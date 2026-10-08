@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#10253c" />
     <link rel="stylesheet" href="./src/styles.css?v=mobile-ring-v1" />
     <link rel="stylesheet" href="./src/garden.css?v=garden-dialogue-v2" />
-    <link rel="stylesheet" href="./src/endless.css?v=endless-survival-v2" />
-    <link rel="stylesheet" href="./src/home.css?v=boss-stories-v2" />
+    <link rel="stylesheet" href="./src/endless.css?v=endless-leaderboard-v3" />
+    <link rel="stylesheet" href="./src/home.css?v=endless-leaderboard-v3" />
     <title>Jelly Rescue</title>
   </head>
   <body>
@@ -83,7 +83,7 @@
             </div>
             <p class="endless-home-description">連續救援，挑戰你的生存極限。</p>
             <div class="endless-home-rules"><span>60 秒解鎖四道具</span><span>每救 50 人回血</span></div>
-            <small id="endless-best" class="endless-home-best" aria-live="polite">挑戰你的第一個生存紀錄</small>
+            <div class="endless-home-record"><small id="endless-best" class="endless-home-best" aria-live="polite">挑戰你的第一個生存紀錄</small><button id="endless-leaderboard-open" class="endless-leaderboard-button" type="button">查看排行榜</button></div>
             <div class="endless-home-actions">
               <button id="endless-resume" class="primary-button is-hidden" type="button">繼續救援</button>
               <button id="endless-start" class="primary-button" type="button">開始無限挑戰 <span>→</span></button>
@@ -294,6 +294,26 @@
 
       <div id="toast-region" class="toast-region" aria-live="polite"></div>
       <dialog id="endless-dialog" class="endless-dialog" aria-labelledby="endless-dialog-title" aria-describedby="endless-dialog-description"></dialog>
+      <dialog id="endless-leaderboard-dialog" class="endless-leaderboard-dialog" aria-labelledby="endless-leaderboard-title" aria-describedby="endless-leaderboard-description">
+        <header class="leaderboard-header">
+          <div><span class="leaderboard-kicker">CENTRAL PLAZA</span><h2 id="endless-leaderboard-title">廣場挑戰榜</h2></div>
+          <button id="endless-leaderboard-close" type="button" data-close-endless-leaderboard aria-label="關閉排行榜">×</button>
+        </header>
+        <p id="endless-leaderboard-description" class="leaderboard-description"><span class="leaderboard-simulation-label">本機模擬榜單</span> 生存時間優先，同時間比分數。</p>
+        <p id="endless-leaderboard-summary" class="leaderboard-summary"></p>
+        <div class="leaderboard-table-scroll" tabindex="0" aria-label="排行榜內容，可捲動">
+          <table class="leaderboard-table">
+            <caption class="sr-only">廣場挑戰榜，依生存時間與分數排序</caption>
+            <thead><tr><th scope="col">名次</th><th scope="col">挑戰者</th><th scope="col">生存</th><th scope="col">分數</th></tr></thead>
+            <tbody id="endless-leaderboard-rows"></tbody>
+          </table>
+        </div>
+        <footer class="leaderboard-footer">
+          <p id="endless-leaderboard-target"></p>
+          <small>虛構挑戰者使用規則模擬成績；你的紀錄來自本機最佳成績。</small>
+          <button class="leaderboard-return" type="button" data-close-endless-leaderboard>返回</button>
+        </footer>
+      </dialog>
       <section id="boss-result" class="screen result-screen is-hidden" role="dialog" aria-modal="true" aria-labelledby="boss-result-title" aria-describedby="boss-result-description">
         <div class="result-inner boss-result-card">
           <div class="boss-result-body">

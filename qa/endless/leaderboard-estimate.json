@@ -1,0 +1,927 @@
+{
+  "model": "Collision-aware center-to-center travel budgets, observation/tool-switch delays, detours and wrong choices; player position changes on arrival. Not measured human play or a frame-by-frame navigation controller.",
+  "profiles": [
+    {
+      "name": "探索型",
+      "delay": 0.95,
+      "jitter": 0.5,
+      "detour": 1.2,
+      "switchTime": 0.5,
+      "error": 0.07,
+      "retry": 0.9,
+      "strategy": "nearest"
+    },
+    {
+      "name": "熟悉型",
+      "delay": 0.55,
+      "jitter": 0.3,
+      "detour": 1.08,
+      "switchTime": 0.3,
+      "error": 0.025,
+      "retry": 0.65,
+      "strategy": "urgent"
+    },
+    {
+      "name": "熟練型",
+      "delay": 0.3,
+      "jitter": 0.2,
+      "detour": 1.02,
+      "switchTime": 0.15,
+      "error": 0.008,
+      "retry": 0.4,
+      "strategy": "plan"
+    }
+  ],
+  "seeds": [
+    1,
+    123,
+    789
+  ],
+  "speeds": [
+    205,
+    256.25
+  ],
+  "summary": [
+    {
+      "seconds": 120,
+      "survivingModels": 14,
+      "rescuedRange": [
+        41,
+        67
+      ],
+      "scoreRange": [
+        6264,
+        18720
+      ],
+      "scoreMedian": 12430
+    },
+    {
+      "seconds": 240,
+      "survivingModels": 11,
+      "rescuedRange": [
+        96,
+        143
+      ],
+      "scoreRange": [
+        18031,
+        34280
+      ],
+      "scoreMedian": 27600
+    },
+    {
+      "seconds": 360,
+      "survivingModels": 7,
+      "rescuedRange": [
+        165,
+        220
+      ],
+      "scoreRange": [
+        34670,
+        52460
+      ],
+      "scoreMedian": 43120
+    },
+    {
+      "seconds": 480,
+      "survivingModels": 6,
+      "rescuedRange": [
+        241,
+        292
+      ],
+      "scoreRange": [
+        52605,
+        67188
+      ],
+      "scoreMedian": 64672
+    },
+    {
+      "seconds": 600,
+      "survivingModels": 6,
+      "rescuedRange": [
+        304,
+        363
+      ],
+      "scoreRange": [
+        64617,
+        80787
+      ],
+      "scoreMedian": 78924
+    },
+    {
+      "seconds": 720,
+      "survivingModels": 6,
+      "rescuedRange": [
+        366,
+        436
+      ],
+      "scoreRange": [
+        77162,
+        96058
+      ],
+      "scoreMedian": 95304
+    },
+    {
+      "seconds": 900,
+      "survivingModels": 6,
+      "rescuedRange": [
+        463,
+        545
+      ],
+      "scoreRange": [
+        98122,
+        119217
+      ],
+      "scoreMedian": 116446
+    }
+  ],
+  "runs": [
+    {
+      "profile": "探索型",
+      "speed": 205,
+      "seed": 1,
+      "endedAt": 104,
+      "gameOver": true,
+      "maxRequests": 3,
+      "checkpoints": [],
+      "final": {
+        "score": 5852,
+        "rescued": 35,
+        "failed": 3,
+        "wrong": 4
+      }
+    },
+    {
+      "profile": "探索型",
+      "speed": 205,
+      "seed": 123,
+      "endedAt": 133.4,
+      "gameOver": true,
+      "maxRequests": 4,
+      "checkpoints": [
+        {
+          "seconds": 120,
+          "rescued": 41,
+          "score": 6264,
+          "failed": 2,
+          "wrong": 4,
+          "lives": 1,
+          "averageResponse": 6.76
+        }
+      ],
+      "final": {
+        "score": 6981,
+        "rescued": 46,
+        "failed": 3,
+        "wrong": 4
+      }
+    },
+    {
+      "profile": "探索型",
+      "speed": 205,
+      "seed": 789,
+      "endedAt": 101.8,
+      "gameOver": true,
+      "maxRequests": 3,
+      "checkpoints": [],
+      "final": {
+        "score": 5321,
+        "rescued": 33,
+        "failed": 3,
+        "wrong": 2
+      }
+    },
+    {
+      "profile": "探索型",
+      "speed": 256.25,
+      "seed": 1,
+      "endedAt": 119.6,
+      "gameOver": true,
+      "maxRequests": 3,
+      "checkpoints": [],
+      "final": {
+        "score": 6768,
+        "rescued": 42,
+        "failed": 3,
+        "wrong": 4
+      }
+    },
+    {
+      "profile": "探索型",
+      "speed": 256.25,
+      "seed": 123,
+      "endedAt": 118.5,
+      "gameOver": true,
+      "maxRequests": 3,
+      "checkpoints": [],
+      "final": {
+        "score": 7033,
+        "rescued": 44,
+        "failed": 3,
+        "wrong": 4
+      }
+    },
+    {
+      "profile": "探索型",
+      "speed": 256.25,
+      "seed": 789,
+      "endedAt": 132.2,
+      "gameOver": true,
+      "maxRequests": 4,
+      "checkpoints": [
+        {
+          "seconds": 120,
+          "rescued": 42,
+          "score": 6748,
+          "failed": 2,
+          "wrong": 2,
+          "lives": 1,
+          "averageResponse": 6.34
+        }
+      ],
+      "final": {
+        "score": 7683,
+        "rescued": 47,
+        "failed": 3,
+        "wrong": 2
+      }
+    },
+    {
+      "profile": "熟悉型",
+      "speed": 205,
+      "seed": 1,
+      "endedAt": 255.6,
+      "gameOver": true,
+      "maxRequests": 5,
+      "checkpoints": [
+        {
+          "seconds": 120,
+          "rescued": 47,
+          "score": 8709,
+          "failed": 0,
+          "wrong": 2,
+          "lives": 3,
+          "averageResponse": 6.32
+        },
+        {
+          "seconds": 240,
+          "rescued": 96,
+          "score": 18380,
+          "failed": 2,
+          "wrong": 2,
+          "lives": 1,
+          "averageResponse": 7.47
+        }
+      ],
+      "final": {
+        "score": 19180,
+        "rescued": 101,
+        "failed": 4,
+        "wrong": 3
+      }
+    },
+    {
+      "profile": "熟悉型",
+      "speed": 205,
+      "seed": 123,
+      "endedAt": 285.1,
+      "gameOver": true,
+      "maxRequests": 5,
+      "checkpoints": [
+        {
+          "seconds": 120,
+          "rescued": 49,
+          "score": 9304,
+          "failed": 0,
+          "wrong": 2,
+          "lives": 3,
+          "averageResponse": 5.87
+        },
+        {
+          "seconds": 240,
+          "rescued": 98,
+          "score": 18031,
+          "failed": 2,
+          "wrong": 5,
+          "lives": 1,
+          "averageResponse": 7.34
+        }
+      ],
+      "final": {
+        "score": 21463,
+        "rescued": 117,
+        "failed": 4,
+        "wrong": 5
+      }
+    },
+    {
+      "profile": "熟悉型",
+      "speed": 205,
+      "seed": 789,
+      "endedAt": 230.3,
+      "gameOver": true,
+      "maxRequests": 5,
+      "checkpoints": [
+        {
+          "seconds": 120,
+          "rescued": 47,
+          "score": 10108,
+          "failed": 0,
+          "wrong": 0,
+          "lives": 3,
+          "averageResponse": 5.94
+        }
+      ],
+      "final": {
+        "score": 18675,
+        "rescued": 90,
+        "failed": 3,
+        "wrong": 0
+      }
+    },
+    {
+      "profile": "熟悉型",
+      "speed": 256.25,
+      "seed": 1,
+      "endedAt": 247.8,
+      "gameOver": true,
+      "maxRequests": 5,
+      "checkpoints": [
+        {
+          "seconds": 120,
+          "rescued": 54,
+          "score": 11728,
+          "failed": 0,
+          "wrong": 2,
+          "lives": 3,
+          "averageResponse": 4.46
+        },
+        {
+          "seconds": 240,
+          "rescued": 110,
+          "score": 22512,
+          "failed": 2,
+          "wrong": 3,
+          "lives": 2,
+          "averageResponse": 6.31
+        }
+      ],
+      "final": {
+        "score": 22722,
+        "rescued": 112,
+        "failed": 4,
+        "wrong": 4
+      }
+    },
+    {
+      "profile": "熟悉型",
+      "speed": 256.25,
+      "seed": 123,
+      "endedAt": 244.7,
+      "gameOver": true,
+      "maxRequests": 5,
+      "checkpoints": [
+        {
+          "seconds": 120,
+          "rescued": 50,
+          "score": 9515,
+          "failed": 0,
+          "wrong": 2,
+          "lives": 3,
+          "averageResponse": 5.71
+        },
+        {
+          "seconds": 240,
+          "rescued": 103,
+          "score": 18530,
+          "failed": 2,
+          "wrong": 5,
+          "lives": 2,
+          "averageResponse": 6.92
+        }
+      ],
+      "final": {
+        "score": 18530,
+        "rescued": 103,
+        "failed": 4,
+        "wrong": 5
+      }
+    },
+    {
+      "profile": "熟悉型",
+      "speed": 256.25,
+      "seed": 789,
+      "endedAt": 423.4,
+      "gameOver": true,
+      "maxRequests": 5,
+      "checkpoints": [
+        {
+          "seconds": 120,
+          "rescued": 54,
+          "score": 12430,
+          "failed": 0,
+          "wrong": 0,
+          "lives": 3,
+          "averageResponse": 4.79
+        },
+        {
+          "seconds": 240,
+          "rescued": 111,
+          "score": 24350,
+          "failed": 0,
+          "wrong": 0,
+          "lives": 3,
+          "averageResponse": 6.59
+        },
+        {
+          "seconds": 360,
+          "rescued": 165,
+          "score": 34670,
+          "failed": 1,
+          "wrong": 1,
+          "lives": 2,
+          "averageResponse": 7.73
+        }
+      ],
+      "final": {
+        "score": 39722,
+        "rescued": 193,
+        "failed": 3,
+        "wrong": 1
+      }
+    },
+    {
+      "profile": "熟練型",
+      "speed": 205,
+      "seed": 1,
+      "endedAt": 900,
+      "gameOver": false,
+      "maxRequests": 5,
+      "checkpoints": [
+        {
+          "seconds": 120,
+          "rescued": 58,
+          "score": 14420,
+          "failed": 0,
+          "wrong": 0,
+          "lives": 3,
+          "averageResponse": 3.93
+        },
+        {
+          "seconds": 240,
+          "rescued": 121,
+          "score": 28160,
+          "failed": 0,
+          "wrong": 0,
+          "lives": 3,
+          "averageResponse": 5.64
+        },
+        {
+          "seconds": 360,
+          "rescued": 185,
+          "score": 41540,
+          "failed": 1,
+          "wrong": 0,
+          "lives": 3,
+          "averageResponse": 6.17
+        },
+        {
+          "seconds": 480,
+          "rescued": 250,
+          "score": 54710,
+          "failed": 1,
+          "wrong": 1,
+          "lives": 3,
+          "averageResponse": 6.58
+        },
+        {
+          "seconds": 600,
+          "rescued": 314,
+          "score": 67170,
+          "failed": 2,
+          "wrong": 2,
+          "lives": 3,
+          "averageResponse": 6.78
+        },
+        {
+          "seconds": 720,
+          "rescued": 379,
+          "score": 81430,
+          "failed": 2,
+          "wrong": 2,
+          "lives": 3,
+          "averageResponse": 6.88
+        },
+        {
+          "seconds": 900,
+          "rescued": 472,
+          "score": 100106,
+          "failed": 2,
+          "wrong": 3,
+          "lives": 3,
+          "averageResponse": 7.21
+        }
+      ],
+      "final": {
+        "score": 100106,
+        "rescued": 472,
+        "failed": 2,
+        "wrong": 3
+      }
+    },
+    {
+      "profile": "熟練型",
+      "speed": 205,
+      "seed": 123,
+      "endedAt": 900,
+      "gameOver": false,
+      "maxRequests": 5,
+      "checkpoints": [
+        {
+          "seconds": 120,
+          "rescued": 60,
+          "score": 14220,
+          "failed": 0,
+          "wrong": 1,
+          "lives": 3,
+          "averageResponse": 3.59
+        },
+        {
+          "seconds": 240,
+          "rescued": 124,
+          "score": 28760,
+          "failed": 0,
+          "wrong": 1,
+          "lives": 3,
+          "averageResponse": 5.12
+        },
+        {
+          "seconds": 360,
+          "rescued": 190,
+          "score": 43120,
+          "failed": 0,
+          "wrong": 1,
+          "lives": 3,
+          "averageResponse": 5.99
+        },
+        {
+          "seconds": 480,
+          "rescued": 247,
+          "score": 55180,
+          "failed": 0,
+          "wrong": 1,
+          "lives": 3,
+          "averageResponse": 6.54
+        },
+        {
+          "seconds": 600,
+          "rescued": 308,
+          "score": 67220,
+          "failed": 1,
+          "wrong": 2,
+          "lives": 3,
+          "averageResponse": 6.73
+        },
+        {
+          "seconds": 720,
+          "rescued": 370,
+          "score": 80580,
+          "failed": 1,
+          "wrong": 2,
+          "lives": 3,
+          "averageResponse": 6.91
+        },
+        {
+          "seconds": 900,
+          "rescued": 463,
+          "score": 98898,
+          "failed": 2,
+          "wrong": 3,
+          "lives": 3,
+          "averageResponse": 7.21
+        }
+      ],
+      "final": {
+        "score": 98898,
+        "rescued": 463,
+        "failed": 2,
+        "wrong": 3
+      }
+    },
+    {
+      "profile": "熟練型",
+      "speed": 205,
+      "seed": 789,
+      "endedAt": 900,
+      "gameOver": false,
+      "maxRequests": 5,
+      "checkpoints": [
+        {
+          "seconds": 120,
+          "rescued": 58,
+          "score": 14460,
+          "failed": 0,
+          "wrong": 0,
+          "lives": 3,
+          "averageResponse": 3.89
+        },
+        {
+          "seconds": 240,
+          "rescued": 120,
+          "score": 27600,
+          "failed": 0,
+          "wrong": 0,
+          "lives": 3,
+          "averageResponse": 5.81
+        },
+        {
+          "seconds": 360,
+          "rescued": 183,
+          "score": 41075,
+          "failed": 1,
+          "wrong": 0,
+          "lives": 3,
+          "averageResponse": 6.19
+        },
+        {
+          "seconds": 480,
+          "rescued": 241,
+          "score": 52605,
+          "failed": 1,
+          "wrong": 1,
+          "lives": 3,
+          "averageResponse": 6.82
+        },
+        {
+          "seconds": 600,
+          "rescued": 304,
+          "score": 64617,
+          "failed": 1,
+          "wrong": 4,
+          "lives": 3,
+          "averageResponse": 6.87
+        },
+        {
+          "seconds": 720,
+          "rescued": 366,
+          "score": 77162,
+          "failed": 1,
+          "wrong": 5,
+          "lives": 3,
+          "averageResponse": 7.08
+        },
+        {
+          "seconds": 900,
+          "rescued": 463,
+          "score": 98122,
+          "failed": 1,
+          "wrong": 5,
+          "lives": 3,
+          "averageResponse": 7.23
+        }
+      ],
+      "final": {
+        "score": 98122,
+        "rescued": 463,
+        "failed": 1,
+        "wrong": 5
+      }
+    },
+    {
+      "profile": "熟練型",
+      "speed": 256.25,
+      "seed": 1,
+      "endedAt": 900,
+      "gameOver": false,
+      "maxRequests": 5,
+      "checkpoints": [
+        {
+          "seconds": 120,
+          "rescued": 67,
+          "score": 18080,
+          "failed": 0,
+          "wrong": 0,
+          "lives": 3,
+          "averageResponse": 2.72
+        },
+        {
+          "seconds": 240,
+          "rescued": 136,
+          "score": 34140,
+          "failed": 0,
+          "wrong": 0,
+          "lives": 3,
+          "averageResponse": 4.48
+        },
+        {
+          "seconds": 360,
+          "rescued": 217,
+          "score": 52460,
+          "failed": 0,
+          "wrong": 0,
+          "lives": 3,
+          "averageResponse": 5.14
+        },
+        {
+          "seconds": 480,
+          "rescued": 289,
+          "score": 67188,
+          "failed": 0,
+          "wrong": 1,
+          "lives": 3,
+          "averageResponse": 5.73
+        },
+        {
+          "seconds": 600,
+          "rescued": 357,
+          "score": 80748,
+          "failed": 0,
+          "wrong": 2,
+          "lives": 3,
+          "averageResponse": 6.21
+        },
+        {
+          "seconds": 720,
+          "rescued": 429,
+          "score": 96058,
+          "failed": 0,
+          "wrong": 3,
+          "lives": 3,
+          "averageResponse": 6.4
+        },
+        {
+          "seconds": 900,
+          "rescued": 535,
+          "score": 118188,
+          "failed": 0,
+          "wrong": 3,
+          "lives": 3,
+          "averageResponse": 6.65
+        }
+      ],
+      "final": {
+        "score": 118188,
+        "rescued": 535,
+        "failed": 0,
+        "wrong": 3
+      }
+    },
+    {
+      "profile": "熟練型",
+      "speed": 256.25,
+      "seed": 123,
+      "endedAt": 900,
+      "gameOver": false,
+      "maxRequests": 5,
+      "checkpoints": [
+        {
+          "seconds": 120,
+          "rescued": 67,
+          "score": 16720,
+          "failed": 0,
+          "wrong": 1,
+          "lives": 3,
+          "averageResponse": 3.04
+        },
+        {
+          "seconds": 240,
+          "rescued": 143,
+          "score": 33960,
+          "failed": 0,
+          "wrong": 1,
+          "lives": 3,
+          "averageResponse": 4.65
+        },
+        {
+          "seconds": 360,
+          "rescued": 220,
+          "score": 50900,
+          "failed": 0,
+          "wrong": 1,
+          "lives": 3,
+          "averageResponse": 5.36
+        },
+        {
+          "seconds": 480,
+          "rescued": 292,
+          "score": 66200,
+          "failed": 0,
+          "wrong": 1,
+          "lives": 3,
+          "averageResponse": 5.91
+        },
+        {
+          "seconds": 600,
+          "rescued": 363,
+          "score": 80787,
+          "failed": 0,
+          "wrong": 2,
+          "lives": 3,
+          "averageResponse": 6.23
+        },
+        {
+          "seconds": 720,
+          "rescued": 436,
+          "score": 95777,
+          "failed": 0,
+          "wrong": 3,
+          "lives": 3,
+          "averageResponse": 6.46
+        },
+        {
+          "seconds": 900,
+          "rescued": 545,
+          "score": 119217,
+          "failed": 0,
+          "wrong": 3,
+          "lives": 3,
+          "averageResponse": 6.65
+        }
+      ],
+      "final": {
+        "score": 119217,
+        "rescued": 545,
+        "failed": 0,
+        "wrong": 3
+      }
+    },
+    {
+      "profile": "熟練型",
+      "speed": 256.25,
+      "seed": 789,
+      "endedAt": 900,
+      "gameOver": false,
+      "maxRequests": 5,
+      "checkpoints": [
+        {
+          "seconds": 120,
+          "rescued": 67,
+          "score": 18720,
+          "failed": 0,
+          "wrong": 0,
+          "lives": 3,
+          "averageResponse": 2.17
+        },
+        {
+          "seconds": 240,
+          "rescued": 136,
+          "score": 34280,
+          "failed": 0,
+          "wrong": 0,
+          "lives": 3,
+          "averageResponse": 4.42
+        },
+        {
+          "seconds": 360,
+          "rescued": 213,
+          "score": 51100,
+          "failed": 0,
+          "wrong": 0,
+          "lives": 3,
+          "averageResponse": 5.36
+        },
+        {
+          "seconds": 480,
+          "rescued": 284,
+          "score": 64672,
+          "failed": 0,
+          "wrong": 3,
+          "lives": 3,
+          "averageResponse": 5.88
+        },
+        {
+          "seconds": 600,
+          "rescued": 354,
+          "score": 78924,
+          "failed": 1,
+          "wrong": 5,
+          "lives": 3,
+          "averageResponse": 6.07
+        },
+        {
+          "seconds": 720,
+          "rescued": 429,
+          "score": 95304,
+          "failed": 1,
+          "wrong": 5,
+          "lives": 3,
+          "averageResponse": 6.21
+        },
+        {
+          "seconds": 900,
+          "rescued": 535,
+          "score": 116446,
+          "failed": 1,
+          "wrong": 7,
+          "lives": 3,
+          "averageResponse": 6.52
+        }
+      ],
+      "final": {
+        "score": 116446,
+        "rescued": 535,
+        "failed": 1,
+        "wrong": 7
+      }
+    }
+  ]
+}

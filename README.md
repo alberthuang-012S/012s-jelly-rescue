@@ -60,6 +60,36 @@ Optional browser QA: `node qa/endless-browser.mjs` with the same Playwright setu
 other browser runners, including desktop, portrait, narrow portrait and landscape,
 unlock, actual item use, timeout continuation, reload, healing, game-over and patrol regression.
 
+## Local simulated leaderboard
+
+The Endless home record has a **查看排行榜** button. **廣場挑戰榜** contains seven fixed
+fictional challengers and one real player-best row, with a visible **本機模擬榜單** label.
+Time, score and rescue count for each rival come from one matched sample in
+`qa/endless/leaderboard-estimate.json`; the source covers normal/evolved speeds,
+observation/switch delays, detours and mistakes. It estimates gameplay from movement
+budgets rather than reporting human measurements. The 10/15-minute leaders use
+surviving checkpoints; the five lower records use completed simulations.
+
+Ranking uses full survival milliseconds first, score second, with an exact tie retaining
+the established rival's position. It uses the existing `jellyRescue.endless.v2` best
+record without changing run data or storage format. Opening the standings never
+replaces a saved run. Reloads keep rivals fixed and retain the best player's rank.
+Unavailable storage keeps a labeled session-only player record.
+
+Endless results show this run's rank separately from the personal-best rank, the
+adjacent higher rival's target, a short celebration for new records/rank gains, and a
+standings button. A champion gets a top-rank message. DEBUG practice runs do not
+update the best or celebrate a ranked result. Ordinary patrol results hide the ranking
+panel. Native dialog rows scroll independently from the header/return controls;
+keyboard focus stays in the dialog and returns to its trigger on close.
+
+Validation: `qa/endless-leaderboard.test.mjs` checks source data, milliseconds/score
+ties, next targets, best-record persistence and practice exclusion.
+`node qa/endless-leaderboard-browser.mjs` covers 1280×900, 1024×768, 390×844,
+375×667, 320×640 and 844×390, empty/player standings, scroll/focus/Escape,
+result rank gains, champion/practice, reload, exact saved-run resume, unavailable
+storage and patrol isolation. Reports are saved under `qa/endless/`.
+
 ## Controls
 
 - `WASD` / Arrow keys: move the jelly

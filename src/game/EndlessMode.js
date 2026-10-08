@@ -4,6 +4,8 @@ import { ENDLESS_ITEMS, ENDLESS_UNLOCK_AT, ENDLESS_HEAL_EVERY, ENDLESS_MOVEMENT_
 import { createEndlessRun, createEndlessStage, healEndlessRun, seededRandom, EndlessStore } from './EndlessRun.js';
 import { TravelPlanner } from './TravelPlanner.js';
 import { formatClock } from './utils.js';
+import { EndlessLeaderboardUI } from './EndlessLeaderboardUI.js';
+import { endlessRank } from './EndlessLeaderboard.js';
 
 const copy = (value) => JSON.parse(JSON.stringify(value));
 const EXCLUDED = new Set(['spriteImage', 'spriteSheet', 'stateMachine', 'random', 'onFailure', 'onStateChange']);
@@ -21,6 +23,7 @@ export class EndlessMode {
   constructor(game) {
     this.game = game; this.store = new EndlessStore(); this.run = null;
     this.random = null; this.saveElapsed = 0;
+    this.leaderboard = new EndlessLeaderboardUI(this.store);
     this.dialog = document.querySelector('#endless-dialog');
     this.dialog.addEventListener('cancel', (event) => event.preventDefault());
     document.querySelector('#endless-start').addEventListener('click', () => this.start());
@@ -45,7 +48,7 @@ export class EndlessMode {
     if (run) this.game.homeScreen.dataset.hasPlayed = 'true';
     if (run) button.textContent = `繼續救援 · ${formatClock(Math.floor(run.snapshot?.elapsed || 0))} · ${run.lives} 顆愛心${this.store.writeFailed ? '（本頁）' : ''}`;
     document.querySelector('#endless-best').textContent = best
-      ? `最佳生存 ${formatClock(Math.floor(best.survivedMs / 1000))} · ${best.score.toLocaleString()} 分` : '挑戰你的第一個生存紀錄';
+      ? `最佳 ${formatClock(Math.floor(best.survivedMs / 1000))} · ${best.score.toLocaleString()} 分 · 第 ${endlessRank(best)} 名${this.store.writeFailed ? "（本次遊玩）" : ""}` : '挑戰你的第一個生存紀錄';
   }
   start() {
     if (this.game.state === 'loading') return;
@@ -170,6 +173,7 @@ export class EndlessMode {
     this.run.status = 'over'; game.state = 'gameover'; game.input.setEnabled(false);
     const result = game.scoreManager.getResult(game.combo.maxCombo);
     const seconds = game.stageManager.elapsed;
+    const previousBest = this.store.load().best;
     const record = this.store.updateBest(seconds, result.score, result.rescuedCount, this.run.practice);
     this.store.save(null);
     game.gameShell.classList.add('is-hidden');
@@ -184,6 +188,9 @@ export class EndlessMode {
     panel.textContent = this.run.practice ? '練習局：使用過 DEBUG，本局不登錄紀錄。'
       : best ? `${record.isNewBest ? '★ 新紀錄 · ' : ''}個人最佳生存 ${formatClock(Math.floor(best.survivedMs / 1000))} · ${best.score.toLocaleString()} 分 · ${best.rescuedCount} 人` : '';
     panel.classList.remove('is-hidden');
+    this.leaderboard.renderResult(screen,
+      {survivedMs:Math.round(seconds*1000),score:result.score,rescuedCount:result.rescuedCount},
+      {...record,previousBest,practice:this.run.practice});
     game.updateOrientation?.(); game.resetAppScroll();
     screen.querySelector('#gameover-replay')?.focus({ preventScroll: true });
   }
@@ -200,7 +207,7 @@ export class EndlessMode {
     this.store.save(this.run);
   }
   leave() {
-    this.save(); this.dialog.close(); this.run = null; this.random = null;
+    this.save(); this.dialog.close(); this.leaderboard.close(); this.run = null; this.random = null;
     for (const button of document.querySelectorAll('[data-item]')) {
       button.classList.remove('is-endless-locked');
       button.querySelector('.endless-lock-label')?.remove();

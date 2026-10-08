@@ -1,0 +1,2774 @@
+{
+  "checks": [
+    "1280x900: empty/8-row board, scores and rank, table scroll, focus/Escape, reload, current vs best, rank rise, champion, practice exclusion, exact resume and patrol isolation",
+    "1024x768: empty/8-row board, scores and rank, table scroll, focus/Escape, reload, current vs best, rank rise, champion, practice exclusion, exact resume and patrol isolation",
+    "390x844: empty/8-row board, scores and rank, table scroll, focus/Escape, reload, current vs best, rank rise, champion, practice exclusion, exact resume and patrol isolation",
+    "375x667: empty/8-row board, scores and rank, table scroll, focus/Escape, reload, current vs best, rank rise, champion, practice exclusion, exact resume and patrol isolation",
+    "320x640: empty/8-row board, scores and rank, table scroll, focus/Escape, reload, current vs best, rank rise, champion, practice exclusion, exact resume and patrol isolation",
+    "844x390: empty/8-row board, scores and rank, table scroll, focus/Escape, reload, current vs best, rank rise, champion, practice exclusion, exact resume and patrol isolation",
+    "Unavailable storage keeps the real player rank for the current session"
+  ],
+  "layouts": [
+    {
+      "width": 640,
+      "height": 713.78125,
+      "x": 320,
+      "y": 93.109375,
+      "right": 960,
+      "bottom": 806.890625,
+      "boxes": [
+        {
+          "x": 894,
+          "right": 938,
+          "width": 44,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 342,
+          "right": 938,
+          "width": 596,
+          "overflow": false
+        }
+      ],
+      "scrollHeight": 434,
+      "clientHeight": 434,
+      "dialogScroll": 710,
+      "dialogClient": 710
+    },
+    {
+      "width": 640,
+      "height": 770.78125,
+      "x": 320,
+      "y": 64.609375,
+      "right": 960,
+      "bottom": 835.390625,
+      "boxes": [
+        {
+          "x": 894,
+          "right": 938,
+          "width": 44,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 343,
+          "right": 389,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 389,
+          "right": 773,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 773,
+          "right": 843,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 843,
+          "right": 937,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 342,
+          "right": 938,
+          "width": 596,
+          "overflow": false
+        }
+      ],
+      "scrollHeight": 491,
+      "clientHeight": 491,
+      "dialogScroll": 767,
+      "dialogClient": 767
+    },
+    {
+      "width": 640,
+      "height": 713.78125,
+      "x": 192,
+      "y": 27.109375,
+      "right": 832,
+      "bottom": 740.890625,
+      "boxes": [
+        {
+          "x": 766,
+          "right": 810,
+          "width": 44,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 214,
+          "right": 810,
+          "width": 596,
+          "overflow": false
+        }
+      ],
+      "scrollHeight": 434,
+      "clientHeight": 434,
+      "dialogScroll": 710,
+      "dialogClient": 710
+    },
+    {
+      "width": 640,
+      "height": 744,
+      "x": 192,
+      "y": 12,
+      "right": 832,
+      "bottom": 756,
+      "boxes": [
+        {
+          "x": 766,
+          "right": 810,
+          "width": 44,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 215,
+          "right": 261,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 261,
+          "right": 645,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 645,
+          "right": 715,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 715,
+          "right": 809,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 214,
+          "right": 810,
+          "width": 596,
+          "overflow": false
+        }
+      ],
+      "scrollHeight": 491,
+      "clientHeight": 464,
+      "dialogScroll": 740,
+      "dialogClient": 740
+    },
+    {
+      "width": 352,
+      "height": 660.875,
+      "x": 19,
+      "y": 91.5625,
+      "right": 371,
+      "bottom": 752.4375,
+      "boxes": [
+        {
+          "x": 315,
+          "right": 359,
+          "width": 44,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 31,
+          "right": 359,
+          "width": 328,
+          "overflow": false
+        }
+      ],
+      "scrollHeight": 397,
+      "clientHeight": 397,
+      "dialogScroll": 657,
+      "dialogClient": 657
+    },
+    {
+      "width": 352,
+      "height": 712.875,
+      "x": 19,
+      "y": 65.5625,
+      "right": 371,
+      "bottom": 778.4375,
+      "boxes": [
+        {
+          "x": 315,
+          "right": 359,
+          "width": 44,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 243,
+          "width": 177,
+          "overflow": false
+        },
+        {
+          "x": 243,
+          "right": 292,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 292,
+          "right": 358,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 31,
+          "right": 359,
+          "width": 328,
+          "overflow": false
+        }
+      ],
+      "scrollHeight": 449,
+      "clientHeight": 449,
+      "dialogScroll": 709,
+      "dialogClient": 709
+    },
+    {
+      "width": 337,
+      "height": 643,
+      "x": 19,
+      "y": 12,
+      "right": 356,
+      "bottom": 655,
+      "boxes": [
+        {
+          "x": 300,
+          "right": 344,
+          "width": 44,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 31,
+          "right": 344,
+          "width": 313,
+          "overflow": false
+        }
+      ],
+      "scrollHeight": 397,
+      "clientHeight": 379,
+      "dialogScroll": 639,
+      "dialogClient": 639
+    },
+    {
+      "width": 337,
+      "height": 643,
+      "x": 19,
+      "y": 12,
+      "right": 356,
+      "bottom": 655,
+      "boxes": [
+        {
+          "x": 300,
+          "right": 344,
+          "width": 44,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 228,
+          "width": 162,
+          "overflow": false
+        },
+        {
+          "x": 228,
+          "right": 277,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 277,
+          "right": 343,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 31,
+          "right": 344,
+          "width": 313,
+          "overflow": false
+        }
+      ],
+      "scrollHeight": 449,
+      "clientHeight": 379,
+      "dialogScroll": 639,
+      "dialogClient": 639
+    },
+    {
+      "width": 282,
+      "height": 616,
+      "x": 19,
+      "y": 12,
+      "right": 301,
+      "bottom": 628,
+      "boxes": [
+        {
+          "x": 245,
+          "right": 289,
+          "width": 44,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 31,
+          "right": 289,
+          "width": 258,
+          "overflow": false
+        }
+      ],
+      "scrollHeight": 397,
+      "clientHeight": 336,
+      "dialogScroll": 612,
+      "dialogClient": 612
+    },
+    {
+      "width": 282,
+      "height": 616,
+      "x": 19,
+      "y": 12,
+      "right": 301,
+      "bottom": 628,
+      "boxes": [
+        {
+          "x": 245,
+          "right": 289,
+          "width": 44,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 32,
+          "right": 66,
+          "width": 34,
+          "overflow": false
+        },
+        {
+          "x": 66,
+          "right": 173,
+          "width": 107,
+          "overflow": false
+        },
+        {
+          "x": 173,
+          "right": 222,
+          "width": 49,
+          "overflow": false
+        },
+        {
+          "x": 222,
+          "right": 288,
+          "width": 66,
+          "overflow": false
+        },
+        {
+          "x": 31,
+          "right": 289,
+          "width": 258,
+          "overflow": false
+        }
+      ],
+      "scrollHeight": 449,
+      "clientHeight": 336,
+      "dialogScroll": 612,
+      "dialogClient": 612
+    },
+    {
+      "width": 640,
+      "height": 366,
+      "x": 102,
+      "y": 12,
+      "right": 742,
+      "bottom": 378,
+      "boxes": [
+        {
+          "x": 676,
+          "right": 720,
+          "width": 44,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 124,
+          "right": 720,
+          "width": 596,
+          "overflow": false
+        }
+      ],
+      "scrollHeight": 434,
+      "clientHeight": 86,
+      "dialogScroll": 362,
+      "dialogClient": 362
+    },
+    {
+      "width": 640,
+      "height": 366,
+      "x": 102,
+      "y": 12,
+      "right": 742,
+      "bottom": 378,
+      "boxes": [
+        {
+          "x": 676,
+          "right": 720,
+          "width": 44,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 125,
+          "right": 171,
+          "width": 46,
+          "overflow": false
+        },
+        {
+          "x": 171,
+          "right": 555,
+          "width": 384,
+          "overflow": false
+        },
+        {
+          "x": 555,
+          "right": 625,
+          "width": 70,
+          "overflow": false
+        },
+        {
+          "x": 625,
+          "right": 719,
+          "width": 94,
+          "overflow": false
+        },
+        {
+          "x": 124,
+          "right": 720,
+          "width": 596,
+          "overflow": false
+        }
+      ],
+      "scrollHeight": 491,
+      "clientHeight": 86,
+      "dialogScroll": 362,
+      "dialogClient": 362
+    }
+  ],
+  "errors": []
+}
